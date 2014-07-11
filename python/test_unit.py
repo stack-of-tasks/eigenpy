@@ -2,6 +2,7 @@
 
 import numpy as np
 
+'''
 import libsimple
 
 print libsimple.char()
@@ -28,6 +29,25 @@ print "matrix ===> "
 libeigen.test2(a)
 print "array ===> "
 libeigen.test2(b)
+'''
+
+import libeigentemplate
+print "===> From C++ to Py"
+print libeigentemplate.test()
+print "===> From Vec C++ to Py"
+print libeigentemplate.testVec()
+print "===> From Py to C++"
+a = np.random.random([5,5])
+for i in range(5):
+    for j in range(5):
+        a[i,j] = i*5+j
+#a = np.random.random([
+print a
+libeigentemplate.test2(a)
+print "===> From Py::slice to C++"
+b=a[1:5,1:3]
+print b
+libeigentemplate.test2(b)
 
 
 

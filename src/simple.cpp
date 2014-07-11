@@ -20,7 +20,7 @@ std::string teststr()
 
 Eigen::VectorXd testeigenvec()
 {
-  Eigen::VectorXd v(5);
+  Eigen::VectorXd v(555);
   return v;
 }
 

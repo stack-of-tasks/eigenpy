@@ -8,7 +8,9 @@ IF(NOT BOOST_NUMPY_DIR)
 ENDIF()
 
 FIND_PACKAGE(Boost 1.45.0)
+
 IF(Boost_FOUND)
+
   INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}" "/usr/include/python2.7" "/usr/include/eigen3" "Boost.NumPy")
   LINK_DIRECTORIES(${BOOST_NUMPY_DIR})
 
@@ -28,6 +30,12 @@ IF(Boost_FOUND)
 
   ADD_LIBRARY(eigen SHARED src/eigen.cpp)
   TARGET_LINK_LIBRARIES(eigen ${Boost_LIBRARIES} libboost_numpy.so)
+
+  ADD_LIBRARY(eigenc SHARED src/eigenc.cpp)
+  TARGET_LINK_LIBRARIES(eigenc ${Boost_LIBRARIES})
+
+  ADD_LIBRARY(eigentemplate SHARED src/eigentemplate.cpp)
+  TARGET_LINK_LIBRARIES(eigentemplate ${Boost_LIBRARIES})
 
 ELSEIF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
