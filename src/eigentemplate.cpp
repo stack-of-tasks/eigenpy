@@ -34,6 +34,7 @@ namespace boopy
   };
   
   /* --- FROM PYTHON ------------------------------------------------------------ */
+  template<typename MatType>
   struct EigenMatrix_from_python_array
   {
 
@@ -42,20 +43,21 @@ namespace boopy
       bp::converter::registry
 	::push_back(&convertible,
 		    &construct,
-		    bp::type_id<Eigen::MatrixXd>());
+		    bp::type_id<MatType>());
     }
  
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyObject* obj_ptr)
     {
-      typedef Eigen::MatrixXd MatType;
-      typedef MatType::Scalar T;
+      typedef typename MatType::Scalar T;
 
       if (!PyArray_Check(obj_ptr)) return 0;
 
+      std::cout << "Until here ok.   ndim = " << PyArray_NDIM(obj_ptr) << " isvec " << MatType::IsVectorAtCompileTime << std::endl;
       if (PyArray_NDIM(obj_ptr) != 2)
-	if ( (PyArray_NDIM(obj_ptr) !=1) || (MatType::IsVectorAtCompileTime) )
+	if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
 	  return 0;
+      std::cout << "Until here ok." << std::endl;
 
       if (PyArray_ObjectType(obj_ptr, 0) != NumpyEquivalentType<T>::type_code)
 	return 0;
@@ -73,37 +75,61 @@ namespace boopy
     static void construct(PyObject* pyObj,
 			  bp::converter::rvalue_from_python_stage1_data* memory)
     {
-      typedef Eigen::MatrixXd MatType;
-      typedef MatType::Scalar T;
+      typedef typename MatType::Scalar T;
       using namespace Eigen;
 
+      std::cout << "Until here ok. Constructing..." << std::endl;
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-      int ndims = PyArray_NDIM(pyArray);
-      assert(ndims == 2); // TODO: handle vectors
 
-      int itemsize = PyArray_ITEMSIZE(pyArray);
-      int stride1 = PyArray_STRIDE(pyArray, 0) / itemsize;
-      int stride2 = PyArray_STRIDE(pyArray, 1) / itemsize;
-      std::cout << "STRIDE = " << stride1 << " x " << stride2 << std::endl;
+      if ( PyArray_NDIM(pyArray) == 2 )
+      {
+	int R = MatType::RowsAtCompileTime;
+	int C = MatType::ColsAtCompileTime;
+	if (R == Eigen::Dynamic) R = PyArray_DIMS(pyArray)[0];
+	else	               assert(PyArray_DIMS(pyArray)[0]==R);
+	
+	if (C == Eigen::Dynamic) C = PyArray_DIMS(pyArray)[1];
+	else	               assert(PyArray_DIMS(pyArray)[1]==C);
+	
+	T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
 
-      int R = MatrixXd::RowsAtCompileTime;
-      int C = MatrixXd::ColsAtCompileTime;
-      if (R == Eigen::Dynamic) R = PyArray_DIMS(pyArray)[0];
-      else	               assert(PyArray_DIMS(pyArray)[0]==R);
+	int itemsize = PyArray_ITEMSIZE(pyArray);
+	int stride1 = PyArray_STRIDE(pyArray, 0) / itemsize;
+	int stride2 = PyArray_STRIDE(pyArray, 1) / itemsize;
+	std::cout << "STRIDE = " << stride1 << " x " << stride2 << std::endl;
+	Eigen::Map<MatType,0,Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> >
+	  pyMap( pyData, R,C, Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic>(stride2,stride1) );
+	std::cout << "Map = " << pyMap << std::endl;
+	
+	void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
+			 (memory))->storage.bytes;
+	MatType & mat = * new (storage) MatType(R,C);
+	mat = pyMap; 
 
-      if (C == Eigen::Dynamic) C = PyArray_DIMS(pyArray)[1];
-      else	               assert(PyArray_DIMS(pyArray)[1]==C);
+	memory->convertible = storage;
+      }
+    else
+      {
+	int R = MatType::MaxSizeAtCompileTime, C=1;
+	if(R==Eigen::Dynamic) R =  PyArray_DIMS(pyArray)[0];
+	else                  assert(PyArray_DIMS(pyArray)[0]==R);
 
-      T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
+	T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
 
-      void* storage = ((bp::converter::rvalue_from_python_storage<MatrixXd>*)
-		       (memory))->storage.bytes;
-      MatrixXd & mat = * new (storage) MatrixXd(R,C);
-      for(int i=0;i<R;++i) 
-	for(int j=0;j<C;++j) 
-	  mat(i,j) = pyData[i*C+j];
+	int itemsize = PyArray_ITEMSIZE(pyArray);
+	int stride = PyArray_STRIDE(pyArray, 0) / itemsize;
+	Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> s(stride,0);
+	Eigen::Map<MatType,0,Eigen::InnerStride<Eigen::Dynamic> >
+	  pyMap( pyData, R, 1, Eigen::InnerStride<Eigen::Dynamic>(stride) );
+	std::cout << "Map = " << pyMap << std::endl;
+	
+	void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
+			 (memory))->storage.bytes;
+	MatType & mat = * new (storage) MatType(R,C);
+	mat = pyMap; 
 
-      memory->convertible = storage;
+	memory->convertible = storage;
+      }
     }
   };
 
@@ -125,7 +151,11 @@ Eigen::VectorXd testVec()
 
 void test2( Eigen::MatrixXd mat )
 {
-  std::cout << mat << std::endl;
+  std::cout << "Test2 mat = " << mat << std::endl;
+}
+void test2Vec( Eigen::VectorXd v )
+{
+  std::cout << "Test2 vec = " << v << std::endl;
 }
 
 BOOST_PYTHON_MODULE(libeigentemplate)
@@ -134,11 +164,14 @@ BOOST_PYTHON_MODULE(libeigentemplate)
   namespace bp = boost::python;
   bp::to_python_converter<Eigen::MatrixXd,
 			  boopy::EigenMatrix_to_python_matrix<Eigen::MatrixXd> >();
+  boopy::EigenMatrix_from_python_array<Eigen::MatrixXd>();
+
   bp::to_python_converter<Eigen::VectorXd,
-			  boopy::EigenMatrix_to_python_matrix<Eigen::VectorXd> >();
-  boopy::EigenMatrix_from_python_array();
+   			  boopy::EigenMatrix_to_python_matrix<Eigen::VectorXd> >();
+  boopy::EigenMatrix_from_python_array<Eigen::VectorXd>();
 
   bp::def("test", test);
   bp::def("testVec", testVec);
   bp::def("test2", test2);
+  bp::def("test2Vec", test2Vec);
 }

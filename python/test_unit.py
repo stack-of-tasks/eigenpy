@@ -32,11 +32,11 @@ libeigen.test2(b)
 '''
 
 import libeigentemplate
-print "===> From C++ to Py"
-print libeigentemplate.test()
-print "===> From Vec C++ to Py"
-print libeigentemplate.testVec()
-print "===> From Py to C++"
+# print "===> From C++ to Py"
+# print libeigentemplate.test()
+# print "===> From Vec C++ to Py"
+# print libeigentemplate.testVec()
+# print "===> From Py to C++"
 a = np.random.random([5,5])
 for i in range(5):
     for j in range(5):
@@ -44,12 +44,30 @@ for i in range(5):
 #a = np.random.random([
 print a
 libeigentemplate.test2(a)
-print "===> From Py::slice to C++"
-b=a[1:5,1:3]
-print b
-libeigentemplate.test2(b)
+# print "===> From Py::slice to C++"
+# b=a[1:5,1:3]
+# print b
+# libeigentemplate.test2(b)
+
+# print "===> From Py::transpose to C++"
+# b=a[1:5,1:3].T
+# print b
+# libeigentemplate.test2(b)
+
+print "===> From py::vec to C++ Vec"
+v = np.array([range(5),],np.float64).T
+print v
+libeigentemplate.test2Vec(v)
 
 
+v = np.array(range(5),np.float64)
+print "v = ", v
+libeigentemplate.test2Vec(v)
+
+v = np.array(range(10),np.float64)
+v2 = v[0:10:5]
+print "v2 = ", v2
+libeigentemplate.test2Vec(v2)
 
 '''
 import libbnpy
