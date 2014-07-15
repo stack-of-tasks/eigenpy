@@ -19,22 +19,25 @@ IF(Boost_FOUND)
   SET(Boost_USE_STATIC_RUNTIME OFF)
   FIND_PACKAGE(Boost 1.45.0 COMPONENTS python)
 
-  ADD_LIBRARY(simple SHARED src/simple.cpp)
+  ADD_LIBRARY(eigenpy SHARED unittest/libeigenpy.cpp)
+  TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES})
+
+  ADD_LIBRARY(simple SHARED unittest/alpha/simple.cpp)
   TARGET_LINK_LIBRARIES(simple ${Boost_LIBRARIES})
 
-  ADD_LIBRARY(mystring SHARED src/mystring.cpp)
+  ADD_LIBRARY(mystring SHARED unittest/alpha/mystring.cpp)
   TARGET_LINK_LIBRARIES(mystring ${Boost_LIBRARIES})
 
-  ADD_LIBRARY(bnpy SHARED src/bnpy.cpp)
+  ADD_LIBRARY(bnpy SHARED unittest/alpha/bnpy.cpp)
   TARGET_LINK_LIBRARIES(bnpy ${Boost_LIBRARIES})
 
-  ADD_LIBRARY(eigen SHARED src/eigen.cpp)
+  ADD_LIBRARY(eigen SHARED unittest/alpha/eigen.cpp)
   TARGET_LINK_LIBRARIES(eigen ${Boost_LIBRARIES} libboost_numpy.so)
 
-  ADD_LIBRARY(eigenc SHARED src/eigenc.cpp)
+  ADD_LIBRARY(eigenc SHARED unittest/alpha/eigenc.cpp)
   TARGET_LINK_LIBRARIES(eigenc ${Boost_LIBRARIES})
 
-  ADD_LIBRARY(eigentemplate SHARED src/eigentemplate.cpp)
+  ADD_LIBRARY(eigentemplate SHARED unittest/alpha/eigentemplate.cpp)
   TARGET_LINK_LIBRARIES(eigentemplate ${Boost_LIBRARIES})
 
 ELSEIF(NOT Boost_FOUND)
