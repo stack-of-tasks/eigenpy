@@ -1,35 +1,62 @@
 #include "../src/eigenpy.hpp"
 
-Eigen::MatrixXd test()
+Eigen::MatrixXd naturals(int R,int C,bool verbose)
 {
-  Eigen::MatrixXd mat = Eigen::MatrixXd::Random(3,6);
-  std::cout << "EigenMAt = " << mat << std::endl;
-  return mat;
-}
-Eigen::VectorXd testVec()
-{
-  Eigen::VectorXd mat = Eigen::VectorXd::Random(6);
-  std::cout << "EigenVec = " << mat << std::endl;
+  Eigen::MatrixXd mat(R,C);
+  for(int r=0;r<R;++r)
+    for(int c=0;c<C;++c)
+      mat(r,c) = r*C+c;
+
+  if(verbose)
+    std::cout << "EigenMat = " << mat << std::endl;
   return mat;
 }
 
-void test2( Eigen::MatrixXd mat )
+Eigen::VectorXd naturals(int R,bool verbose)
 {
-  std::cout << "Test2 mat = " << mat << std::endl;
+  Eigen::VectorXd mat(R);
+  for(int r=0;r<R;++r)
+    mat[r] = r;
+
+  if(verbose)
+    std::cout << "EigenMat = " << mat << std::endl;
+  return mat;
 }
-void test2Vec( Eigen::VectorXd v )
+
+Eigen::Matrix3d naturals(bool verbose)
 {
-  std::cout << "Test2 vec = " << v << std::endl;
+  Eigen::Matrix3d mat;
+  for(int r=0;r<3;++r)
+    for(int c=0;c<3;++c)
+      mat(r,c) = r*3+c;
+
+  if(verbose)
+    std::cout << "EigenMat = " << mat << std::endl;
+  return mat;
+}
+
+template<typename MatType>
+Eigen::MatrixXd reflex(const MatType & M, bool verbose)
+{
+  if(verbose)
+    std::cout << "EigenMat = " << M << std::endl;
+  return Eigen::MatrixXd(M);
 }
 
 BOOST_PYTHON_MODULE(libeigenpy)
 {
-
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
 
-  bp::def("test", test);
-  bp::def("testVec", testVec);
-  bp::def("test2", test2);
-  bp::def("test2Vec", test2Vec);
+  Eigen::MatrixXd (*naturalsXX)(int,int,bool) = naturals;
+  Eigen::VectorXd (*naturalsX)(int,bool) = naturals;
+  Eigen::Matrix3d (*naturals33)(bool) = naturals;
+
+  bp::def("naturals", naturalsXX);
+  bp::def("naturalsX", naturalsX);
+  bp::def("naturals33", naturals33);
+
+  bp::def("reflex", reflex<Eigen::MatrixXd>);
+  bp::def("reflexV", reflex<Eigen::VectorXd>);
+  bp::def("reflex33", reflex<Eigen::Matrix3d>);
 }
