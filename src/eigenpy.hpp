@@ -113,8 +113,8 @@ namespace eigenpy
       const int itemsize = PyArray_ITEMSIZE(pyArray);
       const int stride = PyArray_STRIDE(pyArray, rowMajor) / itemsize;;
 
-      if( (MatType::MaxSizeAtCompileTime==R)
-	      || (MatType::MaxSizeAtCompileTime==Eigen::Dynamic) )
+      if( (MatType::MaxSizeAtCompileTime!=R)
+	      && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )
 	{ throw eigenpy::exception("The number of elements does not fit with the vector type."); }
 
       T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
