@@ -75,4 +75,5 @@ BOOST_PYTHON_MODULE(libeigenpy)
   bp::def("reflex", reflex<Eigen::MatrixXd>);
   bp::def("reflexV", reflex<Eigen::VectorXd>);
   bp::def("reflex33", reflex<Eigen::Matrix3d>);
+  bp::def("reflex3", reflex<Eigen::Vector3d>);
 }

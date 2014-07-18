@@ -17,6 +17,7 @@
 #include <Eigen/Core>
 #include <boost/python.hpp>
 #include <numpy/arrayobject.h>
+#include <iostream>
 
 namespace eigenpy
 {
@@ -53,7 +54,7 @@ namespace eigenpy
    };
 
   /* Enable the Eigen--Numpy serialization for the templated MatrixBase class. */
-  template<typename MatType>
+  template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific();
 
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
@@ -61,15 +62,15 @@ namespace eigenpy
   {
     exception::registerException();
 
-    enableEigenPySpecific<Eigen::MatrixXd>();
-    enableEigenPySpecific<Eigen::Matrix2d>();
-    enableEigenPySpecific<Eigen::Matrix3d>();
-    enableEigenPySpecific<Eigen::Matrix4d>();
+    enableEigenPySpecific<Eigen::MatrixXd,Eigen::MatrixXd>();
+    enableEigenPySpecific<Eigen::Matrix2d,Eigen::Matrix2d>();
+    enableEigenPySpecific<Eigen::Matrix3d,Eigen::Matrix3d>();
+    enableEigenPySpecific<Eigen::Matrix4d,Eigen::Matrix4d>();
 
-    enableEigenPySpecific<Eigen::VectorXd>();
-    enableEigenPySpecific<Eigen::Vector2d>();
-    enableEigenPySpecific<Eigen::Vector3d>();
-    enableEigenPySpecific<Eigen::Vector4d>();
+    enableEigenPySpecific<Eigen::VectorXd,Eigen::VectorXd>();
+    enableEigenPySpecific<Eigen::Vector2d,Eigen::Vector2d>();
+    enableEigenPySpecific<Eigen::Vector3d,Eigen::Vector3d>();
+    enableEigenPySpecific<Eigen::Vector4d,Eigen::Vector4d>();
   }
 }
 
@@ -149,7 +150,7 @@ namespace eigenpy
   }
 
   /* --- TO PYTHON -------------------------------------------------------------- */
-  template< typename MatType >
+  template< typename MatType,typename EquivalentEigenType >
   struct EigenToPy
   {
     static PyObject* convert(MatType const& mat)
@@ -161,7 +162,7 @@ namespace eigenpy
       PyArrayObject* pyArray = (PyArrayObject*)
 	PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
 
-      MapNumpy<MatType>::map(pyArray) = mat;
+      MapNumpy<EquivalentEigenType>::map(pyArray) = mat;
 
       return (PyObject*)pyArray;
     }
@@ -170,7 +171,44 @@ namespace eigenpy
   /* --- FROM PYTHON ------------------------------------------------------------ */
   namespace bp = boost::python;
 
+  template<typename MatType, int ROWS,int COLS>
+  struct TraitsMatrixConstructor
+  {
+    static MatType & construct(void*storage,int r,int c)
+    {
+      return * new(storage) MatType();
+    }
+  };
+
   template<typename MatType>
+  struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,Eigen::Dynamic>
+  {
+    static MatType & construct(void*storage,int r,int c)
+    {
+      return * new(storage) MatType(r,c);
+    }
+  };
+
+  template<typename MatType,int R>
+  struct TraitsMatrixConstructor<MatType,R,Eigen::Dynamic>
+  {
+    static MatType & construct(void*storage,int r,int c)
+    {
+      return * new(storage) MatType(c);
+    }
+  };
+
+  template<typename MatType,int C>
+  struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,C>
+  {
+    static MatType & construct(void*storage,int r,int c)
+    {
+      return * new(storage) MatType(r);
+    }
+  };
+
+
+  template<typename MatType,typename EquivalentEigenType>
   struct EigenFromPy
   {
     EigenFromPy()
@@ -220,24 +258,26 @@ namespace eigenpy
       using namespace Eigen;
 
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      typename MapNumpy<EquivalentEigenType>::EigenMap numpyMap = MapNumpy<EquivalentEigenType>::map(pyArray);
 
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
 		       (memory))->storage.bytes;
-      MatType & eigenMatrix = * new(storage) MatType(numpyMap.rows(),numpyMap.cols());
+      int r=numpyMap.rows(),c=numpyMap.cols();
+      EquivalentEigenType & eigenMatrix = //* new(storage) MatType(numpyMap.rows(),numpyMap.cols());
+	TraitsMatrixConstructor<MatType,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime>::construct (storage,r,c);
       memory->convertible = storage;
 
       eigenMatrix = numpyMap;
     }
   };
 
-  template<typename MatType>
+  template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
     import_array();
     boost::python::to_python_converter<MatType,
-				       eigenpy::EigenToPy<MatType> >();
-    eigenpy::EigenFromPy<MatType>();
+				       eigenpy::EigenToPy<MatType,EigenEquivalentType> >();
+    eigenpy::EigenFromPy<MatType,EigenEquivalentType>();
   }
 
   /* --- EXCEPTION ----------------------------------------------------------------- */

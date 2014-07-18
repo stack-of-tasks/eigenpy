@@ -92,3 +92,12 @@ try:
     assert( np.array_equal(M,libeigenpy.reflex33(M,verbose)) );
 except libeigenpy.exception, e:
     if verbose: print "As expected, got the following /ROW/ error:", e.message
+
+if verbose: print "===> From Py to Eigen::Vector3d"
+if verbose: print "===> From Py to Eigen::Vector3d"
+if verbose: print "===> From Py to Eigen::Vector3d"
+
+M = Mref[0:3,1:2]
+assert( np.array_equal(M,libeigenpy.reflex3(M,verbose)) );
+
+
