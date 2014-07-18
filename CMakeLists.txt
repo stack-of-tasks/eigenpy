@@ -1,29 +1,70 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
-IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE "DEBUG")
-ENDIF()
+#
+#  Copyright 2014 CNRS
+#
 
-FIND_PACKAGE(Boost 1.45.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-IF(Boost_FOUND)
+INCLUDE(cmake/base.cmake)
+INCLUDE(cmake/boost.cmake)
+INCLUDE(cmake/cpack.cmake)
+INCLUDE(cmake/eigen.cmake)
+INCLUDE(cmake/python.cmake)
 
-  INCLUDE_DIRECTORIES("${Boost_INCLUDE_DIRS}" "/usr/include/python2.7" "/usr/include/eigen3")
+SET(PROJECT_NAME eigenpy)
+SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
+SET(PROJECT_URL "http://github.com/stac-of-tasks/eigenpy")
 
-  SET(Boost_USE_STATIC_LIBS OFF)
-  SET(Boost_USE_MULTITHREADED ON)
-  SET(Boost_USE_STATIC_RUNTIME OFF)
-  FIND_PACKAGE(Boost 1.45.0 COMPONENTS python)
+# Disable -Werror on Unix for now.
+SET(CXX_DISABLE_WERROR True)
+SET(CMAKE_VERBOSE_MAKEFILE True)
 
-  ADD_LIBRARY(eigenpy SHARED unittest/libeigenpy.cpp)
-  TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES})
+project(${PROJECT_NAME})
+SETUP_PROJECT()
 
-ELSEIF(NOT Boost_FOUND)
-  MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
-ENDIF()
+# ----------------------------------------------------
+# --- DEPENDANCIES -----------------------------------
+# ----------------------------------------------------
+SEARCH_FOR_EIGEN()
+SET(BOOST_COMPONENTS python)
+SEARCH_FOR_BOOST()
+set(Python_ADDITIONAL_VERSIONS 2.7)
+FINDPYTHON()
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 
+# ----------------------------------------------------
+# --- INCLUDE ----------------------------------------
+# ----------------------------------------------------
+SET(${PROJECT_NAME}_HEADERS
+  src/eigenpy.hpp
+)
+MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 
-IF(CMAKE_COMPILER_IS_GNUCXX)
-  ADD_DEFINITIONS("-Wall")
-ELSE()
-  MESSAGE(FATAL_ERROR "CMakeLists.txt has not been tested/written for your compiler.")
-ENDIF()
+FOREACH(header ${${PROJECT_NAME}_HEADERS})
+  GET_FILENAME_COMPONENT(headerName ${header} NAME)
+  IF(WIN32)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/)
+  ELSE(WIN32)
+    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${headerName})
+  ENDIF(WIN32)
+  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
+          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
+ENDFOREACH(header)
+
+# ----------------------------------------------------
+# --- TARGETS ----------------------------------------
+# ----------------------------------------------------
+ADD_LIBRARY(eigenpy SHARED unittest/libeigenpy.cpp)
+TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES})
+
+PKG_CONFIG_APPEND_CFLAGS(${_Eigen_CFLAGS})
+PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
+PKG_CONFIG_APPEND_LIBS_RAW(${Boost_LIBRARIES})
+
+SETUP_PROJECT_FINALIZE()
+SETUP_PROJECT_CPACK()
+
