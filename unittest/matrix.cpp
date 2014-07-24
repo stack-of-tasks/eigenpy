@@ -14,7 +14,8 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "eigenpy/eigenpy.hpp"
+#include "eigenpy/simple.hpp"
+#include <iostream>
 
 Eigen::MatrixXd naturals(int R,int C,bool verbose)
 {
@@ -52,14 +53,14 @@ Eigen::Matrix3d naturals(bool verbose)
 }
 
 template<typename MatType>
-Eigen::MatrixXd reflex(const MatType & M, bool verbose)
+Eigen::MatrixXd reflex(const typename eigenpy::UnalignedEquivalent<MatType>::type & M, bool verbose)
 {
   if(verbose)
     std::cout << "EigenMat = " << M << std::endl;
   return Eigen::MatrixXd(M);
 }
 
-BOOST_PYTHON_MODULE(libeigenpy)
+BOOST_PYTHON_MODULE(matrix)
 {
   namespace bp = boost::python;
   eigenpy::enableEigenPy();

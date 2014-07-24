@@ -18,60 +18,17 @@
 #include <boost/python.hpp>
 #include <numpy/arrayobject.h>
 #include <iostream>
+#include <eigenpy/exception.hpp>
+#include <eigenpy/simple.hpp>
+#include <eigenpy/map.hpp>
 
 namespace eigenpy
 {
-  template< typename MatType, int IsVector>
-  struct MapNumpyTraits {};
- 
-  /* Wrap a numpy::array with an Eigen::Map. No memory copy. */
-  template< typename MatType >
-  struct MapNumpy
-  {
-    typedef MapNumpyTraits<MatType, MatType::IsVectorAtCompileTime> Impl;
-    typedef typename Impl::EigenMap EigenMap;
-
-    static inline EigenMap map( PyArrayObject* pyArray );
-   };
-
-  /* Eigenpy exception. They can be catch with python (equivalent eigenpy.exception class). */
-  class exception : public std::exception
-  {
-  public:
-    exception(std::string msg) : message(msg) {}
-    const char *what() const throw()
-    {
-      return this->message.c_str();
-    }
-    ~exception() throw() {}
-    std::string getMessage() { return message; }
-    static void registerException();
-
-  private:
-    static void translateException( exception const & e );
-    static PyObject * pyType;
-    std::string message;
-   };
 
   /* Enable the Eigen--Numpy serialization for the templated MatrixBase class. */
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific();
 
-  /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
-  void enableEigenPy()
-  {
-    exception::registerException();
-
-    enableEigenPySpecific<Eigen::MatrixXd,Eigen::MatrixXd>();
-    enableEigenPySpecific<Eigen::Matrix2d,Eigen::Matrix2d>();
-    enableEigenPySpecific<Eigen::Matrix3d,Eigen::Matrix3d>();
-    enableEigenPySpecific<Eigen::Matrix4d,Eigen::Matrix4d>();
-
-    enableEigenPySpecific<Eigen::VectorXd,Eigen::VectorXd>();
-    enableEigenPySpecific<Eigen::Vector2d,Eigen::Vector2d>();
-    enableEigenPySpecific<Eigen::Vector3d,Eigen::Vector3d>();
-    enableEigenPySpecific<Eigen::Vector4d,Eigen::Vector4d>();
-  }
 }
 
 /* --- DETAILS ------------------------------------------------------------------ */
@@ -85,69 +42,6 @@ namespace eigenpy
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
 
-  /* --- MAP ON NUMPY ----------------------------------------------------------- */
-  template<typename MatType>
-  struct MapNumpyTraits<MatType,0>
-  {
-    typedef Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> Stride;
-    typedef Eigen::Map<MatType,0,Stride> EigenMap;
-    typedef typename MatType::Scalar T;
-
-    static EigenMap mapImpl( PyArrayObject* pyArray )
-    {
-      assert( PyArray_NDIM(pyArray) == 2 );
-      
-      const int R = PyArray_DIMS(pyArray)[0];
-      const int C = PyArray_DIMS(pyArray)[1];
-      const int itemsize = PyArray_ITEMSIZE(pyArray);
-      const int stride1 = PyArray_STRIDE(pyArray, 0) / itemsize;
-      const int stride2 = PyArray_STRIDE(pyArray, 1) / itemsize;
-      
-      if( (MatType::RowsAtCompileTime!=R)
-	  && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
-	{ throw eigenpy::exception("The number of rows does not fit with the matrix type."); }
-      if( (MatType::ColsAtCompileTime!=C)
-	  && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
-	{  throw eigenpy::exception("The number of columns does not fit with the matrix type."); }
-
-      T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
-      return EigenMap( pyData, R,C, Stride(stride2,stride1) );
-    }
-  };
-
-  template<typename MatType>
-  struct MapNumpyTraits<MatType,1>
-  {
-    typedef Eigen::InnerStride<Eigen::Dynamic> Stride;
-    typedef Eigen::Map<MatType,0,Stride> EigenMap;
-    typedef typename MatType::Scalar T;
- 
-    static EigenMap mapImpl( PyArrayObject* pyArray )
-    {
-      assert( PyArray_NDIM(pyArray) <= 2 );
-
-      int rowMajor;
-      if(  PyArray_NDIM(pyArray)==1 ) rowMajor = 0;
-      else rowMajor = (PyArray_DIMS(pyArray)[0]>PyArray_DIMS(pyArray)[1])?0:1;
-
-      const int R = PyArray_DIMS(pyArray)[rowMajor];
-      const int itemsize = PyArray_ITEMSIZE(pyArray);
-      const int stride = PyArray_STRIDE(pyArray, rowMajor) / itemsize;;
-
-      if( (MatType::MaxSizeAtCompileTime!=R)
-	      && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )
-	{ throw eigenpy::exception("The number of elements does not fit with the vector type."); }
-
-      T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
-      return EigenMap( pyData, R, 1, Stride(stride) );
-    }
-  };
-
-  template< typename MatType >
-  typename MapNumpy<MatType>::EigenMap MapNumpy<MatType>::map( PyArrayObject* pyArray )
-  {
-    return Impl::mapImpl(pyArray); 
-  }
 
   /* --- TO PYTHON -------------------------------------------------------------- */
   template< typename MatType,typename EquivalentEigenType >
@@ -174,7 +68,7 @@ namespace eigenpy
   template<typename MatType, int ROWS,int COLS>
   struct TraitsMatrixConstructor
   {
-    static MatType & construct(void*storage,int r,int c)
+    static MatType & construct(void*storage,int /*r*/,int /*c*/)
     {
       return * new(storage) MatType();
     }
@@ -192,7 +86,7 @@ namespace eigenpy
   template<typename MatType,int R>
   struct TraitsMatrixConstructor<MatType,R,Eigen::Dynamic>
   {
-    static MatType & construct(void*storage,int r,int c)
+    static MatType & construct(void*storage,int /*r*/,int c)
     {
       return * new(storage) MatType(c);
     }
@@ -201,7 +95,7 @@ namespace eigenpy
   template<typename MatType,int C>
   struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,C>
   {
-    static MatType & construct(void*storage,int r,int c)
+    static MatType & construct(void*storage,int r,int /*c*/)
     {
       return * new(storage) MatType(r);
     }
@@ -235,7 +129,7 @@ namespace eigenpy
 	    return 0;
 	  }
 
-      if (PyArray_ObjectType(obj_ptr, 0) != NumpyEquivalentType<T>::type_code)
+      if ((PyArray_ObjectType(obj_ptr, 0)) != NumpyEquivalentType<T>::type_code)
 	{
 	  std::cerr << "The internal type as no Eigen equivalent." << std::endl;
 	  return 0;
@@ -275,30 +169,22 @@ namespace eigenpy
   void enableEigenPySpecific()
   {
     import_array();
+
+ #ifdef EIGEN_DONT_VECTORIZE
     boost::python::to_python_converter<MatType,
-				       eigenpy::EigenToPy<MatType,EigenEquivalentType> >();
-    eigenpy::EigenFromPy<MatType,EigenEquivalentType>();
+				       eigenpy::EigenToPy<MatType,MatType> >();
+    eigenpy::EigenFromPy<MatType,MatType>();
+ #else 
+    typedef typename eigenpy::UnalignedEquivalent<MatType>::type MatTypeDontAlign;
+    
+    boost::python::to_python_converter<MatType,
+				       eigenpy::EigenToPy<MatType,MatType> >();
+    boost::python::to_python_converter<MatTypeDontAlign,
+				       eigenpy::EigenToPy<MatTypeDontAlign,MatTypeDontAlign> >();
+    eigenpy::EigenFromPy<MatTypeDontAlign,MatTypeDontAlign>();
+#endif
+
   }
 
-  /* --- EXCEPTION ----------------------------------------------------------------- */
-  PyObject * exception::pyType;
-
-  void exception::translateException( exception const & e )
-  {
-    assert(NULL!=pyType);
-    // Return an exception object of type pyType and value object(e).
-    PyErr_SetObject(pyType,boost::python::object(e).ptr());
-  }
-
-  void exception::registerException()
-  {
-    pyType = boost::python::class_<eigenpy::exception>
-      ("exception",boost::python::init<std::string>())
-      .add_property("message", &eigenpy::exception::getMessage)
-      .ptr();
-
-    boost::python::register_exception_translator<eigenpy::exception>
-      (&eigenpy::exception::translateException);
-  }
 
 } // namespace eigenpy

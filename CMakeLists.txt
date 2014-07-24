@@ -36,8 +36,15 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_HEADERS
   src/eigenpy.hpp
+  src/exception.hpp
+  src/map.hpp
+  src/simple.hpp
+  src/geometry.hpp
+  src/angle-axis.hpp
+  src/quaternion.hpp
 )
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
+INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
 
 FOREACH(header ${${PROJECT_NAME}_HEADERS})
   GET_FILENAME_COMPONENT(headerName ${header} NAME)
@@ -52,17 +59,42 @@ FOREACH(header ${${PROJECT_NAME}_HEADERS})
   ENDIF(WIN32)
   INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
 	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
-          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
+          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
 ENDFOREACH(header)
 
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
-ADD_LIBRARY(eigenpy SHARED unittest/libeigenpy.cpp)
-TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES})
 
-ADD_EXECUTABLE(se3 EXCLUDE_FROM_ALL unittest/se3.cpp)
-#TARGET_INCLUDE_DIRECTORIES(se3 unittest/)
+ADD_LIBRARY(eigenpy SHARED
+  src/exception.cpp
+  src/simple.cpp
+  src/angle-axis.cpp
+  src/quaternion.cpp
+  )
+TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES})
+INSTALL(TARGETS eigenpy DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+
+# ----------------------------------------------------
+# --- UNIT TEST --------------------------------------
+# ----------------------------------------------------
+ADD_LIBRARY(matrix SHARED unittest/matrix.cpp)
+TARGET_LINK_LIBRARIES(matrix ${Boost_LIBRARIES} eigenpy)
+SET_TARGET_PROPERTIES(matrix PROPERTIES PREFIX "")
+
+ADD_LIBRARY(geometry SHARED unittest/geometry.cpp)
+TARGET_LINK_LIBRARIES(geometry ${Boost_LIBRARIES} eigenpy)
+SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
+
+ADD_LIBRARY(se3 SHARED unittest/se3.cpp)
+TARGET_LINK_LIBRARIES(se3 ${Boost_LIBRARIES} eigenpy)
+SET_TARGET_PROPERTIES(se3 PROPERTIES PREFIX "")
+
+#ADD_LIBRARY(align SHARED unittest/libalign.cpp)
+#TARGET_LINK_LIBRARIES(align ${Boost_LIBRARIES} eigenpy)
+
+ADD_EXECUTABLE(tse3 EXCLUDE_FROM_ALL unittest/tse3.cpp)
 
 PKG_CONFIG_APPEND_CFLAGS(${_Eigen_CFLAGS})
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
