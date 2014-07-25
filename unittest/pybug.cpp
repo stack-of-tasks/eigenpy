@@ -38,16 +38,30 @@ double fmatrix()
       oX1 = f0();
       oX1 = f0();
       oX1 = f0();
-      oX1 = f0();
     }
   return 0.0;
 }
 
 
-BOOST_PYTHON_MODULE(se3)
+BOOST_PYTHON_MODULE(pybug)
 {
   boost::python::def("kinegeom1",&fmatrix);
   boost::python::def("kinegeom2",&faffine);
-
 }
  
+/* 
+from se3 import kinegeom1,kinegeom2
+
+for i in range(10):
+    print kinegeom2()
+
+print " *************"
+print kinegeom1()
+print " *************"
+
+for i in range(10):
+    print kinegeom2()
+
+
+*/
+

@@ -8,14 +8,17 @@ fs += [kineLowBound, kine1, kine3, kine2, kine4, kineRx ]
 fs += [kinegeomLowBound, kinegeom1, kinegeom3, kinegeom2, kinegeom4, kinegeomRx ]
 
 fs = [kinegeom1, kinegeom2, kinegeom3, kinegeom4]
-fs = [ kinegeom4, kinegeom2, kinegeom1 ]
+fs = [ kinegeom4, kinegeom2 ]
 
-nbLoop=100
+kinegeom1()
+
+nbLoop=10
 
 nbTest=len(fs)
 t = np.zeros([nbTest,nbLoop],np.double)
+kinegeom1()
 
-for l in range(100):
+for l in range(nbLoop):
     for i,f in enumerate(fs):
         t[i,l] = f()
 
