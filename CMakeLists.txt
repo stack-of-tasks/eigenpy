@@ -37,11 +37,14 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 SET(${PROJECT_NAME}_HEADERS
   src/eigenpy.hpp
   src/exception.hpp
+  src/details.hpp
+  src/fwd.hpp
   src/map.hpp
-  src/simple.hpp
   src/geometry.hpp
   src/angle-axis.hpp
   src/quaternion.hpp
+  # Deprec
+  src/simple.hpp
 )
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
@@ -68,7 +71,8 @@ ENDFOREACH(header)
 
 ADD_LIBRARY(eigenpy SHARED
   src/exception.cpp
-  src/simple.cpp
+  src/eigenpy.cpp
+  src/details.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
   )

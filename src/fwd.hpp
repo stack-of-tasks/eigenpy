@@ -14,13 +14,26 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "eigenpy/angle-axis.hpp"
-#include "eigenpy/geometry.hpp"
+#ifndef __eigenpy_fwd_hpp__
+#define __eigenpy_fwd_hpp__
+
+#include <Eigen/Core>
+#include <boost/python.hpp>
 
 namespace eigenpy
 {
-  void exposeAngleAxis()
+  template<typename D>
+  struct UnalignedEquivalent
   {
-    AngleAxisVisitor<Eigen::AngleAxisd>::expose();
-  }
+    typedef Eigen::MatrixBase<D> MatType;
+    typedef Eigen::Matrix<typename D::Scalar,
+			  D::RowsAtCompileTime,
+			  D::ColsAtCompileTime,
+			  D::Options | Eigen::DontAlign,
+			  D::MaxRowsAtCompileTime,
+			  D::MaxColsAtCompileTime>      type;
+  };
+
 } // namespace eigenpy
+
+#endif // ifndef __eigenpy_fwd_hpp__

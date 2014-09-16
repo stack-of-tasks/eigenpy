@@ -2,10 +2,10 @@ from geometry import *
 import numpy as np
 from numpy import cos,sin
 
-verbose = True
+verbose = False
 
 def isapprox(a,b,epsilon=1e-6):
-    if a.__class__ == b.__class__ == np.ndarray:
+    if issubclass(a.__class__,np.ndarray) and issubclass(b.__class__,np.ndarray):
         return np.allclose(a,b,epsilon)
     else:
         return abs(a-b)<epsilon
@@ -23,7 +23,7 @@ assert(isapprox(q.coeffs(),q2.coeffs()))
 
 Rq = q.matrix()
 Rr = r.matrix()
-assert(isapprox(np.dot(Rq,Rq.T),np.eye(3)))
+assert(isapprox(Rq*Rq.T,np.eye(3)))
 assert(isapprox(Rr,Rq))
 
 qR = Quaternion(Rr)
@@ -41,7 +41,7 @@ except Exception,e:
 r = AngleAxis(.1,np.array([1,0,0],np.double))
 if verbose: print "Rx(.1) = \n\n",r.matrix(),"\n"
 assert( isapprox(r.matrix()[2,2],cos(r.angle)))
-assert( isapprox(r.axis,np.array([[1,0,0],],np.double).T) )
+assert( isapprox(r.axis,np.matrix("1;0;0")) )
 assert( isapprox(r.angle,0.1) )
 
 r.axis = np.array([0,1,0],np.double)

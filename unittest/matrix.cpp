@@ -14,7 +14,7 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "eigenpy/simple.hpp"
+#include "eigenpy/eigenpy.hpp"
 #include <iostream>
 
 Eigen::MatrixXd naturals(int R,int C,bool verbose)

@@ -1,7 +1,5 @@
-//#define EIGEN_DONT_VECTORIZE 
-//#define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
 
-#include "eigenpy/simple.hpp"
+#include "eigenpy/eigenpy.hpp"
 #include "eigenpy/geometry.hpp"
 #include <Eigen/Core>
 #include <Eigen/Geometry>
