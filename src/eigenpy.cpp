@@ -1,6 +1,4 @@
-
 #include "eigenpy/eigenpy.hpp"
-#include "eigenpy/simple.hpp"
 
 namespace eigenpy
 {

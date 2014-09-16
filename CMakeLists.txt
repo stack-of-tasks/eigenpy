@@ -21,7 +21,6 @@ SET(CMAKE_VERBOSE_MAKEFILE True)
 project(${PROJECT_NAME})
 SETUP_PROJECT()
 STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-MESSAGE(STATUS "CFLAGS = "${CMAKE_CXX_FLAGS})
 
 # ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
@@ -45,8 +44,6 @@ SET(${PROJECT_NAME}_HEADERS
   src/geometry.hpp
   src/angle-axis.hpp
   src/quaternion.hpp
-  # Deprec
-  src/simple.hpp
 )
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
