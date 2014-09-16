@@ -42,6 +42,31 @@ namespace eigenpy
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
 
+  struct PyMatrixType
+  {
+    boost::python::object pyMatrixType;
+    boost::python::object pyModule;
+
+    PyMatrixType() 
+    {
+      pyModule = boost::python::import("numpy");
+      pyMatrixType = pyModule.attr("matrix");
+    }
+    operator boost::python::object () { return pyMatrixType; }
+
+    boost::python::object make(PyArrayObject* pyArray, bool copy = false)
+    { return make((PyObject*)pyArray,copy); }
+    boost::python::object make(PyObject* pyObj, bool copy = false)
+    {
+      boost::python::object m
+	= pyMatrixType( boost::python::object(boost::python::handle<>(pyObj)), 
+			boost::python::object(), copy );
+      Py_INCREF(m.ptr());
+      return m;
+    }
+  };
+
+  static PyMatrixType pyMatrixType = PyMatrixType();
 
   /* --- TO PYTHON -------------------------------------------------------------- */
   template< typename MatType,typename EquivalentEigenType >
@@ -60,15 +85,7 @@ namespace eigenpy
 
       MapNumpy<EquivalentEigenType>::map(pyArray) = mat;
 
-
-      boost::python::object pyModule = boost::python::import("numpy");
-      boost::python::object pyMatrixType = pyModule.attr("matrix");
-
-      boost::python::object m
-	= pyMatrixType( boost::python::object(boost::python::handle<>((PyObject*)pyArray)), 
-			boost::python::object(), true );
-      Py_INCREF(m.ptr());
-      return m.ptr();
+      return pyMatrixType.make(pyArray).ptr();
     }
   };
   
@@ -197,6 +214,5 @@ namespace eigenpy
 #endif
 
   }
-
 
 } // namespace eigenpy
