@@ -60,7 +60,15 @@ namespace eigenpy
 
       MapNumpy<EquivalentEigenType>::map(pyArray) = mat;
 
-      return (PyObject*)pyArray;
+
+      boost::python::object pyModule = boost::python::import("numpy");
+      boost::python::object pyMatrixType = pyModule.attr("matrix");
+
+      boost::python::object m
+	= pyMatrixType( boost::python::object(boost::python::handle<>((PyObject*)pyArray)), 
+			boost::python::object(), true );
+      Py_INCREF(m.ptr());
+      return m.ptr();
     }
   };
   
