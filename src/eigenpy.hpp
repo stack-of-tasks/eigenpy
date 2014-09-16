@@ -50,7 +50,9 @@ namespace eigenpy
     static PyObject* convert(MatType const& mat)
     {
       typedef typename MatType::Scalar T;
-      const int R  = mat.rows(), C = mat.cols();
+      assert( (mat.rows()<INT_MAX) && (mat.cols()<INT_MAX) 
+	      && "Matrix range larger than int ... should never happen." );
+      const int R  = (int)mat.rows(), C = (int)mat.cols();
 
       npy_intp shape[2] = { R,C };
       PyArrayObject* pyArray = (PyArrayObject*)
@@ -156,7 +158,9 @@ namespace eigenpy
 
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
 		       (memory))->storage.bytes;
-      int r=numpyMap.rows(),c=numpyMap.cols();
+      assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX) 
+	      && "Map range larger than int ... can never happen." );
+      int r=(int)numpyMap.rows(),c=(int)numpyMap.cols();
       EquivalentEigenType & eigenMatrix = //* new(storage) MatType(numpyMap.rows(),numpyMap.cols());
 	TraitsMatrixConstructor<MatType,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime>::construct (storage,r,c);
       memory->convertible = storage;
