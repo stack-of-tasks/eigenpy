@@ -20,6 +20,8 @@ SET(CMAKE_VERBOSE_MAKEFILE True)
 
 project(${PROJECT_NAME})
 SETUP_PROJECT()
+STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+MESSAGE(STATUS "CFLAGS = "${CMAKE_CXX_FLAGS})
 
 # ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
