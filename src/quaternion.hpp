@@ -60,6 +60,7 @@ namespace eigenpy
 
   public:
 
+    /* Conversion from C++ to Python. */
     static PyObject* convert(Quaternion const& q)
     {
       QuaternionUnaligned qx = q;
