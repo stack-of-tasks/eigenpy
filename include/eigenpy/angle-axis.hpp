@@ -17,9 +17,10 @@
 #ifndef __eigenpy_angle_axis_hpp__
 #define __eigenpy_angle_axis_hpp__
 
+#include <boost/python.hpp>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include <boost/python.hpp>
+
 #include "eigenpy/eigenpy.hpp"
 
 namespace eigenpy

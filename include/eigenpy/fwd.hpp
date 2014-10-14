@@ -17,8 +17,8 @@
 #ifndef __eigenpy_fwd_hpp__
 #define __eigenpy_fwd_hpp__
 
-#include <Eigen/Core>
 #include <boost/python.hpp>
+#include <Eigen/Core>
 
 namespace eigenpy
 {
