@@ -14,9 +14,9 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <boost/python.hpp>
 #include <exception>
 #include <string>
-#include <boost/python.hpp>
 
 #ifndef __eigenpy_Exception_hpp__
 #define __eigenpy_Exception_hpp__

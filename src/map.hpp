@@ -14,8 +14,8 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <Eigen/Core>
 #include <boost/python.hpp>
+#include <Eigen/Core>
 #include <numpy/arrayobject.h>
 #include <eigenpy/exception.hpp>
 
