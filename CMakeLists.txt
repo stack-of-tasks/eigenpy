@@ -30,7 +30,6 @@ SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
 set(Python_ADDITIONAL_VERSIONS 2.7)
 FINDPYTHON()
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
@@ -67,17 +66,20 @@ ENDFOREACH(header)
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
-ADD_LIBRARY(eigenpy SHARED
+SET(eigenpy_SOURCES
   src/exception.cpp
   src/eigenpy.cpp
   src/details.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
   )
-TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES})
-INSTALL(TARGETS eigenpy DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
+ADD_LIBRARY(eigenpy SHARED ${eigenpy_SOURCES})
+TARGET_LINK_LIBRARIES(eigenpy ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+INSTALL(TARGETS eigenpy DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # ----------------------------------------------------
 # --- UNIT TEST --------------------------------------
@@ -92,7 +94,10 @@ SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
 
 PKG_CONFIG_APPEND_CFLAGS(${_Eigen_CFLAGS})
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
-PKG_CONFIG_APPEND_LIBS_RAW(${Boost_LIBRARIES})
+#PKG_CONFIG_APPEND_LIBS_RAW(${Boost_LIBRARIES})
+PKG_CONFIG_APPEND_LIBS("boost_python")
+PKG_CONFIG_APPEND_LIBS_RAW(${PYTHON_LIBRARIES})
+PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
 SETUP_PROJECT_FINALIZE()
 SETUP_PROJECT_CPACK()
