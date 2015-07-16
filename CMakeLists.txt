@@ -19,6 +19,10 @@ SET(CMAKE_VERBOSE_MAKEFILE True)
 SETUP_PROJECT()
 STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
+IF(APPLE)
+  SET(CMAKE_MACOSX_RPATH TRUE)
+ENDIF(APPLE)
+
 # ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
 # ----------------------------------------------------
@@ -76,7 +80,13 @@ SET(${PROJECT_NAME}_SOURCES
   src/quaternion.cpp
 )
 
-ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
+# With Darwin system, the library needs to be static for a complete exposion of eigen structure under Python
+IF(APPLE)
+  ADD_LIBRARY(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+ELSE(APPLE)
+  ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+ENDIF(APPLE)
+
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
