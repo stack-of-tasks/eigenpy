@@ -6,26 +6,23 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
-INCLUDE(cmake/cpack.cmake)
-INCLUDE(cmake/eigen.cmake)
 INCLUDE(cmake/python.cmake)
 
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
-SET(PROJECT_URL "http://github.com/stac-of-tasks/eigenpy")
+SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
 
 # Disable -Werror on Unix for now.
 SET(CXX_DISABLE_WERROR True)
 SET(CMAKE_VERBOSE_MAKEFILE True)
 
-project(${PROJECT_NAME})
 SETUP_PROJECT()
 STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
 # ----------------------------------------------------
-SEARCH_FOR_EIGEN()
+ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
 SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
 set(Python_ADDITIONAL_VERSIONS 2.7)
@@ -81,6 +78,7 @@ SET(${PROJECT_NAME}_SOURCES
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES})
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # ----------------------------------------------------
@@ -94,14 +92,10 @@ ADD_LIBRARY(geometry SHARED unittest/geometry.cpp)
 TARGET_LINK_LIBRARIES(geometry ${Boost_LIBRARIES} ${PROJECT_NAME})
 SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
 
-PKG_CONFIG_APPEND_CFLAGS(${_Eigen_CFLAGS})
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
-#PKG_CONFIG_APPEND_LIBS_RAW(${Boost_LIBRARIES})
 PKG_CONFIG_APPEND_LIBS("boost_python")
 PKG_CONFIG_APPEND_LIBS_RAW(${PYTHON_LIBRARIES})
 PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 
 SETUP_PROJECT_FINALIZE()
-SETUP_PROJECT_CPACK()
-
