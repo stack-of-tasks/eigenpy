@@ -20,7 +20,6 @@
 #include <boost/python.hpp>
 #include <Eigen/Core>
 
-#pragma GCC diagnostic error "-pedantic" // Alas only work for g++ 4.8
 #include <numpy/arrayobject.h>
 #include <iostream>
 
