@@ -168,7 +168,6 @@ namespace eigenpy
     static void construct(PyObject* pyObj,
 			  bp::converter::rvalue_from_python_stage1_data* memory)
     {
-      typedef typename MatType::Scalar T;
       using namespace Eigen;
 
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
