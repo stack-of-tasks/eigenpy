@@ -27,11 +27,15 @@ namespace eigenpy
   {
     typedef Eigen::MatrixBase<D> MatType;
     typedef Eigen::Matrix<typename D::Scalar,
-			  D::RowsAtCompileTime,
-			  D::ColsAtCompileTime,
-			  D::Options | Eigen::DontAlign,
-			  D::MaxRowsAtCompileTime,
-			  D::MaxColsAtCompileTime>      type;
+             D::RowsAtCompileTime,
+             D::ColsAtCompileTime,
+#ifndef EIGENPY_ALIGNED
+             D::Options | Eigen::DontAlign,
+#else
+             D::Options,
+#endif
+             D::MaxRowsAtCompileTime,
+             D::MaxColsAtCompileTime> type;
   };
 
 } // namespace eigenpy

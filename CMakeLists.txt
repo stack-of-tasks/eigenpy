@@ -24,6 +24,15 @@ IF(APPLE)
 ENDIF(APPLE)
 
 # ----------------------------------------------------
+# --- OPTIONS  ---------------------------------------
+# ----------------------------------------------------
+OPTION (EIGEN_NUMPY_ALIGNED "Directly aligned data between Numpy and Eigen" OFF)
+
+IF(EIGEN_NUMPY_ALIGNED)
+  ADD_DEFINITIONS(-DEIGENPY_ALIGNED)
+ENDIF(EIGEN_NUMPY_ALIGNED)
+
+# ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
 # ----------------------------------------------------
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
@@ -102,6 +111,9 @@ ADD_LIBRARY(geometry SHARED unittest/geometry.cpp)
 TARGET_LINK_LIBRARIES(geometry ${Boost_LIBRARIES} ${PROJECT_NAME})
 SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
 
+IF(EIGEN_NUMPY_ALIGNED)
+  PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")
+ENDIF(EIGEN_NUMPY_ALIGNED)
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_LIBS("boost_python")

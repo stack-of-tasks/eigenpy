@@ -39,7 +39,11 @@ namespace eigenpy
   template<>
   struct UnalignedEquivalent<Eigen::Quaterniond>
   {
-    typedef Eigen::Quaternion<double,Eigen::DontAlign> type;
+#ifndef EIGENPY_ALIGNED
+    typedef Eigen::Quaternion<Eigen::Quaterniond::Scalar,Eigen::DontAlign> type;
+#else
+    typedef Eigen::Quaterniond type;
+#endif
   };
 
   namespace bp = boost::python;
@@ -51,10 +55,15 @@ namespace eigenpy
     typedef Eigen::QuaternionBase<Quaternion> QuaternionBase;
     typedef typename eigenpy::UnalignedEquivalent<Quaternion>::type QuaternionUnaligned;
 
-    typedef typename QuaternionUnaligned::Scalar Scalar;
-    typedef Eigen::Matrix<Scalar,3,1,Eigen::DontAlign> Vector3;
+    typedef typename QuaternionBase::Scalar Scalar;
     typedef typename QuaternionUnaligned::Coefficients Coefficients;
+#ifndef EIGENPY_ALIGNED
+    typedef Eigen::Matrix<Scalar,3,1,Eigen::DontAlign> Vector3;
     typedef Eigen::Matrix<Scalar,3,3,Eigen::DontAlign> Matrix3;
+#else
+    typedef Eigen::Matrix<Scalar,3,1,0> Vector3;
+    typedef Eigen::Matrix<Scalar,3,3,0> Matrix3;
+#endif
 
     typedef Eigen::AngleAxis<Scalar> AngleAxisUnaligned;
 
@@ -169,8 +178,10 @@ namespace eigenpy
 				      bp::init<>())
 	.def(QuaternionVisitor<Quaternion>())
 	;
-    
+   
+#ifndef EIGENPY_ALIGNED
       bp::to_python_converter< Quaternion,QuaternionVisitor<Quaternion> >();
+#endif
     }
 
   };
