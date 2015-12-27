@@ -108,7 +108,7 @@ namespace eigenpy
   {
     static MatType & construct(void*storage,int /*r*/,int c)
     {
-      return * new(storage) MatType(c);
+      return * new(storage) MatType(R,c);
     }
   };
 
@@ -117,7 +117,7 @@ namespace eigenpy
   {
     static MatType & construct(void*storage,int r,int /*c*/)
     {
-      return * new(storage) MatType(r);
+      return * new(storage) MatType(r,C);
     }
   };
 
