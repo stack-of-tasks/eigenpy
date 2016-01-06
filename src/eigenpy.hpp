@@ -18,6 +18,7 @@
 #define __eigenpy_eigenpy_hpp__
 
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/memory.hpp"
 
 namespace eigenpy
 {

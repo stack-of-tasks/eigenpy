@@ -43,6 +43,7 @@ SET(${PROJECT_NAME}_HEADERS
   src/fwd.hpp
   src/map.hpp
   src/geometry.hpp
+  src/memory.hpp
   src/angle-axis.hpp
   src/quaternion.hpp
 )
