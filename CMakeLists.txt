@@ -1,5 +1,17 @@
 #
-#  Copyright 2014 CNRS
+# Copyright (c) 2015 LAAS-CNRS
+#
+# This file is part of eigenpy.
+# eigenpy is free software: you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public License
+# as published by the Free Software Foundation, either version 3 of
+# the License, or (at your option) any later version.
+# eigenpy is distributed in the hope that it will be
+# useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+# of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.  You should
+# have received a copy of the GNU Lesser General Public License along
+# with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
@@ -22,6 +34,15 @@ STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 IF(APPLE)
   SET(CMAKE_MACOSX_RPATH TRUE)
 ENDIF(APPLE)
+
+# ----------------------------------------------------
+# --- OPTIONS  ---------------------------------------
+# ----------------------------------------------------
+OPTION (EIGEN_NUMPY_ALIGNED "Directly aligned data between Numpy and Eigen" OFF)
+
+IF(EIGEN_NUMPY_ALIGNED)
+  ADD_DEFINITIONS(-DEIGENPY_ALIGNED)
+ENDIF(EIGEN_NUMPY_ALIGNED)
 
 # ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
@@ -102,6 +123,9 @@ ADD_LIBRARY(geometry SHARED unittest/geometry.cpp)
 TARGET_LINK_LIBRARIES(geometry ${Boost_LIBRARIES} ${PROJECT_NAME})
 SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
 
+IF(EIGEN_NUMPY_ALIGNED)
+  PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")
+ENDIF(EIGEN_NUMPY_ALIGNED)
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_LIBS("boost_python")

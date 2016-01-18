@@ -108,7 +108,7 @@ namespace eigenpy
   {
     static MatType & construct(void*storage,int /*r*/,int c)
     {
-      return * new(storage) MatType(c);
+      return * new(storage) MatType(R,c);
     }
   };
 
@@ -117,7 +117,7 @@ namespace eigenpy
   {
     static MatType & construct(void*storage,int r,int /*c*/)
     {
-      return * new(storage) MatType(r);
+      return * new(storage) MatType(r,C);
     }
   };
 
@@ -168,7 +168,6 @@ namespace eigenpy
     static void construct(PyObject* pyObj,
 			  bp::converter::rvalue_from_python_stage1_data* memory)
     {
-      typedef typename MatType::Scalar T;
       using namespace Eigen;
 
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
@@ -191,20 +190,26 @@ namespace eigenpy
   void enableEigenPySpecific()
   {
     import_array();
-
- #ifdef EIGEN_DONT_VECTORIZE
+    
+#ifdef EIGEN_DONT_VECTORIZE
+    
     boost::python::to_python_converter<MatType,
-				       eigenpy::EigenToPy<MatType,MatType> >();
+                                      eigenpy::EigenToPy<MatType,MatType> >();
     eigenpy::EigenFromPy<MatType,MatType>();
- #else 
-    typedef typename eigenpy::UnalignedEquivalent<MatType>::type MatTypeDontAlign;
+#else
     
     boost::python::to_python_converter<MatType,
 				       eigenpy::EigenToPy<MatType,MatType> >();
+    eigenpy::EigenFromPy<MatType,MatType>();
+    
+    typedef typename eigenpy::UnalignedEquivalent<MatType>::type MatTypeDontAlign;
+#ifndef EIGENPY_ALIGNED
     boost::python::to_python_converter<MatTypeDontAlign,
 				       eigenpy::EigenToPy<MatTypeDontAlign,MatTypeDontAlign> >();
     eigenpy::EigenFromPy<MatTypeDontAlign,MatTypeDontAlign>();
 #endif
+#endif
+
 
   }
 
