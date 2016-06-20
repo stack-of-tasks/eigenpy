@@ -23,6 +23,12 @@
  * This section contains a convenience MACRO which allows an easy specialization of
  * Boost Python Object allocator for struct data types containing Eigen objects and requiring
  * strict alignment.
+ *
+ * This code was proposed as an stackoverflow answer:
+ *     http://stackoverflow.com/questions/13177573/how-to-expose-aligned-class-with-boost-python/29694518
+ * Leading to this page proposing the solution:
+ *     http://fhtagn.net/prog/2015/04/16/quaternion_boost_python.html
+ *
  */
 #define EIGENPY_DEFINE_STRUCT_ALLOCATOR_SPECIALIZATION(...) \
 namespace boost { namespace python { namespace objects { \
