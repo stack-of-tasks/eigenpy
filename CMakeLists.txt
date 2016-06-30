@@ -57,11 +57,16 @@ ENDIF(EIGEN_NUMPY_ALIGNED)
 # --- DEPENDANCIES -----------------------------------
 # ----------------------------------------------------
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
+
 SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
-set(Python_ADDITIONAL_VERSIONS 2.7)
-FINDPYTHON()
+# Add Boost path to include directories.
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+
+FINDPYTHON(2.7 EXACT REQUIRED)
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 FIND_NUMPY()
+INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
@@ -99,9 +104,6 @@ ENDFOREACH(header)
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIRS})
-# Add Boost path to include directories.
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
 SET(${PROJECT_NAME}_SOURCES
   src/exception.cpp
