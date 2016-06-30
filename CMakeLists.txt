@@ -48,6 +48,7 @@ ENDIF(APPLE)
 # --- OPTIONS  ---------------------------------------
 # ----------------------------------------------------
 OPTION (EIGEN_NUMPY_ALIGNED "Directly aligned data between Numpy and Eigen" OFF)
+OPTION (BUILD_UNIT_TESTS "Build the unitary tests" ON)
 
 IF(EIGEN_NUMPY_ALIGNED)
   ADD_DEFINITIONS(-DEIGENPY_ALIGNED)
@@ -104,7 +105,6 @@ ENDFOREACH(header)
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
-
 SET(${PROJECT_NAME}_SOURCES
   src/exception.cpp
   src/eigenpy.cpp
@@ -122,15 +122,11 @@ INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 # ----------------------------------------------------
 # --- UNIT TEST --------------------------------------
 # ----------------------------------------------------
-ADD_LIBRARY(matrix SHARED unittest/matrix.cpp)
-TARGET_LINK_LIBRARIES(matrix ${PROJECT_NAME})
-TARGET_LINK_BOOST_PYTHON(matrix)
-SET_TARGET_PROPERTIES(matrix PROPERTIES PREFIX "")
+ADD_SUBDIRECTORY(unittest)
 
-ADD_LIBRARY(geometry SHARED unittest/geometry.cpp)
-TARGET_LINK_LIBRARIES(geometry ${PROJECT_NAME})
-TARGET_LINK_BOOST_PYTHON(geometry)
-SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
+# ----------------------------------------------------
+# --- EXECUTABLES ------------------------------------
+# ----------------------------------------------------
 
 IF(EIGEN_NUMPY_ALIGNED)
   PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")
