@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015 LAAS-CNRS
+# Copyright (c) 2015-2016 LAAS-CNRS
 #
 # This file is part of eigenpy.
 # eigenpy is free software: you can redistribute it and/or
@@ -33,6 +33,15 @@ STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 IF(APPLE)
   SET(CMAKE_MACOSX_RPATH TRUE)
+  SET(CMAKE_SKIP_BUILD_RPATH FALSE)
+  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+  #SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+  IF("${isSystemDir}" STREQUAL "-1")
+     SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  ENDIF("${isSystemDir}" STREQUAL "-1")
 ENDIF(APPLE)
 
 # ----------------------------------------------------
