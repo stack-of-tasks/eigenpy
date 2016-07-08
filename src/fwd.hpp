@@ -22,11 +22,11 @@
 
 namespace eigenpy
 {
-  template<typename D>
+  template<typename D, typename Scalar = typename D::Scalar>
   struct UnalignedEquivalent
   {
     typedef Eigen::MatrixBase<D> MatType;
-    typedef Eigen::Matrix<typename D::Scalar,
+    typedef Eigen::Matrix<Scalar,
              D::RowsAtCompileTime,
              D::ColsAtCompileTime,
 #ifndef EIGENPY_ALIGNED
