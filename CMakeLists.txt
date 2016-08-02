@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015 LAAS-CNRS
+# Copyright (c) 2015-2016 LAAS-CNRS
 #
 # This file is part of eigenpy.
 # eigenpy is free software: you can redistribute it and/or
@@ -33,12 +33,22 @@ STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 IF(APPLE)
   SET(CMAKE_MACOSX_RPATH TRUE)
+  SET(CMAKE_SKIP_BUILD_RPATH FALSE)
+  SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+  SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+  #SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+  IF("${isSystemDir}" STREQUAL "-1")
+     SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+  ENDIF("${isSystemDir}" STREQUAL "-1")
 ENDIF(APPLE)
 
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
 # ----------------------------------------------------
 OPTION (EIGEN_NUMPY_ALIGNED "Directly aligned data between Numpy and Eigen" OFF)
+OPTION (BUILD_UNIT_TESTS "Build the unitary tests" ON)
 
 IF(EIGEN_NUMPY_ALIGNED)
   ADD_DEFINITIONS(-DEIGENPY_ALIGNED)
@@ -48,11 +58,16 @@ ENDIF(EIGEN_NUMPY_ALIGNED)
 # --- DEPENDANCIES -----------------------------------
 # ----------------------------------------------------
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
+
 SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
-set(Python_ADDITIONAL_VERSIONS 2.7)
-FINDPYTHON()
+# Add Boost path to include directories.
+INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+
+FINDPYTHON(2.7 EXACT REQUIRED)
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 FIND_NUMPY()
+INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
@@ -90,10 +105,6 @@ ENDFOREACH(header)
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIRS})
-# Add Boost path to include directories.
-INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
-
 SET(${PROJECT_NAME}_SOURCES
   src/exception.cpp
   src/eigenpy.cpp
@@ -102,27 +113,20 @@ SET(${PROJECT_NAME}_SOURCES
   src/quaternion.cpp
 )
 
-# With Darwin system, the library needs to be static for a complete exposion of eigen structure under Python
-IF(APPLE)
-  ADD_LIBRARY(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
-ELSE(APPLE)
-  ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
-ENDIF(APPLE)
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 
-TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${Boost_LIBRARIES} ${PYTHON_LIBRARIES})
+TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
 # ----------------------------------------------------
 # --- UNIT TEST --------------------------------------
 # ----------------------------------------------------
-ADD_LIBRARY(matrix SHARED unittest/matrix.cpp)
-TARGET_LINK_LIBRARIES(matrix ${Boost_LIBRARIES} ${PROJECT_NAME})
-SET_TARGET_PROPERTIES(matrix PROPERTIES PREFIX "")
+ADD_SUBDIRECTORY(unittest)
 
-ADD_LIBRARY(geometry SHARED unittest/geometry.cpp)
-TARGET_LINK_LIBRARIES(geometry ${Boost_LIBRARIES} ${PROJECT_NAME})
-SET_TARGET_PROPERTIES(geometry PROPERTIES PREFIX "")
+# ----------------------------------------------------
+# --- EXECUTABLES ------------------------------------
+# ----------------------------------------------------
 
 IF(EIGEN_NUMPY_ALIGNED)
   PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")
@@ -132,7 +136,5 @@ PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_BOOST_LIBS(${BOOST_COMPONENTS})
-PKG_CONFIG_APPEND_LIBS_RAW(${PYTHON_LIBRARIES})
-
 
 SETUP_PROJECT_FINALIZE()
