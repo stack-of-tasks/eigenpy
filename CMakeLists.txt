@@ -108,7 +108,6 @@ ENDFOREACH(header)
 SET(${PROJECT_NAME}_SOURCES
   src/exception.cpp
   src/eigenpy.cpp
-  src/details.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
 )
