@@ -23,6 +23,7 @@ INCLUDE(cmake/python.cmake)
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
+OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" FALSE)
 
 # Disable -Werror on Unix for now.
 SET(CXX_DISABLE_WERROR True)
