@@ -146,26 +146,34 @@ namespace eigenpy
 
       if (!PyArray_Check(obj_ptr)) 
 	{
+#ifndef NDEBUG
 	  std::cerr << "The python object is not a numpy array." << std::endl;
+#endif
 	  return 0;
 	}
 
       if (PyArray_NDIM(obj_ptr) != 2)
 	if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
 	  {
+#ifndef NDEBUG
 	    std::cerr << "The number of dimension of the object is not correct." << std::endl;
+#endif
 	    return 0;
 	  }
 
       if ((PyArray_ObjectType(obj_ptr, 0)) != NumpyEquivalentType<T>::type_code)
 	{
+#ifndef NDEBUG
 	  std::cerr << "The internal type as no Eigen equivalent." << std::endl;
+#endif
 	  return 0;
 	}
 
       if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
 	{
+#ifndef NDEBUG
 	  std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
+#endif
 	  return 0;
 	}
       
