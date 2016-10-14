@@ -73,7 +73,7 @@ INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
-SET(${PROJECT_NAME}_HEADERS
+SET(HEADERS
   src/eigenpy.hpp
   src/exception.hpp
   src/details.hpp
@@ -87,7 +87,7 @@ SET(${PROJECT_NAME}_HEADERS
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
 
-FOREACH(header ${${PROJECT_NAME}_HEADERS})
+FOREACH(header ${HEADERS})
   GET_FILENAME_COMPONENT(headerName ${header} NAME)
   IF(WIN32)
     execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -113,7 +113,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/quaternion.cpp
 )
 
-ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${HEADERS})
 
 TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
