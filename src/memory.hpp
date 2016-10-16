@@ -77,8 +77,8 @@ namespace boost { namespace python { namespace objects { \
             Holder* holder = Derived::construct(&instance->storage, (PyObject*)instance, x); \
             holder->install(raw_result); \
              \
-            size_t holder_offset = reinterpret_cast<size_t>(holder) \
-            - reinterpret_cast<size_t>(&instance->storage) \
+            Py_ssize_t holder_offset = reinterpret_cast<Py_ssize_t>(holder) \
+            - reinterpret_cast<Py_ssize_t>(&instance->storage) \
             + offsetof(instance_t, storage); \
             Py_SIZE(instance) = holder_offset; \
              \
