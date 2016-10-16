@@ -190,7 +190,7 @@ namespace eigenpy
       typename MapNumpy<EquivalentEigenType>::EigenMap numpyMap = MapNumpy<EquivalentEigenType>::map(pyArray);
 
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
-		       (memory))->storage.bytes;
+		       ((void*)memory))->storage.bytes;
       assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX) 
 	      && "Map range larger than int ... can never happen." );
       int r=(int)numpyMap.rows(),c=(int)numpyMap.cols();
