@@ -42,12 +42,6 @@ double testInQuaternion( Eigen::Quaterniond q )
 {
   return q.norm(); 
 }
-double testInQuaternion_fx( eigenpy::Quaterniond_fx q )
-{
-  return q.norm(); 
-}
-
-
 
 BOOST_PYTHON_MODULE(geometry)
 {
@@ -61,7 +55,6 @@ BOOST_PYTHON_MODULE(geometry)
 
   bp::def("testOutQuaternion",&testOutQuaternion);
   bp::def("testInQuaternion",&testInQuaternion);
-  bp::def("testInQuaternion_fx",&testInQuaternion_fx);
 
 }
- 
+

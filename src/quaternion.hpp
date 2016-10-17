@@ -19,7 +19,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-#include "eigenpy/eigenpy.hpp"
+
 #include "eigenpy/exception.hpp"
 
 namespace eigenpy

@@ -17,18 +17,12 @@
 #ifndef __eigenpy_geometry_hpp__
 #define __eigenpy_geometry_hpp__
 
-#include "eigenpy/eigenpy.hpp"
-#include "eigenpy/quaternion.hpp"
-#include "eigenpy/angle-axis.hpp"
-
 namespace eigenpy
 {
-  typedef Eigen::Quaternion<double,Eigen::DontAlign> Quaterniond_fx;
-  //typedef Eigen::AngleAxis<double> AngleAxis_fx;
-
+  
   void exposeQuaternion();
   void exposeAngleAxis();
-
+  
 } // namespace eigenpy
 
 #endif // define __eigenpy_geometry_hpp__

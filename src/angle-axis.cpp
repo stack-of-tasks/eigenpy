@@ -14,8 +14,8 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "eigenpy/angle-axis.hpp"
 #include "eigenpy/geometry.hpp"
+#include "eigenpy/angle-axis.hpp"
 
 namespace eigenpy
 {

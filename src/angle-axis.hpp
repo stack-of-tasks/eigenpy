@@ -21,8 +21,6 @@
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
-#include "eigenpy/eigenpy.hpp"
-
 namespace eigenpy
 {
   template<>

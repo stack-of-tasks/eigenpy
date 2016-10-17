@@ -15,6 +15,7 @@
  */
 
 #include "eigenpy/geometry.hpp"
+#include "eigenpy/quaternion.hpp"
 
 namespace eigenpy
 {
