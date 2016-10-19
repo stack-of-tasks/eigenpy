@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/registration.hpp"
 #include "eigenpy/exception.hpp"
 #include "eigenpy/map.hpp"
 
@@ -206,6 +207,7 @@ namespace eigenpy
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
+    if(check_registration<MatType>()) return;
     numpy_import_array();
     
     boost::python::to_python_converter<MatType,EigenToPy<MatType,MatType> >();
