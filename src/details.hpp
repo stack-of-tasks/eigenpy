@@ -201,11 +201,11 @@ namespace eigenpy
       eigenMatrix = numpyMap;
     }
   };
-
+#define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
+  
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
-    import_array();
     
 #ifdef EIGEN_DONT_VECTORIZE
     
@@ -217,6 +217,7 @@ namespace eigenpy
     boost::python::to_python_converter<MatType,
 				       eigenpy::EigenToPy<MatType,MatType> >();
     eigenpy::EigenFromPy<MatType,MatType>();
+    numpy_import_array();
     
     typedef typename eigenpy::UnalignedEquivalent<MatType>::type MatTypeDontAlign;
 #ifndef EIGENPY_ALIGNED
