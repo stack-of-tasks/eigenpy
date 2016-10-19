@@ -206,28 +206,10 @@ namespace eigenpy
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
-    
-#ifdef EIGEN_DONT_VECTORIZE
-    
-    boost::python::to_python_converter<MatType,
-                                      eigenpy::EigenToPy<MatType,MatType> >();
-    eigenpy::EigenFromPy<MatType,MatType>();
-#else
-    
-    boost::python::to_python_converter<MatType,
-				       eigenpy::EigenToPy<MatType,MatType> >();
-    eigenpy::EigenFromPy<MatType,MatType>();
     numpy_import_array();
     
-    typedef typename eigenpy::UnalignedEquivalent<MatType>::type MatTypeDontAlign;
-#ifndef EIGENPY_ALIGNED
-    boost::python::to_python_converter<MatTypeDontAlign,
-				       eigenpy::EigenToPy<MatTypeDontAlign,MatTypeDontAlign> >();
-    eigenpy::EigenFromPy<MatTypeDontAlign,MatTypeDontAlign>();
-#endif
-#endif
-
-
+    boost::python::to_python_converter<MatType,EigenToPy<MatType,MatType> >();
+    EigenFromPy<MatType,MatType>();
   }
 
 } // namespace eigenpy
