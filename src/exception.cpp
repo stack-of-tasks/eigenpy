@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 LAAS-CNRS
+ * Copyright (c) 2015-2016 LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -14,7 +14,8 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <eigenpy/exception.hpp>
+#include "eigenpy/exception.hpp"
+#include "eigenpy/registration.hpp"
 
 
 namespace eigenpy
@@ -30,6 +31,8 @@ namespace eigenpy
 
   void Exception::registerException()
   {
+    if(check_registration<eigenpy::Exception>()) return;
+    
     pyType = boost::python::class_<eigenpy::Exception>
       ("Exception",boost::python::init<std::string>())
       .add_property("message", &eigenpy::Exception::copyMessage)

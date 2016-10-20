@@ -24,6 +24,7 @@
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/registration.hpp"
 #include "eigenpy/exception.hpp"
 #include "eigenpy/map.hpp"
 
@@ -190,7 +191,7 @@ namespace eigenpy
       typename MapNumpy<EquivalentEigenType>::EigenMap numpyMap = MapNumpy<EquivalentEigenType>::map(pyArray);
 
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
-		       (memory))->storage.bytes;
+		       ((void*)memory))->storage.bytes;
       assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX) 
 	      && "Map range larger than int ... can never happen." );
       int r=(int)numpyMap.rows(),c=(int)numpyMap.cols();
@@ -201,32 +202,16 @@ namespace eigenpy
       eigenMatrix = numpyMap;
     }
   };
-
+#define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
+  
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
-    import_array();
+    if(check_registration<MatType>()) return;
+    numpy_import_array();
     
-#ifdef EIGEN_DONT_VECTORIZE
-    
-    boost::python::to_python_converter<MatType,
-                                      eigenpy::EigenToPy<MatType,MatType> >();
-    eigenpy::EigenFromPy<MatType,MatType>();
-#else
-    
-    boost::python::to_python_converter<MatType,
-				       eigenpy::EigenToPy<MatType,MatType> >();
-    eigenpy::EigenFromPy<MatType,MatType>();
-    
-    typedef typename eigenpy::UnalignedEquivalent<MatType>::type MatTypeDontAlign;
-#ifndef EIGENPY_ALIGNED
-    boost::python::to_python_converter<MatTypeDontAlign,
-				       eigenpy::EigenToPy<MatTypeDontAlign,MatTypeDontAlign> >();
-    eigenpy::EigenFromPy<MatTypeDontAlign,MatTypeDontAlign>();
-#endif
-#endif
-
-
+    boost::python::to_python_converter<MatType,EigenToPy<MatType,MatType> >();
+    EigenFromPy<MatType,MatType>();
   }
 
 } // namespace eigenpy
