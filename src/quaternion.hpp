@@ -45,11 +45,11 @@ namespace eigenpy
 
     typedef typename QuaternionBase::Scalar Scalar;
     typedef typename Quaternion::Coefficients Coefficients;
-    typedef Eigen::Matrix<Scalar,3,1> Vector3;
-    typedef Eigen::Matrix<Scalar,4,1> Vector4;
-    typedef Eigen::Matrix<Scalar,3,3> Matrix3;
+    typedef typename QuaternionBase::Vector3 Vector3;
+    typedef typename Eigen::Matrix<Scalar,4,1> Vector4;
+    typedef typename QuaternionBase::Matrix3 Matrix3;
 
-    typedef Eigen::AngleAxis<Scalar> AngleAxis;
+    typedef typename QuaternionBase::AngleAxisType AngleAxis;
 
   public:
 
