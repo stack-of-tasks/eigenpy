@@ -128,9 +128,9 @@ namespace eigenpy
       .def("__str__",&print)
       .def("__repr__",&print)
       
-      .def("FromTwoVectors",&Quaternion::template FromTwoVectors<Vector3,Vector3>,
-           bp::args("a","b"),
-           "Returns the quaternion which transform a into b through a rotation.")
+//      .def("FromTwoVectors",&Quaternion::template FromTwoVectors<Vector3,Vector3>,
+//           bp::args("a","b"),
+//           "Returns the quaternion which transform a into b through a rotation.")
       .staticmethod("FromTwoVectors")
       .def("Identity",&Quaternion::Identity,"Returns a quaternion representing an identity rotation.")
       .staticmethod("Identity")
