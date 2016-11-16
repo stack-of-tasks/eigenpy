@@ -207,8 +207,8 @@ namespace eigenpy
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
-    if(check_registration<MatType>()) return;
     numpy_import_array();
+    if(check_registration<MatType>()) return;
     
     boost::python::to_python_converter<MatType,EigenToPy<MatType,MatType> >();
     EigenFromPy<MatType,MatType>();
