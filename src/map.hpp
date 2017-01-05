@@ -60,9 +60,9 @@ namespace eigenpy
 
       const int R = (int)PyArray_DIMS(pyArray)[0];
       const int C = (int)PyArray_DIMS(pyArray)[1];
-      const int itemsize = PyArray_ITEMSIZE(pyArray);
-      const int stride1 = (int)PyArray_STRIDE(pyArray, 0) / itemsize;
-      const int stride2 = (int)PyArray_STRIDE(pyArray, 1) / itemsize;
+      const long int itemsize = PyArray_ITEMSIZE(pyArray);
+      const int stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+      const int stride2 = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
       
       if( (MatType::RowsAtCompileTime!=R)
 	  && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
@@ -94,8 +94,8 @@ namespace eigenpy
       assert( (PyArray_DIMS(pyArray)[rowMajor]< INT_MAX)
 	      && (PyArray_STRIDE(pyArray, rowMajor) ));
       const int R = (int)PyArray_DIMS(pyArray)[rowMajor];
-      const int itemsize = PyArray_ITEMSIZE(pyArray);
-      const int stride = (int) PyArray_STRIDE(pyArray, rowMajor) / itemsize;;
+      const long int itemsize = PyArray_ITEMSIZE(pyArray);
+      const int stride = (int) PyArray_STRIDE(pyArray, rowMajor) / (int) itemsize;;
 
       if( (MatType::MaxSizeAtCompileTime!=R)
 	      && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )

@@ -19,6 +19,7 @@
 
 #include <boost/python.hpp>
 #include <Eigen/Core>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 namespace eigenpy
 {
