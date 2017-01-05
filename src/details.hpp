@@ -20,6 +20,11 @@
 #include <boost/python.hpp>
 #include <Eigen/Core>
 
+#include <numpy/numpyconfig.h>
+#ifdef NPY_1_8_API_VERSION
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#endif
+
 #include <numpy/arrayobject.h>
 #include <iostream>
 
@@ -137,11 +142,12 @@ namespace eigenpy
     EigenFromPy()
     {
       bp::converter::registry::push_back
-	(&convertible,&construct,bp::type_id<MatType>());
+	(reinterpret_cast<void *(*)(_object *)>(&convertible),
+	 &construct,bp::type_id<MatType>());
     }
  
     // Determine if obj_ptr can be converted in a Eigenvec
-    static void* convertible(PyObject* obj_ptr)
+    static void* convertible(PyArrayObject* obj_ptr)
     {
       typedef typename MatType::Scalar T;
 
@@ -162,15 +168,18 @@ namespace eigenpy
 	    return 0;
 	  }
 
-      if ((PyArray_ObjectType(obj_ptr, 0)) != NumpyEquivalentType<T>::type_code)
+      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) != NumpyEquivalentType<T>::type_code)
 	{
 #ifndef NDEBUG
 	  std::cerr << "The internal type as no Eigen equivalent." << std::endl;
 #endif
 	  return 0;
 	}
-
+#ifdef NPY_1_8_API_VERSION
+      if (!(PyArray_FLAGS(obj_ptr)))
+#else
       if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
+#endif
 	{
 #ifndef NDEBUG
 	  std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
