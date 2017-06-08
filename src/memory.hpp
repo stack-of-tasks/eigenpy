@@ -41,7 +41,7 @@ namespace boost { namespace python { namespace objects { \
         PyObject* weakrefs; \
         instance_holder* objects; \
          \
-        typedef typename type_with_alignment< \
+        typedef type_with_alignment< \
         ::boost::alignment_of<Data>::value  \
         >::type align_t; \
          \
