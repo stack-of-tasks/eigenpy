@@ -45,6 +45,12 @@ IF(APPLE)
   ENDIF("${isSystemDir}" STREQUAL "-1")
 ENDIF(APPLE)
 
+IF(WIN32)
+  SET(LINK copy_if_different)
+ELSE(WIN32)
+  SET(LINK create_symlink)
+ENDIF(WIN32)
+
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
 # ----------------------------------------------------
@@ -74,34 +80,47 @@ INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
 SET(HEADERS
-  src/eigenpy.hpp
-  src/exception.hpp
-  src/details.hpp
-  src/fwd.hpp
-  src/map.hpp
-  src/geometry.hpp
-  src/memory.hpp
-  src/registration.hpp
-  src/angle-axis.hpp
-  src/quaternion.hpp
+  eigenpy.hpp
+  exception.hpp
+  details.hpp
+  fwd.hpp
+  map.hpp
+  geometry.hpp
+  memory.hpp
+  registration.hpp
+  angle-axis.hpp
+  quaternion.hpp
 )
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
 
+#FOREACH(header ${HEADERS})
+#  GET_FILENAME_COMPONENT(headerName ${header} NAME)
+#  IF(WIN32)
+#    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+#                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/)
+#  ELSE(WIN32)
+#    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+#                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+#                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${headerName})
+#  ENDIF(WIN32)
+#  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+#	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
+#          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+#ENDFOREACH(header)
+
+SET(${PROJECT_NAME}_HEADERS)
 FOREACH(header ${HEADERS})
   GET_FILENAME_COMPONENT(headerName ${header} NAME)
-  IF(WIN32)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/)
-  ELSE(WIN32)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${headerName})
-  ENDIF(WIN32)
-  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
-          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+  GET_FILENAME_COMPONENT(headerPath ${header} PATH)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E ${LINK}
+    ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
+    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${header})
+  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/${headerPath}
+          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
+  LIST(APPEND ${PROJECT_NAME}_HEADERS src/${header})
 ENDFOREACH(header)
 
 # ----------------------------------------------------
@@ -114,7 +133,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/quaternion.cpp
 )
 
-ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${HEADERS})
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 
 TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
@@ -128,6 +147,11 @@ ADD_SUBDIRECTORY(unittest)
 # ----------------------------------------------------
 # --- EXECUTABLES ------------------------------------
 # ----------------------------------------------------
+
+# ----------------------------------------------------
+# --- PYTHON BINDINGS --------------------------------
+# ----------------------------------------------------
+ADD_SUBDIRECTORY(python)
 
 IF(EIGEN_NUMPY_ALIGNED)
   PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")
