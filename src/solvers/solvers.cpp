@@ -16,6 +16,7 @@
 
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/solvers/ConjugateGradient.hpp"
+#include "eigenpy/solvers/LeastSquaresConjugateGradient.hpp"
 
 namespace eigenpy
 {
@@ -23,6 +24,7 @@ namespace eigenpy
   {
     using namespace Eigen;
     ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper> >::expose();
+    LeastSquaresConjugateGradientVisitor< LeastSquaresConjugateGradient<MatrixXd, LeastSquareDiagonalPreconditionerFix<MatrixXd::Scalar> > >::expose();
     
     boost::python::enum_<Eigen::ComputationInfo>("ComputationInfo")
     .value("Success",Eigen::Success)

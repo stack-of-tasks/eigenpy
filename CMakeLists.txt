@@ -92,6 +92,7 @@ SET(HEADERS
   quaternion.hpp
   solvers/solvers.hpp
   solvers/IterativeSolverBase.hpp
+  solvers/LeastSquaresConjugateGradient.hpp
   solvers/ConjugateGradient.hpp
   solvers/SparseSolverBase.hpp
 )
