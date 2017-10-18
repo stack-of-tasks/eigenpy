@@ -19,6 +19,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/python.cmake)
+INCLUDE(cmake/ide.cmake)
 
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
@@ -96,6 +97,7 @@ SET(HEADERS
   solvers/ConjugateGradient.hpp
   solvers/SparseSolverBase.hpp
 )
+
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy/solvers")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
@@ -145,6 +147,9 @@ ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_
 TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+ADD_HEADER_GROUP(${PROJECT_NAME}_HEADERS)
+ADD_SOURCE_GROUP(${PROJECT_NAME}_SOURCES)
 
 # ----------------------------------------------------
 # --- UNIT TEST --------------------------------------
