@@ -17,6 +17,7 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/geometry.hpp"
+#include "eigenpy/solvers/solvers.hpp"
 
 #include <iostream>
 
@@ -26,5 +27,6 @@ BOOST_PYTHON_MODULE(eigenpy)
   eigenpy::enableEigenPy();
   eigenpy::exposeAngleAxis();
   eigenpy::exposeQuaternion();
+  eigenpy::exposeSolvers();
   
 }

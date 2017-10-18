@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2016 LAAS-CNRS
+# Copyright (c) 2015-2017 LAAS-CNRS
 #
 # This file is part of eigenpy.
 # eigenpy is free software: you can redistribute it and/or
@@ -90,8 +90,13 @@ SET(HEADERS
   registration.hpp
   angle-axis.hpp
   quaternion.hpp
+  solvers/solvers.hpp
+  solvers/IterativeSolverBase.hpp
+  solvers/ConjugateGradient.hpp
+  solvers/SparseSolverBase.hpp
 )
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
+MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy/solvers")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
 
 #FOREACH(header ${HEADERS})
@@ -131,6 +136,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/eigenpy.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
+  src/solvers/solvers.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
