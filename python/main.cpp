@@ -22,13 +22,14 @@
 
 #include <iostream>
 
+using namespace eigenpy;
 
 BOOST_PYTHON_MODULE(eigenpy)
 {
-  eigenpy::enableEigenPy();
-  eigenpy::exposeAngleAxis();
-  eigenpy::exposeQuaternion();
-  eigenpy::exposeSolvers();
-  eigenpy::exposePreconditioners();
+  enableEigenPy();
+  exposeAngleAxis();
+  exposeQuaternion();
+  exposeSolvers();
+  exposePreconditioners();
   
 }
