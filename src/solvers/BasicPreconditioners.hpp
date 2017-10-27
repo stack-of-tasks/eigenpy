@@ -47,6 +47,9 @@ namespace eigenpy
       .def("compute",&Preconditioner::template compute<MatrixType>,bp::arg("mat"),
            "Initialize the preconditioner from the matrix value.",
            bp::return_value_policy<bp::reference_existing_object>())
+      .def("factorize",&Preconditioner::template factorize<MatrixType>,bp::arg("mat"),
+           "Initialize the preconditioner from the matrix value, i.e factorize the mat given as input to approximate its inverse.",
+           bp::return_value_policy<bp::reference_existing_object>())
       ;
       
     }
