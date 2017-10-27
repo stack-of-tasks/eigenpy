@@ -18,6 +18,7 @@
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/geometry.hpp"
 #include "eigenpy/solvers/solvers.hpp"
+#include "eigenpy/solvers/preconditioners.hpp"
 
 #include <iostream>
 
@@ -28,5 +29,6 @@ BOOST_PYTHON_MODULE(eigenpy)
   eigenpy::exposeAngleAxis();
   eigenpy::exposeQuaternion();
   eigenpy::exposeSolvers();
+  eigenpy::exposePreconditioners();
   
 }

@@ -33,6 +33,7 @@ namespace eigenpy
   {
     
     typedef typename IterativeSolver::MatrixType MatrixType;
+    typedef typename IterativeSolver::Preconditioner Preconditioner;
     typedef Eigen::VectorXd VectorType;
     
     template<class PyClass>
@@ -68,6 +69,7 @@ namespace eigenpy
            bp::return_value_policy<bp::reference_existing_object>())
       .def("solveWithGuess",&solveWithGuess,bp::args("b","x0"),
            "Returns the solution x of Ax = b using the current decomposition of A and x0 as an initial solution.")
+      .def("preconditioner",(Preconditioner & (IS::*)(void))&IS::preconditioner,"Returns a read-write reference to the preconditioner for custom configuration.",bp::return_internal_reference<>())
       ;
       
     }

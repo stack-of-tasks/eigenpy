@@ -82,10 +82,13 @@ INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
   solvers/solvers.hpp
+  solvers/preconditioners.hpp
   solvers/IterativeSolverBase.hpp
   solvers/LeastSquaresConjugateGradient.hpp
   solvers/ConjugateGradient.hpp
   solvers/SparseSolverBase.hpp
+  solvers/BasicPreconditioners.hpp
+  solvers/BFGSPreconditioners.hpp
   )
 
 SET(HEADERS
@@ -139,6 +142,7 @@ ENDFOREACH(header)
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_SOLVERS_SOURCES
+  src/solvers/preconditioners.cpp
   src/solvers/solvers.cpp
   )
 SET(${PROJECT_NAME}_SOURCES
