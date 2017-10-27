@@ -19,6 +19,7 @@
 
 namespace eigenpy
 {
+  struct SolversScope {};
   
   void exposeSolvers();
   

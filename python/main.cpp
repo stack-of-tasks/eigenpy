@@ -21,15 +21,22 @@
 #include "eigenpy/solvers/preconditioners.hpp"
 
 #include <iostream>
+#include <boost/python/scope.hpp>
 
+namespace bp = boost::python;
 using namespace eigenpy;
+
 
 BOOST_PYTHON_MODULE(eigenpy)
 {
   enableEigenPy();
   exposeAngleAxis();
   exposeQuaternion();
-  exposeSolvers();
-  exposePreconditioners();
+  
+  {
+    bp::scope solvers = bp::class_<SolversScope>("solvers");
+    exposeSolvers();
+    exposePreconditioners();
+  }
   
 }
