@@ -80,7 +80,16 @@ INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
+SET(${PROJECT_NAME}_SOLVERS_HEADERS
+  solvers/solvers.hpp
+  solvers/IterativeSolverBase.hpp
+  solvers/LeastSquaresConjugateGradient.hpp
+  solvers/ConjugateGradient.hpp
+  solvers/SparseSolverBase.hpp
+  )
+
 SET(HEADERS
+  ${${PROJECT_NAME}_SOLVERS_HEADERS}
   eigenpy.hpp
   exception.hpp
   details.hpp
@@ -91,11 +100,6 @@ SET(HEADERS
   registration.hpp
   angle-axis.hpp
   quaternion.hpp
-  solvers/solvers.hpp
-  solvers/IterativeSolverBase.hpp
-  solvers/LeastSquaresConjugateGradient.hpp
-  solvers/ConjugateGradient.hpp
-  solvers/SparseSolverBase.hpp
 )
 
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
@@ -134,12 +138,15 @@ ENDFOREACH(header)
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
+SET(${PROJECT_NAME}_SOLVERS_SOURCES
+  src/solvers/solvers.cpp
+  )
 SET(${PROJECT_NAME}_SOURCES
+  ${${PROJECT_NAME}_SOLVERS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
-  src/solvers/solvers.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
