@@ -37,6 +37,7 @@ namespace eigenpy
     void visit(PyClass& cl) const
     {
       cl
+      .def(IterativeSolverVisitor<ConjugateGradient>())
       .def(bp::init<>("Default constructor"))
       .def(bp::init<MatrixType>(bp::arg("A"),"Initialize the solver with matrix A for further Ax=b solving.\n"
                                 "This constructor is a shortcut for the default constructor followed by a call to compute()."))
@@ -44,11 +45,10 @@ namespace eigenpy
       
     }
     
-    static void expose()
+    static void expose(const std::string & name = "ConjugateGradient")
     {
-      bp::class_<ConjugateGradient,boost::noncopyable>("ConjugateGradient",
+      bp::class_<ConjugateGradient,boost::noncopyable>(name.c_str(),
                              bp::no_init)
-      .def(IterativeSolverVisitor<ConjugateGradient>())
       .def(ConjugateGradientVisitor<ConjugateGradient>())
       ;
       
