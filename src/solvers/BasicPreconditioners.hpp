@@ -39,8 +39,10 @@ namespace eigenpy
       cl
       .def(bp::init<>("Default constructor"))
       .def(bp::init<MatrixType>(bp::arg("A"),"Initialize the preconditioner with matrix A for further Az=b solving."))
+#if EIGEN_VERSION_AT_LEAST(3,3,0)
       .def("info",&Preconditioner::info,
            "Returns success if the Preconditioner has been well initialized.")
+#endif
       .def("solve",&solve,bp::arg("b"),
            "Returns the solution A * z = b where the preconditioner is an estimate of A^-1.")
       
@@ -91,6 +93,7 @@ namespace eigenpy
     }
   };
   
+#if EIGEN_VERSION_AT_LEAST(3,3,0)
   template<typename Scalar>
   struct LeastSquareDiagonalPreconditionerVisitor : PreconditionerBaseVisitor<Eigen::LeastSquareDiagonalPreconditioner<Scalar> >
   {
@@ -113,6 +116,7 @@ namespace eigenpy
       
     }
   };
+#endif
   
   struct IdentityPreconditionerVisitor : PreconditionerBaseVisitor<Eigen::IdentityPreconditioner >
   {

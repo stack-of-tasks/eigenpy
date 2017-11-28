@@ -16,7 +16,10 @@
 
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/solvers/ConjugateGradient.hpp"
-#include "eigenpy/solvers/LeastSquaresConjugateGradient.hpp"
+
+#if EIGEN_VERSION_AT_LEAST(3,3,0)
+  #include "eigenpy/solvers/LeastSquaresConjugateGradient.hpp"
+#endif
 
 namespace eigenpy
 {
@@ -24,7 +27,9 @@ namespace eigenpy
   {
     using namespace Eigen;
     ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper> >::expose();
+#if EIGEN_VERSION_AT_LEAST(3,3,0)
     LeastSquaresConjugateGradientVisitor< LeastSquaresConjugateGradient<MatrixXd, LeastSquareDiagonalPreconditionerFix<MatrixXd::Scalar> > >::expose();
+#endif
     
     // Conjugate gradient with limited BFGS preconditioner
     ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper,IdentityPreconditioner > >::expose("IdentityConjugateGradient");
