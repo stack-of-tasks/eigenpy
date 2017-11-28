@@ -23,9 +23,7 @@
 #include <iostream>
 #include <boost/python/scope.hpp>
 
-namespace bp = boost::python;
 using namespace eigenpy;
-
 
 BOOST_PYTHON_MODULE(eigenpy)
 {
@@ -34,7 +32,7 @@ BOOST_PYTHON_MODULE(eigenpy)
   exposeQuaternion();
   
   {
-    bp::scope solvers = bp::class_<SolversScope>("solvers");
+    boost::python::scope solvers = boost::python::class_<SolversScope>("solvers");
     exposeSolvers();
     exposePreconditioners();
   }
