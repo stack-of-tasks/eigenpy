@@ -99,7 +99,6 @@ namespace eigenpy
   };
   
 
-
 } // namespace eigenpy
 
 #endif // ifndef __eigenpy_iterative_solver_base_hpp__

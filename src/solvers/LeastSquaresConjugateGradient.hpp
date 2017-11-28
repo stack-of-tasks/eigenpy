@@ -25,7 +25,8 @@
 namespace Eigen
 {
   template <typename _Scalar>
-  class LeastSquareDiagonalPreconditionerFix : public LeastSquareDiagonalPreconditioner<_Scalar>
+  class LeastSquareDiagonalPreconditionerFix
+  : public LeastSquareDiagonalPreconditioner<_Scalar>
   {
     typedef _Scalar Scalar;
     typedef typename NumTraits<Scalar>::Real RealScalar;
@@ -89,7 +90,7 @@ namespace eigenpy
   
   template<typename LeastSquaresConjugateGradient>
   struct LeastSquaresConjugateGradientVisitor
-  :  public boost::python::def_visitor< LeastSquaresConjugateGradientVisitor<LeastSquaresConjugateGradient> >
+  : public boost::python::def_visitor< LeastSquaresConjugateGradientVisitor<LeastSquaresConjugateGradient> >
   {
     typedef Eigen::MatrixXd MatrixType;
     

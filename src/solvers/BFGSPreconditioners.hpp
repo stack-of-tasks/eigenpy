@@ -57,8 +57,6 @@ namespace eigenpy
       
     }
     
-    
-    
   };
   
   template<typename Preconditioner>
@@ -85,15 +83,7 @@ namespace eigenpy
       
     }
     
-    
-    
   };
-  
-
-  
-  
-  
-  
   
 } // namespace eigenpy
 

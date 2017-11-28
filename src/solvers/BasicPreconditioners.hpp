@@ -134,8 +134,6 @@ namespace eigenpy
   };
   
   
-  
-  
 } // namespace eigenpy
 
 #endif // ifndef __eigenpy_basic_preconditioners_hpp__

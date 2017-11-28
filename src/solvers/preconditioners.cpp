@@ -29,6 +29,5 @@ namespace eigenpy
     IdentityPreconditionerVisitor::expose();
     LimitedBFGSPreconditionerBaseVisitor< LimitedBFGSPreconditioner<double,Eigen::Dynamic,Eigen::Upper|Eigen::Lower> >::expose("LimitedBFGSPreconditioner");
    
-    
   }
 } // namespace eigenpy
