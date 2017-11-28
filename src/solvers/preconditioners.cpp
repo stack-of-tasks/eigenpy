@@ -16,7 +16,7 @@
 
 #include "eigenpy/solvers/preconditioners.hpp"
 #include "eigenpy/solvers/BasicPreconditioners.hpp"
-#include "eigenpy/solvers/BFGSPreconditioners.hpp"
+//#include "eigenpy/solvers/BFGSPreconditioners.hpp"
 
 namespace eigenpy
 {
@@ -27,7 +27,7 @@ namespace eigenpy
     DiagonalPreconditionerVisitor<double>::expose();
     LeastSquareDiagonalPreconditionerVisitor<double>::expose();
     IdentityPreconditionerVisitor::expose();
-    LimitedBFGSPreconditionerBaseVisitor< LimitedBFGSPreconditioner<double,Eigen::Dynamic,Eigen::Upper|Eigen::Lower> >::expose("LimitedBFGSPreconditioner");
+//      LimitedBFGSPreconditionerBaseVisitor< LimitedBFGSPreconditioner<double,Eigen::Dynamic,Eigen::Upper|Eigen::Lower> >::expose("LimitedBFGSPreconditioner");
    
   }
 } // namespace eigenpy

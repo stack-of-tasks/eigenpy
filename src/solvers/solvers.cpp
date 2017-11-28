@@ -28,7 +28,7 @@ namespace eigenpy
     
     // Conjugate gradient with limited BFGS preconditioner
     ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper,IdentityPreconditioner > >::expose("IdentityConjugateGradient");
-    ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper,LimitedBFGSPreconditioner<double,Dynamic,Lower|Upper> > >::expose("LimitedBFGSConjugateGradient");
+//    ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper,LimitedBFGSPreconditioner<double,Dynamic,Lower|Upper> > >::expose("LimitedBFGSConjugateGradient");
     
     boost::python::enum_<Eigen::ComputationInfo>("ComputationInfo")
     .value("Success",Eigen::Success)
