@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2016 LAAS-CNRS
+# Copyright (c) 2015-2017 LAAS-CNRS
 #
 # This file is part of eigenpy.
 # eigenpy is free software: you can redistribute it and/or
@@ -19,6 +19,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 INCLUDE(cmake/base.cmake)
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/python.cmake)
+INCLUDE(cmake/ide.cmake)
 
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
@@ -44,6 +45,12 @@ IF(APPLE)
      SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
   ENDIF("${isSystemDir}" STREQUAL "-1")
 ENDIF(APPLE)
+
+IF(WIN32)
+  SET(LINK copy_if_different)
+ELSE(WIN32)
+  SET(LINK create_symlink)
+ENDIF(WIN32)
 
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
@@ -73,61 +80,97 @@ INCLUDE_DIRECTORIES(${NUMPY_INCLUDE_DIRS})
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
+SET(${PROJECT_NAME}_SOLVERS_HEADERS
+  solvers/solvers.hpp
+  solvers/preconditioners.hpp
+  solvers/IterativeSolverBase.hpp
+  solvers/LeastSquaresConjugateGradient.hpp
+  solvers/ConjugateGradient.hpp
+  solvers/SparseSolverBase.hpp
+  solvers/BasicPreconditioners.hpp
+  solvers/BFGSPreconditioners.hpp
+  )
+
 SET(HEADERS
-  src/eigenpy.hpp
-  src/exception.hpp
-  src/details.hpp
-  src/fwd.hpp
-  src/map.hpp
-  src/geometry.hpp
-  src/memory.hpp
-  src/registration.hpp
-  src/angle-axis.hpp
-  src/quaternion.hpp
+  ${${PROJECT_NAME}_SOLVERS_HEADERS}
+  eigenpy.hpp
+  exception.hpp
+  details.hpp
+  fwd.hpp
+  map.hpp
+  geometry.hpp
+  memory.hpp
+  registration.hpp
+  angle-axis.hpp
+  quaternion.hpp
 )
+
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
+MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy/solvers")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
 
+#FOREACH(header ${HEADERS})
+#  GET_FILENAME_COMPONENT(headerName ${header} NAME)
+#  IF(WIN32)
+#    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
+#                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+#                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/)
+#  ELSE(WIN32)
+#    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
+#                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+#                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${headerName})
+#  ENDIF(WIN32)
+#  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
+#	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
+#          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+#ENDFOREACH(header)
+
+SET(${PROJECT_NAME}_HEADERS)
 FOREACH(header ${HEADERS})
   GET_FILENAME_COMPONENT(headerName ${header} NAME)
-  IF(WIN32)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/)
-  ELSE(WIN32)
-    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${headerName})
-  ENDIF(WIN32)
-  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
-          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
+  GET_FILENAME_COMPONENT(headerPath ${header} PATH)
+  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E ${LINK}
+    ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
+    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${header})
+  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/${headerPath}
+          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
+  LIST(APPEND ${PROJECT_NAME}_HEADERS src/${header})
 ENDFOREACH(header)
 
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
+SET(${PROJECT_NAME}_SOLVERS_SOURCES
+  src/solvers/preconditioners.cpp
+  src/solvers/solvers.cpp
+  )
 SET(${PROJECT_NAME}_SOURCES
+  ${${PROJECT_NAME}_SOLVERS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
 )
 
-ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${HEADERS})
+ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 
 TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
 
+ADD_HEADER_GROUP(${PROJECT_NAME}_HEADERS)
+ADD_SOURCE_GROUP(${PROJECT_NAME}_SOURCES)
+
+# ----------------------------------------------------
+# --- PYTHON LIBRARY ---------------------------------
+# ----------------------------------------------------
+ADD_SUBDIRECTORY(python)
+
 # ----------------------------------------------------
 # --- UNIT TEST --------------------------------------
 # ----------------------------------------------------
 ADD_SUBDIRECTORY(unittest)
-
-# ----------------------------------------------------
-# --- EXECUTABLES ------------------------------------
-# ----------------------------------------------------
 
 IF(EIGEN_NUMPY_ALIGNED)
   PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")

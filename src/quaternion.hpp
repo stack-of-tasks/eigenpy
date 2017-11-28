@@ -71,16 +71,16 @@ namespace eigenpy
             "The [] operator numbers them differently, 0...4 for *x* *y* *z* *w*!"))
       
       .add_property("x",
-                    (Scalar (Quaternion::*)()const)&Quaternion::x,
+                    &QuaternionVisitor::getCoeff<0>,
                     &QuaternionVisitor::setCoeff<0>,"The x coefficient.")
       .add_property("y",
-                    (Scalar (Quaternion::*)()const)&Quaternion::y,
+                    &QuaternionVisitor::getCoeff<1>,
                     &QuaternionVisitor::setCoeff<1>,"The y coefficient.")
       .add_property("z",
-                    (Scalar (Quaternion::*)()const)&Quaternion::z,
+                    &QuaternionVisitor::getCoeff<2>,
                     &QuaternionVisitor::setCoeff<2>,"The z coefficient.")
       .add_property("w",
-                    (Scalar (Quaternion::*)()const)&Quaternion::w,
+                    &QuaternionVisitor::getCoeff<3>,
                     &QuaternionVisitor::setCoeff<3>,"The w coefficient.")
       
 //      .def("isApprox",(bool (Quaternion::*)(const Quaternion &))&Quaternion::template isApprox<Quaternion>,
@@ -150,6 +150,9 @@ namespace eigenpy
     
     template<int i>
     static void setCoeff(Quaternion & self, Scalar value) { self.coeffs()[i] = value; }
+    
+    template<int i>
+    static Scalar getCoeff(Quaternion & self) { return self.coeffs()[i]; }
     
     static Quaternion & setFromTwoVectors(Quaternion & self, const Vector3 & a, const Vector3 & b)
     { return self.setFromTwoVectors(a,b); }
