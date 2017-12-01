@@ -4,6 +4,14 @@ eigenpy
 Setup
 -----
 
+Before compiling this package, make sure to have initialized all git
+submodules of this repo. To initialize the submodules when cloning the
+repo, use:
+
+```bash
+git clone --recursive <git_url>
+```
+
 To compile this package, it is recommended to create a separate build
 directory:
 
