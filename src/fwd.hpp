@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014-2017, Nicolas Mansard and Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -23,25 +23,5 @@
 #ifdef NPY_1_8_API_VERSION
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
-
-namespace eigenpy
-{
-  template<typename D, typename Scalar = typename D::Scalar>
-  struct UnalignedEquivalent
-  {
-    typedef Eigen::MatrixBase<D> MatType;
-    typedef Eigen::Matrix<Scalar,
-             D::RowsAtCompileTime,
-             D::ColsAtCompileTime,
-#ifndef EIGENPY_ALIGNED
-             D::Options | Eigen::DontAlign,
-#else
-             D::Options,
-#endif
-             D::MaxRowsAtCompileTime,
-             D::MaxColsAtCompileTime> type;
-  };
-
-} // namespace eigenpy
 
 #endif // ifndef __eigenpy_fwd_hpp__

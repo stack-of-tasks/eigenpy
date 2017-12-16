@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014-2017, Nicolas Mansard and Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -22,13 +22,6 @@
 
 namespace eigenpy
 {
-  typedef UnalignedEquivalent<Eigen::MatrixXd>::type MatrixXd_fx;
-  typedef UnalignedEquivalent<Eigen::Matrix3d>::type Matrix3d_fx;
-  typedef UnalignedEquivalent<Eigen::Matrix4d>::type Matrix4d_fx;
-  typedef UnalignedEquivalent<Eigen::VectorXd>::type VectorXd_fx;
-  typedef UnalignedEquivalent<Eigen::Vector3d>::type Vector3d_fx;
-  typedef UnalignedEquivalent<Eigen::Vector4d>::type Vector4d_fx;
-
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void enableEigenPy();
 

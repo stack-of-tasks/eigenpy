@@ -53,7 +53,7 @@ Eigen::Matrix3d naturals(bool verbose)
 }
 
 template<typename MatType>
-Eigen::MatrixXd reflex(const typename eigenpy::UnalignedEquivalent<MatType>::type & M, bool verbose)
+Eigen::MatrixXd reflex(const MatType & M, bool verbose)
 {
   if(verbose)
     std::cout << "EigenMat = " << M << std::endl;
