@@ -93,7 +93,7 @@ namespace eigenpy
     }
   };
   
-#if EIGEN_VERSION_AT_LEAST(3,3,0)
+#if EIGEN_VERSION_AT_LEAST(3,3,5)
   template<typename Scalar>
   struct LeastSquareDiagonalPreconditionerVisitor : PreconditionerBaseVisitor<Eigen::LeastSquareDiagonalPreconditioner<Scalar> >
   {
