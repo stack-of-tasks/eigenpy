@@ -17,7 +17,7 @@
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/solvers/ConjugateGradient.hpp"
 
-#if EIGEN_VERSION_AT_LEAST(3,3,0)
+#if EIGEN_VERSION_AT_LEAST(3,3,5)
   #include "eigenpy/solvers/LeastSquaresConjugateGradient.hpp"
 #endif
 
@@ -27,7 +27,7 @@ namespace eigenpy
   {
     using namespace Eigen;
     ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper> >::expose();
-#if EIGEN_VERSION_AT_LEAST(3,3,0)
+#if EIGEN_VERSION_AT_LEAST(3,3,5)
     LeastSquaresConjugateGradientVisitor< LeastSquaresConjugateGradient<MatrixXd, LeastSquareDiagonalPreconditionerFix<MatrixXd::Scalar> > >::expose();
 #endif
     

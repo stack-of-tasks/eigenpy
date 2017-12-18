@@ -25,7 +25,7 @@ namespace eigenpy
     using namespace Eigen;
     
     DiagonalPreconditionerVisitor<double>::expose();
-#if EIGEN_VERSION_AT_LEAST(3,3,0)
+#if EIGEN_VERSION_AT_LEAST(3,3,5)
     LeastSquareDiagonalPreconditionerVisitor<double>::expose();
 #endif
     IdentityPreconditionerVisitor::expose();
