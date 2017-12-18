@@ -109,22 +109,6 @@ MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy/solvers")
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
 
-#FOREACH(header ${HEADERS})
-#  GET_FILENAME_COMPONENT(headerName ${header} NAME)
-#  IF(WIN32)
-#    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different
-#                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-#                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/)
-#  ELSE(WIN32)
-#    execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
-#                    ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-#                    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${headerName})
-#  ENDIF(WIN32)
-#  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/${header}
-#	  DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
-#          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ)
-#ENDFOREACH(header)
-
 SET(${PROJECT_NAME}_HEADERS)
 FOREACH(header ${HEADERS})
   GET_FILENAME_COMPONENT(headerName ${header} NAME)
