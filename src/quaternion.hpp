@@ -112,7 +112,7 @@ namespace eigenpy
       .def("_transformVector",&Quaternion::_transformVector,bp::arg("vector"),"Rotation of a vector by a quaternion.")
       .def("vec",&vec,"Returns a vector expression of the imaginary part (x,y,z).")
       .def("angularDistance",&Quaternion::template angularDistance<Quaternion>,"Returns the angle (in radian) between two rotations.")
-      .def("slerp",&Quaternion::template slerp<Quaternion>,bp::args("t","other"),
+      .def("slerp",&slerp,bp::args("t","other"),
            "Returns the spherical linear interpolation between the two quaternions *this and other at the parameter t in [0;1].")
 
       /* --- Operators --- */
@@ -205,6 +205,9 @@ namespace eigenpy
       
       return ss.str();
     }
+    
+    static Quaternion slerp(const Quaternion & self, const Scalar t, const Quaternion & other)
+    { return self.slerp(t,other); }
 
   public:
 
