@@ -76,7 +76,7 @@ namespace eigenpy
   };
 
   /* --- TO PYTHON -------------------------------------------------------------- */
-  template< typename MatType,typename EquivalentEigenType >
+  template<typename MatType>
   struct EigenToPy
   {
     static PyObject* convert(MatType const& mat)
@@ -88,9 +88,9 @@ namespace eigenpy
 
       npy_intp shape[2] = { R,C };
       PyArrayObject* pyArray = (PyArrayObject*)
-	PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
+      PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
 
-      MapNumpy<EquivalentEigenType>::map(pyArray) = mat;
+      MapNumpy<MatType>::map(pyArray) = mat;
 
       return PyMatrixType::getInstance().make(pyArray).ptr();
     }
@@ -136,7 +136,7 @@ namespace eigenpy
   };
 
 
-  template<typename MatType,typename EquivalentEigenType>
+  template<typename MatType>
   struct EigenFromPy
   {
     EigenFromPy()
@@ -197,14 +197,14 @@ namespace eigenpy
       using namespace Eigen;
 
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-      typename MapNumpy<EquivalentEigenType>::EigenMap numpyMap = MapNumpy<EquivalentEigenType>::map(pyArray);
+      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
 
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
 		       ((void*)memory))->storage.bytes;
       assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX) 
 	      && "Map range larger than int ... can never happen." );
       int r=(int)numpyMap.rows(),c=(int)numpyMap.cols();
-      EquivalentEigenType & eigenMatrix = //* new(storage) MatType(numpyMap.rows(),numpyMap.cols());
+      MatType & eigenMatrix = //* new(storage) MatType(numpyMap.rows(),numpyMap.cols());
 	TraitsMatrixConstructor<MatType,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime>::construct (storage,r,c);
       memory->convertible = storage;
 
@@ -225,8 +225,8 @@ namespace eigenpy
     numpy_import_array();
     if(check_registration<MatType>()) return;
     
-    boost::python::to_python_converter<MatType,EigenToPy<MatType,MatType> >();
-    EigenFromPy<MatType,MatType>();
+    boost::python::to_python_converter<MatType,EigenToPy<MatType> >();
+    EigenFromPy<MatType>();
   }
 
 } // namespace eigenpy
