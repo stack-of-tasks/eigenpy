@@ -19,17 +19,23 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/memory.hpp"
+#include "eigenpy/deprecated.hh"
 
 namespace eigenpy
 {
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void enableEigenPy();
 
+  
+  template<typename MatType>
+  void enableEigenPySpecific();
+  
   /* Enable the Eigen--Numpy serialization for the templated MatrixBase class.
    * The second template argument is used for inheritance of Eigen classes. If
    * using a native Eigen::MatrixBase, simply repeat the same arg twice. */
   template<typename MatType,typename EigenEquivalentType>
-  void enableEigenPySpecific();
+  EIGENPY_DEPRECATED void enableEigenPySpecific();
+
 
 } // namespace eigenpy
 

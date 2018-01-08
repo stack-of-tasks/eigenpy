@@ -216,6 +216,12 @@ namespace eigenpy
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
+    enableEigenPySpecific<MatType>();
+  }
+  
+  template<typename MatType>
+  void enableEigenPySpecific()
+  {
     numpy_import_array();
     if(check_registration<MatType>()) return;
     
