@@ -97,44 +97,6 @@ namespace eigenpy
   };
   
   /* --- FROM PYTHON ------------------------------------------------------------ */
-  namespace bp = boost::python;
-
-  template<typename MatType, int ROWS,int COLS>
-  struct TraitsMatrixConstructor
-  {
-    static MatType & construct(void*storage,int /*r*/,int /*c*/)
-    {
-      return * new(storage) MatType();
-    }
-  };
-
-  template<typename MatType>
-  struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,Eigen::Dynamic>
-  {
-    static MatType & construct(void*storage,int r,int c)
-    {
-      return * new(storage) MatType(r,c);
-    }
-  };
-
-  template<typename MatType,int R>
-  struct TraitsMatrixConstructor<MatType,R,Eigen::Dynamic>
-  {
-    static MatType & construct(void*storage,int /*r*/,int c)
-    {
-      return * new(storage) MatType(R,c);
-    }
-  };
-
-  template<typename MatType,int C>
-  struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,C>
-  {
-    static MatType & construct(void*storage,int r,int /*c*/)
-    {
-      return * new(storage) MatType(r,C);
-    }
-  };
-
 
   template<typename MatType>
   struct EigenFromPy
@@ -195,20 +157,17 @@ namespace eigenpy
 			  bp::converter::rvalue_from_python_stage1_data* memory)
     {
       using namespace Eigen;
-
+      
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
       typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
-
+      assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX)
+             && "Map range larger than int ... can never happen." );
+      
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
-		       ((void*)memory))->storage.bytes;
-      assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX) 
-	      && "Map range larger than int ... can never happen." );
-      int r=(int)numpyMap.rows(),c=(int)numpyMap.cols();
-      MatType & eigenMatrix = //* new(storage) MatType(numpyMap.rows(),numpyMap.cols());
-	TraitsMatrixConstructor<MatType,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime>::construct (storage,r,c);
+                       ((void*)memory))->storage.bytes;
+      
+      new(storage) MatType(numpyMap);
       memory->convertible = storage;
-
-      eigenMatrix = numpyMap;
     }
   };
 #define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
