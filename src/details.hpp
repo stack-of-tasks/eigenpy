@@ -104,50 +104,50 @@ namespace eigenpy
     EigenFromPy()
     {
       bp::converter::registry::push_back
-	(reinterpret_cast<void *(*)(_object *)>(&convertible),
-	 &construct,bp::type_id<MatType>());
+      (reinterpret_cast<void *(*)(_object *)>(&convertible),
+       &construct,bp::type_id<MatType>());
     }
- 
+    
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyArrayObject* obj_ptr)
     {
       typedef typename MatType::Scalar T;
-
-      if (!PyArray_Check(obj_ptr)) 
-	{
+      
+      if (!PyArray_Check(obj_ptr))
+      {
 #ifndef NDEBUG
-	  std::cerr << "The python object is not a numpy array." << std::endl;
+        std::cerr << "The python object is not a numpy array." << std::endl;
 #endif
-	  return 0;
-	}
-
+        return 0;
+      }
+      
       if (PyArray_NDIM(obj_ptr) != 2)
-	if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
-	  {
+        if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
+        {
 #ifndef NDEBUG
-	    std::cerr << "The number of dimension of the object is not correct." << std::endl;
+          std::cerr << "The number of dimension of the object is not correct." << std::endl;
 #endif
-	    return 0;
-	  }
-
+          return 0;
+        }
+      
       if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) != NumpyEquivalentType<T>::type_code)
-	{
+      {
 #ifndef NDEBUG
-	  std::cerr << "The internal type as no Eigen equivalent." << std::endl;
+        std::cerr << "The internal type as no Eigen equivalent." << std::endl;
 #endif
-	  return 0;
-	}
+        return 0;
+      }
 #ifdef NPY_1_8_API_VERSION
       if (!(PyArray_FLAGS(obj_ptr)))
 #else
-      if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
+        if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
 #endif
-	{
+        {
 #ifndef NDEBUG
-	  std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
+          std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
 #endif
-	  return 0;
-	}
+          return 0;
+        }
       
       return obj_ptr;
     }
