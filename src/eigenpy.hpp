@@ -18,15 +18,18 @@
 #define __eigenpy_eigenpy_hpp__
 
 #include "eigenpy/fwd.hpp"
-#include "eigenpy/memory.hpp"
 #include "eigenpy/deprecated.hh"
+#include "eigenpy/ref.hpp"
+
+#define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
+  enableEigenPySpecific<TYPE>(); \
+  enableEigenPySpecific< eigenpy::Ref<TYPE> >();
 
 namespace eigenpy
 {
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void enableEigenPy();
 
-  
   template<typename MatType>
   void enableEigenPySpecific();
   

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 LAAS-CNRS
+ * Copyright (c) 2015-2018 LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -22,17 +22,18 @@ namespace eigenpy
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void enableEigenPy()
   {
+    using namespace Eigen;
     Exception::registerException();
 
-    enableEigenPySpecific<Eigen::MatrixXd>();
-    enableEigenPySpecific<Eigen::Matrix2d>();
-    enableEigenPySpecific<Eigen::Matrix3d>();
-    enableEigenPySpecific<Eigen::Matrix4d>();
-
-    enableEigenPySpecific<Eigen::VectorXd>();
-    enableEigenPySpecific<Eigen::Vector2d>();
-    enableEigenPySpecific<Eigen::Vector3d>();
-    enableEigenPySpecific<Eigen::Vector4d>();
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXd);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2d);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix3d);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix4d);
+    
+    ENABLE_SPECIFIC_MATRIX_TYPE(VectorXd);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector2d);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector3d);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector4d);
   }
 
 } // namespace eigenpy
