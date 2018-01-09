@@ -103,6 +103,7 @@ SET(HEADERS
   registration.hpp
   angle-axis.hpp
   quaternion.hpp
+  ref.hpp
 )
 
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
