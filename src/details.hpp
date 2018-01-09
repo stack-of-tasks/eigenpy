@@ -58,7 +58,7 @@ namespace eigenpy
     { return make((PyObject*)pyArray,copy); }
     bp::object make(PyObject* pyObj, bool copy = false)
     {
-      boost::python::object m
+      bp::object m
       = pyMatrixType(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
       Py_INCREF(m.ptr());
       return m;
@@ -67,7 +67,7 @@ namespace eigenpy
   protected:
     PyMatrixType()
     {
-      pyModule = boost::python::import("numpy");
+      pyModule = bp::import("numpy");
       pyMatrixType = pyModule.attr("matrix");
     }
 
@@ -154,7 +154,7 @@ namespace eigenpy
  
     // Convert obj_ptr into a Eigenvec
     static void construct(PyObject* pyObj,
-			  bp::converter::rvalue_from_python_stage1_data* memory)
+                          bp::converter::rvalue_from_python_stage1_data* memory)
     {
       using namespace Eigen;
       
@@ -184,7 +184,7 @@ namespace eigenpy
     numpy_import_array();
     if(check_registration<MatType>()) return;
     
-    boost::python::to_python_converter<MatType,EigenToPy<MatType> >();
+    bp::to_python_converter<MatType,EigenToPy<MatType> >();
     EigenFromPy<MatType>();
   }
 
