@@ -30,7 +30,6 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/registration.hpp"
-#include "eigenpy/exception.hpp"
 #include "eigenpy/map.hpp"
 
 
