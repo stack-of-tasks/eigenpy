@@ -99,6 +99,16 @@ namespace eigenpy
   /* --- FROM PYTHON ------------------------------------------------------------ */
 
   template<typename MatType>
+  struct EigenObjectAllocator
+  {
+    static void allocate(PyArrayObject * pyArray, void * storage)
+    {
+      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      new(storage) MatType(numpyMap);
+    }
+  };
+  
+  template<typename MatType>
   struct EigenFromPy
   {
     EigenFromPy()
@@ -159,14 +169,13 @@ namespace eigenpy
       using namespace Eigen;
       
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
-      assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX)
-             && "Map range larger than int ... can never happen." );
+      assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
       
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
                        ((void*)memory))->storage.bytes;
       
-      new(storage) MatType(numpyMap);
+      EigenObjectAllocator<MatType>::allocate(pyArray,storage);
+
       memory->convertible = storage;
     }
   };
