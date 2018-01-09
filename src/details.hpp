@@ -17,13 +17,7 @@
 #ifndef __eigenpy_details_hpp__
 #define __eigenpy_details_hpp__
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
-
-#include <numpy/numpyconfig.h>
-#ifdef NPY_1_8_API_VERSION
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#endif
+#include "eigenpy/fwd.hpp"
 
 #include <numpy/arrayobject.h>
 #include <iostream>
@@ -73,6 +67,40 @@ namespace eigenpy
     bp::object pyMatrixType;
     bp::object pyModule;
   };
+  
+  template<typename MatType>
+  struct EigenObjectAllocator
+  {
+    typedef MatType Type;
+    
+    static void allocate(PyArrayObject * pyArray, void * storage)
+    {
+      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      new(storage) MatType(numpyMap);
+    }
+    
+    static void convert(Type const & mat , PyArrayObject * pyArray)
+    {
+      MapNumpy<MatType>::map(pyArray) = mat;
+    }
+  };
+  
+  template<typename MatType>
+  struct EigenObjectAllocator< eigenpy::Ref<MatType> >
+  {
+    typedef eigenpy::Ref<MatType> Type;
+    
+    static void allocate(PyArrayObject * pyArray, void * storage)
+    {
+      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      new(storage) Type(numpyMap);
+    }
+    
+    static void convert(Type const & mat , PyArrayObject * pyArray)
+    {
+      MapNumpy<MatType>::map(pyArray) = mat;
+    }
+  };
 
   /* --- TO PYTHON -------------------------------------------------------------- */
   template<typename MatType>
@@ -89,7 +117,7 @@ namespace eigenpy
       PyArrayObject* pyArray = (PyArrayObject*)
       PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
 
-      MapNumpy<MatType>::map(pyArray) = mat;
+      EigenObjectAllocator<MatType>::convert(mat,pyArray);
 
       return PyMatrixType::getInstance().make(pyArray).ptr();
     }
@@ -97,16 +125,6 @@ namespace eigenpy
   
   /* --- FROM PYTHON ------------------------------------------------------------ */
 
-  template<typename MatType>
-  struct EigenObjectAllocator
-  {
-    static void allocate(PyArrayObject * pyArray, void * storage)
-    {
-      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
-      new(storage) MatType(numpyMap);
-    }
-  };
-  
   template<typename MatType>
   struct EigenFromPy
   {
@@ -120,8 +138,6 @@ namespace eigenpy
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyArrayObject* obj_ptr)
     {
-      typedef typename MatType::Scalar T;
-      
       if (!PyArray_Check(obj_ptr))
       {
 #ifndef NDEBUG
@@ -130,7 +146,31 @@ namespace eigenpy
         return 0;
       }
       
+      if(MatType::IsVectorAtCompileTime)
+      {
+        if(PyArray_DIMS(obj_ptr)[0] > 1 && PyArray_DIMS(obj_ptr)[1] > 1)
+        {
+#ifndef NDEBUG
+          std::cerr << "The number of dimension of the object does not correspond to a vector" << std::endl;
+#endif
+          return 0;
+        }
+        
+        if(((PyArray_DIMS(obj_ptr)[0] == 1) && (MatType::ColsAtCompileTime == 1))
+           || ((PyArray_DIMS(obj_ptr)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
+        {
+#ifndef NDEBUG
+          if(MatType::ColsAtCompileTime == 1)
+            std::cerr << "The object is not a column vector" << std::endl;
+          else
+            std::cerr << "The object is not a row vector" << std::endl;
+#endif
+          return 0;
+        }
+      }
+      
       if (PyArray_NDIM(obj_ptr) != 2)
+      {
         if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
         {
 #ifndef NDEBUG
@@ -138,8 +178,10 @@ namespace eigenpy
 #endif
           return 0;
         }
+      }
       
-      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) != NumpyEquivalentType<T>::type_code)
+      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0))
+          != NumpyEquivalentType<typename MatType::Scalar>::type_code)
       {
 #ifndef NDEBUG
         std::cerr << "The internal type as no Eigen equivalent." << std::endl;
@@ -178,6 +220,7 @@ namespace eigenpy
       memory->convertible = storage;
     }
   };
+  
 #define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
   
   template<typename MatType,typename EigenEquivalentType>
