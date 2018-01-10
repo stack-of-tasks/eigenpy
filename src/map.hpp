@@ -14,10 +14,9 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
+#include "eigenpy/fwd.hpp"
 #include <numpy/arrayobject.h>
-#include <eigenpy/exception.hpp>
+#include "eigenpy/exception.hpp"
 
 namespace eigenpy
 {
@@ -30,6 +29,7 @@ namespace eigenpy
   {
     typedef MapNumpyTraits<MatType, MatType::IsVectorAtCompileTime> Impl;
     typedef typename Impl::EigenMap EigenMap;
+    typedef typename Impl::Stride Stride;
 
     static inline EigenMap map( PyArrayObject* pyArray );
    };
@@ -45,9 +45,9 @@ namespace eigenpy
   template<typename MatType>
   struct MapNumpyTraits<MatType,0>
   {
-    typedef Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> Stride;
-    typedef Eigen::Map<MatType,0,Stride> EigenMap;
-    typedef typename MatType::Scalar T;
+    typedef typename StrideType<MatType>::type Stride;
+    typedef Eigen::Map<MatType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
+    typedef typename MatType::Scalar Scalar;
 
     static EigenMap mapImpl( PyArrayObject* pyArray )
     {
@@ -63,6 +63,9 @@ namespace eigenpy
       const long int itemsize = PyArray_ITEMSIZE(pyArray);
       const int stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
       const int stride2 = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
+      Stride stride(stride2,stride1);
+      
+      
       
       if( (MatType::RowsAtCompileTime!=R)
 	  && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
@@ -71,17 +74,18 @@ namespace eigenpy
 	  && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
 	{  throw eigenpy::Exception("The number of columns does not fit with the matrix type."); }
 
-      T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
-      return EigenMap( pyData, R,C, Stride(stride2,stride1) );
+      Scalar* pyData = reinterpret_cast<Scalar*>(PyArray_DATA(pyArray));
+      
+      return EigenMap( pyData, R,C, stride );
     }
   };
 
   template<typename MatType>
   struct MapNumpyTraits<MatType,1>
   {
-    typedef Eigen::InnerStride<Eigen::Dynamic> Stride;
-    typedef Eigen::Map<MatType,0,Stride> EigenMap;
-    typedef typename MatType::Scalar T;
+    typedef typename StrideType<MatType>::type Stride;
+    typedef Eigen::Map<MatType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
+    typedef typename MatType::Scalar Scalar;
  
     static EigenMap mapImpl( PyArrayObject* pyArray )
     {
@@ -101,8 +105,8 @@ namespace eigenpy
 	      && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )
 	{ throw eigenpy::Exception("The number of elements does not fit with the vector type."); }
 
-      T* pyData = reinterpret_cast<T*>(PyArray_DATA(pyArray));
-      return EigenMap( pyData, R, 1, Stride(stride) );
+      Scalar* pyData = reinterpret_cast<Scalar*>(PyArray_DATA(pyArray));
+      return EigenMap( pyData, R, Stride(stride) );
     }
   };
 

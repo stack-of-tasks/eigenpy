@@ -17,20 +17,13 @@
 #ifndef __eigenpy_details_hpp__
 #define __eigenpy_details_hpp__
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
-
-#include <numpy/numpyconfig.h>
-#ifdef NPY_1_8_API_VERSION
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#endif
+#include "eigenpy/fwd.hpp"
 
 #include <numpy/arrayobject.h>
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/registration.hpp"
-#include "eigenpy/exception.hpp"
 #include "eigenpy/map.hpp"
 
 
@@ -58,7 +51,7 @@ namespace eigenpy
     { return make((PyObject*)pyArray,copy); }
     bp::object make(PyObject* pyObj, bool copy = false)
     {
-      boost::python::object m
+      bp::object m
       = pyMatrixType(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
       Py_INCREF(m.ptr());
       return m;
@@ -67,16 +60,50 @@ namespace eigenpy
   protected:
     PyMatrixType()
     {
-      pyModule = boost::python::import("numpy");
+      pyModule = bp::import("numpy");
       pyMatrixType = pyModule.attr("matrix");
     }
 
     bp::object pyMatrixType;
     bp::object pyModule;
   };
+  
+  template<typename MatType>
+  struct EigenObjectAllocator
+  {
+    typedef MatType Type;
+    
+    static void allocate(PyArrayObject * pyArray, void * storage)
+    {
+      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      new(storage) MatType(numpyMap);
+    }
+    
+    static void convert(Type const & mat , PyArrayObject * pyArray)
+    {
+      MapNumpy<MatType>::map(pyArray) = mat;
+    }
+  };
+  
+  template<typename MatType>
+  struct EigenObjectAllocator< eigenpy::Ref<MatType> >
+  {
+    typedef eigenpy::Ref<MatType> Type;
+    
+    static void allocate(PyArrayObject * pyArray, void * storage)
+    {
+      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      new(storage) Type(numpyMap);
+    }
+    
+    static void convert(Type const & mat , PyArrayObject * pyArray)
+    {
+      MapNumpy<MatType>::map(pyArray) = mat;
+    }
+  };
 
   /* --- TO PYTHON -------------------------------------------------------------- */
-  template< typename MatType,typename EquivalentEigenType >
+  template<typename MatType>
   struct EigenToPy
   {
     static PyObject* convert(MatType const& mat)
@@ -88,139 +115,128 @@ namespace eigenpy
 
       npy_intp shape[2] = { R,C };
       PyArrayObject* pyArray = (PyArrayObject*)
-	PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
+      PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
 
-      MapNumpy<EquivalentEigenType>::map(pyArray) = mat;
+      EigenObjectAllocator<MatType>::convert(mat,pyArray);
 
       return PyMatrixType::getInstance().make(pyArray).ptr();
     }
   };
   
   /* --- FROM PYTHON ------------------------------------------------------------ */
-  namespace bp = boost::python;
-
-  template<typename MatType, int ROWS,int COLS>
-  struct TraitsMatrixConstructor
-  {
-    static MatType & construct(void*storage,int /*r*/,int /*c*/)
-    {
-      return * new(storage) MatType();
-    }
-  };
 
   template<typename MatType>
-  struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,Eigen::Dynamic>
-  {
-    static MatType & construct(void*storage,int r,int c)
-    {
-      return * new(storage) MatType(r,c);
-    }
-  };
-
-  template<typename MatType,int R>
-  struct TraitsMatrixConstructor<MatType,R,Eigen::Dynamic>
-  {
-    static MatType & construct(void*storage,int /*r*/,int c)
-    {
-      return * new(storage) MatType(R,c);
-    }
-  };
-
-  template<typename MatType,int C>
-  struct TraitsMatrixConstructor<MatType,Eigen::Dynamic,C>
-  {
-    static MatType & construct(void*storage,int r,int /*c*/)
-    {
-      return * new(storage) MatType(r,C);
-    }
-  };
-
-
-  template<typename MatType,typename EquivalentEigenType>
   struct EigenFromPy
   {
     EigenFromPy()
     {
       bp::converter::registry::push_back
-	(reinterpret_cast<void *(*)(_object *)>(&convertible),
-	 &construct,bp::type_id<MatType>());
+      (reinterpret_cast<void *(*)(_object *)>(&convertible),
+       &construct,bp::type_id<MatType>());
     }
- 
+    
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyArrayObject* obj_ptr)
     {
-      typedef typename MatType::Scalar T;
-
-      if (!PyArray_Check(obj_ptr)) 
-	{
+      if (!PyArray_Check(obj_ptr))
+      {
 #ifndef NDEBUG
-	  std::cerr << "The python object is not a numpy array." << std::endl;
+        std::cerr << "The python object is not a numpy array." << std::endl;
 #endif
-	  return 0;
-	}
-
+        return 0;
+      }
+      
+      if(MatType::IsVectorAtCompileTime)
+      {
+        if(PyArray_DIMS(obj_ptr)[0] > 1 && PyArray_DIMS(obj_ptr)[1] > 1)
+        {
+#ifndef NDEBUG
+          std::cerr << "The number of dimension of the object does not correspond to a vector" << std::endl;
+#endif
+          return 0;
+        }
+        
+        if(((PyArray_DIMS(obj_ptr)[0] == 1) && (MatType::ColsAtCompileTime == 1))
+           || ((PyArray_DIMS(obj_ptr)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
+        {
+#ifndef NDEBUG
+          if(MatType::ColsAtCompileTime == 1)
+            std::cerr << "The object is not a column vector" << std::endl;
+          else
+            std::cerr << "The object is not a row vector" << std::endl;
+#endif
+          return 0;
+        }
+      }
+      
       if (PyArray_NDIM(obj_ptr) != 2)
-	if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
-	  {
+      {
+        if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
+        {
 #ifndef NDEBUG
-	    std::cerr << "The number of dimension of the object is not correct." << std::endl;
+          std::cerr << "The number of dimension of the object is not correct." << std::endl;
 #endif
-	    return 0;
-	  }
-
-      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) != NumpyEquivalentType<T>::type_code)
-	{
+          return 0;
+        }
+      }
+      
+      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0))
+          != NumpyEquivalentType<typename MatType::Scalar>::type_code)
+      {
 #ifndef NDEBUG
-	  std::cerr << "The internal type as no Eigen equivalent." << std::endl;
+        std::cerr << "The internal type as no Eigen equivalent." << std::endl;
 #endif
-	  return 0;
-	}
+        return 0;
+      }
 #ifdef NPY_1_8_API_VERSION
       if (!(PyArray_FLAGS(obj_ptr)))
 #else
-      if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
+        if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
 #endif
-	{
+        {
 #ifndef NDEBUG
-	  std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
+          std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
 #endif
-	  return 0;
-	}
+          return 0;
+        }
       
       return obj_ptr;
     }
  
     // Convert obj_ptr into a Eigenvec
     static void construct(PyObject* pyObj,
-			  bp::converter::rvalue_from_python_stage1_data* memory)
+                          bp::converter::rvalue_from_python_stage1_data* memory)
     {
       using namespace Eigen;
-
+      
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-      typename MapNumpy<EquivalentEigenType>::EigenMap numpyMap = MapNumpy<EquivalentEigenType>::map(pyArray);
-
+      assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
+      
       void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
-		       ((void*)memory))->storage.bytes;
-      assert( (numpyMap.rows()<INT_MAX) && (numpyMap.cols()<INT_MAX) 
-	      && "Map range larger than int ... can never happen." );
-      int r=(int)numpyMap.rows(),c=(int)numpyMap.cols();
-      EquivalentEigenType & eigenMatrix = //* new(storage) MatType(numpyMap.rows(),numpyMap.cols());
-	TraitsMatrixConstructor<MatType,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime>::construct (storage,r,c);
-      memory->convertible = storage;
+                       ((void*)memory))->storage.bytes;
+      
+      EigenObjectAllocator<MatType>::allocate(pyArray,storage);
 
-      eigenMatrix = numpyMap;
+      memory->convertible = storage;
     }
   };
+  
 #define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
   
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
+    enableEigenPySpecific<MatType>();
+  }
+  
+  template<typename MatType>
+  void enableEigenPySpecific()
+  {
     numpy_import_array();
     if(check_registration<MatType>()) return;
     
-    boost::python::to_python_converter<MatType,EigenToPy<MatType,MatType> >();
-    EigenFromPy<MatType,MatType>();
+    bp::to_python_converter<MatType,EigenToPy<MatType> >();
+    EigenFromPy<MatType>();
   }
 
 } // namespace eigenpy

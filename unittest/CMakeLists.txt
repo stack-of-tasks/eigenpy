@@ -1,5 +1,5 @@
 # 
-# Copyright (c) 2016 CNRS
+# Copyright (c) 2016-2018 CNRS
 # 
 # This file is part of eigenpy
 # eigenpy is free software: you can redistribute it
@@ -40,4 +40,5 @@ ADD_CUSTOM_TARGET(check COMMAND ${CMAKE_CTEST_COMMAND})
 
 ADD_LIB_UNIT_TEST(matrix "eigen3")
 ADD_LIB_UNIT_TEST(geometry "eigen3")
+ADD_LIB_UNIT_TEST(ref "eigen3")
 

@@ -79,7 +79,7 @@ namespace boost { namespace python { namespace objects { \
              \
             Py_ssize_t holder_offset = reinterpret_cast<Py_ssize_t>(holder) \
             - reinterpret_cast<Py_ssize_t>(&instance->storage) \
-            + offsetof(instance_t, storage); \
+            + static_cast<Py_ssize_t>(offsetof(instance_t, storage)); \
             Py_SIZE(instance) = holder_offset; \
              \
             protect.cancel(); \
