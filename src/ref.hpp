@@ -21,7 +21,7 @@
 
 // For old Eigen versions, EIGEN_DEVICE_FUNC is not defined.
 // We must define it just in the scope of this file.
-#if not EIGEN_VERSION_AT_LEAST(3,2,91)
+#if not EIGEN_VERSION_AT_LEAST(3,2,90)
 #define EIGEN_DEVICE_FUNC
 #endif
 
@@ -58,7 +58,7 @@ namespace eigenpy
     typedef typename Base::CoeffReturnType CoeffReturnType; /*!< \brief The return type for coefficient access. \details Depending on whether the object allows direct coefficient access (e.g. for a MatrixXd), this type is either 'const Scalar&' or simply 'Scalar' for objects that do not allow direct coefficient access. */
     typedef typename Eigen::internal::ref_selector<Base>::type Nested;
     typedef typename Eigen::internal::traits<Base>::StorageKind StorageKind;
-#if EIGEN_VERSION_AT_LEAST(3,2,91)
+#if EIGEN_VERSION_AT_LEAST(3,2,90)
     typedef typename Eigen::internal::traits<Base>::StorageIndex StorageIndex;
 #else
     typedef typename Eigen::internal::traits<Base>::Index StorageIndex;
@@ -104,7 +104,7 @@ namespace eigenpy
   }; // struct Ref<PlainObjectType>
 }
 
-#if not EIGEN_VERSION_AT_LEAST(3,2,91)
+#if not EIGEN_VERSION_AT_LEAST(3,2,90)
 #undef EIGEN_DEVICE_FUNC
 #endif
 
