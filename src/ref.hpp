@@ -18,6 +18,7 @@
 #define __eigenpy_ref_hpp__
 
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/stride.hpp"
 
 // For old Eigen versions, EIGEN_DEVICE_FUNC is not defined.
 // We must define it just in the scope of this file.
@@ -27,18 +28,7 @@
 
 namespace eigenpy
 {
-  template<typename MatType, int IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
-  struct StrideType
-  {
-    typedef Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> type;
-  };
-  
-  template<typename MatType>
-  struct StrideType<MatType,1>
-  {
-    typedef Eigen::InnerStride<Eigen::Dynamic> type;
-  };
-  
+
   template<typename PlainObjectType>
   struct Ref : Eigen::Ref<PlainObjectType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename StrideType<PlainObjectType>::type>
   {

@@ -98,6 +98,7 @@ SET(HEADERS
   registration.hpp
   angle-axis.hpp
   quaternion.hpp
+  stride.hpp
   ref.hpp
 )
 

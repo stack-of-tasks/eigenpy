@@ -17,6 +17,7 @@
 #include "eigenpy/fwd.hpp"
 #include <numpy/arrayobject.h>
 #include "eigenpy/exception.hpp"
+#include "eigenpy/stride.hpp"
 
 namespace eigenpy
 {
