@@ -28,9 +28,14 @@
 #include <numpy/noprefix.h>
 
 #ifdef NPY_ALIGNED
-#define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
+#if EIGEN_VERSION_AT_LEAST(3,2,90)
+  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
 #else
-#define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Unaligned
+  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned
+#endif
+#else
+  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Unaligned
 #endif
 
 #endif // ifndef __eigenpy_fwd_hpp__
+
