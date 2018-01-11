@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018, Nicolas Mansard and Justin Carpentier, LAAS-CNRS
+ * Copyright 2018, Justin Carpentier <jcarpent@laas.fr>, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -14,28 +14,24 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __eigenpy_fwd_hpp__
-#define __eigenpy_fwd_hpp__
+#ifndef __eigenpy_stride_hpp__
+#define __eigenpy_stride_hpp__
 
-#include <boost/python.hpp>
 #include <Eigen/Core>
 
-#include <numpy/numpyconfig.h>
-#ifdef NPY_1_8_API_VERSION
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#endif
+namespace eigenpy
+{
+  template<typename MatType, int IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
+  struct StrideType
+  {
+    typedef Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> type;
+  };
+  
+  template<typename MatType>
+  struct StrideType<MatType,1>
+  {
+    typedef Eigen::InnerStride<Eigen::Dynamic> type;
+  };
+}
 
-#include <numpy/noprefix.h>
-
-#ifdef NPY_ALIGNED
-#if EIGEN_VERSION_AT_LEAST(3,2,90)
-  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
-#else
-  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned
-#endif
-#else
-  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Unaligned
-#endif
-
-#endif // ifndef __eigenpy_fwd_hpp__
-
+#endif // ifndef __eigenpy_stride_hpp__

@@ -55,12 +55,7 @@ ENDIF(WIN32)
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
 # ----------------------------------------------------
-OPTION (EIGEN_NUMPY_ALIGNED "Directly aligned data between Numpy and Eigen" OFF)
 OPTION (BUILD_UNIT_TESTS "Build the unitary tests" ON)
-
-IF(EIGEN_NUMPY_ALIGNED)
-  ADD_DEFINITIONS(-DEIGENPY_ALIGNED)
-ENDIF(EIGEN_NUMPY_ALIGNED)
 
 # ----------------------------------------------------
 # --- DEPENDANCIES -----------------------------------
@@ -103,6 +98,7 @@ SET(HEADERS
   registration.hpp
   angle-axis.hpp
   quaternion.hpp
+  stride.hpp
   ref.hpp
 )
 
@@ -157,13 +153,9 @@ ADD_SUBDIRECTORY(python)
 # ----------------------------------------------------
 ADD_SUBDIRECTORY(unittest)
 
-IF(EIGEN_NUMPY_ALIGNED)
-  PKG_CONFIG_APPEND_CFLAGS("-DEIGENPY_ALIGNED")
-ENDIF(EIGEN_NUMPY_ALIGNED)
-
 PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
-PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
-PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
+PKG_CONFIG_APPEND_CFLAGS("-isystem ${PYTHON_INCLUDE_DIRS}")
+PKG_CONFIG_APPEND_CFLAGS("-isystem ${NUMPY_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_BOOST_LIBS(${BOOST_COMPONENTS})
 
 SETUP_PROJECT_FINALIZE()

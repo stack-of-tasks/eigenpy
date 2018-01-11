@@ -85,6 +85,7 @@ namespace eigenpy
     }
   };
   
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
   template<typename MatType>
   struct EigenObjectAllocator< eigenpy::Ref<MatType> >
   {
@@ -101,6 +102,7 @@ namespace eigenpy
       MapNumpy<MatType>::map(pyArray) = mat;
     }
   };
+#endif
 
   /* --- TO PYTHON -------------------------------------------------------------- */
   template<typename MatType>
