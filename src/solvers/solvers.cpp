@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Justin Carpentier, LAAS-CNRS
+ * Copyright 2017-2018, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -13,6 +13,10 @@
  * have received a copy of the GNU Lesser General Public License along
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+#include <Eigen/Core>
+
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
 
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/solvers/ConjugateGradient.hpp"
@@ -43,3 +47,6 @@ namespace eigenpy
     ;
   }
 } // namespace eigenpy
+
+#endif
+

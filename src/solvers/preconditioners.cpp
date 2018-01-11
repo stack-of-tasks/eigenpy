@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Justin Carpentier, LAAS-CNRS
+ * Copyright 2017-2018, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -14,12 +14,16 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <Eigen/Core>
+
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
 #include "eigenpy/solvers/preconditioners.hpp"
 #include "eigenpy/solvers/BasicPreconditioners.hpp"
 //#include "eigenpy/solvers/BFGSPreconditioners.hpp"
 
 namespace eigenpy
 {
+
   void exposePreconditioners()
   {
     using namespace Eigen;
@@ -32,4 +36,8 @@ namespace eigenpy
 //      LimitedBFGSPreconditionerBaseVisitor< LimitedBFGSPreconditioner<double,Eigen::Dynamic,Eigen::Upper|Eigen::Lower> >::expose("LimitedBFGSPreconditioner");
    
   }
+
 } // namespace eigenpy
+
+#endif
+

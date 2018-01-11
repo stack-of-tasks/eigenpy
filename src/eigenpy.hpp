@@ -19,11 +19,19 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/deprecated.hh"
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
 #include "eigenpy/ref.hpp"
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
   enableEigenPySpecific<TYPE>(); \
   enableEigenPySpecific< eigenpy::Ref<TYPE> >();
+
+#else
+
+#define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
+  enableEigenPySpecific<TYPE>();
+
+#endif
 
 namespace eigenpy
 {
