@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2016 LAAS-CNRS
+ * Copyright (c) 2015-2018 LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -17,6 +17,8 @@
 #include "eigenpy/exception.hpp"
 #include "eigenpy/registration.hpp"
 
+#include <boost/python/exception_translator.hpp>
+
 
 namespace eigenpy
 {
@@ -26,7 +28,7 @@ namespace eigenpy
   {
     assert(NULL!=pyType);
     // Return an exception object of type pyType and value object(e).
-    PyErr_SetObject(Exception::pyType,boost::python::object(e).ptr());
+    PyErr_SetString(PyExc_RuntimeError, e.what());
   }
 
   void Exception::registerException()
