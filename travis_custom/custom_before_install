@@ -1,8 +1,0 @@
-#!/bin/bash
-set -e
-
-# Setup environment variables.
-export APT_DEPENDENCIES="doxygen libboost-test-dev libboost-python-dev libeigen3-dev python2.7-dev python-numpy"
-
-# When this script is called the current directory is ./custom_travis
-. ./.travis/run ../.travis/before_install

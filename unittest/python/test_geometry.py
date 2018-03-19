@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from geometry import *
 import numpy as np
 from numpy import cos,sin
@@ -33,13 +35,13 @@ assert(isapprox(q.coeffs(),qR.coeffs()))
 assert(isapprox(qR[3],1./np.sqrt(30)))
 try:
    qR[5]
-   print "Error, this message should not appear."
-except Exception,e:
-  if verbose: print "As expected, catched exception: ",e.message
+   print("Error, this message should not appear.")
+except Exception as e:
+  if verbose: print("As expected, catched exception: ",e.message)
 
 # --- Angle Vector ------------------------------------------------
 r = AngleAxis(.1,np.array([1,0,0],np.double))
-if verbose: print "Rx(.1) = \n\n",r.matrix(),"\n"
+if verbose: print("Rx(.1) = \n\n",r.matrix(),"\n")
 assert( isapprox(r.matrix()[2,2],cos(r.angle)))
 assert( isapprox(r.axis,np.matrix("1;0;0")) )
 assert( isapprox(r.angle,0.1) )
@@ -66,6 +68,6 @@ res = testInQuaternion_fx(q)
 assert(q.norm() == res)
 try:
     testInQuaternion(q)
-    print "Error, this message should not appear."
+    print("Error, this message should not appear.")
 except:
-    if verbose: print "As expected, catch a Boost::python::ArgError exception."
+    if verbose: print("As expected, catch a Boost::python::ArgError exception.")
