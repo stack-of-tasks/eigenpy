@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014-2018, Nicolas Mansard, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -21,6 +21,7 @@
 #include <Eigen/Geometry>
 
 #include "eigenpy/exception.hpp"
+#include "eigenpy/registration.hpp"
 
 namespace eigenpy
 {
@@ -213,6 +214,8 @@ namespace eigenpy
 
     static void expose()
     {
+      if(check_registration<Quaternion>()) return;
+      
       bp::class_<Quaternion>("Quaternion",
                              "Quaternion representing rotation.\n\n"
                              "Supported operations "

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014-2018, Nicolas Mansard, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -20,6 +20,8 @@
 #include <boost/python.hpp>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
+
+#include "eigenpy/registration.hpp"
 
 namespace eigenpy
 {
@@ -112,6 +114,8 @@ namespace eigenpy
 
     static void expose()
     {
+      if(check_registration<AngleAxis>()) return;
+      
       bp::class_<AngleAxis>("AngleAxis",
                             "AngleAxis representation of rotations.\n\n",
                             bp::no_init)
