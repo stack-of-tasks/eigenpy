@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017, Justin Carpentier, CNRS
+// Copyright (c) 2017-2018, Justin Carpentier, CNRS
 //
 // This file is part of eigenpy
 // eigenpy is free software: you can redistribute it
@@ -30,6 +30,7 @@ BOOST_PYTHON_MODULE(eigenpy)
   enableEigenPy();
   exposeAngleAxis();
   exposeQuaternion();
+  exposeGeometryConversion();
   
   {
     boost::python::scope solvers = boost::python::class_<SolversScope>("solvers");

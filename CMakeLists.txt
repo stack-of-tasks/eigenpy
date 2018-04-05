@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015-2017 LAAS-CNRS
+# Copyright (c) 2015-2018 LAAS-CNRS
 #
 # This file is part of eigenpy.
 # eigenpy is free software: you can redistribute it and/or
@@ -94,6 +94,7 @@ SET(HEADERS
   fwd.hpp
   map.hpp
   geometry.hpp
+  geometry-conversion.hpp
   memory.hpp
   registration.hpp
   angle-axis.hpp
@@ -126,12 +127,14 @@ SET(${PROJECT_NAME}_SOLVERS_SOURCES
   src/solvers/preconditioners.cpp
   src/solvers/solvers.cpp
   )
+
 SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_SOLVERS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
+  src/geometry-conversion.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})

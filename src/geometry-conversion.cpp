@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2018, Nicolas Mansard, Justin Carpentier, LAAS-CNRS
+ * Copyright 2018, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -14,17 +14,14 @@
  * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __eigenpy_geometry_hpp__
-#define __eigenpy_geometry_hpp__
+#include "eigenpy/memory.hpp"
+#include "eigenpy/geometry.hpp"
+#include "eigenpy/geometry-conversion.hpp"
 
 namespace eigenpy
 {
-  
-  void exposeQuaternion();
-  void exposeAngleAxis();
-  
-  void exposeGeometryConversion();
-  
+  void exposeGeometryConversion()
+  {
+    EulerAnglesConvertor<double>::expose();
+  }
 } // namespace eigenpy
-
-#endif // define __eigenpy_geometry_hpp__
