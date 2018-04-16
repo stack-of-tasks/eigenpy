@@ -26,13 +26,31 @@
 #include "eigenpy/registration.hpp"
 #include "eigenpy/map.hpp"
 
+#define GET_PY_ARRAY_TYPE(array) PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
+
 
 namespace eigenpy
 {
   template <typename SCALAR>  struct NumpyEquivalentType {};
   template <> struct NumpyEquivalentType<double>  { enum { type_code = NPY_DOUBLE };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
+  template <> struct NumpyEquivalentType<long>     { enum { type_code = NPY_LONG    };};
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
+  
+  template <typename SCALAR1, typename SCALAR2>
+  struct FromTypeToType : public boost::false_type {};
+  
+  template <typename SCALAR>
+  struct FromTypeToType<SCALAR,SCALAR> : public boost::true_type {};
+  
+  template <> struct FromTypeToType<int,long> : public boost::true_type {};
+  template <> struct FromTypeToType<int,float> : public boost::true_type {};
+  template <> struct FromTypeToType<int,double> : public boost::true_type {};
+  
+  template <> struct FromTypeToType<long,float> : public boost::true_type {};
+  template <> struct FromTypeToType<long,double> : public boost::true_type {};
+  
+  template <> struct FromTypeToType<float,double> : public boost::true_type {};
 
   namespace bp = boost::python;
 
@@ -72,16 +90,40 @@ namespace eigenpy
   struct EigenObjectAllocator
   {
     typedef MatType Type;
+    typedef typename MatType::Scalar Scalar;
     
     static void allocate(PyArrayObject * pyArray, void * storage)
     {
-      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
-      new(storage) MatType(numpyMap);
+      const int rows = (int)PyArray_DIMS(pyArray)[0];
+      const int cols = (int)PyArray_DIMS(pyArray)[1];
+      
+      Type * mat_ptr = new(storage) Type(rows,cols);
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+        *mat_ptr = MapNumpy<MatType,int>::map(pyArray).template cast<Scalar>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
+        *mat_ptr = MapNumpy<MatType,long>::map(pyArray).template cast<Scalar>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
+        *mat_ptr = MapNumpy<MatType,float>::map(pyArray).template cast<Scalar>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
+        *mat_ptr = MapNumpy<MatType,double>::map(pyArray).template cast<Scalar>();
     }
     
     static void convert(Type const & mat , PyArrayObject * pyArray)
     {
-      MapNumpy<MatType>::map(pyArray) = mat;
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+        MapNumpy<MatType,int>::map(pyArray) = mat.template cast<int>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
+        MapNumpy<MatType,long>::map(pyArray) = mat.template cast<long>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
+        MapNumpy<MatType,float>::map(pyArray) = mat.template cast<float>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
+        MapNumpy<MatType,double>::map(pyArray) = mat.template cast<double>();
     }
   };
   
@@ -90,16 +132,27 @@ namespace eigenpy
   struct EigenObjectAllocator< eigenpy::Ref<MatType> >
   {
     typedef eigenpy::Ref<MatType> Type;
+    typedef typename MatType::Scalar Scalar;
     
     static void allocate(PyArrayObject * pyArray, void * storage)
     {
-      typename MapNumpy<MatType>::EigenMap numpyMap = MapNumpy<MatType>::map(pyArray);
+      typename MapNumpy<MatType,Scalar>::EigenMap numpyMap = MapNumpy<MatType,Scalar>::map(pyArray);
       new(storage) Type(numpyMap);
     }
     
     static void convert(Type const & mat , PyArrayObject * pyArray)
     {
-      MapNumpy<MatType>::map(pyArray) = mat;
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+        MapNumpy<MatType,int>::map(pyArray) = mat.template cast<int>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
+        MapNumpy<MatType,long>::map(pyArray) = mat.template cast<long>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
+        MapNumpy<MatType,float>::map(pyArray) = mat.template cast<float>();
+      
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
+        MapNumpy<MatType,double>::map(pyArray) = mat.template cast<double>();
     }
   };
 #endif
@@ -140,8 +193,6 @@ namespace eigenpy
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyArrayObject* obj_ptr)
     {
-      std::cout << "call convertible" << std::endl;
-      
       if (!PyArray_Check(obj_ptr))
       {
 #ifndef NDEBUG
@@ -149,10 +200,6 @@ namespace eigenpy
 #endif
         return 0;
       }
-      
-      std::cout << "PyArray_DIMS(obj_ptr)[0]: " << PyArray_DIMS(obj_ptr)[0] << std::endl;
-      std::cout << "PyArray_DIMS(obj_ptr)[1]: " << PyArray_DIMS(obj_ptr)[1] << std::endl;
-      
       if(MatType::IsVectorAtCompileTime)
       {
         // Special care of scalar matrix of dimension 1x1.
@@ -171,7 +218,6 @@ namespace eigenpy
            || ((PyArray_DIMS(obj_ptr)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
         {
 #ifndef NDEBUG
-          std::cout << "MatType::ColsAtCompileTime: " << MatType::ColsAtCompileTime << std::endl;
           if(MatType::ColsAtCompileTime == 1)
             std::cerr << "The object is not a column vector" << std::endl;
           else
@@ -192,14 +238,57 @@ namespace eigenpy
         }
       }
       
-      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0))
+      // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
+      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_INT)
+      {
+        if(not FromTypeToType<int,typename MatType::Scalar>::value)
+        {
+#ifndef NDEBUG
+          std::cerr << "The Python matrix scalar type (int) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
+#endif
+          return 0;
+        }
+      }
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_LONG)
+      {
+        if(not FromTypeToType<long,typename MatType::Scalar>::value)
+        {
+#ifndef NDEBUG
+          std::cerr << "The Python matrix scalar type (long) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
+#endif
+          return 0;
+        }
+      }
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_FLOAT)
+      {
+        if(not FromTypeToType<float,typename MatType::Scalar>::value)
+        {
+#ifndef NDEBUG
+          std::cerr << "The Python matrix scalar type (float) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
+#endif
+          return 0;
+        }
+      }
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_DOUBLE)
+      {
+        if(not FromTypeToType<double,typename MatType::Scalar>::value)
+        {
+#ifndef NDEBUG
+          std::cerr << "The Python matrix scalar (double) type cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision." << std::endl;
+#endif
+          return 0;
+        }
+      }
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0))
           != NumpyEquivalentType<typename MatType::Scalar>::type_code)
       {
 #ifndef NDEBUG
         std::cerr << "The internal type as no Eigen equivalent." << std::endl;
 #endif
+        
         return 0;
       }
+      
 #ifdef NPY_1_8_API_VERSION
       if (!(PyArray_FLAGS(obj_ptr)))
 #else
