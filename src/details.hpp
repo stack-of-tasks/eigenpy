@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014-2018, Nicolas Mansard and Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -140,6 +140,8 @@ namespace eigenpy
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyArrayObject* obj_ptr)
     {
+      std::cout << "call convertible" << std::endl;
+      
       if (!PyArray_Check(obj_ptr))
       {
 #ifndef NDEBUG
@@ -148,8 +150,15 @@ namespace eigenpy
         return 0;
       }
       
+      std::cout << "PyArray_DIMS(obj_ptr)[0]: " << PyArray_DIMS(obj_ptr)[0] << std::endl;
+      std::cout << "PyArray_DIMS(obj_ptr)[1]: " << PyArray_DIMS(obj_ptr)[1] << std::endl;
+      
       if(MatType::IsVectorAtCompileTime)
       {
+        // Special care of scalar matrix of dimension 1x1.
+        if(PyArray_DIMS(obj_ptr)[0] == 1 && PyArray_DIMS(obj_ptr)[1] == 1)
+          return obj_ptr;
+        
         if(PyArray_DIMS(obj_ptr)[0] > 1 && PyArray_DIMS(obj_ptr)[1] > 1)
         {
 #ifndef NDEBUG
@@ -162,6 +171,7 @@ namespace eigenpy
            || ((PyArray_DIMS(obj_ptr)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
         {
 #ifndef NDEBUG
+          std::cout << "MatType::ColsAtCompileTime: " << MatType::ColsAtCompileTime << std::endl;
           if(MatType::ColsAtCompileTime == 1)
             std::cerr << "The object is not a column vector" << std::endl;
           else
