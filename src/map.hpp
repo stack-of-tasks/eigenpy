@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014-2018, Nicolas Mansard and Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -21,14 +21,14 @@
 
 namespace eigenpy
 {
-  template< typename MatType, int IsVector>
+  template<typename MatType, typename InputScalar, int IsVector>
   struct MapNumpyTraits {};
  
   /* Wrap a numpy::array with an Eigen::Map. No memory copy. */
-  template< typename MatType >
+  template<typename MatType, typename InputScalar>
   struct MapNumpy
   {
-    typedef MapNumpyTraits<MatType, MatType::IsVectorAtCompileTime> Impl;
+    typedef MapNumpyTraits<MatType, InputScalar, MatType::IsVectorAtCompileTime> Impl;
     typedef typename Impl::EigenMap EigenMap;
     typedef typename Impl::Stride Stride;
 
@@ -43,12 +43,12 @@ namespace eigenpy
 
 namespace eigenpy
 {
-  template<typename MatType>
-  struct MapNumpyTraits<MatType,0>
+  template<typename MatType, typename InputScalar>
+  struct MapNumpyTraits<MatType,InputScalar,0>
   {
     typedef typename StrideType<MatType>::type Stride;
-    typedef Eigen::Map<MatType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
-    typedef typename MatType::Scalar Scalar;
+    typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime> EquivalentInputMatrixType;
+    typedef Eigen::Map<EquivalentInputMatrixType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
 
     static EigenMap mapImpl( PyArrayObject* pyArray )
     {
@@ -69,24 +69,24 @@ namespace eigenpy
       
       
       if( (MatType::RowsAtCompileTime!=R)
-	  && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
-	{ throw eigenpy::Exception("The number of rows does not fit with the matrix type."); }
+         && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+      { throw eigenpy::Exception("The number of rows does not fit with the matrix type."); }
       if( (MatType::ColsAtCompileTime!=C)
-	  && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
-	{  throw eigenpy::Exception("The number of columns does not fit with the matrix type."); }
-
-      Scalar* pyData = reinterpret_cast<Scalar*>(PyArray_DATA(pyArray));
+         && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+      {  throw eigenpy::Exception("The number of columns does not fit with the matrix type."); }
+      
+      InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
       
       return EigenMap( pyData, R,C, stride );
     }
   };
 
-  template<typename MatType>
-  struct MapNumpyTraits<MatType,1>
+  template<typename MatType, typename InputScalar>
+  struct MapNumpyTraits<MatType,InputScalar,1>
   {
     typedef typename StrideType<MatType>::type Stride;
-    typedef Eigen::Map<MatType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
-    typedef typename MatType::Scalar Scalar;
+    typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime> EquivalentInputMatrixType;
+    typedef Eigen::Map<EquivalentInputMatrixType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
  
     static EigenMap mapImpl( PyArrayObject* pyArray )
     {
@@ -97,22 +97,23 @@ namespace eigenpy
       else rowMajor = (PyArray_DIMS(pyArray)[0]>PyArray_DIMS(pyArray)[1])?0:1;
 
       assert( (PyArray_DIMS(pyArray)[rowMajor]< INT_MAX)
-	      && (PyArray_STRIDE(pyArray, rowMajor) ));
+             && (PyArray_STRIDE(pyArray, rowMajor) ));
       const int R = (int)PyArray_DIMS(pyArray)[rowMajor];
       const long int itemsize = PyArray_ITEMSIZE(pyArray);
       const int stride = (int) PyArray_STRIDE(pyArray, rowMajor) / (int) itemsize;;
 
       if( (MatType::MaxSizeAtCompileTime!=R)
-	      && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )
-	{ throw eigenpy::Exception("The number of elements does not fit with the vector type."); }
+         && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )
+      { throw eigenpy::Exception("The number of elements does not fit with the vector type."); }
 
-      Scalar* pyData = reinterpret_cast<Scalar*>(PyArray_DATA(pyArray));
+      InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
+      
       return EigenMap( pyData, R, Stride(stride) );
     }
   };
 
-  template< typename MatType >
-  typename MapNumpy<MatType>::EigenMap MapNumpy<MatType>::map( PyArrayObject* pyArray )
+  template<typename MatType, typename InputScalar>
+  typename MapNumpy<MatType,InputScalar>::EigenMap MapNumpy<MatType,InputScalar>::map( PyArrayObject* pyArray )
   {
     return Impl::mapImpl(pyArray); 
   }
