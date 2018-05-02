@@ -36,11 +36,19 @@ void printVector(const eigenpy::Ref<MatType> & mat)
   printMatrix(mat);
 }
 
-template<typename MatType>
-void setOnes(eigenpy::Ref<MatType> mat)
+template<typename MatType,int Options, typename StrideType>
+void setOnes(Eigen::Ref<MatType,Options,StrideType> mat)
 {
   mat.setOnes();
 }
+
+template<typename MatType>
+void setOnes_wrap(eigenpy::Ref<MatType> mat)
+{
+  setOnes(mat);
+}
+
+
 
 BOOST_PYTHON_MODULE(ref)
 {
@@ -53,7 +61,7 @@ BOOST_PYTHON_MODULE(ref)
   
   bp::def("printVector", printVector<VectorXd>);
 
-  bp::def("setOnes", setOnes<Vector3d>);
-  bp::def("setOnes", setOnes<VectorXd>);
-  bp::def("setOnes", setOnes<MatrixXd>);
+  bp::def("setOnes", setOnes_wrap<Vector3d>);
+  bp::def("setOnes", setOnes_wrap<VectorXd>);
+  bp::def("setOnes", setOnes_wrap<MatrixXd>);
 }
