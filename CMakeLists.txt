@@ -78,38 +78,35 @@ INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
-  eigenpy/solvers/solvers.hpp
-  eigenpy/solvers/preconditioners.hpp
-  eigenpy/solvers/IterativeSolverBase.hpp
-  eigenpy/solvers/LeastSquaresConjugateGradient.hpp
-  eigenpy/solvers/ConjugateGradient.hpp
-  eigenpy/solvers/SparseSolverBase.hpp
-  eigenpy/solvers/BasicPreconditioners.hpp
-  eigenpy/solvers/BFGSPreconditioners.hpp
+  include/eigenpy/solvers/solvers.hpp
+  include/eigenpy/solvers/preconditioners.hpp
+  include/eigenpy/solvers/IterativeSolverBase.hpp
+  include/eigenpy/solvers/LeastSquaresConjugateGradient.hpp
+  include/eigenpy/solvers/ConjugateGradient.hpp
+  include/eigenpy/solvers/SparseSolverBase.hpp
+  include/eigenpy/solvers/BasicPreconditioners.hpp
+  include/eigenpy/solvers/BFGSPreconditioners.hpp
   )
 
 SET(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
-  eigenpy/eigenpy.hpp
-  eigenpy/exception.hpp
-  eigenpy/details.hpp
-  eigenpy/fwd.hpp
-  eigenpy/map.hpp
-  eigenpy/geometry.hpp
-  eigenpy/geometry-conversion.hpp
-  eigenpy/memory.hpp
-  eigenpy/registration.hpp
-  eigenpy/angle-axis.hpp
-  eigenpy/quaternion.hpp
-  eigenpy/stride.hpp
-  eigenpy/ref.hpp
+  include/eigenpy/eigenpy.hpp
+  include/eigenpy/exception.hpp
+  include/eigenpy/details.hpp
+  include/eigenpy/fwd.hpp
+  include/eigenpy/map.hpp
+  include/eigenpy/geometry.hpp
+  include/eigenpy/geometry-conversion.hpp
+  include/eigenpy/memory.hpp
+  include/eigenpy/registration.hpp
+  include/eigenpy/angle-axis.hpp
+  include/eigenpy/quaternion.hpp
+  include/eigenpy/stride.hpp
+  include/eigenpy/ref.hpp
 )
 
-EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E ${LINK}
-  ${${PROJECT_NAME}_SOURCE_DIR}/src
-  ${${PROJECT_NAME}_BINARY_DIR}/eigenpy)
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR})
+INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
 
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
