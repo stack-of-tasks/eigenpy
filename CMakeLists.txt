@@ -58,7 +58,6 @@ ENDIF(WIN32)
 # ----------------------------------------------------
 OPTION (BUILD_UNIT_TESTS "Build the unitary tests" ON)
 
-SET(Python_ADDITIONAL_VERSIONS 3.5)
 FINDPYTHON()
 
 INCLUDE_DIRECTORIES(SYSTEM ${PYTHON_INCLUDE_DIRS})
@@ -70,22 +69,10 @@ INCLUDE_DIRECTORIES(SYSTEM ${NUMPY_INCLUDE_DIRS})
 # ----------------------------------------------------
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
 
-if (${PYTHON_VERSION_MAJOR} EQUAL 3)
-  if(UNIX)
-    set( BOOST_COMPONENTS python-py35)
-  else()
-    set( BOOST_COMPONENTS python3)
-  endif()
-else()
-  SET(BOOST_COMPONENTS python)
-endif()
-  
-    
+SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
 # Add Boost path to include directories.
 INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
-
-#FINDPYTHON(2.7 EXACT REQUIRED)
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
