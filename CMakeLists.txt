@@ -78,49 +78,38 @@ INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
-  solvers/solvers.hpp
-  solvers/preconditioners.hpp
-  solvers/IterativeSolverBase.hpp
-  solvers/LeastSquaresConjugateGradient.hpp
-  solvers/ConjugateGradient.hpp
-  solvers/SparseSolverBase.hpp
-  solvers/BasicPreconditioners.hpp
-  solvers/BFGSPreconditioners.hpp
+  eigenpy/solvers/solvers.hpp
+  eigenpy/solvers/preconditioners.hpp
+  eigenpy/solvers/IterativeSolverBase.hpp
+  eigenpy/solvers/LeastSquaresConjugateGradient.hpp
+  eigenpy/solvers/ConjugateGradient.hpp
+  eigenpy/solvers/SparseSolverBase.hpp
+  eigenpy/solvers/BasicPreconditioners.hpp
+  eigenpy/solvers/BFGSPreconditioners.hpp
   )
 
-SET(HEADERS
+SET(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
-  eigenpy.hpp
-  exception.hpp
-  details.hpp
-  fwd.hpp
-  map.hpp
-  geometry.hpp
-  geometry-conversion.hpp
-  memory.hpp
-  registration.hpp
-  angle-axis.hpp
-  quaternion.hpp
-  stride.hpp
-  ref.hpp
+  eigenpy/eigenpy.hpp
+  eigenpy/exception.hpp
+  eigenpy/details.hpp
+  eigenpy/fwd.hpp
+  eigenpy/map.hpp
+  eigenpy/geometry.hpp
+  eigenpy/geometry-conversion.hpp
+  eigenpy/memory.hpp
+  eigenpy/registration.hpp
+  eigenpy/angle-axis.hpp
+  eigenpy/quaternion.hpp
+  eigenpy/stride.hpp
+  eigenpy/ref.hpp
 )
 
-MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
-MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy/solvers")
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
-
-SET(${PROJECT_NAME}_HEADERS)
-FOREACH(header ${HEADERS})
-  GET_FILENAME_COMPONENT(headerName ${header} NAME)
-  GET_FILENAME_COMPONENT(headerPath ${header} PATH)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E ${LINK}
-    ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
-    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${header})
-  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/${headerPath}
-          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
-  LIST(APPEND ${PROJECT_NAME}_HEADERS src/${header})
-ENDFOREACH(header)
+EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E ${LINK}
+  ${${PROJECT_NAME}_SOURCE_DIR}/src
+  ${${PROJECT_NAME}_BINARY_DIR}/eigenpy)
+INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
+INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR})
 
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
