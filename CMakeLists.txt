@@ -58,7 +58,6 @@ ENDIF(WIN32)
 # ----------------------------------------------------
 OPTION (BUILD_UNIT_TESTS "Build the unitary tests" ON)
 
-SET(Python_ADDITIONAL_VERSIONS 3.5)
 FINDPYTHON()
 
 INCLUDE_DIRECTORIES(SYSTEM ${PYTHON_INCLUDE_DIRS})
@@ -70,70 +69,44 @@ INCLUDE_DIRECTORIES(SYSTEM ${NUMPY_INCLUDE_DIRS})
 # ----------------------------------------------------
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
 
-if (${PYTHON_VERSION_MAJOR} EQUAL 3)
-  if(UNIX)
-    set( BOOST_COMPONENTS python-py35)
-  else()
-    set( BOOST_COMPONENTS python3)
-  endif()
-else()
-  SET(BOOST_COMPONENTS python)
-endif()
-  
-    
+SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
 # Add Boost path to include directories.
 INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
-
-#FINDPYTHON(2.7 EXACT REQUIRED)
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
-  solvers/solvers.hpp
-  solvers/preconditioners.hpp
-  solvers/IterativeSolverBase.hpp
-  solvers/LeastSquaresConjugateGradient.hpp
-  solvers/ConjugateGradient.hpp
-  solvers/SparseSolverBase.hpp
-  solvers/BasicPreconditioners.hpp
-  solvers/BFGSPreconditioners.hpp
+  include/eigenpy/solvers/solvers.hpp
+  include/eigenpy/solvers/preconditioners.hpp
+  include/eigenpy/solvers/IterativeSolverBase.hpp
+  include/eigenpy/solvers/LeastSquaresConjugateGradient.hpp
+  include/eigenpy/solvers/ConjugateGradient.hpp
+  include/eigenpy/solvers/SparseSolverBase.hpp
+  include/eigenpy/solvers/BasicPreconditioners.hpp
+  include/eigenpy/solvers/BFGSPreconditioners.hpp
   )
 
-SET(HEADERS
+SET(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
-  eigenpy.hpp
-  exception.hpp
-  details.hpp
-  fwd.hpp
-  map.hpp
-  geometry.hpp
-  geometry-conversion.hpp
-  memory.hpp
-  registration.hpp
-  angle-axis.hpp
-  quaternion.hpp
-  stride.hpp
-  ref.hpp
+  include/eigenpy/eigenpy.hpp
+  include/eigenpy/exception.hpp
+  include/eigenpy/details.hpp
+  include/eigenpy/fwd.hpp
+  include/eigenpy/map.hpp
+  include/eigenpy/geometry.hpp
+  include/eigenpy/geometry-conversion.hpp
+  include/eigenpy/memory.hpp
+  include/eigenpy/registration.hpp
+  include/eigenpy/angle-axis.hpp
+  include/eigenpy/quaternion.hpp
+  include/eigenpy/stride.hpp
+  include/eigenpy/ref.hpp
 )
 
-MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy")
-MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy/solvers")
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include/eigenpy)
-
-SET(${PROJECT_NAME}_HEADERS)
-FOREACH(header ${HEADERS})
-  GET_FILENAME_COMPONENT(headerName ${header} NAME)
-  GET_FILENAME_COMPONENT(headerPath ${header} PATH)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E ${LINK}
-    ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
-    ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/${header})
-  INSTALL(FILES ${${PROJECT_NAME}_SOURCE_DIR}/src/${header}
-    DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}/${headerPath}
-          PERMISSIONS OWNER_READ GROUP_READ WORLD_READ OWNER_WRITE)
-  LIST(APPEND ${PROJECT_NAME}_HEADERS src/${header})
-ENDFOREACH(header)
+INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
+INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
 
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
