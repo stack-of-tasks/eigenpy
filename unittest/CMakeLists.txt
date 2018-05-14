@@ -1,6 +1,6 @@
-# 
+#
 # Copyright (c) 2016-2018 CNRS
-# 
+#
 # This file is part of eigenpy
 # eigenpy is free software: you can redistribute it
 # and/or modify it under the terms of the GNU Lesser General Public
@@ -31,7 +31,7 @@ MACRO(ADD_LIB_UNIT_TEST test PKGS)
     # We need to change the extension for python bindings
     SET_TARGET_PROPERTIES(${test} PROPERTIES SUFFIX ".so")
   ENDIF(APPLE)
-  
+
   ADD_TEST(NAME ${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
   ADD_DEPENDENCIES(check ${test})
 ENDMACRO(ADD_LIB_UNIT_TEST)
@@ -44,3 +44,5 @@ IF(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
   ADD_LIB_UNIT_TEST(ref "eigen3")
 ENDIF()
 
+ADD_PYTHON_UNIT_TEST("py-eigenpy" "unittest/python/test_eigenpy.py" "unittest")
+ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
