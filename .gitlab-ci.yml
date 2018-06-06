@@ -11,9 +11,8 @@ cache:
 .robotpkg-py-eigenpy: &robotpkg-py-eigenpy
   except:
     - gh-pages
-  before_script:
-    - mkdir -p ccache
   script:
+    - mkdir -p ccache
     - cd /root/robotpkg/math/py-eigenpy
     - git pull
     - make checkout MASTER_REPOSITORY="dir ${CI_PROJECT_DIR}"
@@ -22,34 +21,85 @@ cache:
     - make check
 
 
-robotpkg-py-eigenpy-14.04:
-  <<: *robotpkg-py-eigenpy
-  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:14.04
-
-robotpkg-py-eigenpy-dubnium:
+robotpkg-py-eigenpy-dubnium-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:dubnium
 
-robotpkg-py-eigenpy-16.04:
+robotpkg-py-eigenpy-16.04-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:16.04
 
-robotpkg-py-eigenpy-18.04:
+robotpkg-py-eigenpy-18.04-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:18.04
 
-robotpkg-py-eigenpy-py3-14.04:
-  <<: *robotpkg-py-eigenpy
-  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
-
-robotpkg-py-eigenpy-py3-dubnium:
+robotpkg-py-eigenpy-py3-dubnium-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:dubnium
 
-robotpkg-py-eigenpy-py3-16.04:
+robotpkg-py-eigenpy-py3-16.04-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:16.04
 
-robotpkg-py-eigenpy-py3-18.04:
+robotpkg-py-eigenpy-py3-18.04-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:18.04
+
+robotpkg-py-eigenpy-14.04-release:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:14.04
+
+robotpkg-py-eigenpy-14.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:14.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-py3-14.04-release:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
+
+robotpkg-py-eigenpy-py3-14.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-dubnium-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:dubnium
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-py3-dubnium-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:dubnium
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-16.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:16.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-py3-16.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:16.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-18.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:18.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+robotpkg-py-eigenpy-py3-18.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:18.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+
+
