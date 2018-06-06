@@ -44,5 +44,5 @@ IF(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
   ADD_LIB_UNIT_TEST(ref "eigen3")
 ENDIF()
 
-ADD_PYTHON_UNIT_TEST("py-eigenpy" "unittest/python/test_eigenpy.py" "unittest")
+ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
 ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
