@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014,2018, Nicolas Mansard, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -16,6 +16,18 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include <iostream>
+
+Eigen::VectorXd emptyVector()
+{
+  Eigen::VectorXd vec;
+  vec.resize(0);
+  return vec;
+}
+
+Eigen::MatrixXd emptyMatrix()
+{
+  return Eigen::MatrixXd(0,0);
+}
 
 Eigen::MatrixXd naturals(int R,int C,bool verbose)
 {
@@ -77,4 +89,7 @@ BOOST_PYTHON_MODULE(matrix)
   bp::def("reflexV", reflex<Eigen::VectorXd>);
   bp::def("reflex33", reflex<Eigen::Matrix3d>);
   bp::def("reflex3", reflex<Eigen::Vector3d>);
+
+  bp::def("emptyVector", emptyVector);
+  bp::def("emptyMatrix", emptyMatrix);
 }

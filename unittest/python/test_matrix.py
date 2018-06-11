@@ -5,6 +5,14 @@ import matrix as eigenpy
 
 verbose = True
 
+if verbose: print("===> From empty MatrixXd to Py")
+M = eigenpy.emptyMatrix()
+assert M.shape == (0,0)
+
+if verbose: print("===> From empty VectorXd to Py")
+v = eigenpy.emptyVector()
+assert v.shape == (0,1)
+
 if verbose: print("===> From MatrixXd to Py")
 M = eigenpy.naturals(3,3,verbose)
 Mcheck = np.reshape(np.matrix(range(9),np.double),[3,3])
