@@ -94,6 +94,8 @@ namespace eigenpy
 
       int rowMajor;
       if(  PyArray_NDIM(pyArray)==1 ) rowMajor = 0;
+      else if (PyArray_DIMS(pyArray)[0] == 0) rowMajor = 0; // handle zero-size vector
+      else if (PyArray_DIMS(pyArray)[1] == 0) rowMajor = 1; // handle zero-size vector
       else rowMajor = (PyArray_DIMS(pyArray)[0]>PyArray_DIMS(pyArray)[1])?0:1;
 
       assert( (PyArray_DIMS(pyArray)[rowMajor]< INT_MAX)
