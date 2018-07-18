@@ -183,13 +183,6 @@ namespace eigenpy
   template<typename MatType>
   struct EigenFromPy
   {
-    EigenFromPy()
-    {
-      bp::converter::registry::push_back
-      (reinterpret_cast<void *(*)(_object *)>(&convertible),
-       &construct,bp::type_id<MatType>());
-    }
-    
     // Determine if obj_ptr can be converted in a Eigenvec
     static void* convertible(PyArrayObject* obj_ptr)
     {
@@ -331,13 +324,42 @@ namespace eigenpy
   }
   
   template<typename MatType>
+  struct EigenFromPyConverter
+  {
+    static void registration()
+    {
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
+       &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
+      
+      // Add also conversion to Eigen::MatrixBase<MatType>
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
+       &EigenFromPy<MatType>::construct,bp::type_id< Eigen::MatrixBase<MatType> >());
+    }
+  };
+  
+  template<typename MatType>
+  struct EigenFromPyConverter< eigenpy::Ref<MatType> >
+  {
+    static void registration()
+    {
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
+       &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
+    }
+  };
+  
+  
+  template<typename MatType>
   void enableEigenPySpecific()
   {
     numpy_import_array();
     if(check_registration<MatType>()) return;
     
     bp::to_python_converter<MatType,EigenToPy<MatType> >();
-    EigenFromPy<MatType>();
+    EigenFromPyConverter<MatType>::registration();
+   
   }
 
 } // namespace eigenpy
