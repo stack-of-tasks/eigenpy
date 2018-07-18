@@ -72,8 +72,15 @@ Eigen::MatrixXd reflex(const MatType & M, bool verbose)
   return Eigen::MatrixXd(M);
 }
 
+template<typename MatrixDerived>
+MatrixDerived base(const Eigen::MatrixBase<MatrixDerived> & m)
+{
+  return m.derived();
+}
+
 BOOST_PYTHON_MODULE(matrix)
 {
+  using namespace Eigen;
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
 
@@ -92,4 +99,7 @@ BOOST_PYTHON_MODULE(matrix)
 
   bp::def("emptyVector", emptyVector);
   bp::def("emptyMatrix", emptyMatrix);
+  
+  bp::def("base", base<VectorXd>);
+  bp::def("base", base<MatrixXd>);
 }
