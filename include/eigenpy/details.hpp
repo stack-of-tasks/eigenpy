@@ -338,7 +338,9 @@ namespace eigenpy
        &EigenFromPy<MatType>::construct,bp::type_id< Eigen::MatrixBase<MatType> >());
     }
   };
-  
+
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+  /// Template specialization for Eigen::Ref
   template<typename MatType>
   struct EigenFromPyConverter< eigenpy::Ref<MatType> >
   {
@@ -349,6 +351,7 @@ namespace eigenpy
        &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
     }
   };
+#endif
   
   
   template<typename MatType>
