@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Nicolas Mansard, LAAS-CNRS
+ * Copyright 2014,2018 Nicolas Mansard and Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -18,8 +18,8 @@
 #include <exception>
 #include <string>
 
-#ifndef __eigenpy_Exception_hpp__
-#define __eigenpy_Exception_hpp__
+#ifndef __eigenpy_exception_hpp__
+#define __eigenpy_exception_hpp__
 
 namespace eigenpy
 {
@@ -30,7 +30,7 @@ namespace eigenpy
   {
   public:
     Exception() : message() {}
-    Exception(std::string msg) : message(msg) {}
+    Exception(const std::string & msg) : message(msg) {}
     const char *what() const throw()
     {
       return this->getMessage().c_str();
@@ -51,4 +51,4 @@ namespace eigenpy
 
 } // namespace eigenpy
 
-#endif // ifndef __eigenpy_Exception_hpp__
+#endif // ifndef __eigenpy_exception_hpp__

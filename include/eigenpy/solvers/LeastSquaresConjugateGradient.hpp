@@ -1,5 +1,5 @@
 /*
- * Copyright 2017, Justin Carpentier, LAAS-CNRS
+ * Copyright 2017-2018, Justin Carpentier, LAAS-CNRS
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -21,67 +21,6 @@
 #include <Eigen/IterativeLinearSolvers>
 
 #include "eigenpy/solvers/IterativeSolverBase.hpp"
-
-namespace Eigen
-{
-  template <typename _Scalar>
-  class LeastSquareDiagonalPreconditionerFix
-  : public LeastSquareDiagonalPreconditioner<_Scalar>
-  {
-    typedef _Scalar Scalar;
-    typedef typename NumTraits<Scalar>::Real RealScalar;
-    typedef LeastSquareDiagonalPreconditioner<_Scalar> Base;
-    using DiagonalPreconditioner<_Scalar>::m_invdiag;
-  public:
-    
-    LeastSquareDiagonalPreconditionerFix() : Base() {}
-    
-    template<typename MatType>
-    explicit LeastSquareDiagonalPreconditionerFix(const MatType& mat) : Base()
-    {
-      compute(mat);
-    }
-    
-    template<typename MatType>
-    LeastSquareDiagonalPreconditionerFix& analyzePattern(const MatType& )
-    {
-      return *this;
-    }
-    
-    template<typename MatType>
-    LeastSquareDiagonalPreconditionerFix& factorize(const MatType& mat)
-    {
-      // Compute the inverse squared-norm of each column of mat
-      m_invdiag.resize(mat.cols());
-      if(MatType::IsRowMajor)
-      {
-        m_invdiag.setZero();
-        for(Index j=0; j<mat.outerSize(); ++j)
-        {
-          for(typename MatType::InnerIterator it(mat,j); it; ++it)
-            m_invdiag(it.index()) += numext::abs2(it.value());
-        }
-        for(Index j=0; j<mat.cols(); ++j)
-          if(numext::real(m_invdiag(j))>RealScalar(0))
-            m_invdiag(j) = RealScalar(1)/numext::real(m_invdiag(j));
-      }
-      else
-      {
-        for(Index j=0; j<mat.outerSize(); ++j)
-        {
-          RealScalar sum = mat.col(j).squaredNorm();
-          if(sum>RealScalar(0))
-            m_invdiag(j) = RealScalar(1)/sum;
-          else
-            m_invdiag(j) = RealScalar(1);
-        }
-      }
-      Base::m_isInitialized = true;
-      return *this;
-    }
-    
-  };
-}
 
 namespace eigenpy
 {
