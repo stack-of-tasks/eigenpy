@@ -32,7 +32,7 @@ namespace eigenpy
     using namespace Eigen;
     ConjugateGradientVisitor< ConjugateGradient<MatrixXd,Lower|Upper> >::expose();
 #if EIGEN_VERSION_AT_LEAST(3,3,5)
-    LeastSquaresConjugateGradientVisitor< LeastSquaresConjugateGradient<MatrixXd, LeastSquareDiagonalPreconditionerFix<MatrixXd::Scalar> > >::expose();
+    LeastSquaresConjugateGradientVisitor< LeastSquaresConjugateGradient<MatrixXd, LeastSquareDiagonalPreconditioner<MatrixXd::Scalar> > >::expose();
 #endif
     
     // Conjugate gradient with limited BFGS preconditioner
