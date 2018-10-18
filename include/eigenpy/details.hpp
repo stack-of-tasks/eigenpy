@@ -54,12 +54,12 @@ namespace eigenpy
 
   namespace bp = boost::python;
 
-  struct PyMatrixType
+  struct NumpyType
   {
     
-    static PyMatrixType & getInstance()
+    static NumpyType & getInstance()
     {
-      static PyMatrixType instance;
+      static NumpyType instance;
       return instance;
     }
 
@@ -100,7 +100,7 @@ namespace eigenpy
     }
 
   protected:
-    PyMatrixType()
+    NumpyType()
     {
       pyModule = bp::import("numpy");
       
@@ -208,7 +208,7 @@ namespace eigenpy
 
       EigenObjectAllocator<MatType>::convert(mat,pyArray);
 
-      return PyMatrixType::getInstance().make(pyArray).ptr();
+      return NumpyType::getInstance().make(pyArray).ptr();
     }
   };
   

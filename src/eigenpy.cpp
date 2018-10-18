@@ -25,14 +25,14 @@ namespace eigenpy
     using namespace Eigen;
     Exception::registerException();
     
-    bp::def("setNumpyType",&PyMatrixType::setNumpyType,
+    bp::def("setNumpyType",&NumpyType::setNumpyType,
             bp::arg("Numpy type (np.ndarray or np.matrix)"),
             "Change the type returned by the converters from an Eigen object.");
     
-    bp::def("switchToNumpyArray",&PyMatrixType::switchToNumpyArray,
+    bp::def("switchToNumpyArray",&NumpyType::switchToNumpyArray,
             "Set the conversion from Eigen::Matrix to numpy.ndarray.");
     
-    bp::def("switchToNumpyMatrix",&PyMatrixType::switchToNumpyMatrix,
+    bp::def("switchToNumpyMatrix",&NumpyType::switchToNumpyMatrix,
             "Set the conversion from Eigen::Matrix to numpy.matrix.");
 
     ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXd);
