@@ -86,19 +86,30 @@ namespace eigenpy
       if(PyType_IsSubtype(obj_type,getInstance().NumpyMatrixType))
         getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
       else if(PyType_IsSubtype(obj_type,getInstance().NumpyArrayType))
-        getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;;
+        getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
+    }
+    
+    static void switchToNumpyArray()
+    {
+      getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
+    }
+    
+    static void switchToNumpyMatrix()
+    {
+      getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
     }
 
   protected:
     PyMatrixType()
     {
       pyModule = bp::import("numpy");
-      CurrentNumpyType = pyModule.attr("matrix"); // default conversion
       
       NumpyMatrixObject = pyModule.attr("matrix");
       NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
       NumpyArrayObject = pyModule.attr("ndarray");
       NumpyArrayType = reinterpret_cast<PyTypeObject*>(NumpyArrayObject.ptr());
+      
+      CurrentNumpyType = NumpyMatrixObject; // default conversion
     }
 
     bp::object CurrentNumpyType;
@@ -107,9 +118,6 @@ namespace eigenpy
     // Numpy types
     bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
-         
-        
-//         PyTypeObject * NumpyArrayType;
   };
   
   template<typename MatType>
