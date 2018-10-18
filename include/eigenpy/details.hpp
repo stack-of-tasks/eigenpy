@@ -187,12 +187,8 @@ namespace eigenpy
     static void* convertible(PyArrayObject* obj_ptr)
     {
       if (!PyArray_Check(obj_ptr))
-      {
-#ifndef NDEBUG
-        std::cerr << "The python object is not a numpy array." << std::endl;
-#endif
         return 0;
-      }
+
       if(MatType::IsVectorAtCompileTime)
       {
         // Special care of scalar matrix of dimension 1x1.
