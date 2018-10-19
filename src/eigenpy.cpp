@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2018 LAAS-CNRS
+ * Copyright (c) 2015-2018 LAAS-CNRS, INRIA
  *
  * This file is part of eigenpy.
  * eigenpy is free software: you can redistribute it and/or
@@ -19,11 +19,21 @@
 namespace eigenpy
 {
 
-  /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
+  /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instances. */
   void enableEigenPy()
   {
     using namespace Eigen;
     Exception::registerException();
+    
+    bp::def("setNumpyType",&NumpyType::setNumpyType,
+            bp::arg("Numpy type (np.ndarray or np.matrix)"),
+            "Change the type returned by the converters from an Eigen object.");
+    
+    bp::def("switchToNumpyArray",&NumpyType::switchToNumpyArray,
+            "Set the conversion from Eigen::Matrix to numpy.ndarray.");
+    
+    bp::def("switchToNumpyMatrix",&NumpyType::switchToNumpyMatrix,
+            "Set the conversion from Eigen::Matrix to numpy.matrix.");
 
     ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXd);
     ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2d);

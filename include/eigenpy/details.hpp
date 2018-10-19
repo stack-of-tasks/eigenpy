@@ -54,36 +54,74 @@ namespace eigenpy
 
   namespace bp = boost::python;
 
-  struct PyMatrixType
+  struct NumpyType
   {
-
-    static PyMatrixType & getInstance()
+    
+    static NumpyType & getInstance()
     {
-      static PyMatrixType instance;
+      static NumpyType instance;
       return instance;
     }
 
-    operator bp::object () { return pyMatrixType; }
+    operator bp::object () { return CurrentNumpyType; }
 
     bp::object make(PyArrayObject* pyArray, bool copy = false)
     { return make((PyObject*)pyArray,copy); }
+    
     bp::object make(PyObject* pyObj, bool copy = false)
     {
-      bp::object m
-      = pyMatrixType(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
+      bp::object m;
+      if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyMatrixType))
+        m = NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
+//        m = NumpyAsMatrixObject(bp::object(bp::handle<>(pyObj)));
+      else if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyArrayType))
+        m = bp::object(bp::handle<>(pyObj)); // nothing to do here
+
       Py_INCREF(m.ptr());
       return m;
     }
-
-  protected:
-    PyMatrixType()
+    
+    static void setNumpyType(bp::object & obj)
     {
-      pyModule = bp::import("numpy");
-      pyMatrixType = pyModule.attr("matrix");
+      PyTypeObject * obj_type = PyType_Check(obj.ptr()) ? reinterpret_cast<PyTypeObject*>(obj.ptr()) : obj.ptr()->ob_type;
+      if(PyType_IsSubtype(obj_type,getInstance().NumpyMatrixType))
+        getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
+      else if(PyType_IsSubtype(obj_type,getInstance().NumpyArrayType))
+        getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
+    }
+    
+    static void switchToNumpyArray()
+    {
+      getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
+    }
+    
+    static void switchToNumpyMatrix()
+    {
+      getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
     }
 
-    bp::object pyMatrixType;
+  protected:
+    NumpyType()
+    {
+      pyModule = bp::import("numpy");
+      
+      NumpyMatrixObject = pyModule.attr("matrix");
+      NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
+      NumpyAsMatrixObject = pyModule.attr("asmatrix");
+      NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
+      NumpyArrayObject = pyModule.attr("ndarray");
+      NumpyArrayType = reinterpret_cast<PyTypeObject*>(NumpyArrayObject.ptr());
+      
+      CurrentNumpyType = NumpyMatrixObject; // default conversion
+    }
+
+    bp::object CurrentNumpyType;
     bp::object pyModule;
+    
+    // Numpy types
+    bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
+    bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
+    bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
   };
   
   template<typename MatType>
@@ -174,7 +212,7 @@ namespace eigenpy
 
       EigenObjectAllocator<MatType>::convert(mat,pyArray);
 
-      return PyMatrixType::getInstance().make(pyArray).ptr();
+      return NumpyType::getInstance().make(pyArray).ptr();
     }
   };
   
@@ -293,7 +331,7 @@ namespace eigenpy
       return obj_ptr;
     }
  
-    // Convert obj_ptr into a Eigenvec
+    // Convert obj_ptr into an Eigen::Vector
     static void construct(PyObject* pyObj,
                           bp::converter::rvalue_from_python_stage1_data* memory)
     {
