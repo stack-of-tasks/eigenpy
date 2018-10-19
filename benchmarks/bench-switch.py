@@ -44,3 +44,14 @@ cmd4 = "timeit quat.coeffs()"
 print(cmd4)
 ipython.magic(cmd4)
 print("\n")
+
+cmd5 = "timeit np.asmatrix(quat.coeffs())"
+print(cmd5)
+ipython.magic(cmd5)
+print("\n")
+
+a_matrix = np.matrix(a);
+cmd6 = "timeit np.asarray(a_matrix)"
+print(cmd6)
+ipython.magic(cmd6)
+print("\n")
