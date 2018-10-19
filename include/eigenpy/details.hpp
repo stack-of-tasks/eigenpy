@@ -73,6 +73,7 @@ namespace eigenpy
       bp::object m;
       if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyMatrixType))
         m = NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
+//        m = NumpyAsMatrixObject(bp::object(bp::handle<>(pyObj)));
       else if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyArrayType))
         m = bp::object(bp::handle<>(pyObj)); // nothing to do here
 
@@ -106,6 +107,8 @@ namespace eigenpy
       
       NumpyMatrixObject = pyModule.attr("matrix");
       NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
+      NumpyAsMatrixObject = pyModule.attr("asmatrix");
+      NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
       NumpyArrayObject = pyModule.attr("ndarray");
       NumpyArrayType = reinterpret_cast<PyTypeObject*>(NumpyArrayObject.ptr());
       
@@ -117,6 +120,7 @@ namespace eigenpy
     
     // Numpy types
     bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
+    bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
   };
   
