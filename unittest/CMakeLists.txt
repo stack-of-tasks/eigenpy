@@ -46,4 +46,4 @@ ENDIF()
 
 ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
 ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
-ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "unittest")
+ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "python/eigenpy")
