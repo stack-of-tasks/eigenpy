@@ -1,56 +1,77 @@
-eigenpy
-===========
+EigenPy
+======
 
-Setup
------
+**EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) in Python as NumPy object (as matrix or array).
+**EigenPy** also exposes the Geometry module of Eigen for easy code prototyping.
+**EigenPy** also supports the basic matrix decomposion routines of Eigen such as the Cholesky decomposition, SVD decomposition, QR decomposition, and etc.
 
-Before compiling this package, make sure to have initialized all git
-submodules of this repo. To initialize the submodules when cloning the
-repo, use:
+## Setup
 
-```bash
-git clone --recursive <git_url>
+The installation of **EigenPy** on your computer is made easy for Linux/BSD and Mac OS X environments.
+
+### Ubuntu
+
+You can easily install **EigenPy** from binairies.
+
+#### Add robotpkg apt repository
+
+1. Check your distribution codename in a terminal with the following command:
 ```
+$ lsb_release -c
+Codename:       xenial
+```
+2. Add robotpkg as source repository to apt:
+```
+sudo sh -c "echo 'deb [arch=amd64] http://robotpkg.openrobots.org/packages/debian/pub xenial robotpkg' >> /etc/apt/sources.list.d/robotpkg.list"
+```
+3. Register the authentication certificate of robotpkg:
+```
+curl http://robotpkg.openrobots.org/packages/debian/robotpkg.key | sudo apt-key add -
+```
+4. You need to run at least once apt update to fetch the package descriptions:
+```
+sudo apt-get update
+```
+#### Install EigenPy
+5. The installation of **EigenPy** and its dependencies is made through the line:
 
-To compile this package, it is recommended to create a separate build
-directory:
+For Python 2.7
+```
+sudo apt install robotpkg-py27-eigenpy
+```
+or for Python 3.{5,6,7}
+```
+sudo apt install robotpkg-py35-eigenpy
+```
+where 35 should be replaced by the python 3 you want to work this (e.g. `robotpkg-py36-eigenpy` to work with Python 3.6).
 
-    mkdir _build
-    cd _build
-    cmake [OPTIONS] ..
-    make install
+### Mac OS X
 
-Please note that CMake produces a `CMakeCache.txt` file which should
-be deleted to reconfigure a package from scratch.
-
-#### Compiling for python3 on macOS
-
-Make sure you have boost for python3 installed. If you use homebrew, you can install it via `brew install boost-python3`.
-
-Assuming you have python2 and python3 installed on your system, you can compile for python3 using
+The installation of **EigenPy** on Mac OS X is made via [HomeBrew](https://brew.sh/). 
+You just need to register the tap of the sofware repository.
 
 ```
-cmake -DPYTHON_EXECUTABLE=`which python3`  ..
+brew tap gepetto/homebrew-gepetto
 ```
-
-In case you get an error as only the libraries for python2 are found, make sure macOS can find the python3 libraries. One way to ensure this is by adding a symbolic link to the python3 libraries like
-
+and then install **EigenPy** with:
 ```
-ln -s /usr/local/Cellar/python/3.7.0/Frameworks/Python.framework/Versions/3.7/lib/libpython3.7.dylib /usr/loca/lib/libpython3.7.dylib
+brew install eigenpy
 ```
+for Python 2.7 or:
+```
+brew install eigenpy-python3
+```
+for Python 3 support.
 
-where the abolve file source path was determined by looking at the output of `brew ls --verbose python3 | grep libpython3`.
+## Credits
 
-### Dependencies
+The following people have been involved in the development of **EigenPy**:
 
-The matrix abstract layer depends on several packages which
-have to be available on your machine.
+- [Justin Carpentier](https://jcarpent.github.io) (INRIA): main developer and manager of the project
+- [Nicolas Mansard](http://projects.laas.fr/gepetto/index.php/Members/NicolasMansard) (LAAS-CNRS): initial project instructor
 
- - Libraries:
-   - eigen3
- - System tools:
-   - CMake (>=2.6)
-   - pkg-config
-   - usual compilation tools (GCC/G++, make, etc.)
- - Python 2.7
- - Boost python
+If you have taken part to the development of **EigenPy**, feel free to add your name and contribution here.
+
+## Acknowledgments
+
+The development of **EigenPy** is supported by the [Gepetto team](http://projects.laas.fr/gepetto/) [@LAAS-CNRS](http://www.laas.fr) and the [Willow team](https://www.di.ens.fr/willow/) [@INRIA](http://www.inria.fr).
