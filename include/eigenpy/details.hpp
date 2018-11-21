@@ -265,6 +265,19 @@ namespace eigenpy
         }
       }
       
+      if (PyArray_NDIM(obj_ptr) == 2)
+      {
+        const int R = (int)PyArray_DIMS(obj_ptr)[0];
+        const int C = (int)PyArray_DIMS(obj_ptr)[1];
+        
+        if( (MatType::RowsAtCompileTime!=R)
+           && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+          return 0;
+        if( (MatType::ColsAtCompileTime!=C)
+           && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+          return 0;
+      }
+      
       // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
       if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_INT)
       {
