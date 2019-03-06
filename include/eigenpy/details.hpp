@@ -1,17 +1,6 @@
 /*
- * Copyright 2014-2018, Nicolas Mansard and Justin Carpentier, LAAS-CNRS
- *
- * This file is part of eigenpy.
- * eigenpy is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- * eigenpy is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.  You should
- * have received a copy of the GNU Lesser General Public License along
- * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2014-2019, CNRS
+ * Copyright 2018-2019, INRIA
  */
 
 #ifndef __eigenpy_details_hpp__
@@ -263,6 +252,19 @@ namespace eigenpy
 #endif
           return 0;
         }
+      }
+      
+      if (PyArray_NDIM(obj_ptr) == 2)
+      {
+        const int R = (int)PyArray_DIMS(obj_ptr)[0];
+        const int C = (int)PyArray_DIMS(obj_ptr)[1];
+        
+        if( (MatType::RowsAtCompileTime!=R)
+           && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+          return 0;
+        if( (MatType::ColsAtCompileTime!=C)
+           && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+          return 0;
       }
       
       // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
