@@ -93,11 +93,12 @@ namespace eigenpy
     NumpyType()
     {
       pyModule = bp::import("numpy");
+      // TODO I don't know why this Py_INCREF is necessary.
+      // Without it, the destructor of NumpyType SEGV sometimes.
+      Py_INCREF(pyModule.ptr());
       
       NumpyMatrixObject = pyModule.attr("matrix");
       NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
-      NumpyAsMatrixObject = pyModule.attr("asmatrix");
-      NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
       NumpyArrayObject = pyModule.attr("ndarray");
       NumpyArrayType = reinterpret_cast<PyTypeObject*>(NumpyArrayObject.ptr());
       
@@ -109,7 +110,6 @@ namespace eigenpy
     
     // Numpy types
     bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
-    bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
   };
   
