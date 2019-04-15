@@ -8,6 +8,7 @@
 
 #include "eigenpy/fwd.hpp"
 
+#include <patchlevel.h> // For PY_MAJOR_VERSION
 #include <numpy/arrayobject.h>
 #include <iostream>
 
@@ -93,9 +94,11 @@ namespace eigenpy
     NumpyType()
     {
       pyModule = bp::import("numpy");
+#if PY_MAJOR_VERSION >= 3
       // TODO I don't know why this Py_INCREF is necessary.
       // Without it, the destructor of NumpyType SEGV sometimes.
       Py_INCREF(pyModule.ptr());
+#endif
       
       NumpyMatrixObject = pyModule.attr("matrix");
       NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
