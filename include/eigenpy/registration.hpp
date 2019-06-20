@@ -43,12 +43,12 @@ namespace eigenpy
   {
     namespace bp = boost::python;
 
-    const bp::type_info info = bp::type_id<T>();
-    const bp::converter::registration* reg = bp::converter::registry::query(info);
-    
-    if(check_registration<T>())
+    if(eigenpy::check_registration<T>())
     {
-      bp::scope().attr(info.name()) = reg->get_class_object();
+      const bp::type_info info = bp::type_id<T>();
+      const bp::converter::registration* reg = bp::converter::registry::query(info);
+      bp::handle<> class_obj(reg->get_class_object());
+      bp::scope().attr(reg->get_class_object()->tp_name) = bp::object(class_obj);
       return true;
     }
     
