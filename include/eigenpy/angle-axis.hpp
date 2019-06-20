@@ -6,20 +6,35 @@
 #ifndef __eigenpy_angle_axis_hpp__
 #define __eigenpy_angle_axis_hpp__
 
+#include "eigenpy/fwd.hpp"
+
 #include <boost/python.hpp>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
-
-#include "eigenpy/registration.hpp"
 
 namespace eigenpy
 {
 
   namespace bp = boost::python;
+  
+  template<typename AngleAxis> class AngleAxisVisitor;
+  
+  namespace internal
+  {
+    template<typename Scalar>
+    struct call_expose< Eigen::AngleAxis<Scalar> >
+    {
+      typedef Eigen::AngleAxis<Scalar> type;
+      static inline void run()
+      {
+        AngleAxisVisitor<type>::expose();
+      }
+    };
+  } // namespace internal
 
   template<typename AngleAxis>
   class AngleAxisVisitor
-    :  public boost::python::def_visitor< AngleAxisVisitor<AngleAxis> >
+  : public bp::def_visitor< AngleAxisVisitor<AngleAxis> >
   {
 
     typedef typename AngleAxis::Scalar Scalar;
@@ -103,8 +118,6 @@ namespace eigenpy
 
     static void expose()
     {
-      if(register_symbolic_link_to_registered_type<AngleAxis>()) return;
-     
       bp::class_<AngleAxis>("AngleAxis",
                             "AngleAxis representation of rotations.\n\n",
                             bp::no_init)
