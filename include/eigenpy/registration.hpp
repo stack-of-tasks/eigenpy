@@ -7,6 +7,7 @@
 #define __eigenpy_registration_hpp__
 
 #include <boost/python.hpp>
+#include <boost/python/scope.hpp>
 
 namespace eigenpy
 {
@@ -28,6 +29,30 @@ namespace eigenpy
     else if ((*reg).m_to_python == NULL) return false;
     
     return true;
+  }
+  
+  ///
+  /// \brief Symlink to the current scope the already registered class T.
+  ///
+  /// \returns true if the type T is effectively symlinked.
+  ///
+  /// \tparam T The type to symlink.
+  ///
+  template<typename T>
+  inline bool register_symbolic_link_to_registered_type()
+  {
+    namespace bp = boost::python;
+
+    const bp::type_info info = bp::type_id<T>();
+    const bp::converter::registration* reg = bp::converter::registry::query(info);
+    
+    if(check_registration<T>())
+    {
+      bp::scope().attr(info.name()) = reg->get_class_object();
+      return true;
+    }
+    
+    return false;
   }
 }
 
