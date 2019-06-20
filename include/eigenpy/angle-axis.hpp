@@ -103,8 +103,8 @@ namespace eigenpy
 
     static void expose()
     {
-      if(check_registration<AngleAxis>()) return;
-      
+      if(register_symbolic_link_to_registered_type<AngleAxis>()) return;
+     
       bp::class_<AngleAxis>("AngleAxis",
                             "AngleAxis representation of rotations.\n\n",
                             bp::no_init)
