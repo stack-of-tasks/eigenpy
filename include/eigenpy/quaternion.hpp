@@ -203,8 +203,8 @@ namespace eigenpy
 
     static void expose()
     {
-      if(check_registration<Quaternion>()) return;
-      
+      if(register_symbolic_link_to_registered_type<Quaternion>()) return;
+
       bp::class_<Quaternion>("Quaternion",
                              "Quaternion representing rotation.\n\n"
                              "Supported operations "
