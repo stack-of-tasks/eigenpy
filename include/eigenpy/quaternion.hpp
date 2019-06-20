@@ -6,6 +6,8 @@
 #ifndef __eigenpy_quaternion_hpp__
 #define __eigenpy_quaternion_hpp__
 
+#include "eigenpy/fwd.hpp"
+
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
@@ -27,9 +29,24 @@ namespace eigenpy
 
   namespace bp = boost::python;
 
+  template<typename QuaternionDerived> class QuaternionVisitor;
+  
+  namespace internal
+  {
+    template<typename Scalar, int Options>
+    struct call_expose< Eigen::Quaternion<Scalar,Options> >
+    {
+      typedef Eigen::Quaternion<Scalar,Options> type;
+      static inline void run()
+      {
+        QuaternionVisitor<type>::expose();
+      }
+    };
+  } // namespace internal
+  
   template<typename Quaternion>
   class QuaternionVisitor
-    :  public boost::python::def_visitor< QuaternionVisitor<Quaternion> >
+  :  public bp::def_visitor< QuaternionVisitor<Quaternion> >
   {
     typedef Eigen::QuaternionBase<Quaternion> QuaternionBase;
 
@@ -203,8 +220,6 @@ namespace eigenpy
 
     static void expose()
     {
-      if(register_symbolic_link_to_registered_type<Quaternion>()) return;
-
       bp::class_<Quaternion>("Quaternion",
                              "Quaternion representing rotation.\n\n"
                              "Supported operations "

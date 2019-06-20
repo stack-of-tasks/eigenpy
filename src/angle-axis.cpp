@@ -13,6 +13,6 @@ namespace eigenpy
 {
   void exposeAngleAxis()
   {
-    AngleAxisVisitor<Eigen::AngleAxisd>::expose();
+    expose<Eigen::AngleAxisd>();
   }
 } // namespace eigenpy

@@ -13,6 +13,6 @@ namespace eigenpy
 {
   void exposeQuaternion()
   {
-    QuaternionVisitor<Eigen::Quaterniond>::expose();
+    expose<Eigen::Quaterniond>();
   }
 } // namespace eigenpy

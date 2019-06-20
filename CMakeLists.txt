@@ -82,6 +82,7 @@ SET(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
   include/eigenpy/eigenpy.hpp
   include/eigenpy/exception.hpp
+  include/eigenpy/expose.hpp
   include/eigenpy/details.hpp
   include/eigenpy/fwd.hpp
   include/eigenpy/map.hpp

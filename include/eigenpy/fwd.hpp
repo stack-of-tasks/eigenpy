@@ -26,5 +26,7 @@
   #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Unaligned
 #endif
 
+#include "eigenpy/expose.hpp"
+
 #endif // ifndef __eigenpy_fwd_hpp__
 
