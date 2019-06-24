@@ -44,6 +44,12 @@ namespace eigenpy
 
   namespace bp = boost::python;
 
+  enum NP_TYPE
+  {
+    MATRIX_TYPE,
+    ARRAY_TYPE
+  };
+  
   struct NumpyType
   {
     
@@ -75,19 +81,26 @@ namespace eigenpy
     {
       PyTypeObject * obj_type = PyType_Check(obj.ptr()) ? reinterpret_cast<PyTypeObject*>(obj.ptr()) : obj.ptr()->ob_type;
       if(PyType_IsSubtype(obj_type,getInstance().NumpyMatrixType))
-        getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
+        switchToNumpyMatrix();
       else if(PyType_IsSubtype(obj_type,getInstance().NumpyArrayType))
-        getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
+        switchToNumpyArray();
     }
     
     static void switchToNumpyArray()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
+      getInstance().np_type = ARRAY_TYPE;
     }
     
     static void switchToNumpyMatrix()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
+      getInstance().np_type = MATRIX_TYPE;
+    }
+    
+    static NP_TYPE getType()
+    {
+      return getInstance().np_type;
     }
 
   protected:
@@ -117,7 +130,11 @@ namespace eigenpy
     bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
     //bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
+    
+    static NP_TYPE np_type;
   };
+  
+  NP_TYPE NumpyType::np_type = MATRIX_TYPE;
   
   template<typename MatType>
   struct EigenObjectAllocator
@@ -189,7 +206,6 @@ namespace eigenpy
     }
   };
 #endif
-
   /* --- TO PYTHON -------------------------------------------------------------- */
   template<typename MatType>
   struct EigenToPy
@@ -201,12 +217,21 @@ namespace eigenpy
 	      && "Matrix range larger than int ... should never happen." );
       const int R  = (int)mat.rows(), C = (int)mat.cols();
 
-      npy_intp shape[2] = { R,C };
-      PyArrayObject* pyArray = (PyArrayObject*)
-      PyArray_SimpleNew(2, shape, NumpyEquivalentType<T>::type_code);
+      PyArrayObject* pyArray;
+      if(C == 1 && NumpyType::getType() == ARRAY_TYPE)
+      {
+        npy_intp shape[1] = { R };
+        pyArray = (PyArrayObject*) PyArray_SimpleNew(1, shape,
+                                                     NumpyEquivalentType<T>::type_code);
+      }
+      else
+      {
+        npy_intp shape[2] = { R,C };
+        pyArray = (PyArrayObject*) PyArray_SimpleNew(2, shape,
+                                                     NumpyEquivalentType<T>::type_code);
+      }
 
       EigenObjectAllocator<MatType>::convert(mat,pyArray);
-
       return NumpyType::getInstance().make(pyArray).ptr();
     }
   };
