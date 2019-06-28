@@ -89,18 +89,19 @@ namespace eigenpy
     static void switchToNumpyArray()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
-      getInstance().np_type = ARRAY_TYPE;
+      getType() = ARRAY_TYPE;
     }
     
     static void switchToNumpyMatrix()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
-      getInstance().np_type = MATRIX_TYPE;
+      getType() = MATRIX_TYPE;
     }
     
-    static NP_TYPE getType()
+    static NP_TYPE & getType()
     {
-      return getInstance().np_type;
+      static NP_TYPE np_type;
+      return np_type;
     }
 
   protected:
@@ -121,6 +122,7 @@ namespace eigenpy
       //NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
       
       CurrentNumpyType = NumpyMatrixObject; // default conversion
+      getType() = MATRIX_TYPE;
     }
 
     bp::object CurrentNumpyType;
@@ -131,10 +133,7 @@ namespace eigenpy
     //bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
     
-    static NP_TYPE np_type;
   };
-  
-  NP_TYPE NumpyType::np_type = MATRIX_TYPE;
   
   template<typename MatType>
   struct EigenObjectAllocator
