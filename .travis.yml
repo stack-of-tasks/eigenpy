@@ -8,7 +8,7 @@ compiler:
 env:
   global:
     - secure: "SnIBG/xLIHX3CSvUbqqsX8xTVqIqQ7fFS6HWO6KZQVBsT6yugTwYHbyhNiU531JejYJ/I3ZrDhXfYH3qFZiYxnH1sifvwV+fnTtMXpPN7qPZwIymkjcmm6gJF51e0C7VOfUbvKFv0ngwj+ul21rgZSMuoEvxPK0WxtE3/ZSfn9c="
-    - APT_DEPENDENCIES="doxygen libeigen3-dev libboost-test-dev libboost-python-dev libeigen3-dev"
+    - APT_DEPENDENCIES="doxygen libeigen3-dev libboost-test-dev libboost-python-dev"
     - DEBSIGN_KEYID=5AE5CD75
     - CC=gcc
     - DO_COVERAGE_ON_BRANCH="master;release"
@@ -18,15 +18,13 @@ env:
 jobs:
   include:
     - dist: xenial
-      env:
-        matrix:
-          - BUILDTYPE=Release
-          - BUILDTYPE=Debug
+      env: BUILDTYPE=Release
+    - dist: xenial
+      env: BUILDTYPE=Debug
     - dist: trusty 
-      env:
-        matrix:
-          - BUILDTYPE=Release
-          - BUILDTYPE=Debug
+      env: BUILDTYPE=Release
+    - dist: trusty 
+      env: BUILDTYPE=Debug
 
 notifications:
   email:
