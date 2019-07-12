@@ -19,7 +19,6 @@ INCLUDE(cmake/test.cmake)
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
-OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" FALSE)
 
 # Disable -Werror on Unix for now.
 SET(CXX_DISABLE_WERROR True)
@@ -47,11 +46,17 @@ ELSE(WIN32)
   SET(LINK create_symlink)
 ENDIF(WIN32)
 
-
 # ----------------------------------------------------
 # --- OPTIONS  ---------------------------------------
 # ----------------------------------------------------
-OPTION (BUILD_UNIT_TESTS "Build the unitary tests" ON)
+OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" FALSE)
+OPTION(BUILD_UNIT_TESTS "Build the unitary tests" OFF)
+
+IF(BUILD_UNIT_TESTS)
+  SET(DISABLE_TESTS OFF)
+ELSE(BUILD_UNIT_TESTS)
+  SET(DISABLE_TESTS ON) 
+ENDIF(BUILD_UNIT_TESTS)
 
 FINDPYTHON()
 
