@@ -26,7 +26,7 @@ MACRO(ADD_LIB_UNIT_TEST test PKGS)
     SET_TARGET_PROPERTIES(${test} PROPERTIES SUFFIX ".so")
   ENDIF(APPLE)
 
-  ADD_TEST(${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
+  ADD_TEST(NAME ${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
 
   ADD_DEPENDENCIES(build_tests ${test})
   IF(DISABLE_TESTS)
