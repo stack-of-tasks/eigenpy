@@ -27,7 +27,7 @@ namespace eigenpy
   template<typename T>
   inline void expose()
   {
-    if(not register_symbolic_link_to_registered_type<T>())
+    if(!register_symbolic_link_to_registered_type<T>())
       internal::call_expose<T>::run();
   }
 }

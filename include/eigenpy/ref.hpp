@@ -11,19 +11,19 @@
 
 // For old Eigen versions, EIGEN_DEVICE_FUNC is not defined.
 // We must define it just in the scope of this file.
-#if not EIGEN_VERSION_AT_LEAST(3,2,90)
+#if !EIGEN_VERSION_AT_LEAST(3,2,90)
 #define EIGEN_DEVICE_FUNC
 #endif
 
 namespace eigenpy
 {
 
-  template<typename PlainObjectType>
-  struct Ref : Eigen::Ref<PlainObjectType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename StrideType<PlainObjectType>::type>
+  template<typename PlainObjectTypeT>
+  struct Ref : Eigen::Ref<PlainObjectTypeT,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename StrideType<PlainObjectTypeT>::type>
   {
   public:
-    typedef Eigen::Ref<PlainObjectType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename StrideType<PlainObjectType>::type> Base;
-    
+    typedef Eigen::Ref<PlainObjectTypeT,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename eigenpy::template StrideType<PlainObjectTypeT>::type> Base;
+
   private:
     typedef Eigen::internal::traits<Base> Traits;
     template<typename Derived>
@@ -83,7 +83,7 @@ namespace eigenpy
   }; // struct Ref<PlainObjectType>
 }
 
-#if not EIGEN_VERSION_AT_LEAST(3,2,90)
+#if !EIGEN_VERSION_AT_LEAST(3,2,90)
 #undef EIGEN_DEVICE_FUNC
 #endif
 

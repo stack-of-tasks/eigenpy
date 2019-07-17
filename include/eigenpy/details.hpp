@@ -300,7 +300,7 @@ namespace eigenpy
       // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
       if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_INT)
       {
-        if(not FromTypeToType<int,typename MatType::Scalar>::value)
+        if(!FromTypeToType<int,typename MatType::Scalar>::value)
         {
 #ifndef NDEBUG
           std::cerr << "The Python matrix scalar type (int) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
@@ -310,7 +310,7 @@ namespace eigenpy
       }
       else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_LONG)
       {
-        if(not FromTypeToType<long,typename MatType::Scalar>::value)
+        if(!FromTypeToType<long,typename MatType::Scalar>::value)
         {
 #ifndef NDEBUG
           std::cerr << "The Python matrix scalar type (long) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
@@ -320,7 +320,7 @@ namespace eigenpy
       }
       else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_FLOAT)
       {
-        if(not FromTypeToType<float,typename MatType::Scalar>::value)
+        if(!FromTypeToType<float,typename MatType::Scalar>::value)
         {
 #ifndef NDEBUG
           std::cerr << "The Python matrix scalar type (float) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
@@ -330,7 +330,7 @@ namespace eigenpy
       }
       else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_DOUBLE)
       {
-        if(not FromTypeToType<double,typename MatType::Scalar>::value)
+        if(!FromTypeToType<double,typename MatType::Scalar>::value)
         {
 #ifndef NDEBUG
           std::cerr << "The Python matrix scalar (double) type cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision." << std::endl;
