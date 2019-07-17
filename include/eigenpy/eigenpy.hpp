@@ -9,6 +9,7 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/deprecated.hh"
 #include "eigenpy/eigenpy_export.h"
+
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
 #include "eigenpy/ref.hpp"
 
@@ -16,12 +17,12 @@
   ::eigenpy::enableEigenPySpecific<TYPE>(); \
   ::eigenpy::enableEigenPySpecific< eigenpy::Ref<TYPE> >();
 
-#else
+#else // if EIGEN_VERSION_AT_LEAST(3,2,0)
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
   ::eigenpy::enableEigenPySpecific<TYPE>();
 
-#endif
+#endif // if EIGEN_VERSION_AT_LEAST(3,2,0)
 
 namespace eigenpy
 {
