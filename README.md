@@ -70,6 +70,7 @@ The following people have been involved in the development of **EigenPy**:
 - [Justin Carpentier](https://jcarpent.github.io) (INRIA): main developer and manager of the project
 - [Nicolas Mansard](http://projects.laas.fr/gepetto/index.php/Members/NicolasMansard) (LAAS-CNRS): initial project instructor
 - [Wolfgang Merkt](http://www.wolfgangmerkt.com/) (University of Edinburgh): ROS integration and support
+- [Sean Yen](https://www.linkedin.com/in/seanyentw) (Microsoft): Windows integration
 
 If you have taken part to the development of **EigenPy**, feel free to add your name and contribution here.
 
