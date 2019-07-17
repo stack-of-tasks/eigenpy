@@ -6,13 +6,15 @@
 #ifndef __eigenpy_geometry_hpp__
 #define __eigenpy_geometry_hpp__
 
+#include "eigenpy/eigenpy_export.h"
+
 namespace eigenpy
 {
   
-  void exposeQuaternion();
-  void exposeAngleAxis();
+  void EIGENPY_EXPORT exposeQuaternion();
+  void EIGENPY_EXPORT exposeAngleAxis();
   
-  void exposeGeometryConversion();
+  void EIGENPY_EXPORT exposeGeometryConversion();
   
 } // namespace eigenpy
 

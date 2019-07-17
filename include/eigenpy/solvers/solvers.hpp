@@ -17,11 +17,13 @@
 #ifndef __eigenpy_solvers_hpp__
 #define __eigenpy_solvers_hpp__
 
+#include "eigenpy/eigenpy_export.h"
+
 namespace eigenpy
 {
   struct SolversScope {};
   
-  void exposeSolvers();
+  void EIGENPY_EXPORT exposeSolvers();
   
 } // namespace eigenpy
 
