@@ -13,13 +13,13 @@
 #include "eigenpy/ref.hpp"
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
-  enableEigenPySpecific<TYPE>(); \
-  enableEigenPySpecific< eigenpy::Ref<TYPE> >();
+  ::eigenpy::enableEigenPySpecific<TYPE>(); \
+  ::eigenpy::enableEigenPySpecific< eigenpy::Ref<TYPE> >();
 
 #else
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
-  enableEigenPySpecific<TYPE>();
+  ::eigenpy::enableEigenPySpecific<TYPE>();
 
 #endif
 
