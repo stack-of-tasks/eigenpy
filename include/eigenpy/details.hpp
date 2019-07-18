@@ -6,6 +6,7 @@
 #ifndef __eigenpy_details_hpp__
 #define __eigenpy_details_hpp__
 
+#include "eigenpy/details/rvalue_from_python_data.hpp"
 #include "eigenpy/fwd.hpp"
 
 #include <patchlevel.h> // For PY_MAJOR_VERSION
