@@ -245,7 +245,6 @@ namespace eigenpy
   {
     static PyObject* convert(MatType const & mat)
     {
-      typedef typename MatType::Scalar T;
       typedef typename MatType::Scalar Scalar;
       assert( (mat.rows()<INT_MAX) && (mat.cols()<INT_MAX) 
 	      && "Matrix range larger than int ... should never happen." );
