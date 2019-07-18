@@ -237,32 +237,39 @@ namespace eigenpy
     }
   };
 #endif
+  
   /* --- TO PYTHON -------------------------------------------------------------- */
+  
   template<typename MatType>
   struct EigenToPy
   {
-    static PyObject* convert(MatType const& mat)
+    static PyObject* convert(MatType const & mat)
     {
       typedef typename MatType::Scalar T;
+      typedef typename MatType::Scalar Scalar;
       assert( (mat.rows()<INT_MAX) && (mat.cols()<INT_MAX) 
 	      && "Matrix range larger than int ... should never happen." );
       const int R  = (int)mat.rows(), C = (int)mat.cols();
 
       PyArrayObject* pyArray;
-      if(C == 1 && NumpyType::getType() == ARRAY_TYPE)
+      // Allocate Python memory
+      if(C == 1 && NumpyType::getType() == ARRAY_TYPE) // Handle array with a single dimension
       {
         npy_intp shape[1] = { R };
         pyArray = (PyArrayObject*) PyArray_SimpleNew(1, shape,
-                                                     NumpyEquivalentType<T>::type_code);
+                                                     NumpyEquivalentType<Scalar>::type_code);
       }
       else
       {
         npy_intp shape[2] = { R,C };
         pyArray = (PyArrayObject*) PyArray_SimpleNew(2, shape,
-                                                     NumpyEquivalentType<T>::type_code);
+                                                     NumpyEquivalentType<Scalar>::type_code);
       }
 
+      // Allocate memory
       EigenObjectAllocator<MatType>::convert(mat,pyArray);
+      
+      // Create an instance (either np.array or np.matrix)
       return NumpyType::getInstance().make(pyArray).ptr();
     }
   };
@@ -395,7 +402,7 @@ namespace eigenpy
       return pyObj;
     }
  
-    // Convert obj_ptr into an Eigen::Vector
+    /// \brief Allocate memory and copy pyObj in the new storage
     static void construct(PyObject* pyObj,
                           bp::converter::rvalue_from_python_stage1_data* memory)
     {
