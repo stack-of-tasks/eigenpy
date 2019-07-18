@@ -208,22 +208,12 @@ namespace eigenpy
     static void allocate(PyArrayObject * pyArray, void * storage)
     {
       typename MapNumpy<MatType,Scalar>::EigenMap numpyMap = MapNumpy<MatType,Scalar>::map(pyArray);
-      new(storage) Type(numpyMap);
+      new (storage) Type(numpyMap);
     }
     
-    static void convert(Type const & mat , PyArrayObject * pyArray)
+    static void convert(Type const & mat, PyArrayObject * pyArray)
     {
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
-        MapNumpy<MatType,int>::map(pyArray) = mat.template cast<int>();
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
-        MapNumpy<MatType,long>::map(pyArray) = mat.template cast<long>();
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
-        MapNumpy<MatType,float>::map(pyArray) = mat.template cast<float>();
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
-        MapNumpy<MatType,double>::map(pyArray) = mat.template cast<double>();
+      EigenObjectAllocator<MatType>::convert(mat,pyArray);
     }
   };
 #endif
