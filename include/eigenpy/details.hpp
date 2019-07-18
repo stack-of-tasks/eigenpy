@@ -252,19 +252,19 @@ namespace eigenpy
   template<typename MatType>
   struct EigenFromPy
   {
-    // Determine if obj_ptr can be converted in a Eigenvec
-    static void* convertible(PyArrayObject* obj_ptr)
+    /// \brief Determine if pyObj can be converted into a MatType object
+    static void* convertible(PyArrayObject* pyObj)
     {
-      if (!PyArray_Check(obj_ptr))
+      if (!PyArray_Check(pyObj))
         return 0;
 
       if(MatType::IsVectorAtCompileTime)
       {
         // Special care of scalar matrix of dimension 1x1.
-        if(PyArray_DIMS(obj_ptr)[0] == 1 && PyArray_DIMS(obj_ptr)[1] == 1)
-          return obj_ptr;
+        if(PyArray_DIMS(pyObj)[0] == 1 && PyArray_DIMS(pyObj)[1] == 1)
+          return pyObj;
         
-        if(PyArray_DIMS(obj_ptr)[0] > 1 && PyArray_DIMS(obj_ptr)[1] > 1)
+        if(PyArray_DIMS(pyObj)[0] > 1 && PyArray_DIMS(pyObj)[1] > 1)
         {
 #ifndef NDEBUG
           std::cerr << "The number of dimension of the object does not correspond to a vector" << std::endl;
@@ -272,8 +272,8 @@ namespace eigenpy
           return 0;
         }
         
-        if(((PyArray_DIMS(obj_ptr)[0] == 1) && (MatType::ColsAtCompileTime == 1))
-           || ((PyArray_DIMS(obj_ptr)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
+        if(((PyArray_DIMS(pyObj)[0] == 1) && (MatType::ColsAtCompileTime == 1))
+           || ((PyArray_DIMS(pyObj)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
         {
 #ifndef NDEBUG
           if(MatType::ColsAtCompileTime == 1)
@@ -285,9 +285,9 @@ namespace eigenpy
         }
       }
       
-      if (PyArray_NDIM(obj_ptr) != 2)
+      if (PyArray_NDIM(pyObj) != 2)
       {
-        if ( (PyArray_NDIM(obj_ptr) !=1) || (! MatType::IsVectorAtCompileTime) )
+        if ( (PyArray_NDIM(pyObj) !=1) || (! MatType::IsVectorAtCompileTime) )
         {
 #ifndef NDEBUG
           std::cerr << "The number of dimension of the object is not correct." << std::endl;
@@ -296,10 +296,10 @@ namespace eigenpy
         }
       }
       
-      if (PyArray_NDIM(obj_ptr) == 2)
+      if (PyArray_NDIM(pyObj) == 2)
       {
-        const int R = (int)PyArray_DIMS(obj_ptr)[0];
-        const int C = (int)PyArray_DIMS(obj_ptr)[1];
+        const int R = (int)PyArray_DIMS(pyObj)[0];
+        const int C = (int)PyArray_DIMS(pyObj)[1];
         
         if( (MatType::RowsAtCompileTime!=R)
            && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
@@ -310,7 +310,7 @@ namespace eigenpy
       }
       
       // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
-      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_INT)
+      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyObj), 0)) == NPY_INT)
       {
         if(!FromTypeToType<int,typename MatType::Scalar>::value)
         {
@@ -320,7 +320,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_LONG)
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyObj), 0)) == NPY_LONG)
       {
         if(!FromTypeToType<long,typename MatType::Scalar>::value)
         {
@@ -330,7 +330,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_FLOAT)
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyObj), 0)) == NPY_FLOAT)
       {
         if(!FromTypeToType<float,typename MatType::Scalar>::value)
         {
@@ -340,7 +340,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0)) == NPY_DOUBLE)
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyObj), 0)) == NPY_DOUBLE)
       {
         if(!FromTypeToType<double,typename MatType::Scalar>::value)
         {
@@ -350,7 +350,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(obj_ptr), 0))
+      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyObj), 0))
           != NumpyEquivalentType<typename MatType::Scalar>::type_code)
       {
 #ifndef NDEBUG
@@ -361,7 +361,7 @@ namespace eigenpy
       }
       
 #ifdef NPY_1_8_API_VERSION
-      if (!(PyArray_FLAGS(obj_ptr)))
+      if (!(PyArray_FLAGS(pyObj)))
 #else
         if (!(PyArray_FLAGS(obj_ptr) & NPY_ALIGNED))
 #endif
@@ -372,7 +372,7 @@ namespace eigenpy
           return 0;
         }
       
-      return obj_ptr;
+      return pyObj;
     }
  
     // Convert obj_ptr into an Eigen::Vector
