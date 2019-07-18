@@ -145,18 +145,37 @@ namespace eigenpy
       const int rows = (int)PyArray_DIMS(pyArray)[0];
       const int cols = (int)PyArray_DIMS(pyArray)[1];
       
-      Type * mat_ptr = new(storage) Type(rows,cols);
+      Type * mat_ptr = new (storage) Type(rows,cols);
+      
+      if(NumpyEquivalentType<Scalar>::type_code == GET_PY_ARRAY_TYPE(pyArray))
+      {
+        *mat_ptr = MapNumpy<MatType,Scalar>::map(pyArray); // avoid useless cast
+        return;
+      }
+      
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+      {
         *mat_ptr = MapNumpy<MatType,int>::map(pyArray).template cast<Scalar>();
+        return;
+      }
       
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
+      {
         *mat_ptr = MapNumpy<MatType,long>::map(pyArray).template cast<Scalar>();
+        return;
+      }
       
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
+      {
         *mat_ptr = MapNumpy<MatType,float>::map(pyArray).template cast<Scalar>();
+        return;
+      }
       
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
+      {
         *mat_ptr = MapNumpy<MatType,double>::map(pyArray).template cast<Scalar>();
+        return;
+      }
     }
     
     /// \brief Copy mat into the Python array using Eigen::Map
