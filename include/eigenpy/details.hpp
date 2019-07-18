@@ -410,6 +410,15 @@ namespace eigenpy
 
       memory->convertible = storage;
     }
+    
+    static void registration()
+    {
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+       &EigenFromPy::construct,bp::type_id<MatType>());
+    }
+  };
+  
   };
   
 #define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
@@ -425,10 +434,7 @@ namespace eigenpy
   {
     static void registration()
     {
-      bp::converter::registry::push_back
-      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
-       &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
-      
+      EigenFromPy<MatType>::registration();
       // Add also conversion to Eigen::MatrixBase<MatType>
       bp::converter::registry::push_back
       (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
@@ -449,7 +455,6 @@ namespace eigenpy
     }
   };
 #endif
-  
   
   template<typename MatType>
   void enableEigenPySpecific()
