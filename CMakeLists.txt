@@ -16,7 +16,7 @@ INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/ide.cmake)
 
 SET(PROJECT_NAME eigenpy)
-SET(PROJECT_DESCRIPTION "Wrapping Eigen3 -- numpy")
+SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
 
 # Disable -Werror on Unix for now.
