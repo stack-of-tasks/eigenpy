@@ -160,8 +160,12 @@ namespace eigenpy
     }
     
     /// \brief Copy mat into the Python array using Eigen::Map
-    static void convert(Type const & mat, PyArrayObject * pyArray)
+    template<typename MatrixDerived>
+    static void convert(const Eigen::MatrixBase<MatrixDerived> & mat_,
+                        PyArrayObject * pyArray)
     {
+      const MatrixDerived & mat = const_cast<const MatrixDerived &>(mat_.derived());
+      
       if(NumpyEquivalentType<Scalar>::type_code == GET_PY_ARRAY_TYPE(pyArray))
       {
         MapNumpy<MatType,Scalar>::map(pyArray) = mat; // no cast needed
