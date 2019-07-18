@@ -55,8 +55,6 @@ namespace eigenpy
       const int stride2 = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
       Stride stride(stride2,stride1);
       
-      
-      
       if( (MatType::RowsAtCompileTime!=R)
          && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
       { throw eigenpy::Exception("The number of rows does not fit with the matrix type."); }

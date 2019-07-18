@@ -41,5 +41,9 @@ ENDIF()
 
 ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
 ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
+
 ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "python/eigenpy")
+SET_TESTS_PROPERTIES("py-switch" PROPERTIES DEPENDS ${PYWRAP})
+
 ADD_PYTHON_UNIT_TEST("py-dimensions" "unittest/python/test_dimensions.py" "python/eigenpy")
+SET_TESTS_PROPERTIES("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})

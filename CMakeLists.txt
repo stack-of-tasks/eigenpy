@@ -103,6 +103,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/quaternion.hpp
   include/eigenpy/stride.hpp
   include/eigenpy/ref.hpp
+  include/eigenpy/details/rvalue_from_python_data.hpp
 )
 
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
