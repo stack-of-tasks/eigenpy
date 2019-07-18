@@ -425,6 +425,33 @@ namespace eigenpy
     }
   };
   
+  template<typename MatType>
+  struct EigenFromPy< Eigen::MatrixBase<MatType> >
+  {
+    typedef EigenFromPy<MatType> EigenFromPyDerived;
+    typedef Eigen::MatrixBase<MatType> Base;
+    
+    /// \brief Determine if pyObj can be converted into a MatType object
+    static void* convertible(PyArrayObject* pyObj)
+    {
+      std::cout << "call: EigenFromPy< Eigen::MatrixBase<MatType> >::convertible" << std::endl;
+      return EigenFromPyDerived::convertible(pyObj);
+    }
+    
+    /// \brief Allocate memory and copy pyObj in the new storage
+    static void construct(PyObject* pyObj,
+                          bp::converter::rvalue_from_python_stage1_data* memory)
+    {
+      std::cout << "call: EigenFromPy< Eigen::MatrixBase<MatType> >::construct" << std::endl;
+      EigenFromPyDerived::construct(pyObj,memory);
+    }
+    
+    static void registration()
+    {
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+       &EigenFromPy::construct,bp::type_id<Base>());
+    }
   };
   
 #define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
@@ -441,10 +468,10 @@ namespace eigenpy
     static void registration()
     {
       EigenFromPy<MatType>::registration();
+
       // Add also conversion to Eigen::MatrixBase<MatType>
-      bp::converter::registry::push_back
-      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
-       &EigenFromPy<MatType>::construct,bp::type_id< Eigen::MatrixBase<MatType> >());
+      typedef Eigen::MatrixBase<MatType> MatTypeBase;
+      EigenFromPy<MatTypeBase>::registration();
     }
   };
 
