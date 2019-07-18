@@ -18,7 +18,6 @@
 
 #define GET_PY_ARRAY_TYPE(array) PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
 
-
 namespace eigenpy
 {
   template <typename SCALAR>  struct NumpyEquivalentType {};
@@ -160,19 +159,38 @@ namespace eigenpy
         *mat_ptr = MapNumpy<MatType,double>::map(pyArray).template cast<Scalar>();
     }
     
-    static void convert(Type const & mat , PyArrayObject * pyArray)
+    /// \brief Copy mat into the Python array using Eigen::Map
+    static void convert(Type const & mat, PyArrayObject * pyArray)
     {
+      if(NumpyEquivalentType<Scalar>::type_code == GET_PY_ARRAY_TYPE(pyArray))
+      {
+        MapNumpy<MatType,Scalar>::map(pyArray) = mat; // no cast needed
+        return;
+      }
+      
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+      {
         MapNumpy<MatType,int>::map(pyArray) = mat.template cast<int>();
+        return;
+      }
       
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
+      {
         MapNumpy<MatType,long>::map(pyArray) = mat.template cast<long>();
+        return;
+      }
       
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
+      {
         MapNumpy<MatType,float>::map(pyArray) = mat.template cast<float>();
+        return;
+      }
       
       if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
+      {
         MapNumpy<MatType,double>::map(pyArray) = mat.template cast<double>();
+        return;
+      }
     }
   };
   
