@@ -398,8 +398,6 @@ namespace eigenpy
     static void construct(PyObject* pyObj,
                           bp::converter::rvalue_from_python_stage1_data* memory)
     {
-      using namespace Eigen;
-      
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
       assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
       
