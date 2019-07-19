@@ -181,8 +181,8 @@ namespace eigenpy
     
     /// \brief Copy mat into the Python array using Eigen::Map
     template<typename MatrixDerived>
-    static void convert(const Eigen::MatrixBase<MatrixDerived> & mat_,
-                        PyArrayObject * pyArray)
+    static void copy(const Eigen::MatrixBase<MatrixDerived> & mat_,
+                     PyArrayObject * pyArray)
     {
       const MatrixDerived & mat = const_cast<const MatrixDerived &>(mat_.derived());
       
@@ -231,9 +231,9 @@ namespace eigenpy
       new (storage) Type(numpyMap);
     }
     
-    static void convert(Type const & mat, PyArrayObject * pyArray)
+    static void copy(Type const & mat, PyArrayObject * pyArray)
     {
-      EigenObjectAllocator<MatType>::convert(mat,pyArray);
+      EigenObjectAllocator<MatType>::copy(mat,pyArray);
     }
   };
 #endif
@@ -266,7 +266,7 @@ namespace eigenpy
       }
 
       // Allocate memory
-      EigenObjectAllocator<MatType>::convert(mat,pyArray);
+      EigenObjectAllocator<MatType>::copy(mat,pyArray);
       
       // Create an instance (either np.array or np.matrix)
       return NumpyType::getInstance().make(pyArray).ptr();
