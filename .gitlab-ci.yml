@@ -18,8 +18,7 @@ cache:
     - make checkout MASTER_REPOSITORY="dir ${CI_PROJECT_DIR}"
     - make install
     - cd work.$(hostname)/$(make show-var VARNAME=DISTNAME)
-    - make check
-
+    - make test
 
 robotpkg-py-eigenpy-dubnium-release:
   <<: *robotpkg-py-eigenpy
