@@ -336,7 +336,7 @@ namespace eigenpy
       }
       
       // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
-      if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyArray), 0)) == NPY_INT)
+      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
       {
         if(!FromTypeToType<int,typename MatType::Scalar>::value)
         {
@@ -346,7 +346,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyArray), 0)) == NPY_LONG)
+      else if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
       {
         if(!FromTypeToType<long,typename MatType::Scalar>::value)
         {
@@ -356,7 +356,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyArray), 0)) == NPY_FLOAT)
+      else if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
       {
         if(!FromTypeToType<float,typename MatType::Scalar>::value)
         {
@@ -366,7 +366,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyArray), 0)) == NPY_DOUBLE)
+      else if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
       {
         if(!FromTypeToType<double,typename MatType::Scalar>::value)
         {
@@ -376,8 +376,7 @@ namespace eigenpy
           return 0;
         }
       }
-      else if ((PyArray_ObjectType(reinterpret_cast<PyObject *>(pyArray), 0))
-          != NumpyEquivalentType<typename MatType::Scalar>::type_code)
+      else if(GET_PY_ARRAY_TYPE(pyArray) != NumpyEquivalentType<typename MatType::Scalar>::type_code)
       {
 #ifndef NDEBUG
         std::cerr << "The internal type as no Eigen equivalent." << std::endl;
