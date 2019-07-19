@@ -24,7 +24,7 @@ namespace eigenpy
   template <typename SCALAR>  struct NumpyEquivalentType {};
   template <> struct NumpyEquivalentType<double>  { enum { type_code = NPY_DOUBLE };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
-  template <> struct NumpyEquivalentType<long>     { enum { type_code = NPY_LONG    };};
+  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
   
   template <typename SCALAR1, typename SCALAR2>
@@ -281,7 +281,7 @@ namespace eigenpy
     /// \brief Determine if pyObj can be converted into a MatType object
     static void* convertible(PyArrayObject* pyArray)
     {
-      if (!PyArray_Check(pyArray))
+      if(!PyArray_Check(pyArray))
         return 0;
 
       if(MatType::IsVectorAtCompileTime)
@@ -311,7 +311,7 @@ namespace eigenpy
         }
       }
       
-      if (PyArray_NDIM(pyArray) != 2)
+      if(PyArray_NDIM(pyArray) != 2)
       {
         if ( (PyArray_NDIM(pyArray) !=1) || (! MatType::IsVectorAtCompileTime) )
         {
@@ -322,7 +322,7 @@ namespace eigenpy
         }
       }
       
-      if (PyArray_NDIM(pyArray) == 2)
+      if(PyArray_NDIM(pyArray) == 2)
       {
         const int R = (int)PyArray_DIMS(pyArray)[0];
         const int C = (int)PyArray_DIMS(pyArray)[1];
@@ -386,9 +386,9 @@ namespace eigenpy
       }
       
 #ifdef NPY_1_8_API_VERSION
-      if (!(PyArray_FLAGS(pyArray)))
+      if(!(PyArray_FLAGS(pyArray)))
 #else
-      if (!(PyArray_FLAGS(pyArray) & NPY_ALIGNED))
+      if(!(PyArray_FLAGS(pyArray) & NPY_ALIGNED))
 #endif
         {
 #ifndef NDEBUG
