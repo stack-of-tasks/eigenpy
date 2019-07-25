@@ -433,7 +433,6 @@ namespace eigenpy
     /// \brief Determine if pyObj can be converted into a MatType object
     static void* convertible(PyArrayObject* pyObj)
     {
-      std::cout << "call: EigenFromPy< Eigen::MatrixBase<MatType> >::convertible" << std::endl;
       return EigenFromPyDerived::convertible(pyObj);
     }
     
@@ -441,7 +440,6 @@ namespace eigenpy
     static void construct(PyObject* pyObj,
                           bp::converter::rvalue_from_python_stage1_data* memory)
     {
-      std::cout << "call: EigenFromPy< Eigen::MatrixBase<MatType> >::construct" << std::endl;
       EigenFromPyDerived::construct(pyObj,memory);
     }
     
