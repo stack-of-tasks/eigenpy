@@ -1,6 +1,10 @@
 EigenPy
 ======
 
+[![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)](https://opensource.org/licenses/BSD-2-Clause)
+[![Build Status](https://travis-ci.org/stack-of-tasks/eigenpy.svg?branch=devel)](https://travis-ci.org/stack-of-tasks/eigenpy)
+[![Conda Downloads](https://anaconda.org/conda-forge/eigenpy/badges/downloads.svg)](https://anaconda.org/conda-forge/eigenpy)
+
 **EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) in Python as NumPy object (as matrix or array).
 **EigenPy** also exposes the Geometry module of Eigen for easy code prototyping.
 **EigenPy** also supports the basic matrix decomposion routines of Eigen such as the Cholesky decomposition, SVD decomposition, QR decomposition, and etc.
