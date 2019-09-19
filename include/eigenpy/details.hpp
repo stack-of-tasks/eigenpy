@@ -46,6 +46,7 @@ namespace eigenpy
 
   enum NP_TYPE
   {
+    DEFAULT_TYPE,
     MATRIX_TYPE,
     ARRAY_TYPE
   };
@@ -66,6 +67,16 @@ namespace eigenpy
     
     bp::object make(PyObject* pyObj, bool copy = false)
     {
+      if (getType() == DEFAULT_TYPE) {
+        std::cerr <<
+          "eigenpy warning: you use the deprecated class numpy.matrix without explicily asking for it. "
+          "The default behaviour will change to numpy.array at next major release.\n"
+          "- Either call eigenpy.switchToNumpyMatrix() before using eigenpy to suppress this warning\n"
+          "- or call eigenpy.switchToNumpyArray() and adapt your code accordingly.\n"
+          "See https://github.com/stack-of-tasks/eigenpy/issues/87 for further details."
+          << std::endl;
+        switchToNumpyMatrix();
+      }
       bp::object m;
       if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyMatrixType))
         m = NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
@@ -122,7 +133,7 @@ namespace eigenpy
       //NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
       
       CurrentNumpyType = NumpyMatrixObject; // default conversion
-      getType() = MATRIX_TYPE;
+      getType() = DEFAULT_TYPE;
     }
 
     bp::object CurrentNumpyType;
