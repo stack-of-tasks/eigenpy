@@ -16,15 +16,18 @@ env:
     - DO_CPPCHECK_ON_BRANCH=""
     - DO_INSTALL_DOC_EXCEPT_ON_BRANCH=""
     - BUILD_WITH_CATKIN_SUPPORT=false
+    - MAKEFLAGS="-j2"
 
 jobs:
   include:
+    - dist: bionic
+      env: BUILDTYPE=Release
+    - dist: bionic
+      env: BUILDTYPE=Debug
     - dist: xenial
       env: BUILDTYPE=Release
     - dist: xenial
       env: BUILDTYPE=Debug
-    - dist: trusty 
-      env: BUILDTYPE=Release
     - dist: trusty 
       env: BUILDTYPE=Debug
 
