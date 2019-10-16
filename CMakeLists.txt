@@ -5,25 +5,26 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
-# Check if the submodule cmake have been initialized
-IF(NOT EXISTS "${PROJECT_SOURCE_DIR}/cmake/base.cmake")
-  MESSAGE(FATAL_ERROR "\nPlease run the following command first:\ngit submodule update --init\n")
-ENDIF()
-
-INCLUDE(cmake/base.cmake)
-INCLUDE(cmake/boost.cmake)
-INCLUDE(cmake/python.cmake)
-INCLUDE(cmake/ide.cmake)
-
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
+
+# Check if the submodule cmake have been initialized
+IF(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
+  MESSAGE(FATAL_ERROR "\nPlease run the following command first:\ngit submodule update --init\n")
+ENDIF()
 
 # Disable -Werror on Unix for now.
 SET(CXX_DISABLE_WERROR True)
 SET(CMAKE_VERBOSE_MAKEFILE True)
 
-SETUP_PROJECT()
+INCLUDE(cmake/base.cmake)
+PROJECT(${PROJECT_NAME} CXX)
+
+INCLUDE(cmake/boost.cmake)
+INCLUDE(cmake/python.cmake)
+INCLUDE(cmake/ide.cmake)
+
 STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 IF(APPLE)
@@ -162,5 +163,3 @@ PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_BOOST_LIBS(${BOOST_COMPONENTS})
-
-SETUP_PROJECT_FINALIZE()
