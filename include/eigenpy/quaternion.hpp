@@ -102,8 +102,8 @@ namespace eigenpy
       /* --- Methods --- */
       .def("coeffs",(const Vector4 & (Quaternion::*)()const)&Quaternion::coeffs,
            bp::return_value_policy<bp::copy_const_reference>())
-      .def("matrix",&Quaternion::matrix,"Returns an equivalent rotation matrix")
-      .def("toRotationMatrix ",&Quaternion::toRotationMatrix,"Returns an equivalent 3x3 rotation matrix.")
+      .def("matrix",&Quaternion::matrix,"Returns an equivalent 3x3 rotation matrix. Similar to toRotationMatrix.")
+      .def("toRotationMatrix",&Quaternion::toRotationMatrix,"Returns an equivalent 3x3 rotation matrix.")
       
       .def("setFromTwoVectors",&setFromTwoVectors,((bp::arg("a"),bp::arg("b"))),"Set *this to be the quaternion which transform a into b through a rotation."
            ,bp::return_self<>())
