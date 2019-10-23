@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>eigenpy</name>
-  <version>1.5.3</version>
+  <version>1.6.2</version>
   <description>Bindings between Numpy and Eigen using Boost.Python</description>
   <maintainer email="justin.carpentier@inria.fr">Justin Carpentier</maintainer>
   <maintainer email="wolfgang.merkt@ed.ac.uk">Wolfgang Merkt</maintainer>
@@ -11,6 +11,8 @@
 
   <url type="website">https://github.com/stack-of-tasks/eigenpy</url>
 
+  <build_depend>git</build_depend>
+  <build_depend>doxygen</build_depend>
   <depend>python</depend>
   <depend>python-numpy</depend>
   <depend>eigen</depend>
