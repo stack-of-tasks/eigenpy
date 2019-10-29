@@ -46,6 +46,7 @@ install: pip install coveralls numpy
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
   - sudo free -m -t
+  - ls -l /usr/lib/x86_64-linux-gnu/libboost_python*
   - ./.travis/run ../travis_custom/custom_build
 after_failure: ./.travis/run after_failure
 after_success: ./.travis/run after_success
