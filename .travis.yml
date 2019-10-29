@@ -1,7 +1,4 @@
 language: python
-python:
-  - "2.7"
-  - "3.5"
 sudo: required
 compiler:
   - gcc
@@ -22,14 +19,28 @@ jobs:
   include:
     - dist: bionic
       env: BUILDTYPE=Release
+      python: 2.7
+    - dist: bionic
+      env: BUILDTYPE=Release
+      python: 3.6
     - dist: bionic
       env: BUILDTYPE=Debug
+      python: 2.7
+    - dist: bionic
+      env: BUILDTYPE=Debug
+      python: 3.6
     - dist: xenial
       env: BUILDTYPE=Release
+      python: 2.7
     - dist: xenial
-      env: BUILDTYPE=Debug
+      env: BUILDTYPE=Release
+      python: 3.5
     - dist: trusty 
-      env: BUILDTYPE=Debug
+      env: BUILDTYPE=Release
+      python: 2.7
+    - dist: trusty 
+      env: BUILDTYPE=Release
+      python: 3.4
 
 notifications:
   email:
@@ -44,6 +55,7 @@ install: pip install coveralls numpy
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
   - sudo free -m -t
+  - ls -l /usr/lib/x86_64-linux-gnu/libboost_python*
   - ./.travis/run ../travis_custom/custom_build
 after_failure: ./.travis/run after_failure
 after_success: ./.travis/run after_success
