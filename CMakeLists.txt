@@ -65,7 +65,7 @@ FIND_NUMPY()
 INCLUDE_DIRECTORIES(SYSTEM ${NUMPY_INCLUDE_DIRS})
 
 # ----------------------------------------------------
-# --- DEPENDANCIES -----------------------------------
+# --- DEPENDENCIES -----------------------------------
 # ----------------------------------------------------
 ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
 
@@ -140,6 +140,9 @@ TARGET_COMPILE_OPTIONS(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj
 TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME}
+  EXPORT ${TARGETS_EXPORT_NAME}
+  PUBLIC_HEADER
+  INCLUDES DESTINATION ${CMAKE_INSTALL_PREFIX}/include
   LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
   ARCHIVE DESTINATION ${CMAKE_INSTALL_PREFIX}/lib
   RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
@@ -150,10 +153,17 @@ ADD_SOURCE_GROUP(${PROJECT_NAME}_SOURCES)
 INCLUDE(GenerateExportHeader)
 GENERATE_EXPORT_HEADER(${PROJECT_NAME} EXPORT_FILE_NAME eigenpy/${PROJECT_NAME}_export.h)
 TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>")
+SET(PUBLIC_HEADER ${${PROJECT_NAME}_HEADERS})
 
 INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/eigenpy/${PROJECT_NAME}_export.h
   DESTINATION include/eigenpy)
+
+# This is a temporary work-around to fix MoveIt until jrl-cmakemodules
+# can correctly create non-target CMake configs
+install(FILES eigenpyConfig.cmake DESTINATION share/eigenpy/cmake)
+install(FILES package.xml DESTINATION share/eigenpy)
+
 # ----------------------------------------------------
 # --- PYTHON LIBRARY ---------------------------------
 # ----------------------------------------------------
