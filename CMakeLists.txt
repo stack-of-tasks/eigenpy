@@ -8,7 +8,6 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
-SET(PROJECT_USE_CMAKE_EXPORT TRUE)
 
 # Check if the submodule cmake have been initialized
 IF(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
@@ -159,6 +158,12 @@ SET(PUBLIC_HEADER ${${PROJECT_NAME}_HEADERS})
 INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/eigenpy/${PROJECT_NAME}_export.h
   DESTINATION include/eigenpy)
+
+# This is a temporary work-around to fix MoveIt until jrl-cmakemodules
+# can correctly create non-target CMake configs
+install(FILES eigenpyConfig.cmake DESTINATION share/eigenpy/cmake)
+install(FILES package.xml DESTINATION share/eigenpy)
+
 # ----------------------------------------------------
 # --- PYTHON LIBRARY ---------------------------------
 # ----------------------------------------------------
@@ -173,5 +178,3 @@ PKG_CONFIG_APPEND_LIBS(${PROJECT_NAME})
 PKG_CONFIG_APPEND_CFLAGS("-I${PYTHON_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_CFLAGS("-I${NUMPY_INCLUDE_DIRS}")
 PKG_CONFIG_APPEND_BOOST_LIBS(${BOOST_COMPONENTS})
-
-SETUP_PROJECT_PACKAGE_FINALIZE()
