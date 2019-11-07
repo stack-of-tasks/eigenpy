@@ -65,12 +65,13 @@ namespace eigenpy
     {
       cl
       .def(bp::init<>("Default constructor"))
-      .def(bp::init<Matrix3>((bp::arg("matrixRotation")),"Initialize from rotation matrix."))
-      .def(bp::init<AngleAxis>((bp::arg("angleaxis")),"Initialize from angle axis."))
-      .def(bp::init<Quaternion>((bp::arg("clone")),"Copy constructor."))
+      .def(bp::init<Vector4>((bp::arg("Vec4: a 4D vector representing quaternion coefficients")),"Initialize from a vector 4D."))
+      .def(bp::init<Matrix3>((bp::arg("R: a rotation matrix")),"Initialize from rotation matrix."))
+      .def(bp::init<AngleAxis>((bp::arg("aa: angle axis")),"Initialize from an angle axis."))
+      .def(bp::init<Quaternion>((bp::arg("quaternion")),"Copy constructor."))
       .def("__init__",bp::make_constructor(&QuaternionVisitor::FromTwoVectors,
                                            bp::default_call_policies(),
-                                           (bp::arg("u"),bp::arg("v"))),"Initialize from two vector u,v")
+                                           (bp::arg("u: a 3D vector"),bp::arg("v: a 3D vector"))),"Initialize from two vectors u andv")
       .def(bp::init<Scalar,Scalar,Scalar,Scalar>
            ((bp::arg("w"),bp::arg("x"),bp::arg("y"),bp::arg("z")),
             "Initialize from coefficients.\n\n"
