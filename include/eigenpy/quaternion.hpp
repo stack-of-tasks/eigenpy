@@ -68,6 +68,7 @@ namespace eigenpy
       .def(bp::init<Matrix3>((bp::arg("matrixRotation")),"Initialize from rotation matrix."))
       .def(bp::init<AngleAxis>((bp::arg("angleaxis")),"Initialize from angle axis."))
       .def(bp::init<Quaternion>((bp::arg("clone")),"Copy constructor."))
+      .def(bp::init<Vector4>((bp::arg("Vec4: a 4D vector representing quaternion coefficients")),"Initialize from a vector 4D."))
       .def("__init__",bp::make_constructor(&QuaternionVisitor::FromTwoVectors,
                                            bp::default_call_policies(),
                                            (bp::arg("u"),bp::arg("v"))),"Initialize from two vector u,v")
