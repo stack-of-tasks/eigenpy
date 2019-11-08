@@ -19,18 +19,23 @@ namespace eigenpy
   
   template<typename AngleAxis> class AngleAxisVisitor;
   
-  namespace internal
+  template<typename Scalar>
+  struct call< Eigen::AngleAxis<Scalar> >
   {
-    template<typename Scalar>
-    struct call_expose< Eigen::AngleAxis<Scalar> >
+    typedef Eigen::AngleAxis<Scalar> AngleAxis;
+    static inline void expose()
     {
-      typedef Eigen::AngleAxis<Scalar> type;
-      static inline void run()
-      {
-        AngleAxisVisitor<type>::expose();
-      }
-    };
-  } // namespace internal
+      AngleAxisVisitor<AngleAxis>::expose();
+    }
+      
+    static inline bool isApprox(const AngleAxis & self, const AngleAxis & other,
+                                const Scalar & prec = Eigen::NumTraits<Scalar>::dummy_precision())
+    {
+      return self.isApprox(other,prec);
+    }
+  };
+
+  BOOST_PYTHON_FUNCTION_OVERLOADS(isApproxAngleAxis_overload,call<Eigen::AngleAxisd>::isApprox,2,3)
 
   template<typename AngleAxis>
   class AngleAxisVisitor
@@ -74,11 +79,11 @@ namespace eigenpy
            bp::arg("Sets *this from a 3x3 rotation matrix."),bp::return_self<>())
       .def("toRotationMatrix",&AngleAxis::toRotationMatrix,"Constructs and returns an equivalent 3x3 rotation matrix.")
       .def("matrix",&AngleAxis::matrix,"Returns an equivalent rotation matrix.")
-      .def("isApprox",(bool (AngleAxis::*)(const AngleAxis &))&AngleAxis::isApprox,
-           "Returns true if *this is approximately equal to other.")
-      .def("isApprox",(bool (AngleAxis::*)(const AngleAxis &, const Scalar prec))&AngleAxis::isApprox,
-           bp::args("other","prec"),
-           "Returns true if *this is approximately equal to other, within the precision determined by prec.")
+      
+      .def("isApprox",
+           &call<AngleAxis>::isApprox,
+           isApproxAngleAxis_overload(bp::args("other","prec"),
+                                      "Returns true if *this is approximately equal to other, within the precision determined by prec."))
       
       /* --- Operators --- */
       .def(bp::self * bp::other<Vector3>())
@@ -101,7 +106,8 @@ namespace eigenpy
     { self.angle() = angle; }
 
     static bool __eq__(const AngleAxis & u, const AngleAxis & v)
-    { return u.isApprox(v); }
+    { return u.axis() == v.axis() && v.angle() == u.angle(); }
+    
     static bool __ne__(const AngleAxis & u, const AngleAxis & v)
     { return !__eq__(u,v); }
 
