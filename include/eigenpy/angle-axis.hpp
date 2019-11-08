@@ -98,7 +98,8 @@ namespace eigenpy
     { self.angle() = angle; }
 
     static bool __eq__(const AngleAxis & u, const AngleAxis & v)
-    { return u.isApprox(v); }
+    { return u.axis() == v.axis() && v.angle() == u.angle(); }
+    
     static bool __ne__(const AngleAxis & u, const AngleAxis & v)
     { return !__eq__(u,v); }
 

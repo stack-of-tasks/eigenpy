@@ -178,9 +178,9 @@ namespace eigenpy
       return self.isApprox(other,prec);
     }
   
-    static bool __eq__(const Quaternion& u, const Quaternion& v)
+    static bool __eq__(const Quaternion & u, const Quaternion & v)
     {
-      return u.isApprox(v,1e-9);
+      return u.coeffs() == v.coeffs();
     }
     
     static bool __ne__(const Quaternion& u, const Quaternion& v)

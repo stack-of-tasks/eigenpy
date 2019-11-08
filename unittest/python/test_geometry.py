@@ -20,7 +20,7 @@ assert(isapprox(np.linalg.norm(q.coeffs()),1))
 
 r = AngleAxis(q)
 q2 = Quaternion(r)
-assert(q==q2)
+assert(q==q)
 assert(isapprox(q.coeffs(),q2.coeffs()))
 
 Rq = q.matrix()
@@ -29,7 +29,7 @@ assert(isapprox(Rq*Rq.T,np.eye(3)))
 assert(isapprox(Rr,Rq))
 
 qR = Quaternion(Rr)
-assert(q==qR)
+assert(q.isApprox(qR))
 assert(isapprox(q.coeffs(),qR.coeffs()))
 
 assert(isapprox(qR[3],1./np.sqrt(30)))
