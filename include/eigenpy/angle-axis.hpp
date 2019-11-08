@@ -19,18 +19,15 @@ namespace eigenpy
   
   template<typename AngleAxis> class AngleAxisVisitor;
   
-  namespace internal
+  template<typename Scalar>
+  struct call< Eigen::AngleAxis<Scalar> >
   {
-    template<typename Scalar>
-    struct call_expose< Eigen::AngleAxis<Scalar> >
+    typedef Eigen::AngleAxis<Scalar> AngleAxis;
+    static inline void expose()
     {
-      typedef Eigen::AngleAxis<Scalar> type;
-      static inline void run()
-      {
-        AngleAxisVisitor<type>::expose();
-      }
-    };
-  } // namespace internal
+      AngleAxisVisitor<AngleAxis>::expose();
+    }
+  };
 
   template<typename AngleAxis>
   class AngleAxisVisitor

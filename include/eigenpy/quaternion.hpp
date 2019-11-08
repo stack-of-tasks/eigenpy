@@ -31,19 +31,16 @@ namespace eigenpy
 
   template<typename QuaternionDerived> class QuaternionVisitor;
   
-  namespace internal
+  template<typename Scalar, int Options>
+  struct call< Eigen::Quaternion<Scalar,Options> >
   {
-    template<typename Scalar, int Options>
-    struct call_expose< Eigen::Quaternion<Scalar,Options> >
+    typedef Eigen::Quaternion<Scalar,Options> Quaternion;
+    static inline void expose()
     {
-      typedef Eigen::Quaternion<Scalar,Options> type;
-      static inline void run()
-      {
-        QuaternionVisitor<type>::expose();
-      }
-    };
-  } // namespace internal
-  
+      QuaternionVisitor<Quaternion>::expose();
+    }
+  };
+
   template<typename Quaternion>
   class QuaternionVisitor
   :  public bp::def_visitor< QuaternionVisitor<Quaternion> >
