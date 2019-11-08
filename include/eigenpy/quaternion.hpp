@@ -39,7 +39,15 @@ namespace eigenpy
     {
       QuaternionVisitor<Quaternion>::expose();
     }
+    
+    static inline bool isApprox(const Quaternion & self, const Quaternion & other,
+                                const Scalar & prec = Eigen::NumTraits<Scalar>::dummy_precision())
+    {
+      return self.isApprox(other,prec);
+    }
   };
+
+  BOOST_PYTHON_FUNCTION_OVERLOADS(isApproxQuaternion_overload,call<Eigen::Quaterniond>::isApprox,2,3)
 
   template<typename Quaternion>
   class QuaternionVisitor
@@ -62,13 +70,22 @@ namespace eigenpy
     {
       cl
       .def(bp::init<>("Default constructor"))
-      .def(bp::init<Vector4>((bp::arg("Vec4: a 4D vector representing quaternion coefficients")),"Initialize from a vector 4D."))
-      .def(bp::init<Matrix3>((bp::arg("R: a rotation matrix")),"Initialize from rotation matrix."))
-      .def(bp::init<AngleAxis>((bp::arg("aa: angle axis")),"Initialize from an angle axis."))
-      .def(bp::init<Quaternion>((bp::arg("quaternion")),"Copy constructor."))
+      .def(bp::init<Vector4>((bp::arg("vec4")),
+                             "Initialize from a vector 4D.\n"
+                             "\tvec4 : a 4D vector representing quaternion coefficients in the order xyzw."))
+      .def(bp::init<Matrix3>((bp::arg("R")),
+                             "Initialize from rotation matrix.\n"
+                             "\tR : a rotation matrix 3x3."))
+      .def(bp::init<AngleAxis>((bp::arg("aa")),
+                               "Initialize from an angle axis.\n"
+                               "\taa: angle axis object."))
+      .def(bp::init<Quaternion>((bp::arg("quat")),
+                                "Copy constructor.\n"
+                                "\tquat: a quaternion."))
       .def("__init__",bp::make_constructor(&QuaternionVisitor::FromTwoVectors,
                                            bp::default_call_policies(),
-                                           (bp::arg("u: a 3D vector"),bp::arg("v: a 3D vector"))),"Initialize from two vectors u andv")
+                                           (bp::arg("u: a 3D vector"),bp::arg("v: a 3D vector"))),
+           "Initialize from two vectors u and v")
       .def(bp::init<Scalar,Scalar,Scalar,Scalar>
            ((bp::arg("w"),bp::arg("x"),bp::arg("y"),bp::arg("z")),
             "Initialize from coefficients.\n\n"
@@ -88,14 +105,10 @@ namespace eigenpy
                     &QuaternionVisitor::getCoeff<3>,
                     &QuaternionVisitor::setCoeff<3>,"The w coefficient.")
       
-//      .def("isApprox",(bool (Quaternion::*)(const Quaternion &))&Quaternion::template isApprox<Quaternion>,
-//           "Returns true if *this is approximately equal to other.")
-//      .def("isApprox",(bool (Quaternion::*)(const Quaternion &, const Scalar prec))&Quaternion::template isApprox<Quaternion>,
-//           "Returns true if *this is approximately equal to other, within the precision determined by prec..")
-      .def("isApprox",(bool (*)(const Quaternion &))&isApprox,
-           "Returns true if *this is approximately equal to other.")
-      .def("isApprox",(bool (*)(const Quaternion &, const Scalar prec))&isApprox,
-           "Returns true if *this is approximately equal to other, within the precision determined by prec..")
+      .def("isApprox",
+           &call<Quaternion>::isApprox,
+           isApproxQuaternion_overload(bp::args("other","prec"),
+                                       "Returns true if *this is approximately equal to other, within the precision determined by prec."))
       
       /* --- Methods --- */
       .def("coeffs",(const Vector4 & (Quaternion::*)()const)&Quaternion::coeffs,
@@ -103,7 +116,7 @@ namespace eigenpy
       .def("matrix",&Quaternion::matrix,"Returns an equivalent 3x3 rotation matrix. Similar to toRotationMatrix.")
       .def("toRotationMatrix",&Quaternion::toRotationMatrix,"Returns an equivalent 3x3 rotation matrix.")
       
-      .def("setFromTwoVectors",&setFromTwoVectors,((bp::arg("a"),bp::arg("b"))),"Set *this to be the quaternion which transform a into b through a rotation."
+      .def("setFromTwoVectors",&setFromTwoVectors,((bp::arg("a"),bp::arg("b"))),"Set *this to be the quaternion which transforms a into b through a rotation."
            ,bp::return_self<>())
       .def("conjugate",&Quaternion::conjugate,"Returns the conjugated quaternion. The conjugate of a quaternion represents the opposite rotation.")
       .def("inverse",&Quaternion::inverse,"Returns the quaternion describing the inverse rotation.")
@@ -142,13 +155,11 @@ namespace eigenpy
 //           "Returns the quaternion which transform a into b through a rotation.")
       .def("FromTwoVectors",&FromTwoVectors,
            bp::args("a","b"),
-           "Returns the quaternion which transform a into b through a rotation.",
+           "Returns the quaternion which transforms a into b through a rotation.",
            bp::return_value_policy<bp::manage_new_object>())
       .staticmethod("FromTwoVectors")
       .def("Identity",&Quaternion::Identity,"Returns a quaternion representing an identity rotation.")
       .staticmethod("Identity")
-      
-    
       ;
     }
   private:
@@ -170,12 +181,6 @@ namespace eigenpy
     { 
       Quaternion* q(new Quaternion); q->setFromTwoVectors(u,v);
       return q; 
-    }
-    
-    static bool isApprox(const Quaternion & self, const Quaternion & other,
-                         const Scalar prec = Eigen::NumTraits<Scalar>::dummy_precision)
-    {
-      return self.isApprox(other,prec);
     }
   
     static bool __eq__(const Quaternion & u, const Quaternion & v)

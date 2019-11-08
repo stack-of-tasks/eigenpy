@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+from eigenpy import *
 from geometry import *
 import numpy as np
 from numpy import cos,sin
@@ -22,6 +23,8 @@ r = AngleAxis(q)
 q2 = Quaternion(r)
 assert(q==q)
 assert(isapprox(q.coeffs(),q2.coeffs()))
+assert(q2.isApprox(q2))
+assert(q2.isApprox(q2,1e-2))
 
 Rq = q.matrix()
 Rr = r.matrix()
@@ -45,6 +48,8 @@ if verbose: print("Rx(.1) = \n\n",r.matrix(),"\n")
 assert( isapprox(r.matrix()[2,2],cos(r.angle)))
 assert( isapprox(r.axis,np.matrix("1;0;0")) )
 assert( isapprox(r.angle,0.1) )
+assert(r.isApprox(r))
+assert(r.isApprox(r,1e-2))
 
 r.axis = np.matrix([0,1,0],np.double).T
 assert( isapprox(r.matrix()[0,0],cos(r.angle)))
