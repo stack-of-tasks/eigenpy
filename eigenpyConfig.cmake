@@ -4,3 +4,4 @@ message(STATUS "Loading eigenpy from PkgConfig")
 
 find_package(PkgConfig)
 pkg_check_modules(eigenpy REQUIRED eigenpy)
+link_directories(${eigenpy_LIBRARY_DIRS})
