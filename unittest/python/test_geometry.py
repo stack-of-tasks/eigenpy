@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-from eigenpy import *
 from geometry import *
 import numpy as np
 from numpy import cos,sin
