@@ -16,7 +16,7 @@ namespace eigenpy
     
     bp::def("setNumpyType",&NumpyType::setNumpyType,
             bp::arg("Numpy type (np.ndarray or np.matrix)"),
-            "Change the type returned by the converters from an Eigen object.");
+            "Change the Numpy type returned by the converters from an Eigen object.");
             
     bp::def("getNumpyType",&NumpyType::getNumpyType,
             "Get the Numpy type returned by the converters from an Eigen object.");
