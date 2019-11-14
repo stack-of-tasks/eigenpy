@@ -114,6 +114,11 @@ namespace eigenpy
       static NP_TYPE np_type;
       return np_type;
     }
+    
+    static bp::object getNumpyType()
+    {
+      return getInstance().CurrentNumpyType;
+    }
 
   protected:
     NumpyType()
