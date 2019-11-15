@@ -372,119 +372,87 @@ namespace eigenpy
     {
       if(!PyArray_Check(pyArray))
         return 0;
+      
+      if(!isScalarConvertible(GET_PY_ARRAY_TYPE(pyArray)))
+        return 0;
 
       if(MatType::IsVectorAtCompileTime)
       {
-        // Special care of scalar matrix of dimension 1x1.
-        if(PyArray_DIMS(pyArray)[0] == 1 && PyArray_DIMS(pyArray)[1] == 1)
-          return pyArray;
-        
-        if(PyArray_DIMS(pyArray)[0] > 1 && PyArray_DIMS(pyArray)[1] > 1)
+        switch(PyArray_NDIM(pyArray))
         {
+          case 0:
+            return 0;
+          case 1:
+            return pyArray;
+          case 2:
+          {
+            // Special care of scalar matrix of dimension 1x1.
+            if(PyArray_DIMS(pyArray)[0] == 1 && PyArray_DIMS(pyArray)[1] == 1)
+              return pyArray;
+            
+            if(PyArray_DIMS(pyArray)[0] > 1 && PyArray_DIMS(pyArray)[1] > 1)
+            {
 #ifndef NDEBUG
-          std::cerr << "The number of dimension of the object does not correspond to a vector" << std::endl;
+              std::cerr << "The number of dimension of the object does not correspond to a vector" << std::endl;
 #endif
-          return 0;
+              return 0;
+            }
+            
+            if(((PyArray_DIMS(pyArray)[0] == 1) && (MatType::ColsAtCompileTime == 1))
+               || ((PyArray_DIMS(pyArray)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
+            {
+#ifndef NDEBUG
+              if(MatType::ColsAtCompileTime == 1)
+                std::cerr << "The object is not a column vector" << std::endl;
+              else
+                std::cerr << "The object is not a row vector" << std::endl;
+#endif
+              return 0;
+            }
+            break;
+          }
+          default:
+            return 0;
+        }
+      }
+      else // this is a matrix
+      {
+        if(PyArray_NDIM(pyArray) != 2)
+        {
+          if ( (PyArray_NDIM(pyArray) !=1) || (! MatType::IsVectorAtCompileTime) )
+          {
+#ifndef NDEBUG
+            std::cerr << "The number of dimension of the object is not correct." << std::endl;
+#endif
+            return 0;
+          }
         }
         
-        if(((PyArray_DIMS(pyArray)[0] == 1) && (MatType::ColsAtCompileTime == 1))
-           || ((PyArray_DIMS(pyArray)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
+        if(PyArray_NDIM(pyArray) == 2)
         {
-#ifndef NDEBUG
-          if(MatType::ColsAtCompileTime == 1)
-            std::cerr << "The object is not a column vector" << std::endl;
-          else
-            std::cerr << "The object is not a row vector" << std::endl;
-#endif
-          return 0;
+          const int R = (int)PyArray_DIMS(pyArray)[0];
+          const int C = (int)PyArray_DIMS(pyArray)[1];
+          
+          if( (MatType::RowsAtCompileTime!=R)
+             && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+            return 0;
+          if( (MatType::ColsAtCompileTime!=C)
+             && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+            return 0;
         }
       }
-      
-      if(PyArray_NDIM(pyArray) != 2)
-      {
-        if ( (PyArray_NDIM(pyArray) !=1) || (! MatType::IsVectorAtCompileTime) )
-        {
-#ifndef NDEBUG
-          std::cerr << "The number of dimension of the object is not correct." << std::endl;
-#endif
-          return 0;
-        }
-      }
-      
-      if(PyArray_NDIM(pyArray) == 2)
-      {
-        const int R = (int)PyArray_DIMS(pyArray)[0];
-        const int C = (int)PyArray_DIMS(pyArray)[1];
         
-        if( (MatType::RowsAtCompileTime!=R)
-           && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
-          return 0;
-        if( (MatType::ColsAtCompileTime!=C)
-           && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
-          return 0;
-      }
-      
-      // Check if the Scalar type of the obj_ptr is compatible with the Scalar type of MatType
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
-      {
-        if(!FromTypeToType<int,typename MatType::Scalar>::value)
-        {
-#ifndef NDEBUG
-          std::cerr << "The Python matrix scalar type (int) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
-#endif
-          return 0;
-        }
-      }
-      else if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
-      {
-        if(!FromTypeToType<long,typename MatType::Scalar>::value)
-        {
-#ifndef NDEBUG
-          std::cerr << "The Python matrix scalar type (long) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
-#endif
-          return 0;
-        }
-      }
-      else if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
-      {
-        if(!FromTypeToType<float,typename MatType::Scalar>::value)
-        {
-#ifndef NDEBUG
-          std::cerr << "The Python matrix scalar type (float) cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision" << std::endl;
-#endif
-          return 0;
-        }
-      }
-      else if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
-      {
-        if(!FromTypeToType<double,typename MatType::Scalar>::value)
-        {
-#ifndef NDEBUG
-          std::cerr << "The Python matrix scalar (double) type cannot be converted into the scalar type of the Eigen matrix. Loss of arithmetic precision." << std::endl;
-#endif
-          return 0;
-        }
-      }
-      else if(GET_PY_ARRAY_TYPE(pyArray) != NumpyEquivalentType<typename MatType::Scalar>::type_code)
-      {
-#ifndef NDEBUG
-        std::cerr << "The internal type as no Eigen equivalent." << std::endl;
-#endif
-        
-        return 0;
-      }
-      
 #ifdef NPY_1_8_API_VERSION
       if(!(PyArray_FLAGS(pyArray)))
 #else
       if(!(PyArray_FLAGS(pyArray) & NPY_ALIGNED))
 #endif
-        {
+      {
 #ifndef NDEBUG
-          std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
+        std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
 #endif
-          return 0;
-        }
+        return 0;
+      }
       
       return pyArray;
     }
