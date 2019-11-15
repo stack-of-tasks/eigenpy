@@ -1,4 +1,4 @@
-EigenPy - Python bindings between Numpy and Eigen via Boost.Python
+EigenPy — Python bindings between Numpy and Eigen
 ======
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)](https://opensource.org/licenses/BSD-2-Clause)
