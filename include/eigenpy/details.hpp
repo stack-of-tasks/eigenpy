@@ -119,6 +119,28 @@ namespace eigenpy
     {
       return getInstance().CurrentNumpyType;
     }
+    
+    static const PyTypeObject * getNumpyMatrixType()
+    {
+      return getInstance().NumpyMatrixType;
+    }
+    
+    static const PyTypeObject * getNumpyArrayType()
+    {
+      return getInstance().NumpyArrayType;
+    }
+    
+    static bool isMatrix()
+    {
+      return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
+                              getInstance().NumpyMatrixType);
+    }
+    
+    static bool isArray()
+    {
+      return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
+                              getInstance().NumpyArrayType);
+    }
 
   protected:
     NumpyType()
