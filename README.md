@@ -1,9 +1,10 @@
-EigenPy
+EigenPy - Python bindings between Numpy and Eigen via Boost.Python
 ======
 
 [![License](https://img.shields.io/badge/License-BSD%202--Clause-green.svg)](https://opensource.org/licenses/BSD-2-Clause)
 [![Build Status](https://travis-ci.org/stack-of-tasks/eigenpy.svg?branch=devel)](https://travis-ci.org/stack-of-tasks/eigenpy)
-[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/eigenpy.svg)](https://anaconda.org/conda-forge/eigenpy)[![Conda Version](https://img.shields.io/conda/vn/conda-forge/eigenpy.svg)](https://anaconda.org/conda-forge/eigenpy)
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/eigenpy.svg)](https://anaconda.org/conda-forge/eigenpy)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/eigenpy.svg)](https://anaconda.org/conda-forge/eigenpy)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/eigenpy/badges/installer/conda.svg)](https://conda.anaconda.org/conda-forge)
 
 
