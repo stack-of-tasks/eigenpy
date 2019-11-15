@@ -28,7 +28,9 @@ TARGET_LINK_LIBRARIES(${PYWRAP} ${PROJECT_NAME})
 TARGET_LINK_BOOST_PYTHON(${PYWRAP})
 # BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS spews conversion warnings from int to long unsigned int.
 # Unfortunately, using literals does not work in a macro. As such, this turns them off for the entire wrapper:
-TARGET_COMPILE_OPTIONS(${PYWRAP} PRIVATE "-Wno-conversion")
+IF(NOT WIN32)
+  TARGET_COMPILE_OPTIONS(${PYWRAP} PRIVATE "-Wno-conversion")
+ENDIF()
 #IF(BUILD_WITH_COMMIT_VERSION)
 #  TAG_LIBRARY_VERSION(${PYWRAP})
 #ENDIF(BUILD_WITH_COMMIT_VERSION)
