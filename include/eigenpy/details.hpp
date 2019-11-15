@@ -172,6 +172,39 @@ namespace eigenpy
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
     
   };
+
+  template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
+  struct initEigenObject
+  {
+    static MatType * run(PyArrayObject * pyArray, void * storage)
+    {
+      assert(PyArray_NDIM(pyArray) == 2);
+
+      const int rows = (int)PyArray_DIMS(pyArray)[0];
+      const int cols = (int)PyArray_DIMS(pyArray)[1];
+      
+      return new (storage) MatType(rows,cols);
+    }
+  };
+
+  template<typename MatType>
+  struct initEigenObject<MatType,true>
+  {
+    static MatType * run(PyArrayObject * pyArray, void * storage)
+    {
+      if(PyArray_NDIM(pyArray) == 1)
+      {
+        const int rows_or_cols = (int)PyArray_DIMS(pyArray)[0];
+        return new (storage) MatType(rows_or_cols);
+      }
+      else
+      {
+        const int rows = (int)PyArray_DIMS(pyArray)[0];
+        const int cols = (int)PyArray_DIMS(pyArray)[1];
+        return new (storage) MatType(rows,cols);
+      }
+    }
+  };
   
   template<typename MatType>
   struct EigenObjectAllocator
@@ -181,10 +214,7 @@ namespace eigenpy
     
     static void allocate(PyArrayObject * pyArray, void * storage)
     {
-      const int rows = (int)PyArray_DIMS(pyArray)[0];
-      const int cols = (int)PyArray_DIMS(pyArray)[1];
-      
-      Type * mat_ptr = new (storage) Type(rows,cols);
+      Type * mat_ptr = initEigenObject<Type>::run(pyArray,storage);
       
       if(NumpyEquivalentType<Scalar>::type_code == GET_PY_ARRAY_TYPE(pyArray))
       {
