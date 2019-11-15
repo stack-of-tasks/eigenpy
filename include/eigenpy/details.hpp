@@ -346,6 +346,27 @@ namespace eigenpy
   template<typename MatType>
   struct EigenFromPy
   {
+    
+    static bool isScalarConvertible(const int np_type)
+    {
+      if(NumpyEquivalentType<typename MatType::Scalar>::type_code == np_type)
+        return true;
+      
+      switch(np_type)
+      {
+        case NPY_INT:
+          return FromTypeToType<int,typename MatType::Scalar>::value;
+        case NPY_LONG:
+          return FromTypeToType<long,typename MatType::Scalar>::value;
+        case NPY_FLOAT:
+          return FromTypeToType<float,typename MatType::Scalar>::value;
+        case NPY_DOUBLE:
+          return FromTypeToType<double,typename MatType::Scalar>::value;
+        default:
+          return false;
+      }
+    }
+    
     /// \brief Determine if pyObj can be converted into a MatType object
     static void* convertible(PyArrayObject* pyArray)
     {
