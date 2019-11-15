@@ -102,7 +102,8 @@ namespace eigenpy
   };
 
   template<typename MatType, typename InputScalar>
-  typename MapNumpy<MatType,InputScalar>::EigenMap MapNumpy<MatType,InputScalar>::map( PyArrayObject* pyArray )
+  typename MapNumpy<MatType,InputScalar>::EigenMap
+  MapNumpy<MatType,InputScalar>::map(PyArrayObject * pyArray)
   {
     return Impl::mapImpl(pyArray); 
   }
