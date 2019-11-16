@@ -378,17 +378,43 @@ namespace eigenpy
 
       if(MatType::IsVectorAtCompileTime)
       {
+        const Eigen::DenseIndex size_at_compile_time
+        = MatType::IsRowMajor
+        ? MatType::ColsAtCompileTime
+        : MatType::RowsAtCompileTime;
+        
         switch(PyArray_NDIM(pyArray))
         {
           case 0:
             return 0;
           case 1:
-            return pyArray;
+          {
+            if(size_at_compile_time != Eigen::Dynamic)
+            {
+              // check that the sizes at compile time matche
+              if(PyArray_DIMS(pyArray)[0] == size_at_compile_time)
+                return pyArray;
+              else
+                return 0;
+            }
+            else // This is a dynamic MatType
+              return pyArray;
+          }
           case 2:
           {
             // Special care of scalar matrix of dimension 1x1.
             if(PyArray_DIMS(pyArray)[0] == 1 && PyArray_DIMS(pyArray)[1] == 1)
-              return pyArray;
+            {
+              if(size_at_compile_time != Eigen::Dynamic)
+              {
+                if(size_at_compile_time == 1)
+                  return pyArray;
+                else
+                  return 0;
+              }
+              else // This is a dynamic MatType
+                return pyArray;
+            }
             
             if(PyArray_DIMS(pyArray)[0] > 1 && PyArray_DIMS(pyArray)[1] > 1)
             {
@@ -408,6 +434,16 @@ namespace eigenpy
                 std::cerr << "The object is not a row vector" << std::endl;
 #endif
               return 0;
+            }
+            
+            if(size_at_compile_time != Eigen::Dynamic)
+            { // This is a fixe size vector
+              const Eigen::DenseIndex pyArray_size
+              = PyArray_DIMS(pyArray)[0] > PyArray_DIMS(pyArray)[1]
+              ? PyArray_DIMS(pyArray)[0]
+              : PyArray_DIMS(pyArray)[1];
+              if(size_at_compile_time != pyArray_size)
+                return 0;
             }
             break;
           }
