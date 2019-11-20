@@ -10,7 +10,6 @@
 #include "eigenpy/fwd.hpp"
 
 #include <patchlevel.h> // For PY_MAJOR_VERSION
-#include <numpy/arrayobject.h>
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
@@ -543,8 +542,6 @@ namespace eigenpy
     }
   };
   
-#define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
-  
   template<typename MatType,typename EigenEquivalentType>
   void enableEigenPySpecific()
   {
@@ -581,7 +578,7 @@ namespace eigenpy
   template<typename MatType>
   void enableEigenPySpecific()
   {
-    numpy_import_array();
+    loadNumpyArray();
     if(check_registration<MatType>()) return;
     
     bp::to_python_converter<MatType,EigenToPy<MatType> >();
