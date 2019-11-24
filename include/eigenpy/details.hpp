@@ -574,11 +574,13 @@ namespace eigenpy
     }
   };
 #endif
+
+#define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
   
   template<typename MatType>
   void enableEigenPySpecific()
   {
-    loadNumpyArray();
+    numpy_import_array();
     if(check_registration<MatType>()) return;
     
     bp::to_python_converter<MatType,EigenToPy<MatType> >();

@@ -10,19 +10,6 @@
 namespace eigenpy
 {
 
-  void loadNumpyArray()
-  {
-    static bool loaded = false;
-    if(loaded) return;
-    
-    if(_import_array() < 0)
-    {
-      PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-    }
-    else
-      loaded = true;
-  }
-
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instances. */
   void enableEigenPy()
   {

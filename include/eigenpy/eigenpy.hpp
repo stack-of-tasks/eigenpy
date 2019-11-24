@@ -27,9 +27,6 @@
 namespace eigenpy
 {
 
-  /* Load numpy through Python */
-  void loadNumpyArray();
-
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void EIGENPY_EXPORT enableEigenPy();
 
