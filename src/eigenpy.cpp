@@ -4,6 +4,7 @@
  */
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/version.hpp"
 
 namespace eigenpy
 {
@@ -12,6 +13,13 @@ namespace eigenpy
   void enableEigenPy()
   {
     using namespace Eigen;
+    
+    bp::scope().attr("__version__") = eigenpy::printVersion();
+    bp::scope().attr("__raw_version__") = bp::str(EIGENPY_VERSION);
+    bp::def("checkVersionAtLeast",&eigenpy::checkVersionAtLeast,
+            bp::args("major_version","minor_version","patch_version"),
+            "Checks if the current version of EigenPy is at least the version provided by the input arguments.");
+    
     Exception::registerException();
     
     bp::def("setNumpyType",&NumpyType::setNumpyType,

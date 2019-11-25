@@ -106,6 +106,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/stride.hpp
   include/eigenpy/ref.hpp
   include/eigenpy/details/rvalue_from_python_data.hpp
+  include/eigenpy/version.hpp
 )
 
 LIST(APPEND ${PROJECT_NAME}_HEADERS
@@ -133,6 +134,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/angle-axis.cpp
   src/quaternion.cpp
   src/geometry-conversion.cpp
+  src/version.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
