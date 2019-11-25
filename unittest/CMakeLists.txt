@@ -47,3 +47,6 @@ SET_TESTS_PROPERTIES("py-switch" PROPERTIES DEPENDS ${PYWRAP})
 
 ADD_PYTHON_UNIT_TEST("py-dimensions" "unittest/python/test_dimensions.py" "python/eigenpy")
 SET_TESTS_PROPERTIES("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})
+
+ADD_PYTHON_UNIT_TEST("py-version" "unittest/python/test_version.py" "python/eigenpy")
+SET_TESTS_PROPERTIES("py-version" PROPERTIES DEPENDS ${PYWRAP})
