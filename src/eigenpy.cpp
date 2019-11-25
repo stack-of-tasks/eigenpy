@@ -5,8 +5,6 @@
 
 #include "eigenpy/eigenpy.hpp"
 
-#include <numpy/arrayobject.h>
-
 namespace eigenpy
 {
 
