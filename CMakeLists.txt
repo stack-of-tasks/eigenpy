@@ -8,6 +8,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
+SET(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 
 # Check if the submodule cmake have been initialized
 IF(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
@@ -106,6 +107,11 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/ref.hpp
   include/eigenpy/details/rvalue_from_python_data.hpp
 )
+
+LIST(APPEND ${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp
+  ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/deprecated.hpp
+  ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/warning.hpp)
 
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
