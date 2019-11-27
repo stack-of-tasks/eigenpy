@@ -8,6 +8,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
+SET(PROJECT_USE_CMAKE_EXPORT TRUE)
+SET(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 
 # Check if the submodule cmake have been initialized
 IF(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
@@ -19,16 +21,8 @@ SET(CXX_DISABLE_WERROR True)
 SET(CMAKE_VERBOSE_MAKEFILE True)
 
 INCLUDE(cmake/base.cmake)
-IF(CMAKE_VERSION VERSION_GREATER "3.0.0")
-  CMAKE_POLICY(SET CMP0048 NEW)
-  IF(CMAKE_VERSION VERSION_GREATER "3.9.0")
-    PROJECT(${PROJECT_NAME} VERSION ${PROJECT_VERSION_FULL} LANGUAGES CXX DESCRIPTION ${PROJECT_DESCRIPTION})
-  ELSE(CMAKE_VERSION VERSION_GREATER "3.9.0")
-    PROJECT(${PROJECT_NAME} VERSION ${PROJECT_VERSION_FULL} LANGUAGES CXX)
-  ENDIF(CMAKE_VERSION VERSION_GREATER "3.9.0")
-ELSE(CMAKE_VERSION VERSION_GREATER "3.0.0")
-  PROJECT(${PROJECT_NAME} CXX)
-ENDIF(CMAKE_VERSION VERSION_GREATER "3.0.0")
+COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
+PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 
 INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/python.cmake)
@@ -59,10 +53,7 @@ ELSE(BUILD_UNIT_TESTS)
 ENDIF(BUILD_UNIT_TESTS)
 
 FINDPYTHON()
-
-INCLUDE_DIRECTORIES(SYSTEM ${PYTHON_INCLUDE_DIRS})
 FIND_NUMPY()
-INCLUDE_DIRECTORIES(SYSTEM ${NUMPY_INCLUDE_DIRS})
 
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
@@ -71,8 +62,6 @@ ADD_REQUIRED_DEPENDENCY("eigen3 >= 3.0.5")
 
 SET(BOOST_COMPONENTS python)
 SEARCH_FOR_BOOST()
-# Add Boost path to include directories.
-INCLUDE_DIRECTORIES(SYSTEM ${Boost_INCLUDE_DIRS})
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
@@ -105,7 +94,13 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/stride.hpp
   include/eigenpy/ref.hpp
   include/eigenpy/details/rvalue_from_python_data.hpp
+  include/eigenpy/version.hpp
 )
+
+LIST(APPEND ${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/config.hpp
+  ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/deprecated.hpp
+  ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/warning.hpp)
 
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
@@ -127,16 +122,18 @@ SET(${PROJECT_NAME}_SOURCES
   src/angle-axis.cpp
   src/quaternion.cpp
   src/geometry-conversion.cpp
+  src/version.cpp
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} SYSTEM PUBLIC ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIRS})
 IF(NOT WIN32)
   TARGET_COMPILE_OPTIONS(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj> "-Wno-conversion")
 ELSE()
   TARGET_COMPILE_OPTIONS(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj>)
 ENDIF()
 
-TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME})
+TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME} PUBLIC)
 PKG_CONFIG_USE_DEPENDENCY(${PROJECT_NAME} eigen3)
 INSTALL(TARGETS ${PROJECT_NAME}
   EXPORT ${TARGETS_EXPORT_NAME}
@@ -161,6 +158,8 @@ INSTALL(FILES
 # This is a temporary work-around to fix MoveIt until jrl-cmakemodules
 # can correctly create non-target CMake configs
 install(FILES eigenpyConfig.cmake DESTINATION share/eigenpy/cmake)
+
+# Install package for ROS
 install(FILES package.xml DESTINATION share/eigenpy)
 
 # ----------------------------------------------------

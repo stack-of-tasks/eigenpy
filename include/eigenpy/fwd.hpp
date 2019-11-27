@@ -6,6 +6,8 @@
 #ifndef __eigenpy_fwd_hpp__
 #define __eigenpy_fwd_hpp__
 
+#include "eigenpy/config.hpp"
+
 #include <boost/python.hpp>
 #include <Eigen/Core>
 

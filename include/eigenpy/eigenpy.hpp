@@ -7,7 +7,7 @@
 #define __eigenpy_eigenpy_hpp__
 
 #include "eigenpy/fwd.hpp"
-#include "eigenpy/deprecated.hh"
+#include "eigenpy/deprecated.hpp"
 #include "eigenpy/eigenpy_export.h"
 
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
@@ -26,6 +26,7 @@
 
 namespace eigenpy
 {
+
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void EIGENPY_EXPORT enableEigenPy();
 

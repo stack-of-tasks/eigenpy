@@ -16,14 +16,10 @@ MACRO(ADD_LIB_UNIT_TEST test PKGS)
     PKG_CONFIG_USE_DEPENDENCY(${test} ${PKG})
   ENDFOREACH(PKG)
 
-  TARGET_LINK_LIBRARIES(${test} ${PROJECT_NAME})
-  TARGET_LINK_BOOST_PYTHON(${test})
+  TARGET_LINK_LIBRARIES(${test} PUBLIC ${PROJECT_NAME})
   SET_TARGET_PROPERTIES(${test} PROPERTIES PREFIX "")
 
-  IF(APPLE)
-    # We need to change the extension for python bindings
-    SET_TARGET_PROPERTIES(${test} PROPERTIES SUFFIX ".so")
-  ENDIF(APPLE)
+  SET_TARGET_PROPERTIES(${test} PROPERTIES SUFFIX ${PYTHON_EXT_SUFFIX})
 
   ADD_TEST(NAME ${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
 
@@ -47,3 +43,6 @@ SET_TESTS_PROPERTIES("py-switch" PROPERTIES DEPENDS ${PYWRAP})
 
 ADD_PYTHON_UNIT_TEST("py-dimensions" "unittest/python/test_dimensions.py" "python/eigenpy")
 SET_TESTS_PROPERTIES("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})
+
+ADD_PYTHON_UNIT_TEST("py-version" "unittest/python/test_version.py" "python/eigenpy")
+SET_TESTS_PROPERTIES("py-version" PROPERTIES DEPENDS ${PYWRAP})

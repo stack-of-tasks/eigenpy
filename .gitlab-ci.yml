@@ -35,12 +35,10 @@ robotpkg-py-eigenpy-18.04-release:
 robotpkg-py-eigenpy-py3-dubnium-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:dubnium
-  allow_failure: true
 
 robotpkg-py-eigenpy-py3-16.04-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:16.04
-  allow_failure: true
 
 robotpkg-py-eigenpy-py3-18.04-release:
   <<: *robotpkg-py-eigenpy
@@ -59,14 +57,12 @@ robotpkg-py-eigenpy-14.04-debug:
 robotpkg-py-eigenpy-py3-14.04-release:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
-  allow_failure: true
 
 robotpkg-py-eigenpy-py3-14.04-debug:
   <<: *robotpkg-py-eigenpy
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
-  allow_failure: true
 
 robotpkg-py-eigenpy-dubnium-debug:
   <<: *robotpkg-py-eigenpy
@@ -79,7 +75,6 @@ robotpkg-py-eigenpy-py3-dubnium-debug:
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:dubnium
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
-  allow_failure: true
 
 robotpkg-py-eigenpy-16.04-debug:
   <<: *robotpkg-py-eigenpy
@@ -92,7 +87,6 @@ robotpkg-py-eigenpy-py3-16.04-debug:
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:16.04
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
-  allow_failure: true
 
 robotpkg-py-eigenpy-18.04-debug:
   <<: *robotpkg-py-eigenpy
@@ -105,6 +99,4 @@ robotpkg-py-eigenpy-py3-18.04-debug:
   image: eur0c.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:18.04
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
-
-
 
