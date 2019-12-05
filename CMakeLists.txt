@@ -157,10 +157,6 @@ INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/eigenpy/${PROJECT_NAME}_export.h
   DESTINATION include/eigenpy)
 
-# This is a temporary work-around to fix MoveIt until jrl-cmakemodules
-# can correctly create non-target CMake configs
-install(FILES eigenpyConfig.cmake DESTINATION share/eigenpy/cmake)
-
 # Install package for ROS
 install(FILES package.xml DESTINATION share/eigenpy)
 
