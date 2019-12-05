@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project(ExtraLib CXX)
 find_package(eigenpy REQUIRED)
+find_package(PythonInterp REQUIRED)
 find_package(PythonLibs REQUIRED)
 
 add_executable(extra_lib extra_lib.cpp)
