@@ -54,8 +54,14 @@ before_install: ./.travis/run before_install
 install: pip install coveralls numpy
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
-  - sudo free -m -t
-  - ls -l /usr/lib/x86_64-linux-gnu/libboost_python*
   - ./.travis/run ../travis_custom/custom_build
+  - cd $root_dir/unittest/cmake
+  - mkdir build
+  - cd build
+  - cmake .. 
+  - make
+  - ./extra_lib
+  - cd $build_dir 
+  - make uninstall 
 after_failure: ./.travis/run after_failure
 after_success: ./.travis/run after_success
