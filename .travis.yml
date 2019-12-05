@@ -58,7 +58,8 @@ script:
   - cd $TRAVIS_BUILD_DIR/unittest/cmake
   - mkdir build
   - cd build
-  - cmake .. 
+  - export CMAKE_PREFIX_PATH=/tmp/_ci/install
+  - cmake ..
   - make
   - ./extra_lib
   - cd /tmp/_ci/build
