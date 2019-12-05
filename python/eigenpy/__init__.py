@@ -14,4 +14,5 @@
 # eigenpy If not, see
 # <http://www.gnu.org/licenses/>.
 
-from eigenpy import *
+from .eigenpy import *
+from .eigenpy import __version__, __raw_version__
