@@ -102,9 +102,6 @@ LIST(APPEND ${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/deprecated.hpp
   ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/warning.hpp)
 
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
-
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
