@@ -55,13 +55,13 @@ install: pip install coveralls numpy
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
   - ./.travis/run ../travis_custom/custom_build
-  - cd $root_dir/unittest/cmake
+  - cd $TRAVIS_BUILD_DIR/unittest/cmake
   - mkdir build
   - cd build
   - cmake .. 
   - make
   - ./extra_lib
-  - cd $build_dir 
+  - cd /tmp/_ci/build
   - make uninstall 
 after_failure: ./.travis/run after_failure
 after_success: ./.travis/run after_success
