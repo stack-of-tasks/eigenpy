@@ -105,8 +105,6 @@ LIST(APPEND ${PROJECT_NAME}_HEADERS
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
 INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
 
-LINK_DIRECTORIES(${PYTHON_LIBRARY_DIRS})
-
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
