@@ -19,6 +19,7 @@ cache:
     - make install
     - cd work.$(hostname)/$(make show-var VARNAME=DISTNAME)
     - make test
+    - make uninstall
 
 robotpkg-py-eigenpy-16.04-release:
   <<: *robotpkg-py-eigenpy
