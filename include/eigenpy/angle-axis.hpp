@@ -58,10 +58,10 @@ namespace eigenpy
            ((bp::arg("self"),bp::arg("angle"),bp::arg("axis")),
             "Initialize from angle and axis."))
       .def(bp::init<Matrix3>
-           ((bp::arg("self"),bp::arg("rotationMatrix")),
+           ((bp::arg("self"),bp::arg("rotation matrix")),
             "Initialize from a rotation matrix"))
-      .def(bp::init<Quaternion>(bp::arg("self"),bp::arg("quaternion"),"Initialize from a quaternion."))
-      .def(bp::init<AngleAxis>(bp::arg("self"),bp::arg("copy"),"Copy constructor."))
+      .def(bp::init<Quaternion>((bp::arg("self"),bp::arg("quaternion")),"Initialize from a quaternion."))
+      .def(bp::init<AngleAxis>((bp::arg("self"),bp::arg("copy")),"Copy constructor."))
       
       /* --- Properties --- */
       .add_property("axis",
@@ -77,11 +77,11 @@ namespace eigenpy
            bp::arg("self"),
            "Return the inverse rotation.")
       .def("fromRotationMatrix",&AngleAxis::template fromRotationMatrix<Matrix3>,
-           (bp::arg("self"),bp::arg("rot")),
+           (bp::arg("self"),bp::arg("rotation matrix")),
            "Sets *this from a 3x3 rotation matrix",
            bp::return_self<>())
       .def("toRotationMatrix",
-           bp::arg("self"),
+//           bp::arg("self"),
            &AngleAxis::toRotationMatrix,
            "Constructs and returns an equivalent 3x3 rotation matrix.")
       .def("matrix",&AngleAxis::matrix,
