@@ -54,15 +54,15 @@ namespace eigenpy
     void visit(PyClass& cl) const 
     {
       cl
-      .def(bp::init<>("Default constructor"))
+      .def(bp::init<>(bp::arg("self"),"Default constructor"))
       .def(bp::init<Scalar,Vector3>
-           ((bp::arg("angle"),bp::arg("axis")),
+           ((bp::arg("self"),bp::arg("angle"),bp::arg("axis")),
             "Initialize from angle and axis."))
       .def(bp::init<Matrix3>
-           ((bp::arg("rotationMatrix")),
+           ((bp::arg("self"),bp::arg("rotationMatrix")),
             "Initialize from a rotation matrix"))
-      .def(bp::init<Quaternion>(bp::arg("quaternion"),"Initialize from a quaternion."))
-      .def(bp::init<AngleAxis>(bp::arg("copy"),"Copy constructor."))
+      .def(bp::init<Quaternion>(bp::arg("self"),bp::arg("quaternion"),"Initialize from a quaternion."))
+      .def(bp::init<AngleAxis>(bp::arg("self"),bp::arg("copy"),"Copy constructor."))
       
       /* --- Properties --- */
       .add_property("axis",
@@ -74,15 +74,24 @@ namespace eigenpy
                     &AngleAxisVisitor::setAngle,"The rotation angle.")
       
       /* --- Methods --- */
-      .def("inverse",&AngleAxis::inverse,"Return the inverse rotation.")
+      .def("inverse",&AngleAxis::inverse,
+           bp::arg("self"),
+           "Return the inverse rotation.")
       .def("fromRotationMatrix",&AngleAxis::template fromRotationMatrix<Matrix3>,
-           bp::arg("Sets *this from a 3x3 rotation matrix."),bp::return_self<>())
-      .def("toRotationMatrix",&AngleAxis::toRotationMatrix,"Constructs and returns an equivalent 3x3 rotation matrix.")
-      .def("matrix",&AngleAxis::matrix,"Returns an equivalent rotation matrix.")
+           (bp::arg("self"),bp::arg("rot")),
+           "Sets *this from a 3x3 rotation matrix",
+           bp::return_self<>())
+      .def("toRotationMatrix",
+           bp::arg("self"),
+           &AngleAxis::toRotationMatrix,
+           "Constructs and returns an equivalent 3x3 rotation matrix.")
+      .def("matrix",&AngleAxis::matrix,
+           bp::arg("self"),
+           "Returns an equivalent rotation matrix.")
       
       .def("isApprox",
            &call<AngleAxis>::isApprox,
-           isApproxAngleAxis_overload(bp::args("other","prec"),
+           isApproxAngleAxis_overload(bp::args("self","other","prec"),
                                       "Returns true if *this is approximately equal to other, within the precision determined by prec."))
       
       /* --- Operators --- */
@@ -125,7 +134,7 @@ namespace eigenpy
     static void expose()
     {
       bp::class_<AngleAxis>("AngleAxis",
-                            "AngleAxis representation of rotations.\n\n",
+                            "AngleAxis representation of a rotation.\n\n",
                             bp::no_init)
       .def(AngleAxisVisitor<AngleAxis>());
     }
