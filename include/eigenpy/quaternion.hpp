@@ -12,7 +12,6 @@
 #include <Eigen/Geometry>
 
 #include "eigenpy/exception.hpp"
-#include "eigenpy/registration.hpp"
 
 namespace eigenpy
 {

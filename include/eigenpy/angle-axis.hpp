@@ -8,7 +8,6 @@
 
 #include "eigenpy/fwd.hpp"
 
-#include <boost/python.hpp>
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
