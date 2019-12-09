@@ -22,6 +22,7 @@ namespace eigenpy
   struct call< Eigen::AngleAxis<Scalar> >
   {
     typedef Eigen::AngleAxis<Scalar> AngleAxis;
+    
     static inline void expose()
     {
       AngleAxisVisitor<AngleAxis>::expose();
@@ -46,6 +47,7 @@ namespace eigenpy
     typedef typename AngleAxis::Matrix3 Matrix3;
     
     typedef typename Eigen::Quaternion<Scalar,0> Quaternion;
+    typedef Eigen::RotationBase<AngleAxis,3> RotationBase;
     
   public:
 
@@ -136,6 +138,9 @@ namespace eigenpy
                             "AngleAxis representation of a rotation.\n\n",
                             bp::no_init)
       .def(AngleAxisVisitor<AngleAxis>());
+      
+      // Cast to Eigen::RotationBase and vice-versa
+      bp::implicitly_convertible<AngleAxis,RotationBase>();
     }
 
   };

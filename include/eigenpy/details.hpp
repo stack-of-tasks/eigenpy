@@ -515,34 +515,8 @@ namespace eigenpy
     }
   };
   
-  template<typename MatType>
-  struct EigenFromPy< Eigen::MatrixBase<MatType> >
-  {
-    typedef EigenFromPy<MatType> EigenFromPyDerived;
-    typedef Eigen::MatrixBase<MatType> Base;
-    
-    /// \brief Determine if pyObj can be converted into a MatType object
-    static void* convertible(PyArrayObject* pyObj)
-    {
-      return EigenFromPyDerived::convertible(pyObj);
-    }
-    
-    /// \brief Allocate memory and copy pyObj in the new storage
-    static void construct(PyObject* pyObj,
-                          bp::converter::rvalue_from_python_stage1_data* memory)
-    {
-      EigenFromPyDerived::construct(pyObj,memory);
-    }
-    
-    static void registration()
-    {
-      bp::converter::registry::push_back
-      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &EigenFromPy::construct,bp::type_id<Base>());
-    }
-  };
-  
   template<typename MatType,typename EigenEquivalentType>
+  EIGENPY_DEPRECATED
   void enableEigenPySpecific()
   {
     enableEigenPySpecific<MatType>();
@@ -557,7 +531,8 @@ namespace eigenpy
 
       // Add also conversion to Eigen::MatrixBase<MatType>
       typedef Eigen::MatrixBase<MatType> MatTypeBase;
-      EigenFromPy<MatTypeBase>::registration();
+      bp::implicitly_convertible<MatType,MatTypeBase>();
+      bp::implicitly_convertible<MatTypeBase,MatType>();
     }
   };
 
@@ -585,7 +560,6 @@ namespace eigenpy
     
     bp::to_python_converter<MatType,EigenToPy<MatType> >();
     EigenFromPyConverter<MatType>::registration();
-   
   }
 
 } // namespace eigenpy
