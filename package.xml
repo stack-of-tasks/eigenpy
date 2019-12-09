@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>eigenpy</name>
-  <version>1.6.9</version>
+  <version>1.6.10</version>
   <description>Bindings between Numpy and Eigen using Boost.Python</description>
   <maintainer email="justin.carpentier@inria.fr">Justin Carpentier</maintainer>
   <maintainer email="wolfgang.merkt@ed.ac.uk">Wolfgang Merkt</maintainer>
