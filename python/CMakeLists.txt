@@ -23,7 +23,11 @@ SET(PYWRAP ${PYWRAP} PARENT_SCOPE)
 
 MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/python/${PROJECT_NAME}")
 
+ADD_CUSTOM_TARGET(python)
+SET_TARGET_PROPERTIES(python PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True)
+
 ADD_LIBRARY(${PYWRAP} SHARED main.cpp)
+ADD_DEPENDENCIES(python ${PYWRAP})
 TARGET_LINK_LIBRARIES(${PYWRAP} PUBLIC ${PROJECT_NAME}) 
 # BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS spews conversion warnings from int to long unsigned int.
 # Unfortunately, using literals does not work in a macro. As such, this turns them off for the entire wrapper:
