@@ -263,9 +263,11 @@ namespace eigenpy
                              "'q*v' (rotating 'v' by 'q'), "
                              "'q==q', 'q!=q', 'q[0..3]'.",
                              bp::no_init)
-      .def(QuaternionVisitor<Quaternion>())
-      ;
-   
+      .def(QuaternionVisitor<Quaternion>());
+      
+      // Cast to Eigen::QuaternionBase and vice-versa
+      bp::implicitly_convertible<Quaternion,QuaternionBase >();
+      bp::implicitly_convertible<QuaternionBase,Quaternion >();
     }
 
   };
