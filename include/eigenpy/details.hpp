@@ -516,6 +516,7 @@ namespace eigenpy
   };
   
   template<typename MatType,typename EigenEquivalentType>
+  EIGENPY_DEPRECATED
   void enableEigenPySpecific()
   {
     enableEigenPySpecific<MatType>();
