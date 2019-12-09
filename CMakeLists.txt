@@ -9,6 +9,7 @@ SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
 SET(PROJECT_URL "http://github.com/stack-of-tasks/eigenpy")
 SET(PROJECT_USE_CMAKE_EXPORT TRUE)
+SET(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 SET(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 
 # Check if the submodule cmake have been initialized
@@ -102,11 +103,6 @@ LIST(APPEND ${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/deprecated.hpp
   ${${PROJECT_NAME}_BINARY_DIR}/include/${PROJECT_NAME}/warning.hpp)
 
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_BINARY_DIR}/include)
-INCLUDE_DIRECTORIES(${${PROJECT_NAME}_SOURCE_DIR}/include)
-
-LINK_DIRECTORIES(${PYTHON_LIBRARY_DIRS})
-
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
@@ -126,7 +122,14 @@ SET(${PROJECT_NAME}_SOURCES
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
-TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} SYSTEM PUBLIC ${Boost_INCLUDE_DIRS} ${EIGEN3_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS} ${NUMPY_INCLUDE_DIRS})
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} 
+  SYSTEM PUBLIC 
+  ${Boost_INCLUDE_DIRS} 
+  ${EIGEN3_INCLUDE_DIRS} 
+  ${PYTHON_INCLUDE_DIRS} 
+  ${NUMPY_INCLUDE_DIRS}
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+
 IF(NOT WIN32)
   TARGET_COMPILE_OPTIONS(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj> "-Wno-conversion")
 ELSE()
@@ -154,10 +157,6 @@ SET(PUBLIC_HEADER ${${PROJECT_NAME}_HEADERS})
 INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/eigenpy/${PROJECT_NAME}_export.h
   DESTINATION include/eigenpy)
-
-# This is a temporary work-around to fix MoveIt until jrl-cmakemodules
-# can correctly create non-target CMake configs
-install(FILES eigenpyConfig.cmake DESTINATION share/eigenpy/cmake)
 
 # Install package for ROS
 install(FILES package.xml DESTINATION share/eigenpy)
