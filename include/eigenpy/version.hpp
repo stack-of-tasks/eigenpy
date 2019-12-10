@@ -6,6 +6,7 @@
 #define __eigenpy_version_hpp__
 
 #include "eigenpy/config.hpp"
+#include "eigenpy/eigenpy_export.h"
 
 #include <string>
 
@@ -17,7 +18,7 @@ namespace eigenpy
   ///        the following standard:
   ///        EIGENPY_MINOR_VERSION.EIGENPY_MINOR_VERSION.EIGENPY_PATCH_VERSION
   ///
-  std::string printVersion(const std::string & delimiter = ".");
+  std::string EIGENPY_EXPORT printVersion(const std::string & delimiter = ".");
   
   ///
   /// \brief Checks if the current version of EigenPy is at least the version provided
@@ -30,9 +31,9 @@ namespace eigenpy
   /// \returns true if the current version of EigenPy is greater than the version provided
   ///        by the input arguments.
   ///
-  bool checkVersionAtLeast(unsigned int major_version,
-                           unsigned int minor_version,
-                           unsigned int patch_version);
+  bool EIGENPY_EXPORT checkVersionAtLeast(unsigned int major_version,
+                                          unsigned int minor_version,
+                                          unsigned int patch_version);
 }
 
 #endif // __eigenpy_version_hpp__

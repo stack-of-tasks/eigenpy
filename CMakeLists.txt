@@ -56,6 +56,10 @@ ENDIF(BUILD_UNIT_TESTS)
 FINDPYTHON()
 FIND_NUMPY()
 
+IF(WIN32)
+  LINK_DIRECTORIES(${PYTHON_LIBRARY_DIRS})
+ENDIF(WIN32)
+
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
 # ----------------------------------------------------
