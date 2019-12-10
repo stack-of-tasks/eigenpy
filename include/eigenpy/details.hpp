@@ -78,7 +78,8 @@ struct implicit<MatType,Eigen::MatrixBase<MatType> >
   
   static void construct(PyObject* obj, rvalue_from_python_stage1_data* data)
   {
-    void* storage = ((rvalue_from_python_storage<Source>*)data)->storage.bytes;
+    void* storage = reinterpret_cast<rvalue_from_python_storage<Source>*>
+                   (reinterpret_cast<void*>(data))->storage.bytes;
     
     arg_from_python<Source> get_source(obj);
     bool convertible = get_source.convertible();
@@ -576,8 +577,8 @@ namespace eigenpy
       PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
       assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
       
-      void* storage = ((bp::converter::rvalue_from_python_storage<MatType>*)
-                       ((void*)memory))->storage.bytes;
+      void* storage = reinterpret_cast<bp::converter::rvalue_from_python_storage<MatType>*>
+                     (reinterpret_cast<void*>(memory))->storage.bytes;
       
       EigenObjectAllocator<MatType>::allocate(pyArray,storage);
 
