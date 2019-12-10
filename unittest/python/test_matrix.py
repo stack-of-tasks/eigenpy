@@ -32,6 +32,10 @@ if verbose: print("===> From Py to Eigen::MatrixXd")
 if verbose: print("===> From Py to Eigen::MatrixXd")
 Mref = np.reshape(np.matrix(range(64),np.double),[8,8])
 
+# Test base function
+Mref_from_base = eigenpy.base(Mref)
+assert( np.array_equal(Mref,Mref_from_base) );
+
 if verbose: print("===> Matrix 8x8")
 M = Mref
 assert( np.array_equal(M,eigenpy.reflex(M,verbose)) );
