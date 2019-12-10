@@ -78,7 +78,7 @@ struct implicit<MatType,Eigen::MatrixBase<MatType> >
   
   static void construct(PyObject* obj, rvalue_from_python_stage1_data* data)
   {
-    void* storage = reinterpret_cast<rvalue_from_python_storage<Source>*>
+    void* storage = reinterpret_cast<rvalue_from_python_storage<Target>*>
                    (reinterpret_cast<void*>(data))->storage.bytes;
     
     arg_from_python<Source> get_source(obj);
