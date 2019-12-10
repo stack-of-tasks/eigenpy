@@ -16,6 +16,17 @@
 #include "eigenpy/registration.hpp"
 #include "eigenpy/map.hpp"
 
+namespace boost { namespace python { namespace detail {
+
+  template<class MatType>
+  struct referent_size<Eigen::MatrixBase<MatType>&>
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
+}}}
+
 namespace boost { namespace python { namespace converter {
 
 template<class MatType>
