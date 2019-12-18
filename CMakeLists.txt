@@ -21,6 +21,10 @@ ENDIF()
 SET(CXX_DISABLE_WERROR True)
 SET(CMAKE_VERBOSE_MAKEFILE True)
 
+# Normally, BUILD_TESTING defaults to ON. This sets the default to OFF.
+# It needs to be included before module CTest, thus before command PROJECT
+OPTION (BUILD_TESTING "" OFF)
+
 INCLUDE(cmake/base.cmake)
 COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
 PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
