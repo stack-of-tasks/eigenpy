@@ -4,9 +4,15 @@
  */
 
 #include "eigenpy/eigenpy.hpp"
+#include <stdlib.h>
 
 namespace eigenpy
 {
+
+  void seed(unsigned int seed_value)
+  {
+    srand(seed_value);
+  }
 
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instances. */
   void enableEigenPy()
@@ -27,6 +33,9 @@ namespace eigenpy
     
     bp::def("switchToNumpyMatrix",&NumpyType::switchToNumpyMatrix,
             "Set the conversion from Eigen::Matrix to numpy.matrix.");
+    
+    bp::def("seed",&seed,bp::arg("seed_value"),
+            "Initialize the pseudo-random number generator with the argument seed_value.");
 
     ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2d);
     ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2f);
