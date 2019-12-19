@@ -45,13 +45,13 @@ ENDIF(WIN32)
 # --- OPTIONS  ---------------------------------------
 # ----------------------------------------------------
 OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" FALSE)
-OPTION(BUILD_UNIT_TESTS "Build the unitary tests" OFF)
 
-IF(BUILD_UNIT_TESTS)
-  SET(BUILD_TESTING ON)
-ELSE(BUILD_UNIT_TESTS)
-  SET(BUILD_TESTING OFF) 
-ENDIF(BUILD_UNIT_TESTS)
+IF(DEFINED BUILD_UNIT_TESTS)
+  MESSAGE(AUTHOR_WARNING "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
+    If you are manually building Pinocchio from source in an existing build folder,\
+    we suggest that you delete your build folder and make a new one.")
+  SET(BUILD_TESTING ${BUILD_UNIT_TESTS})
+ENDIF(DEFINED BUILD_UNIT_TESTS)
 
 FINDPYTHON()
 FIND_NUMPY()
