@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2014-2019 CNRS
-# Copyright (c) 2018-2019 INRIA
+# Copyright (c) 2018-2020 INRIA
 #
 
 MACRO(ADD_LIB_UNIT_TEST test PKGS)
@@ -31,12 +31,14 @@ ENDMACRO(ADD_LIB_UNIT_TEST)
 
 ADD_LIB_UNIT_TEST(matrix "eigen3")
 ADD_LIB_UNIT_TEST(geometry "eigen3")
+ADD_LIB_UNIT_TEST(complex "eigen3")
 IF(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
   ADD_LIB_UNIT_TEST(ref "eigen3")
 ENDIF()
 
 ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
 ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
+ADD_PYTHON_UNIT_TEST("py-complex" "unittest/python/test_complex.py" "unittest")
 
 ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "python/eigenpy")
 SET_TESTS_PROPERTIES("py-switch" PROPERTIES DEPENDS ${PYWRAP})
