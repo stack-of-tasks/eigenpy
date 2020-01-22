@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #ifndef __eigenpy_details_hpp__
@@ -15,6 +15,7 @@
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/registration.hpp"
 #include "eigenpy/map.hpp"
+#include "eigenpy/exception.hpp"
 
 namespace boost { namespace python { namespace detail {
 
@@ -99,11 +100,15 @@ struct implicit<MatType,Eigen::MatrixBase<MatType> >
 namespace eigenpy
 {
   template <typename SCALAR>  struct NumpyEquivalentType {};
+  template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
+  template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
   template <> struct NumpyEquivalentType<double>  { enum { type_code = NPY_DOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<double> >  { enum { type_code = NPY_CDOUBLE };};
+  template <> struct NumpyEquivalentType<long double>  { enum { type_code = NPY_LONGDOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
-  template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
-  
+
   template <typename SCALAR1, typename SCALAR2>
   struct FromTypeToType : public boost::false_type {};
   
@@ -112,12 +117,28 @@ namespace eigenpy
   
   template <> struct FromTypeToType<int,long> : public boost::true_type {};
   template <> struct FromTypeToType<int,float> : public boost::true_type {};
+  template <> struct FromTypeToType<int,std::complex<float> > : public boost::true_type {};
   template <> struct FromTypeToType<int,double> : public boost::true_type {};
+  template <> struct FromTypeToType<int,std::complex<double> > : public boost::true_type {};
+  template <> struct FromTypeToType<int,long double> : public boost::true_type {};
+  template <> struct FromTypeToType<int,std::complex<long double> > : public boost::true_type {};
   
   template <> struct FromTypeToType<long,float> : public boost::true_type {};
+  template <> struct FromTypeToType<long,std::complex<float> > : public boost::true_type {};
   template <> struct FromTypeToType<long,double> : public boost::true_type {};
+  template <> struct FromTypeToType<long,std::complex<double> > : public boost::true_type {};
+  template <> struct FromTypeToType<long,long double> : public boost::true_type {};
+  template <> struct FromTypeToType<long,std::complex<long double> > : public boost::true_type {};
   
+  template <> struct FromTypeToType<float,std::complex<float> > : public boost::true_type {};
   template <> struct FromTypeToType<float,double> : public boost::true_type {};
+  template <> struct FromTypeToType<float,std::complex<double> > : public boost::true_type {};
+  template <> struct FromTypeToType<float,long double> : public boost::true_type {};
+  template <> struct FromTypeToType<float,std::complex<long double> > : public boost::true_type {};
+
+  template <> struct FromTypeToType<double,std::complex<double> > : public boost::true_type {};
+  template <> struct FromTypeToType<double,long double> : public boost::true_type {};
+  template <> struct FromTypeToType<double,std::complex<long double> > : public boost::true_type {};
 
   namespace bp = boost::python;
 
@@ -282,6 +303,34 @@ namespace eigenpy
       }
     }
   };
+
+  template<typename Scalar, typename NewScalar, bool cast_is_valid = FromTypeToType<Scalar,NewScalar>::value >
+  struct CastMatToMat
+  {
+    template<typename MatrixIn, typename MatrixOut>
+    static void run(const Eigen::MatrixBase<MatrixIn> & input, const Eigen::MatrixBase<MatrixOut> & dest)
+    {
+      MatrixOut & dest_ = const_cast<MatrixOut &>(dest.derived());
+      dest_ = input.template cast<NewScalar>();
+    }
+  };
+
+  template<typename Scalar, typename NewScalar>
+  struct CastMatToMat<Scalar,NewScalar,false>
+  {
+    template<typename MatrixIn, typename MatrixOut>
+    static void run(const Eigen::MatrixBase<MatrixIn> & /*input*/,
+                    const Eigen::MatrixBase<MatrixOut> & /*dest*/)
+    {
+      // do nothing
+    }
+  };
+
+#define EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,Scalar,NewScalar,pyArray,mat) \
+  CastMatToMat<Scalar,NewScalar>::run(MapNumpy<MatType,Scalar>::map(pyArray),mat)
+
+#define EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,NewScalar,mat,pyArray) \
+  CastMatToMat<Scalar,NewScalar>::run(mat,MapNumpy<MatType,NewScalar>::map(pyArray))
   
   template<typename MatType>
   struct EigenObjectAllocator
@@ -292,35 +341,43 @@ namespace eigenpy
     static void allocate(PyArrayObject * pyArray, void * storage)
     {
       Type * mat_ptr = initEigenObject<Type>::run(pyArray,storage);
+      Type & mat = *mat_ptr;
       
-      if(NumpyEquivalentType<Scalar>::type_code == GET_PY_ARRAY_TYPE(pyArray))
+      const int pyArray_Type = GET_PY_ARRAY_TYPE(pyArray);
+      if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code)
       {
-        *mat_ptr = MapNumpy<MatType,Scalar>::map(pyArray); // avoid useless cast
+        mat = MapNumpy<MatType,Scalar>::map(pyArray); // avoid useless cast
         return;
       }
       
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+      switch(pyArray_Type)
       {
-        *mat_ptr = MapNumpy<MatType,int>::map(pyArray).template cast<Scalar>();
-        return;
-      }
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
-      {
-        *mat_ptr = MapNumpy<MatType,long>::map(pyArray).template cast<Scalar>();
-        return;
-      }
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
-      {
-        *mat_ptr = MapNumpy<MatType,float>::map(pyArray).template cast<Scalar>();
-        return;
-      }
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
-      {
-        *mat_ptr = MapNumpy<MatType,double>::map(pyArray).template cast<Scalar>();
-        return;
+        case NPY_INT:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,int,Scalar,pyArray,mat);
+          break;
+        case NPY_LONG:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,long,Scalar,pyArray,mat);
+          break;
+        case NPY_FLOAT:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,float,Scalar,pyArray,mat);
+          break;
+        case NPY_CFLOAT:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<float>,Scalar,pyArray,mat);
+          break;
+        case NPY_DOUBLE:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,double,Scalar,pyArray,mat);
+          break;
+        case NPY_CDOUBLE:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<double>,Scalar,pyArray,mat);
+          break;
+        case NPY_LONGDOUBLE:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,long double,Scalar,pyArray,mat);
+          break;
+        case NPY_CLONGDOUBLE:
+          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<long double>,Scalar,pyArray,mat);
+          break;
+        default:
+          throw Exception("You asked for a conversion which is not implemented.");
       }
     }
     
@@ -330,35 +387,42 @@ namespace eigenpy
                      PyArrayObject * pyArray)
     {
       const MatrixDerived & mat = const_cast<const MatrixDerived &>(mat_.derived());
+      const int pyArray_Type = GET_PY_ARRAY_TYPE(pyArray);
       
-      if(NumpyEquivalentType<Scalar>::type_code == GET_PY_ARRAY_TYPE(pyArray))
+      if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code)
       {
         MapNumpy<MatType,Scalar>::map(pyArray) = mat; // no cast needed
         return;
       }
       
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_INT)
+      switch(pyArray_Type)
       {
-        MapNumpy<MatType,int>::map(pyArray) = mat.template cast<int>();
-        return;
-      }
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_LONG)
-      {
-        MapNumpy<MatType,long>::map(pyArray) = mat.template cast<long>();
-        return;
-      }
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_FLOAT)
-      {
-        MapNumpy<MatType,float>::map(pyArray) = mat.template cast<float>();
-        return;
-      }
-      
-      if(GET_PY_ARRAY_TYPE(pyArray) == NPY_DOUBLE)
-      {
-        MapNumpy<MatType,double>::map(pyArray) = mat.template cast<double>();
-        return;
+        case NPY_INT:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,int,mat,pyArray);
+          break;
+        case NPY_LONG:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,long,mat,pyArray);
+          break;
+        case NPY_FLOAT:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,float,mat,pyArray);
+          break;
+        case NPY_CFLOAT:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,std::complex<float>,mat,pyArray);
+          break;
+        case NPY_DOUBLE:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,double,mat,pyArray);
+          break;
+        case NPY_CDOUBLE:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,std::complex<double>,mat,pyArray);
+          break;
+        case NPY_LONGDOUBLE:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,long double,mat,pyArray);
+          break;
+        case NPY_CLONGDOUBLE:
+          EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,std::complex<long double>,mat,pyArray);
+          break;
+        default:
+          throw Exception("You asked for a conversion which is not implemented.");
       }
     }
   };
@@ -437,8 +501,16 @@ namespace eigenpy
           return FromTypeToType<long,typename MatType::Scalar>::value;
         case NPY_FLOAT:
           return FromTypeToType<float,typename MatType::Scalar>::value;
+        case NPY_CFLOAT:
+          return FromTypeToType<std::complex<float>,typename MatType::Scalar>::value;
         case NPY_DOUBLE:
           return FromTypeToType<double,typename MatType::Scalar>::value;
+        case NPY_CDOUBLE:
+          return FromTypeToType<std::complex<double>,typename MatType::Scalar>::value;
+        case NPY_LONGDOUBLE:
+          return FromTypeToType<long double,typename MatType::Scalar>::value;
+        case NPY_CLONGDOUBLE:
+          return FromTypeToType<std::complex<long double>,typename MatType::Scalar>::value;
         default:
           return false;
       }
