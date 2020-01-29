@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #include "eigenpy/fwd.hpp"
@@ -10,7 +10,7 @@
 
 namespace eigenpy
 {
-  template<typename MatType, typename InputScalar, int IsVector>
+  template<typename MatType, typename InputScalar, bool IsVector>
   struct MapNumpyTraits {};
  
   /* Wrap a numpy::array with an Eigen::Map. No memory copy. */
@@ -33,7 +33,7 @@ namespace eigenpy
 namespace eigenpy
 {
   template<typename MatType, typename InputScalar>
-  struct MapNumpyTraits<MatType,InputScalar,0>
+  struct MapNumpyTraits<MatType,InputScalar,false>
   {
     typedef typename StrideType<MatType>::type Stride;
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime> EquivalentInputMatrixType;
@@ -43,10 +43,10 @@ namespace eigenpy
     {
       assert( PyArray_NDIM(pyArray) == 2 );
       
-      assert( (PyArray_DIMS(pyArray)[0]<INT_MAX)
-	      && (PyArray_DIMS(pyArray)[1]<INT_MAX)
-	      && (PyArray_STRIDE(pyArray, 0)<INT_MAX)
-	      && (PyArray_STRIDE(pyArray, 1)<INT_MAX) );
+      assert( (PyArray_DIMS(pyArray)[0]  < INT_MAX)
+           && (PyArray_DIMS(pyArray)[1]  < INT_MAX)
+           && (PyArray_STRIDE(pyArray,0) < INT_MAX)
+           && (PyArray_STRIDE(pyArray,1) < INT_MAX) );
 
       const int R = (int)PyArray_DIMS(pyArray)[0];
       const int C = (int)PyArray_DIMS(pyArray)[1];
@@ -69,7 +69,7 @@ namespace eigenpy
   };
 
   template<typename MatType, typename InputScalar>
-  struct MapNumpyTraits<MatType,InputScalar,1>
+  struct MapNumpyTraits<MatType,InputScalar,true>
   {
     typedef typename StrideType<MatType>::type Stride;
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime> EquivalentInputMatrixType;

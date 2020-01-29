@@ -117,3 +117,12 @@ if verbose: print("===> From Py to Eigen::Vector3d")
 # TODO
 # M = Mref[0:3,1:2]
 # assert( np.array_equal(M,eigenpy.reflex3(M,verbose)) );
+
+value = 2.
+mat1x1 = eigenpy.matrix1x1(value)
+assert(mat1x1.size == 1)
+assert(mat1x1[0,0] == value)
+
+vec1x1 = eigenpy.vector1x1(value)
+assert(vec1x1.size == 1)
+assert(vec1x1[0,0] == value)

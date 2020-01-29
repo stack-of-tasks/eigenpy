@@ -1,10 +1,24 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
 #include <iostream>
+
+template<typename Scalar>
+Eigen::Matrix<Scalar,Eigen::Dynamic,1> vector1x1(const Scalar & value)
+{
+  typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1> ReturnType;
+  return ReturnType::Constant(1,value);
+} 
+
+template<typename Scalar>
+Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> matrix1x1(const Scalar & value)
+{
+  typedef Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> ReturnType; 
+  return ReturnType::Constant(1,1,value);
+}
 
 Eigen::VectorXd emptyVector()
 {
@@ -76,6 +90,9 @@ BOOST_PYTHON_MODULE(matrix)
   Eigen::MatrixXd (*naturalsXX)(int,int,bool) = naturals;
   Eigen::VectorXd (*naturalsX)(int,bool) = naturals;
   Eigen::Matrix3d (*naturals33)(bool) = naturals;
+
+  bp::def("vector1x1", vector1x1<double>);
+  bp::def("matrix1x1", matrix1x1<double>);
 
   bp::def("naturals", naturalsXX);
   bp::def("naturalsX", naturalsX);
