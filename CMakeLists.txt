@@ -90,6 +90,7 @@ SET(${PROJECT_NAME}_SOLVERS_HEADERS
 SET(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
   include/eigenpy/decompositions/decompositions.hpp
   include/eigenpy/decompositions/EigenSolver.hpp
+  include/eigenpy/decompositions/LLT.hpp
   include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
   )
 
