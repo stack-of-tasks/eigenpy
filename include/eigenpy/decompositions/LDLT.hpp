@@ -54,8 +54,9 @@ namespace eigenpy
            "Returns the LDLT decomposition matrix.",
            bp::return_value_policy<bp::return_by_value>())
       
-      .def("rankUpdate",(Solver (Solver::*)(const Eigen::MatrixBase<VectorType> &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
-           bp::args("self","vector","sigma"))
+      .def("rankUpdate",(Solver & (Solver::*)(const Eigen::MatrixBase<VectorType> &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
+           bp::args("self","vector","sigma"),
+           bp::return_value_policy<bp::reference_existing_object>())
     
 #if EIGEN_VERSION_AT_LEAST(3,2,90)
       .def("adjoint",&Solver::adjoint,bp::arg("self"),
