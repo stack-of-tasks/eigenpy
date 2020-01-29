@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2014-2019 CNRS
-# Copyright (c) 2018-2019 INRIA
+# Copyright (c) 2018-2020 INRIA
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
@@ -71,6 +71,11 @@ SEARCH_FOR_BOOST()
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
+SET(${PROJECT_NAME}_UTILS_HEADERS
+  include/eigenpy/utils/scalar-name.hpp
+  include/eigenpy/utils/is-approx.hpp
+  )
+
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
   include/eigenpy/solvers/solvers.hpp
   include/eigenpy/solvers/preconditioners.hpp
@@ -82,8 +87,19 @@ SET(${PROJECT_NAME}_SOLVERS_HEADERS
   include/eigenpy/solvers/BFGSPreconditioners.hpp
   )
 
+SET(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
+  include/eigenpy/decompositions/decompositions.hpp
+  include/eigenpy/decompositions/EigenSolver.hpp
+  include/eigenpy/decompositions/LDLT.hpp
+  include/eigenpy/decompositions/LLT.hpp
+  include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
+  )
+
 SET(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_UTILS_HEADERS}
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
+  ${${PROJECT_NAME}_DECOMPOSITIONS_HEADERS}
+  include/eigenpy/computation-info.hpp
   include/eigenpy/eigenpy.hpp
   include/eigenpy/exception.hpp
   include/eigenpy/expose.hpp
@@ -115,8 +131,13 @@ SET(${PROJECT_NAME}_SOLVERS_SOURCES
   src/solvers/solvers.cpp
   )
 
+SET(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
+  src/decompositions/decompositions.cpp
+  )
+  
 SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_SOLVERS_SOURCES}
+  ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
   src/angle-axis.cpp
