@@ -57,3 +57,6 @@ SET_TESTS_PROPERTIES("py-self-adjoint-eigen-solver" PROPERTIES DEPENDS ${PYWRAP}
 
 ADD_PYTHON_UNIT_TEST("py-LLT" "unittest/python/test_LLT.py" "python/eigenpy")
 SET_TESTS_PROPERTIES("py-LLT" PROPERTIES DEPENDS ${PYWRAP})
+
+ADD_PYTHON_UNIT_TEST("py-LDLT" "unittest/python/test_LDLT.py" "python/eigenpy")
+SET_TESTS_PROPERTIES("py-LDLT" PROPERTIES DEPENDS ${PYWRAP})
