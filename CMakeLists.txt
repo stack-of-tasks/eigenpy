@@ -71,6 +71,10 @@ SEARCH_FOR_BOOST()
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
+SET(${PROJECT_NAME}_UTILS_HEADERS
+  include/eigenpy/utils/scalar-name.hpp
+  )
+
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
   include/eigenpy/solvers/solvers.hpp
   include/eigenpy/solvers/preconditioners.hpp
@@ -83,6 +87,7 @@ SET(${PROJECT_NAME}_SOLVERS_HEADERS
   )
 
 SET(${PROJECT_NAME}_HEADERS
+  ${${PROJECT_NAME}_UTILS_HEADERS}
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
   include/eigenpy/computation-info.hpp
   include/eigenpy/eigenpy.hpp
