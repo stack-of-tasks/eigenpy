@@ -461,7 +461,7 @@ namespace eigenpy
 
       PyArrayObject* pyArray;
       // Allocate Python memory
-      if(C == 1 && NumpyType::getType() == ARRAY_TYPE) // Handle array with a single dimension
+      if(C == 1 && NumpyType::getType() == ARRAY_TYPE && MatType::IsVectorAtCompileTime) // Handle array with a single dimension
       {
         npy_intp shape[1] = { R };
         pyArray = (PyArrayObject*) PyArray_SimpleNew(1, shape,
