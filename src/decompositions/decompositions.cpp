@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 
 #include "eigenpy/decompositions/EigenSolver.hpp"
+#include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
 
 namespace eigenpy
 {
@@ -15,6 +16,7 @@ namespace eigenpy
     namespace bp = boost::python;
     
     EigenSolverVisitor<Eigen::MatrixXd>::expose("EigenSolver");
+    SelfAdjointEigenSolverVisitor<Eigen::MatrixXd>::expose("SelfAdjointEigenSolver");
 
     {
       using namespace Eigen;
@@ -33,6 +35,3 @@ namespace eigenpy
     
   }
 } // namespace eigenpy
-
-
-
