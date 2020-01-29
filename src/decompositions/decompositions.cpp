@@ -8,6 +8,7 @@
 #include "eigenpy/decompositions/EigenSolver.hpp"
 #include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
 #include "eigenpy/decompositions/LLT.hpp"
+#include "eigenpy/decompositions/LDLT.hpp"
 
 namespace eigenpy
 {
@@ -19,6 +20,7 @@ namespace eigenpy
     EigenSolverVisitor<Eigen::MatrixXd>::expose("EigenSolver");
     SelfAdjointEigenSolverVisitor<Eigen::MatrixXd>::expose("SelfAdjointEigenSolver");
     LLTSolverVisitor<Eigen::MatrixXd>::expose("LLT");
+    LDLTSolverVisitor<Eigen::MatrixXd>::expose("LDLT");
 
     {
       using namespace Eigen;
