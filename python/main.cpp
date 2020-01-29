@@ -11,6 +11,7 @@
 
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/solvers/preconditioners.hpp"
+#include "eigenpy/decompositions/decompositions.hpp"
 
 #include <boost/python/scope.hpp>
 

@@ -86,9 +86,12 @@ SET(${PROJECT_NAME}_SOLVERS_HEADERS
   include/eigenpy/solvers/BFGSPreconditioners.hpp
   )
 
+SET(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
+  include/eigenpy/decompositions/decompositions.hpp
 SET(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_UTILS_HEADERS}
   ${${PROJECT_NAME}_SOLVERS_HEADERS}
+  ${${PROJECT_NAME}_DECOMPOSITIONS_HEADERS}
   include/eigenpy/computation-info.hpp
   include/eigenpy/eigenpy.hpp
   include/eigenpy/exception.hpp
@@ -121,8 +124,13 @@ SET(${PROJECT_NAME}_SOLVERS_SOURCES
   src/solvers/solvers.cpp
   )
 
+SET(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
+  src/decompositions/decompositions.cpp
+  )
+  
 SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_SOLVERS_SOURCES}
+  ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
   src/angle-axis.cpp
