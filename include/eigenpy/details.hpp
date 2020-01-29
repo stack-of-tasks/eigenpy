@@ -26,6 +26,13 @@ namespace boost { namespace python { namespace detail {
           std::size_t, value = sizeof(MatType));
   };
 
+  template<class MatType>
+  struct referent_size<Eigen::EigenBase<MatType>&>
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
 }}}
 
 namespace boost { namespace python { namespace converter {
@@ -92,6 +99,10 @@ struct implicit<MatType,Eigen::MatrixBase<MatType> >
     data->convertible = storage;
   }
 };
+
+template<class MatType>
+struct implicit<MatType,Eigen::EigenBase<MatType> > : implicit<MatType,Eigen::MatrixBase<MatType> >
+{};
 
 }}} // namespace boost::python::converter
 
@@ -680,9 +691,13 @@ namespace eigenpy
       EigenFromPy<MatType>::registration();
 
       // Add also conversion to Eigen::MatrixBase<MatType>
-      typedef Eigen::MatrixBase<MatType> MatTypeBase;
+      typedef Eigen::MatrixBase<MatType> MatrixBase;
 //      bp::implicitly_convertible<MatTypeBase,MatType>();
-      bp::implicitly_convertible<MatType,MatTypeBase>();
+      bp::implicitly_convertible<MatType,MatrixBase>();
+      
+      // Add also conversion to Eigen::EigenBase<MatType>
+      typedef Eigen::EigenBase<MatType> EigenBase;
+      bp::implicitly_convertible<MatType,EigenBase>();
     }
   };
 
