@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2014-2019 CNRS
-# Copyright (c) 2018-2019 INRIA
+# Copyright (c) 2018-2020 INRIA
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
@@ -73,6 +73,7 @@ SEARCH_FOR_BOOST()
 # ----------------------------------------------------
 SET(${PROJECT_NAME}_UTILS_HEADERS
   include/eigenpy/utils/scalar-name.hpp
+  include/eigenpy/utils/is-approx.hpp
   )
 
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
