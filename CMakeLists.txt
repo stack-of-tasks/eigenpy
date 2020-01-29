@@ -88,6 +88,9 @@ SET(${PROJECT_NAME}_SOLVERS_HEADERS
 
 SET(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
   include/eigenpy/decompositions/decompositions.hpp
+  include/eigenpy/decompositions/EigenSolver.hpp
+  )
+
 SET(${PROJECT_NAME}_HEADERS
   ${${PROJECT_NAME}_UTILS_HEADERS}
   ${${PROJECT_NAME}_SOLVERS_HEADERS}

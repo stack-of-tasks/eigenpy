@@ -5,6 +5,7 @@
 #include <boost/python.hpp>
 #include <Eigen/Core>
 
+#include "eigenpy/decompositions/EigenSolver.hpp"
 
 namespace eigenpy
 {
@@ -13,6 +14,7 @@ namespace eigenpy
     using namespace Eigen;
     namespace bp = boost::python;
     
+    EigenSolverVisitor<Eigen::MatrixXd>::expose("EigenSolver");
     
   }
 } // namespace eigenpy
