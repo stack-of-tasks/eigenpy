@@ -56,10 +56,12 @@ namespace eigenpy
       
       .def("rankUpdate",(Solver (Solver::*)(const VectorType &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
            bp::args("self","vector","sigma"))
-      
+    
+#if EIGEN_VERSION_AT_LEAST(3,2,90)
       .def("adjoint",&Solver::adjoint,bp::arg("self"),
            "Returns the adjoint, that is, a reference to the decomposition itself as if the underlying matrix is self-adjoint.",
            bp::return_value_policy<bp::reference_existing_object>())
+#endif
       
       .def("compute",(Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> & matrix))&Solver::compute,
            bp::args("self","matrix"),
@@ -68,9 +70,10 @@ namespace eigenpy
       
       .def("info",&Solver::info,bp::arg("self"),
            "NumericalIssue if the input contains INF or NaN values or overflow occured. Returns Success otherwise.")
-      
+#if EIGEN_VERSION_AT_LEAST(3,2,90)
       .def("rcond",&Solver::rcond,bp::arg("self"),
            "Returns an estimate of the reciprocal condition number of the matrix.")
+#endif
       .def("reconstructedMatrix",&Solver::reconstructedMatrix,bp::arg("self"),
            "Returns the matrix represented by the decomposition, i.e., it returns the product: L L^*. This function is provided for debug purpose.")
       .def("solve",&solve<VectorType>,bp::args("self","b"),
