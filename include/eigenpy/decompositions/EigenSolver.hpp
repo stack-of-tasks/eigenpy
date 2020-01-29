@@ -29,8 +29,8 @@ namespace eigenpy
       namespace bp = boost::python;
       cl
       .def(bp::init<>("Default constructor"))
-      .def(bp::init<Eigen::Index>(bp::arg("size"),
-                                  "Default constructor with memory preallocation"))
+      .def(bp::init<Eigen::DenseIndex>(bp::arg("size"),
+                                       "Default constructor with memory preallocation"))
       .def(bp::init<MatrixType,bp::optional<bool> >(bp::args("matrix","compute_eigen_vectors"),
                                                     "Computes eigendecomposition of given matrix"))
        
