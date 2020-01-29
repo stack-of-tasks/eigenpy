@@ -41,7 +41,7 @@ namespace eigenpy
            "Returns the eigenvectors of given matrix.",
            bp::return_value_policy<bp::return_by_value>())
       
-      .def("compute",(Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> & matrix))&Solver::template compute<MatrixType>,
+      .def("compute",&EigenSolverVisitor::compute_proxy<MatrixType>,
            bp::args("self","matrix"),
            "Computes the eigendecomposition of given matrix.",
            bp::return_value_policy<bp::reference_existing_object>())
@@ -79,6 +79,14 @@ namespace eigenpy
       bp::class_<Solver>(name.c_str(),
                          bp::no_init)
       .def(EigenSolverVisitor());
+    }
+    
+  private:
+    
+    template<typename MatrixType>
+    static Solver & compute_proxy(Solver & self, const Eigen::EigenBase<MatrixType> & matrix)
+    {
+      return self.compute(matrix);
     }
     
   };
