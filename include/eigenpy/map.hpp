@@ -41,30 +41,47 @@ namespace eigenpy
 
     static EigenMap mapImpl( PyArrayObject* pyArray )
     {
-      assert( PyArray_NDIM(pyArray) == 2 );
-      
-      assert( (PyArray_DIMS(pyArray)[0]  < INT_MAX)
-           && (PyArray_DIMS(pyArray)[1]  < INT_MAX)
-           && (PyArray_STRIDE(pyArray,0) < INT_MAX)
-           && (PyArray_STRIDE(pyArray,1) < INT_MAX) );
-
-      const int R = (int)PyArray_DIMS(pyArray)[0];
-      const int C = (int)PyArray_DIMS(pyArray)[1];
+      assert(PyArray_NDIM(pyArray) == 2 ||  PyArray_NDIM(pyArray) == 1);
+    
       const long int itemsize = PyArray_ITEMSIZE(pyArray);
-      const int stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
-      const int stride2 = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
+      int stride1 = -1, stride2 = -1;
+      int rows = -1, cols = -1;
+      if(PyArray_NDIM(pyArray) == 2)
+      {
+        assert( (PyArray_DIMS(pyArray)[0]  < INT_MAX)
+             && (PyArray_DIMS(pyArray)[1]  < INT_MAX)
+             && (PyArray_STRIDE(pyArray,0) < INT_MAX)
+             && (PyArray_STRIDE(pyArray,1) < INT_MAX) );
+        
+        rows = (int)PyArray_DIMS(pyArray)[0];
+        cols = (int)PyArray_DIMS(pyArray)[1];
+        stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+        stride2 = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
+      }
+      else if(PyArray_NDIM(pyArray) == 1)
+      {
+        assert( (PyArray_DIMS(pyArray)[0]  < INT_MAX)
+             && (PyArray_STRIDE(pyArray,0) < INT_MAX));
+        
+        rows = (int)PyArray_DIMS(pyArray)[0];
+        cols = 1;
+        
+        stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+        stride2 = 0;
+      }
+      
       Stride stride(stride2,stride1);
       
-      if( (MatType::RowsAtCompileTime!=R)
+      if( (MatType::RowsAtCompileTime!=rows)
          && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
       { throw eigenpy::Exception("The number of rows does not fit with the matrix type."); }
-      if( (MatType::ColsAtCompileTime!=C)
+      if( (MatType::ColsAtCompileTime!=cols)
          && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
       {  throw eigenpy::Exception("The number of columns does not fit with the matrix type."); }
       
       InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
       
-      return EigenMap( pyData, R,C, stride );
+      return EigenMap( pyData, rows, cols, stride );
     }
   };
 
