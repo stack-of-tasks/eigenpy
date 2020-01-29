@@ -1,21 +1,24 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/version.hpp"
 #include "eigenpy/geometry.hpp"
+
+#include "eigenpy/computation-info.hpp"
+
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/solvers/preconditioners.hpp"
 
-#include <iostream>
 #include <boost/python/scope.hpp>
 
 using namespace eigenpy;
 
 BOOST_PYTHON_MODULE(eigenpy)
 {
+  namespace bp = boost::python;
   enableEigenPy();
   
   bp::scope().attr("__version__") = eigenpy::printVersion();
@@ -28,10 +31,15 @@ BOOST_PYTHON_MODULE(eigenpy)
   exposeQuaternion();
   exposeGeometryConversion();
   
+  exposeComputationInfo();
+  
   {
-    boost::python::scope solvers = boost::python::class_<SolversScope>("solvers");
+    bp::scope solvers = boost::python::class_<SolversScope>("solvers");
     exposeSolvers();
     exposePreconditioners();
+    
+    register_symbolic_link_to_registered_type<Eigen::ComputationInfo>();
   }
   
+  exposeDecompositions();
 }
