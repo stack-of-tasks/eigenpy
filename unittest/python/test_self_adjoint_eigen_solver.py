@@ -13,4 +13,4 @@ es = eigenpy.SelfAdjointEigenSolver(A)
 V = es.eigenvectors()
 D = es.eigenvalues()
 
-assert eigenpy.is_approx(A.dot(V),V.dot(np.diag(D)))
+assert eigenpy.is_approx(A.dot(V),V.dot(np.diag(D)),1e-6)
