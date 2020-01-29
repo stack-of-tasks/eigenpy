@@ -287,11 +287,20 @@ namespace eigenpy
   {
     static MatType * run(PyArrayObject * pyArray, void * storage)
     {
-      assert(PyArray_NDIM(pyArray) == 2);
+      assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
 
-      const int rows = (int)PyArray_DIMS(pyArray)[0];
-      const int cols = (int)PyArray_DIMS(pyArray)[1];
-      
+      int rows = -1, cols = -1;
+      if(PyArray_NDIM(pyArray) == 2)
+      {
+        rows = (int)PyArray_DIMS(pyArray)[0];
+        cols = (int)PyArray_DIMS(pyArray)[1];
+      }
+      else if(PyArray_NDIM(pyArray) == 1)
+      {
+        rows = (int)PyArray_DIMS(pyArray)[0];
+        cols = 1;
+      }
+              
       return new (storage) MatType(rows,cols);
     }
   };
@@ -613,17 +622,19 @@ namespace eigenpy
       }
       else // this is a matrix
       {
+        if(PyArray_NDIM(pyArray) == 1) // We can always convert a vector into a matrix
+        {
+          return pyArray;
+        }
+        
         if(PyArray_NDIM(pyArray) != 2)
         {
-          if ( (PyArray_NDIM(pyArray) !=1) || (! MatType::IsVectorAtCompileTime) )
-          {
 #ifndef NDEBUG
             std::cerr << "The number of dimension of the object is not correct." << std::endl;
 #endif
-            return 0;
-          }
+          return 0;
         }
-        
+       
         if(PyArray_NDIM(pyArray) == 2)
         {
           const int R = (int)PyArray_DIMS(pyArray)[0];
