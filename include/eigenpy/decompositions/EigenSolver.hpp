@@ -47,7 +47,7 @@ namespace eigenpy
            bp::return_value_policy<bp::reference_existing_object>())
       .def("compute",(Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> & matrix, bool))&Solver::compute,
            bp::args("self","matrix","compute_eigen_vectors"),
-           "Computes theeigendecomposition of given matrix.",
+           "Computes the eigendecomposition of given matrix.",
            bp::return_value_policy<bp::reference_existing_object>())
       
       .def("getMaxIterations",&Solver::getMaxIterations,bp::arg("self"),
