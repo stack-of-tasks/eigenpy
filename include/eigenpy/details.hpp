@@ -17,95 +17,6 @@
 #include "eigenpy/map.hpp"
 #include "eigenpy/exception.hpp"
 
-namespace boost { namespace python { namespace detail {
-
-  template<class MatType>
-  struct referent_size<Eigen::MatrixBase<MatType>&>
-  {
-      BOOST_STATIC_CONSTANT(
-          std::size_t, value = sizeof(MatType));
-  };
-
-  template<class MatType>
-  struct referent_size<Eigen::EigenBase<MatType>&>
-  {
-      BOOST_STATIC_CONSTANT(
-          std::size_t, value = sizeof(MatType));
-  };
-
-}}}
-
-namespace boost { namespace python { namespace converter {
-
-template<class MatType>
-struct implicit<Eigen::MatrixBase<MatType>,MatType>
-{
-  typedef Eigen::MatrixBase<MatType> Source;
-  typedef MatType Target;
-  
-  static void* convertible(PyObject* obj)
-  {
-    // Find a converter which can produce a Source instance from
-    // obj. The user has told us that Source can be converted to
-    // Target, and instantiating construct() below, ensures that
-    // at compile-time.
-    return implicit_rvalue_convertible_from_python(obj, registered<Source>::converters)
-    ? obj : 0;
-  }
-  
-  static void construct(PyObject* obj, rvalue_from_python_stage1_data* data)
-  {
-    void* storage = ((rvalue_from_python_storage<Target>*)data)->storage.bytes;
-    
-    arg_from_python<Source> get_source(obj);
-    bool convertible = get_source.convertible();
-    BOOST_VERIFY(convertible);
-    
-    new (storage) Target(get_source().derived());
-    
-    // record successful construction
-    data->convertible = storage;
-  }
-};
-
-template<class MatType>
-struct implicit<MatType,Eigen::MatrixBase<MatType> >
-{
-  typedef MatType Source;
-  typedef Eigen::MatrixBase<MatType> Target;
-  
-  static void* convertible(PyObject* obj)
-  {
-    // Find a converter which can produce a Source instance from
-    // obj. The user has told us that Source can be converted to
-    // Target, and instantiating construct() below, ensures that
-    // at compile-time.
-    return implicit_rvalue_convertible_from_python(obj, registered<Source>::converters)
-    ? obj : 0;
-  }
-  
-  static void construct(PyObject* obj, rvalue_from_python_stage1_data* data)
-  {
-    void* storage = reinterpret_cast<rvalue_from_python_storage<Target>*>
-                   (reinterpret_cast<void*>(data))->storage.bytes;
-    
-    arg_from_python<Source> get_source(obj);
-    bool convertible = get_source.convertible();
-    BOOST_VERIFY(convertible);
-    
-    new (storage) Source(get_source());
-    
-    // record successful construction
-    data->convertible = storage;
-  }
-};
-
-template<class MatType>
-struct implicit<MatType,Eigen::EigenBase<MatType> > : implicit<MatType,Eigen::MatrixBase<MatType> >
-{};
-
-}}} // namespace boost::python::converter
-
 #define GET_PY_ARRAY_TYPE(array) PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
 
 namespace eigenpy
@@ -692,12 +603,39 @@ namespace eigenpy
 
       // Add also conversion to Eigen::MatrixBase<MatType>
       typedef Eigen::MatrixBase<MatType> MatrixBase;
-//      bp::implicitly_convertible<MatTypeBase,MatType>();
-      bp::implicitly_convertible<MatType,MatrixBase>();
-      
+      EigenFromPy<MatrixBase>::registration();
+
       // Add also conversion to Eigen::EigenBase<MatType>
       typedef Eigen::EigenBase<MatType> EigenBase;
-      bp::implicitly_convertible<MatType,EigenBase>();
+      EigenFromPy<EigenBase>::registration();
+    }
+  };
+
+  template<typename MatType>
+  struct EigenFromPy< Eigen::MatrixBase<MatType> > : EigenFromPy<MatType>
+  {
+    typedef EigenFromPy<MatType> EigenFromPyDerived;
+    typedef Eigen::MatrixBase<MatType> Base;
+
+    static void registration()
+    {
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+       &EigenFromPy::construct,bp::type_id<Base>());
+    }
+  };
+    
+  template<typename MatType>
+  struct EigenFromPy< Eigen::EigenBase<MatType> > : EigenFromPy<MatType>
+  {
+    typedef EigenFromPy<MatType> EigenFromPyDerived;
+    typedef Eigen::EigenBase<MatType> Base;
+
+    static void registration()
+    {
+      bp::converter::registry::push_back
+      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+       &EigenFromPy::construct,bp::type_id<Base>());
     }
   };
 
