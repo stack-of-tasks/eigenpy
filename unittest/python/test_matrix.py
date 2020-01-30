@@ -11,11 +11,11 @@ assert M.shape == (0,0)
 
 if verbose: print("===> From empty VectorXd to Py")
 v = eigenpy.emptyVector()
-assert v.shape == (0,1)
+assert v.shape == (0,)
 
 if verbose: print("===> From MatrixXd to Py")
 M = eigenpy.naturals(3,3,verbose)
-Mcheck = np.reshape(np.matrix(range(9),np.double),[3,3])
+Mcheck = np.reshape(np.array(range(9),np.double),[3,3])
 assert np.array_equal(Mcheck,M)
 
 if verbose: print("===> From Matrix3d to Py")
@@ -24,13 +24,13 @@ assert np.array_equal(Mcheck,M33)
 
 if verbose: print("===> From VectorXd to Py")
 v = eigenpy.naturalsX(3,verbose)
-vcheck = np.matrix([range(3),],np.double).T
+vcheck = np.array(range(3),np.double).T
 assert np.array_equal(vcheck ,v)
 
 if verbose: print("===> From Py to Eigen::MatrixXd")
 if verbose: print("===> From Py to Eigen::MatrixXd")
 if verbose: print("===> From Py to Eigen::MatrixXd")
-Mref = np.reshape(np.matrix(range(64),np.double),[8,8])
+Mref = np.reshape(np.array(range(64),np.double),[8,8])
 
 # Test base function
 Mref_from_base = eigenpy.base(Mref)
@@ -125,4 +125,4 @@ assert(mat1x1[0,0] == value)
 
 vec1x1 = eigenpy.vector1x1(value)
 assert(vec1x1.size == 1)
-assert(vec1x1[0,0] == value)
+assert(vec1x1[0] == value)
