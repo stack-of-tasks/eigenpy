@@ -51,10 +51,7 @@ BOOST_PYTHON_MODULE(eigenpy)
             "Returns True if A is approximately equal to B, within the precision determined by prec.");
     bp::def("is_approx",(bool (*)(const MatrixXd &, const MatrixXd &))&is_approx<MatrixXd,MatrixXd>,
             bp::args("A","B"),
-    "Returns True if A is approximately equal to B..");
-    
-//    EXPOSE_IS_APPROX(MatrixXd);
-//    EXPOSE_IS_APPROX(MatrixXf);
+            "Returns True if A is approximately equal to B.");
   }
   
   exposeDecompositions();
