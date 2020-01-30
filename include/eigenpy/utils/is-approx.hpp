@@ -10,11 +10,17 @@
 namespace eigenpy
 {
   template<typename MatrixType1, typename MatrixType2>
-  inline bool is_approx(const Eigen::MatrixBase<MatrixType1> & mat1,
-                        const Eigen::MatrixBase<MatrixType2> & mat2,
-                        const typename MatrixType1::Scalar & prec = Eigen::NumTraits<typename MatrixType1::Scalar>::dummy_precision())
+  inline EIGEN_DONT_INLINE bool is_approx(const MatrixType1 & mat1,
+                                          const MatrixType2 & mat2,
+                                          const typename MatrixType1::Scalar & prec)
   {
-    return mat1.isApprox(mat2,prec);
+    return mat1.derived().isApprox(mat2.derived(),prec);
+  }
+
+  template<typename MatrixType1, typename MatrixType2>
+  inline bool is_approx(const MatrixType1 & mat1, const MatrixType2 & mat2)
+  {
+    return is_approx(mat1,mat2,Eigen::NumTraits<typename MatrixType1::Scalar>::dummy_precision());
   }
 }
 

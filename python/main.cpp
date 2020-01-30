@@ -17,23 +17,7 @@
 
 #include <boost/python/scope.hpp>
 
-#define DEFINE_IS_APPROX(MatType) \
-  BOOST_PYTHON_FUNCTION_OVERLOADS(is_approx_overload##MatType,eigenpy::is_approx,2,3)
-
-#define EXPOSE_IS_APPROX(MatType) \
-  bp::def("is_approx", \
-          (bool (*)(const Eigen::MatrixBase<MatType> &, \
-                    const Eigen::MatrixBase<MatType> &, \
-                    const MatType::Scalar &))eigenpy::is_approx<MatType,MatType>, \
-                    is_approx_overload##MatType(bp::args("A","B","prec"), \
-          "Returns True if A is approximately equal to B, within the precision determined by prec."))
-
-
 using namespace eigenpy;
-
-DEFINE_IS_APPROX(MatrixXd)
-DEFINE_IS_APPROX(MatrixXf)
-
 
 BOOST_PYTHON_MODULE(eigenpy)
 {
@@ -62,8 +46,15 @@ BOOST_PYTHON_MODULE(eigenpy)
   
   {
     using namespace Eigen;
-    EXPOSE_IS_APPROX(MatrixXd);
-    EXPOSE_IS_APPROX(MatrixXf);
+    bp::def("is_approx",(bool (*)(const MatrixXd &, const MatrixXd &, const double &))&is_approx<MatrixXd,MatrixXd>,
+            bp::args("A","B","prec"),
+            "Returns True if A is approximately equal to B, within the precision determined by prec.");
+    bp::def("is_approx",(bool (*)(const MatrixXd &, const MatrixXd &))&is_approx<MatrixXd,MatrixXd>,
+            bp::args("A","B"),
+    "Returns True if A is approximately equal to B..");
+    
+//    EXPOSE_IS_APPROX(MatrixXd);
+//    EXPOSE_IS_APPROX(MatrixXf);
   }
   
   exposeDecompositions();
