@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #ifndef __eigenpy_eigenpy_hpp__
@@ -8,7 +8,7 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/deprecated.hpp"
-#include "eigenpy/eigenpy_export.h"
+#include "eigenpy/config.hpp"
 
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
 #include "eigenpy/ref.hpp"
@@ -28,7 +28,7 @@ namespace eigenpy
 {
 
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
-  void EIGENPY_EXPORT enableEigenPy();
+  void EIGENPY_DLLEXPORT enableEigenPy();
 
   template<typename MatType>
   void enableEigenPySpecific();

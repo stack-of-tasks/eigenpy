@@ -17,12 +17,12 @@
 #ifndef __eigenpy_preconditioners_hpp__
 #define __eigenpy_preconditioners_hpp__
 
-#include "eigenpy/eigenpy_export.h"
+#include "eigenpy/config.hpp"
 
 namespace eigenpy
 {
   
-  void EIGENPY_EXPORT exposePreconditioners();
+  void EIGENPY_DLLEXPORT exposePreconditioners();
   
 } // namespace eigenpy
 

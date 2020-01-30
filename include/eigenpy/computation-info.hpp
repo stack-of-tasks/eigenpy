@@ -8,11 +8,11 @@
 #include <Eigen/Core>
 #include <boost/python.hpp>
 
-#include "eigenpy/eigenpy_export.h"
+#include "eigenpy/config.hpp"
 
 namespace eigenpy
 {
-  inline void EIGENPY_EXPORT exposeComputationInfo()
+  inline void EIGENPY_DLLEXPORT exposeComputationInfo()
   {
     boost::python::enum_<Eigen::ComputationInfo>("ComputationInfo")
     .value("Success",Eigen::Success)
