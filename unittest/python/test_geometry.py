@@ -27,7 +27,7 @@ assert(q2.isApprox(q2,1e-2))
 
 Rq = q.matrix()
 Rr = r.matrix()
-assert(isapprox(Rq*Rq.T,np.eye(3)))
+assert(isapprox(Rq.dot(Rq.T),np.eye(3)))
 assert(isapprox(Rr,Rq))
 
 qR = Quaternion(Rr)
@@ -42,15 +42,15 @@ except RuntimeError as e:
   if verbose: print("As expected, catched exception: ",e)
 
 # --- Angle Vector ------------------------------------------------
-r = AngleAxis(.1,np.matrix([1,0,0],np.double).T)
+r = AngleAxis(.1,np.array([1,0,0],np.double))
 if verbose: print("Rx(.1) = \n\n",r.matrix(),"\n")
 assert( isapprox(r.matrix()[2,2],cos(r.angle)))
-assert( isapprox(r.axis,np.matrix("1;0;0")) )
+assert( isapprox(r.axis,np.array([1.,0,0])) )
 assert( isapprox(r.angle,0.1) )
 assert(r.isApprox(r))
 assert(r.isApprox(r,1e-2))
 
-r.axis = np.matrix([0,1,0],np.double).T
+r.axis = np.array([0,1,0],np.double).T
 assert( isapprox(r.matrix()[0,0],cos(r.angle)))
 
 ri = r.inverse()
