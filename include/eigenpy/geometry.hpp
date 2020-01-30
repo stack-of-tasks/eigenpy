@@ -1,20 +1,20 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #ifndef __eigenpy_geometry_hpp__
 #define __eigenpy_geometry_hpp__
 
-#include "eigenpy/eigenpy_export.h"
+#include "eigenpy/config.hpp"
 
 namespace eigenpy
 {
   
-  void EIGENPY_EXPORT exposeQuaternion();
-  void EIGENPY_EXPORT exposeAngleAxis();
+  void EIGENPY_DLLEXPORT exposeQuaternion();
+  void EIGENPY_DLLEXPORT exposeAngleAxis();
   
-  void EIGENPY_EXPORT exposeGeometryConversion();
+  void EIGENPY_DLLEXPORT exposeGeometryConversion();
   
 } // namespace eigenpy
 

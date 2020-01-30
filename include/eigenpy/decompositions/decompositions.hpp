@@ -5,11 +5,11 @@
 #ifndef __eigenpy_decompositions_decompositions_hpp__
 #define __eigenpy_decompositions_decompositions_hpp__
 
-#include "eigenpy/eigenpy_export.h"
+#include "eigenpy/config.hpp"
 
 namespace eigenpy
 {
-  void EIGENPY_EXPORT exposeDecompositions();
+  void EIGENPY_DLLEXPORT exposeDecompositions();
 } // namespace eigenpy
 
 #endif // define __eigenpy_decompositions_decompositions_hpp__
