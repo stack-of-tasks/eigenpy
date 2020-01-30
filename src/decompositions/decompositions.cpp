@@ -17,13 +17,12 @@ namespace eigenpy
     using namespace Eigen;
     namespace bp = boost::python;
     
-    EigenSolverVisitor<Eigen::MatrixXd>::expose("EigenSolver");
-    SelfAdjointEigenSolverVisitor<Eigen::MatrixXd>::expose("SelfAdjointEigenSolver");
-    LLTSolverVisitor<Eigen::MatrixXd>::expose("LLT");
-    LDLTSolverVisitor<Eigen::MatrixXd>::expose("LDLT");
+    EigenSolverVisitor<MatrixXd>::expose("EigenSolver");
+    SelfAdjointEigenSolverVisitor<MatrixXd>::expose("SelfAdjointEigenSolver");
+    LLTSolverVisitor<MatrixXd>::expose("LLT");
+    LDLTSolverVisitor<MatrixXd>::expose("LDLT");
 
     {
-      using namespace Eigen;
       bp::enum_<DecompositionOptions>("DecompositionOptions")
       .value("ComputeFullU",ComputeFullU)
       .value("ComputeThinU",ComputeThinU)
