@@ -5,6 +5,8 @@
 #include <boost/python.hpp>
 #include <Eigen/Core>
 
+#include "eigenpy/decompositions/decompositions.hpp"
+
 #include "eigenpy/decompositions/EigenSolver.hpp"
 #include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
 #include "eigenpy/decompositions/LLT.hpp"
