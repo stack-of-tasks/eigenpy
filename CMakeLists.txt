@@ -109,6 +109,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/geometry.hpp
   include/eigenpy/geometry-conversion.hpp
   include/eigenpy/memory.hpp
+  include/eigenpy/numpy-type.hpp
   include/eigenpy/registration.hpp
   include/eigenpy/angle-axis.hpp
   include/eigenpy/quaternion.hpp

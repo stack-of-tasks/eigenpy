@@ -5,6 +5,7 @@ import numpy as np
 
 quat = eigenpy.Quaternion()
 # By default, we convert as numpy.matrix
+eigenpy.switchToNumpyMatrix()
 coeffs_vector = quat.coeffs() 
 assert len(coeffs_vector.shape) == 2
 

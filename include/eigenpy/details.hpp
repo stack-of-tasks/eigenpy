@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/numpy-type.hpp"
 #include "eigenpy/registration.hpp"
 #include "eigenpy/map.hpp"
 #include "eigenpy/exception.hpp"
@@ -63,124 +64,6 @@ namespace eigenpy
   template <> struct FromTypeToType<double,std::complex<long double> > : public boost::true_type {};
 
   namespace bp = boost::python;
-
-  enum NP_TYPE
-  {
-    MATRIX_TYPE,
-    ARRAY_TYPE
-  };
-  
-  struct NumpyType
-  {
-    
-    static NumpyType & getInstance()
-    {
-      static NumpyType instance;
-      return instance;
-    }
-
-    operator bp::object () { return CurrentNumpyType; }
-
-    bp::object make(PyArrayObject* pyArray, bool copy = false)
-    { return make((PyObject*)pyArray,copy); }
-    
-    bp::object make(PyObject* pyObj, bool copy = false)
-    {
-      bp::object m;
-      if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyMatrixType))
-        m = NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
-//        m = NumpyAsMatrixObject(bp::object(bp::handle<>(pyObj)));
-      else if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyArrayType))
-        m = bp::object(bp::handle<>(pyObj)); // nothing to do here
-
-      Py_INCREF(m.ptr());
-      return m;
-    }
-    
-    static void setNumpyType(bp::object & obj)
-    {
-      PyTypeObject * obj_type = PyType_Check(obj.ptr()) ? reinterpret_cast<PyTypeObject*>(obj.ptr()) : obj.ptr()->ob_type;
-      if(PyType_IsSubtype(obj_type,getInstance().NumpyMatrixType))
-        switchToNumpyMatrix();
-      else if(PyType_IsSubtype(obj_type,getInstance().NumpyArrayType))
-        switchToNumpyArray();
-    }
-    
-    static void switchToNumpyArray()
-    {
-      getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
-      getType() = ARRAY_TYPE;
-    }
-    
-    static void switchToNumpyMatrix()
-    {
-      getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
-      getType() = MATRIX_TYPE;
-    }
-    
-    static NP_TYPE & getType()
-    {
-      static NP_TYPE np_type;
-      return np_type;
-    }
-    
-    static bp::object getNumpyType()
-    {
-      return getInstance().CurrentNumpyType;
-    }
-    
-    static const PyTypeObject * getNumpyMatrixType()
-    {
-      return getInstance().NumpyMatrixType;
-    }
-    
-    static const PyTypeObject * getNumpyArrayType()
-    {
-      return getInstance().NumpyArrayType;
-    }
-    
-    static bool isMatrix()
-    {
-      return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
-                              getInstance().NumpyMatrixType);
-    }
-    
-    static bool isArray()
-    {
-      return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
-                              getInstance().NumpyArrayType);
-    }
-
-  protected:
-    NumpyType()
-    {
-      pyModule = bp::import("numpy");
-#if PY_MAJOR_VERSION >= 3
-      // TODO I don't know why this Py_INCREF is necessary.
-      // Without it, the destructor of NumpyType SEGV sometimes.
-      Py_INCREF(pyModule.ptr());
-#endif
-      
-      NumpyMatrixObject = pyModule.attr("matrix");
-      NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
-      NumpyArrayObject = pyModule.attr("ndarray");
-      NumpyArrayType = reinterpret_cast<PyTypeObject*>(NumpyArrayObject.ptr());
-      //NumpyAsMatrixObject = pyModule.attr("asmatrix");
-      //NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
-      
-      CurrentNumpyType = NumpyArrayObject; // default conversion
-      getType() = ARRAY_TYPE;
-    }
-
-    bp::object CurrentNumpyType;
-    bp::object pyModule;
-    
-    // Numpy types
-    bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
-    //bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
-    bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
-    
-  };
 
   template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
   struct initEigenObject
