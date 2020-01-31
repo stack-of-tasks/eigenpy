@@ -79,18 +79,18 @@ namespace eigenpy
       return instance;
     }
 
-    operator bp::object () { return CurrentNumpyType; }
+    operator bp::object () { return getInstance().CurrentNumpyType; }
 
-    bp::object make(PyArrayObject* pyArray, bool copy = false)
+    static bp::object make(PyArrayObject* pyArray, bool copy = false)
     { return make((PyObject*)pyArray,copy); }
     
-    bp::object make(PyObject* pyObj, bool copy = false)
+    static bp::object make(PyObject* pyObj, bool copy = false)
     {
       bp::object m;
-      if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyMatrixType))
-        m = NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
+      if(isMatrix())
+        m = getInstance().NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
 //        m = NumpyAsMatrixObject(bp::object(bp::handle<>(pyObj)));
-      else if(PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(CurrentNumpyType.ptr()),NumpyArrayType))
+      else if(isArray())
         m = bp::object(bp::handle<>(pyObj)); // nothing to do here
 
       Py_INCREF(m.ptr());
@@ -109,19 +109,18 @@ namespace eigenpy
     static void switchToNumpyArray()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
-      getType() = ARRAY_TYPE;
+      getInstance().getType() = ARRAY_TYPE;
     }
     
     static void switchToNumpyMatrix()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
-      getType() = MATRIX_TYPE;
+      getInstance().getType() = MATRIX_TYPE;
     }
     
     static NP_TYPE & getType()
     {
-      static NP_TYPE np_type;
-      return np_type;
+      return getInstance().np_type;
     }
     
     static bp::object getNumpyType()
@@ -147,6 +146,7 @@ namespace eigenpy
     
     static bool isArray()
     {
+      if(getInstance().isMatrix()) return false;
       return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
                               getInstance().NumpyArrayType);
     }
@@ -169,7 +169,7 @@ namespace eigenpy
       //NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
       
       CurrentNumpyType = NumpyArrayObject; // default conversion
-      getType() = ARRAY_TYPE;
+      np_type = ARRAY_TYPE;
     }
 
     bp::object CurrentNumpyType;
@@ -179,7 +179,8 @@ namespace eigenpy
     bp::object NumpyMatrixObject; PyTypeObject * NumpyMatrixType;
     //bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
-    
+
+    NP_TYPE np_type;
   };
 
   template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
