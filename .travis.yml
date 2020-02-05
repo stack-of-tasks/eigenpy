@@ -1,5 +1,7 @@
 language: python
 sudo: required
+git:
+  depth: false
 compiler:
   - gcc
 # - clang
