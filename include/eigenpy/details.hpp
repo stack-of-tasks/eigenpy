@@ -111,10 +111,14 @@ namespace eigenpy
   struct CastMatToMat
   {
     template<typename MatrixIn, typename MatrixOut>
-    static void run(const Eigen::MatrixBase<MatrixIn> & input, const Eigen::MatrixBase<MatrixOut> & dest)
+    static void run(const Eigen::MatrixBase<MatrixIn> & input,
+                    const Eigen::MatrixBase<MatrixOut> & dest)
     {
       MatrixOut & dest_ = const_cast<MatrixOut &>(dest.derived());
-      dest_ = input.template cast<NewScalar>();
+      if(dest.rows() == input.rows())
+        dest_ = input.template cast<NewScalar>();
+      else
+        dest_ = input.transpose().template cast<NewScalar>();
     }
   };
 
@@ -126,6 +130,7 @@ namespace eigenpy
                     const Eigen::MatrixBase<MatrixOut> & /*dest*/)
     {
       // do nothing
+      assert("Must never happened");
     }
   };
 
@@ -192,9 +197,15 @@ namespace eigenpy
       const MatrixDerived & mat = const_cast<const MatrixDerived &>(mat_.derived());
       const int pyArray_Type = GET_PY_ARRAY_TYPE(pyArray);
       
-      if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code)
+      typedef typename MapNumpy<MatType,Scalar>::EigenMap MapType;
+      
+      if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code) // no cast needed
       {
-        MapNumpy<MatType,Scalar>::map(pyArray) = mat; // no cast needed
+        MapType map_pyArray = MapNumpy<MatType,Scalar>::map(pyArray);
+        if(mat.rows() == map_pyArray.rows())
+          map_pyArray = mat;
+        else
+          map_pyArray = mat.transpose();
         return;
       }
       
@@ -260,13 +271,14 @@ namespace eigenpy
       typedef typename MatType::Scalar Scalar;
       assert( (mat.rows()<INT_MAX) && (mat.cols()<INT_MAX) 
 	      && "Matrix range larger than int ... should never happen." );
-      const int R  = (int)mat.rows(), C = (int)mat.cols();
+      const npy_intp R = (npy_intp)mat.rows(), C = (npy_intp)mat.cols();
 
       PyArrayObject* pyArray;
       // Allocate Python memory
-      if(C == 1 && NumpyType::getType() == ARRAY_TYPE && MatType::IsVectorAtCompileTime) // Handle array with a single dimension
+      if( ( (((C == 1) xor (R == 1)) && !MatType::IsVectorAtCompileTime) || MatType::IsVectorAtCompileTime)
+         && NumpyType::getType() == ARRAY_TYPE) // Handle array with a single dimension
       {
-        npy_intp shape[1] = { R };
+        npy_intp shape[1] = { C == 1 ? R : C };
         pyArray = (PyArrayObject*) PyArray_SimpleNew(1, shape,
                                                      NumpyEquivalentType<Scalar>::type_code);
       }

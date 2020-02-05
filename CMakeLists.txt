@@ -141,6 +141,14 @@ SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
+  src/matrix-float.cpp
+  src/matrix-complex-float.cpp
+  src/matrix-complex-double.cpp
+  src/matrix-double.cpp
+  src/matrix-long-double.cpp
+  src/matrix-complex-long-double.cpp
+  src/matrix-int.cpp
+  src/matrix-long.cpp
   src/angle-axis.cpp
   src/quaternion.cpp
   src/geometry-conversion.cpp

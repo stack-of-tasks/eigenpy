@@ -24,12 +24,38 @@
 
 #endif // if EIGEN_VERSION_AT_LEAST(3,2,0)
 
+#define EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)   \
+  /** \ingroup matrixtypedefs */                                    \
+  typedef Eigen::Matrix<Type, Size, Size> Matrix##SizeSuffix##TypeSuffix;  \
+  /** \ingroup matrixtypedefs */                                    \
+  typedef Eigen::Matrix<Type, Size, 1>    Vector##SizeSuffix##TypeSuffix;  \
+  /** \ingroup matrixtypedefs */                                    \
+  typedef Eigen::Matrix<Type, 1, Size>    RowVector##SizeSuffix##TypeSuffix;
+
+#define EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, Size)         \
+  /** \ingroup matrixtypedefs */                                    \
+  typedef Eigen::Matrix<Type, Size, Eigen::Dynamic> Matrix##Size##X##TypeSuffix;  \
+  /** \ingroup matrixtypedefs */                                    \
+  typedef Eigen::Matrix<Type, Eigen::Dynamic, Size> Matrix##X##Size##TypeSuffix;
+
+#define EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
+  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, 2, 2) \
+  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, 3, 3) \
+  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, 4, 4) \
+  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, Eigen::Dynamic, X) \
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 2) \
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 3) \
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 4)
+
 namespace eigenpy
 {
 
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
   void EIGENPY_DLLEXPORT enableEigenPy();
 
+  /* Enable the Eigen--Numpy serialization for the templated MatrixBase class.
+   * The second template argument is used for inheritance of Eigen classes. If
+   * using a native Eigen::MatrixBase, simply repeat the same arg twice. */
   template<typename MatType>
   void enableEigenPySpecific();
   
@@ -39,10 +65,36 @@ namespace eigenpy
   template<typename MatType,typename EigenEquivalentType>
   EIGENPY_DEPRECATED void enableEigenPySpecific();
 
+  template<typename Scalar>
+  EIGEN_DONT_INLINE void exposeType()
+  {
+    EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Scalar,s);
+    
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector2s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVector2s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2Xs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixX2s);
+    
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector3s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVector3s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix3s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix3Xs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixX3s);
+    
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector4s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVector4s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix4s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix4Xs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixX4s);
+    
+    ENABLE_SPECIFIC_MATRIX_TYPE(VectorXs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVectorXs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXs);
+  }
 
 } // namespace eigenpy
 
 #include "eigenpy/details.hpp"
 
 #endif // ifndef __eigenpy_eigenpy_hpp__
-
