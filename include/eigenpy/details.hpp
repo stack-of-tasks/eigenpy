@@ -275,7 +275,7 @@ namespace eigenpy
 
       PyArrayObject* pyArray;
       // Allocate Python memory
-      if( ( (((C == 1) xor (R == 1)) && !MatType::IsVectorAtCompileTime) || MatType::IsVectorAtCompileTime)
+      if( ( ((!(C == 1) != !(R == 1)) && !MatType::IsVectorAtCompileTime) || MatType::IsVectorAtCompileTime)
          && NumpyType::getType() == ARRAY_TYPE) // Handle array with a single dimension
       {
         npy_intp shape[1] = { C == 1 ? R : C };
