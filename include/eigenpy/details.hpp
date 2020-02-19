@@ -30,7 +30,21 @@ namespace boost { namespace python { namespace detail {
   };
 
   template<class MatType>
+  struct referent_size<Eigen::MatrixBase<MatType> >
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
+  template<class MatType>
   struct referent_size<Eigen::EigenBase<MatType>&>
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
+  template<class MatType>
+  struct referent_size<Eigen::EigenBase<MatType> >
   {
       BOOST_STATIC_CONSTANT(
           std::size_t, value = sizeof(MatType));
