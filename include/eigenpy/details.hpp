@@ -20,6 +20,24 @@
 
 #define GET_PY_ARRAY_TYPE(array) PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
 
+namespace boost { namespace python { namespace detail {
+
+  template<class MatType>
+  struct referent_size<Eigen::MatrixBase<MatType>&>
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
+  template<class MatType>
+  struct referent_size<Eigen::EigenBase<MatType>&>
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
+}}}
+
 namespace eigenpy
 {
   template <typename SCALAR>  struct NumpyEquivalentType {};
