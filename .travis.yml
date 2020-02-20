@@ -75,7 +75,7 @@ script:
   - mkdir build
   - cd build
   - export CMAKE_PREFIX_PATH=/tmp/_ci/install
-  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION
+  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION -DPYTHON_INCLUDE_DIR=$($PYTHON_DEFAULT_VERSION -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") -DPYTHON_LIBRARY=$($PYTHON_DEFAULT_VERSION -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
   - make
   - ./extra_lib
   - cd /tmp/_ci/build
