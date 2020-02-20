@@ -75,7 +75,9 @@ script:
   - mkdir build
   - cd build
   - export CMAKE_PREFIX_PATH=/tmp/_ci/install
-  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION -DPYTHON_INCLUDE_DIR=$($PYTHON_DEFAULT_VERSION -c "from distutils.sysconfig import get_python_inc; print(get_python_inc())") -DPYTHON_LIBRARY=$($PYTHON_DEFAULT_VERSION -c "import distutils.sysconfig as sysconfig; print(sysconfig.get_config_var('LIBDIR'))")
+  - export PYTHON_DEFAULT_VERSION=$(which python2)
+  - if [[ $TRAVIS_PYTHON_VERSION -gt 30 ]]; then export PYTHON_DEFAULT_VERSION=$(which python3); fi
+  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION 
   - make
   - ./extra_lib
   - cd /tmp/_ci/build

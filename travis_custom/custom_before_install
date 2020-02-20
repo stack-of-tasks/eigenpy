@@ -2,10 +2,8 @@
 
 # Add Python dependency
 echo "TRAVIS_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION"
-export PYTHON_DEFAULT_VERSION=$(which python2)
 if [[ $TRAVIS_PYTHON_VERSION -gt 30 ]]; then
   export APT_DEPENDENCIES=$APT_DEPENDENCIES" python3-numpy"
-  export PYTHON_DEFAULT_VERSION=$(which python3)
 fi
 
 # When this script is called the current directory is ./custom_travis
