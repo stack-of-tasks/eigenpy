@@ -46,10 +46,12 @@ BOOST_PYTHON_MODULE(eigenpy)
   
   {
     using namespace Eigen;
-    bp::def("is_approx",(bool (*)(const MatrixXd &, const MatrixXd &, const double &))&is_approx<MatrixXd,MatrixXd>,
+    
+    bp::def("is_approx",(bool (*)(const Eigen::MatrixBase<MatrixXd> &, const Eigen::MatrixBase<MatrixXd> &, const double &))&is_approx<MatrixXd,MatrixXd>,
             bp::args("A","B","prec"),
             "Returns True if A is approximately equal to B, within the precision determined by prec.");
-    bp::def("is_approx",(bool (*)(const MatrixXd &, const MatrixXd &))&is_approx<MatrixXd,MatrixXd>,
+    
+    bp::def("is_approx",(bool (*)(const Eigen::MatrixBase<MatrixXd> &, const Eigen::MatrixBase<MatrixXd> &))&is_approx<MatrixXd,MatrixXd>,
             bp::args("A","B"),
             "Returns True if A is approximately equal to B.");
   }
