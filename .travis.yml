@@ -68,7 +68,7 @@ branches:
     - debian
     - devel
 before_install: ./.travis/run before_install
-install: pip install coveralls numpy
+install: pip install coveralls numpy --user
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
   - ./.travis/run ../travis_custom/custom_build
