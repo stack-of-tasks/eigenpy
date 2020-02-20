@@ -7,7 +7,7 @@ compiler:
 env:
   global:
     - secure: "SnIBG/xLIHX3CSvUbqqsX8xTVqIqQ7fFS6HWO6KZQVBsT6yugTwYHbyhNiU531JejYJ/I3ZrDhXfYH3qFZiYxnH1sifvwV+fnTtMXpPN7qPZwIymkjcmm6gJF51e0C7VOfUbvKFv0ngwj+ul21rgZSMuoEvxPK0WxtE3/ZSfn9c="
-    - APT_DEPENDENCIES="doxygen libeigen3-dev libboost-test-dev libboost-python-dev"
+    - APT_DEPENDENCIES="doxygen libeigen3-dev libboost-test-dev libboost-python-dev python-numpy"
     - DEBSIGN_KEYID=5AE5CD75
     - CC=gcc
     - DO_COVERAGE_ON_BRANCH="master;release"
