@@ -20,28 +20,44 @@ env:
 jobs:
   include:
     - dist: bionic
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: bionic
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=36
       python: 3.6
     - dist: bionic
-      env: BUILDTYPE=Debug
+      env: 
+        - BUILDTYPE=Debug
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: bionic
-      env: BUILDTYPE=Debug
+      env: 
+        - BUILDTYPE=Debug
+        - TRAVIS_PYTHON_VERSION=36
       python: 3.6
     - dist: xenial
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: xenial
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=35 
       python: 3.5
     - dist: trusty 
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: trusty 
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=34
       python: 3.4
 
 notifications:
