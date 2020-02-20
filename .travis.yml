@@ -1,5 +1,4 @@
-language: python
-sudo: required
+language: cpp
 git:
   depth: false
 compiler:
@@ -8,40 +7,55 @@ compiler:
 env:
   global:
     - secure: "SnIBG/xLIHX3CSvUbqqsX8xTVqIqQ7fFS6HWO6KZQVBsT6yugTwYHbyhNiU531JejYJ/I3ZrDhXfYH3qFZiYxnH1sifvwV+fnTtMXpPN7qPZwIymkjcmm6gJF51e0C7VOfUbvKFv0ngwj+ul21rgZSMuoEvxPK0WxtE3/ZSfn9c="
-    - APT_DEPENDENCIES="doxygen libeigen3-dev libboost-test-dev libboost-python-dev"
+    - APT_DEPENDENCIES="doxygen libeigen3-dev libboost-test-dev libboost-python-dev python-numpy"
     - DEBSIGN_KEYID=5AE5CD75
     - CC=gcc
     - DO_COVERAGE_ON_BRANCH="master;release"
     - DO_CPPCHECK_ON_BRANCH=""
     - DO_INSTALL_DOC_EXCEPT_ON_BRANCH=""
-    - BUILD_WITH_CATKIN_SUPPORT=false
     - MAKEFLAGS="-j2"
 
 jobs:
   include:
     - dist: bionic
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: bionic
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=36
       python: 3.6
     - dist: bionic
-      env: BUILDTYPE=Debug
+      env: 
+        - BUILDTYPE=Debug
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: bionic
-      env: BUILDTYPE=Debug
+      env: 
+        - BUILDTYPE=Debug
+        - TRAVIS_PYTHON_VERSION=36
       python: 3.6
     - dist: xenial
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: xenial
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=35 
       python: 3.5
     - dist: trusty 
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=27 
       python: 2.7
     - dist: trusty 
-      env: BUILDTYPE=Release
+      env: 
+        - BUILDTYPE=Release
+        - TRAVIS_PYTHON_VERSION=34
       python: 3.4
 
 notifications:
@@ -52,8 +66,8 @@ branches:
     - master
     - debian
     - devel
-before_install: ./.travis/run before_install
-install: pip install coveralls numpy
+before_install: ./travis_custom/custom_before_install
+install: pip install coveralls numpy --user
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
   - ./.travis/run ../travis_custom/custom_build
@@ -61,7 +75,9 @@ script:
   - mkdir build
   - cd build
   - export CMAKE_PREFIX_PATH=/tmp/_ci/install
-  - cmake ..
+  - export PYTHON_DEFAULT_VERSION=$(which python2)
+  - if [[ $TRAVIS_PYTHON_VERSION -gt 30 ]]; then export PYTHON_DEFAULT_VERSION=$(which python3); fi
+  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION 
   - make
   - ./extra_lib
   - cd /tmp/_ci/build
