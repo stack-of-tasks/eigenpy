@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Add Python dependency
+echo "TRAVIS_PYTHON_VERSION=$TRAVIS_PYTHON_VERSION"
+if [[ $TRAVIS_PYTHON_VERSION -gt 30 ]]; then
+  export APT_DEPENDENCIES=$APT_DEPENDENCIES" python3-numpy"
+fi
+
+# When this script is called the current directory is ./custom_travis
+. ./.travis/run ../.travis/before_install
+
+# Git fetch tags
+git fetch --tags
+

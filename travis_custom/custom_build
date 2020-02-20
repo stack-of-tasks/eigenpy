@@ -11,7 +11,6 @@ fi
 
 if [[ $TRAVIS_PYTHON_VERSION -gt 30 ]]; then
   export CMAKE_ADDITIONAL_OPTIONS=" ${CMAKE_ADDITIONAL_OPTIONS} -DPYTHON_EXECUTABLE=$(which python3)"
-  pip3 install numpy --user
 fi
 
 # Setup environment variables.
