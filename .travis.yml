@@ -75,7 +75,7 @@ script:
   - mkdir build
   - cd build
   - export CMAKE_PREFIX_PATH=/tmp/_ci/install
-  - cmake ..
+  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION
   - make
   - ./extra_lib
   - cd /tmp/_ci/build
