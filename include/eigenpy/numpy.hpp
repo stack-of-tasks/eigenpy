@@ -5,6 +5,8 @@
 #ifndef __eigenpy_numpy_hpp__
 #define __eigenpy_numpy_hpp__
 
+#include "eigenpy/config.hpp"
+
 #ifndef PY_ARRAY_UNIQUE_SYMBOL
   #define PY_ARRAY_UNIQUE_SYMBOL EIGENPY_ARRAY_API
 #endif
@@ -18,7 +20,7 @@
 
 namespace eigenpy
 {
-  void import_numpy();
+  void EIGENPY_DLLEXPORT import_numpy();
 }
 
 #endif // ifndef __eigenpy_numpy_hpp__
