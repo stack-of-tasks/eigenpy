@@ -17,12 +17,12 @@
 #include "eigenpy/eigenpy.hpp"
 
 #include "eigenpy/eigen-allocator.hpp"
+#include "eigenpy/eigen-to-python.hpp"
 
 #include "eigenpy/registration.hpp"
 #include "eigenpy/map.hpp"
 #include "eigenpy/exception.hpp"
 
-#define GET_PY_ARRAY_TYPE(array) PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
 
 namespace boost { namespace python { namespace detail {
 
@@ -59,45 +59,7 @@ namespace boost { namespace python { namespace detail {
 namespace eigenpy
 {
 
-  namespace bp = boost::python;
-
-  /* --- TO PYTHON -------------------------------------------------------------- */
   
-  template<typename MatType>
-  struct EigenToPy
-  {
-    static PyObject* convert(MatType const & mat)
-    {
-      typedef typename MatType::Scalar Scalar;
-      assert( (mat.rows()<INT_MAX) && (mat.cols()<INT_MAX) 
-	      && "Matrix range larger than int ... should never happen." );
-      const npy_intp R = (npy_intp)mat.rows(), C = (npy_intp)mat.cols();
-
-      PyArrayObject* pyArray;
-      // Allocate Python memory
-          std::cout << "basic convert" << std::endl;
-      if( ( ((!(C == 1) != !(R == 1)) && !MatType::IsVectorAtCompileTime) || MatType::IsVectorAtCompileTime)
-         && NumpyType::getType() == ARRAY_TYPE) // Handle array with a single dimension
-      {
-          std::cout << "mat1\n" << mat << std::endl;
-        npy_intp shape[1] = { C == 1 ? R : C };
-        pyArray = (PyArrayObject*) PyArray_SimpleNew(1, shape,
-                                                     NumpyEquivalentType<Scalar>::type_code);
-      }
-      else
-      {
-        npy_intp shape[2] = { R,C };
-        pyArray = (PyArrayObject*) PyArray_SimpleNew(2, shape,
-                                                     NumpyEquivalentType<Scalar>::type_code);
-      }
-
-      // Copy data
-      EigenAllocator<MatType>::copy(mat,pyArray);
-      
-      // Create an instance (either np.array or np.matrix)
-      return NumpyType::getInstance().make(pyArray).ptr();
-    }
-  };
   
   /* --- FROM PYTHON ------------------------------------------------------------ */
 
@@ -341,7 +303,6 @@ namespace eigenpy
        &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
     }
   };
-#endif
 
   
   template<typename MatType,typename EigenEquivalentType>
