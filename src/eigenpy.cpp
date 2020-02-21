@@ -28,6 +28,7 @@ namespace eigenpy
   void enableEigenPy()
   {
     using namespace Eigen;
+    import_numpy();
     
     Exception::registerException();
     

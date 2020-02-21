@@ -11,12 +11,9 @@
 #include <boost/python.hpp>
 #include <Eigen/Core>
 
-#include <numpy/numpyconfig.h>
-#ifdef NPY_1_8_API_VERSION
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#endif
-
-#include <numpy/noprefix.h>
+#define NO_IMPORT_ARRAY
+  #include "eigenpy/numpy.hpp"
+#undef NO_IMPORT_ARRAY
 
 #ifdef NPY_ALIGNED
 #if EIGEN_VERSION_AT_LEAST(3,2,90)
@@ -31,4 +28,3 @@
 #include "eigenpy/expose.hpp"
 
 #endif // ifndef __eigenpy_fwd_hpp__
-

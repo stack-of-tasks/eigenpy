@@ -110,6 +110,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/geometry-conversion.hpp
   include/eigenpy/memory.hpp
   include/eigenpy/numpy-type.hpp
+  include/eigenpy/numpy.hpp
   include/eigenpy/registration.hpp
   include/eigenpy/angle-axis.hpp
   include/eigenpy/quaternion.hpp
@@ -141,6 +142,7 @@ SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
+  src/numpy.cpp
   src/matrix-float.cpp
   src/matrix-complex-float.cpp
   src/matrix-complex-double.cpp

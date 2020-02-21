@@ -584,7 +584,6 @@ namespace eigenpy
   template<typename MatType>
   void enableEigenPySpecific()
   {
-    numpy_import_array();
     if(check_registration<MatType>()) return;
     
     bp::to_python_converter<MatType,EigenToPy<MatType> >();

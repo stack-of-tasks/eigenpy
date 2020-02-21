@@ -145,45 +145,6 @@ namespace eigenpy
 
     NP_TYPE np_type;
   };
-
-  namespace details
-  {
-    struct import_numpy
-    {
-    
-      static bool status()
-      {
-        return instance().imported;
-      }
-      
-    protected:
-      
-      static import_numpy & instance()
-      {
-        static import_numpy m_instance;
-        return m_instance;
-      }
-      
-      import_numpy()
-      : imported(false)
-      {
-        if(_import_array() < 0)
-        {
-          PyErr_Print();
-          PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
-        }
-        else
-          imported = true;
-      }
-      
-      bool imported;
-    };
-  } //  namespace details
-    
-  inline bool numpy_import_array()
-  {
-    return details::import_numpy::status();
-  }
 }
 
 #endif // ifndef __eigenpy_numpy_type_hpp__
