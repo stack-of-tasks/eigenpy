@@ -24,28 +24,28 @@
 
 #endif // if EIGEN_VERSION_AT_LEAST(3,2,0)
 
-#define EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, Size, SizeSuffix)   \
+#define EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, Size, SizeSuffix)   \
   /** \ingroup matrixtypedefs */                                    \
-  typedef Eigen::Matrix<Type, Size, Size> Matrix##SizeSuffix##TypeSuffix;  \
+  typedef Eigen::Matrix<Type, Size, Size, Options> Matrix##SizeSuffix##TypeSuffix;  \
   /** \ingroup matrixtypedefs */                                    \
   typedef Eigen::Matrix<Type, Size, 1>    Vector##SizeSuffix##TypeSuffix;  \
   /** \ingroup matrixtypedefs */                                    \
   typedef Eigen::Matrix<Type, 1, Size>    RowVector##SizeSuffix##TypeSuffix;
 
-#define EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, Size)         \
+#define EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, Size)         \
   /** \ingroup matrixtypedefs */                                    \
-  typedef Eigen::Matrix<Type, Size, Eigen::Dynamic> Matrix##Size##X##TypeSuffix;  \
+  typedef Eigen::Matrix<Type, Size, Eigen::Dynamic, Options> Matrix##Size##X##TypeSuffix;  \
   /** \ingroup matrixtypedefs */                                    \
-  typedef Eigen::Matrix<Type, Eigen::Dynamic, Size> Matrix##X##Size##TypeSuffix;
+  typedef Eigen::Matrix<Type, Eigen::Dynamic, Size, Options> Matrix##X##Size##TypeSuffix;
 
-#define EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Type, TypeSuffix) \
-  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, 2, 2) \
-  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, 3, 3) \
-  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, 4, 4) \
-  EIGENPY_MAKE_TYPEDEFS(Type, TypeSuffix, Eigen::Dynamic, X) \
-  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 2) \
-  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 3) \
-  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, TypeSuffix, 4)
+#define EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Type, Options, TypeSuffix) \
+  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, 2, 2) \
+  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, 3, 3) \
+  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, 4, 4) \
+  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, Eigen::Dynamic, X) \
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 2) \
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 3) \
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 4)
 
 namespace eigenpy
 {
@@ -65,10 +65,10 @@ namespace eigenpy
   template<typename MatType,typename EigenEquivalentType>
   EIGENPY_DEPRECATED void enableEigenPySpecific();
 
-  template<typename Scalar>
+  template<typename Scalar, int Options>
   EIGEN_DONT_INLINE void exposeType()
   {
-    EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Scalar,s);
+    EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Scalar,Options,s);
     
     ENABLE_SPECIFIC_MATRIX_TYPE(Vector2s);
     ENABLE_SPECIFIC_MATRIX_TYPE(RowVector2s);
@@ -93,6 +93,12 @@ namespace eigenpy
     ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXs);
   }
 
+  template<typename Scalar>
+  EIGEN_DONT_INLINE void exposeType()
+  {
+    exposeType<Scalar,0>();
+  }
+    
 } // namespace eigenpy
 
 #include "eigenpy/details.hpp"

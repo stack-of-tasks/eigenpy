@@ -9,5 +9,6 @@ namespace eigenpy
   void exposeMatrixLong()
   {
     exposeType<long>();
+    exposeType<long,Eigen::RowMajor>();
   }
 }

@@ -9,5 +9,6 @@ namespace eigenpy
   void exposeMatrixFloat()
   {
     exposeType<float>();
+    exposeType<float,Eigen::RowMajor>();
   }
 }

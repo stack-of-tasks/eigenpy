@@ -6,7 +6,6 @@
 #include "eigenpy/eigenpy.hpp"
 #include <stdlib.h>
 
-
 namespace eigenpy
 {
 

@@ -9,5 +9,6 @@ namespace eigenpy
   void exposeMatrixComplexLongDouble()
   {
     exposeType<std::complex<long double> >();
+    exposeType<std::complex<long double>,Eigen::RowMajor>();
   }
 }
