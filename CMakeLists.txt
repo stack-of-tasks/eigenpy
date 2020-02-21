@@ -106,6 +106,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/expose.hpp
   include/eigenpy/details.hpp
   include/eigenpy/fwd.hpp
+  include/eigenpy/eigen-allocator.hpp
   include/eigenpy/map.hpp
   include/eigenpy/geometry.hpp
   include/eigenpy/geometry-conversion.hpp
