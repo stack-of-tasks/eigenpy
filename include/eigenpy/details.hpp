@@ -304,6 +304,7 @@ namespace eigenpy
     }
   };
 
+#endif
   
   template<typename MatType,typename EigenEquivalentType>
   EIGENPY_DEPRECATED
@@ -317,7 +318,7 @@ namespace eigenpy
   {
     if(check_registration<MatType>()) return;
     
-    bp::to_python_converter<MatType,EigenToPy<MatType> >();
+    EigenToPyConverter<MatType>::registration();
     EigenFromPyConverter<MatType>::registration();
   }
 

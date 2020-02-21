@@ -47,6 +47,24 @@ namespace eigenpy
       }
     };
 
+    template<typename MatType>
+    struct EigenToPyConverter
+    {
+      static void registration()
+      {
+        bp::to_python_converter<MatType,EigenToPy<MatType> >();
+      }
+    };
+
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+  template<typename MatType>
+  struct EigenToPyConverter< eigenpy::Ref<MatType> >
+  {
+    static void registration()
+    {
+    }
+  };
+#endif
 }
 
 #endif // __eigenpy_eigen_to_python_hpp__
