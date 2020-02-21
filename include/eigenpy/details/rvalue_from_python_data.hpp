@@ -57,7 +57,7 @@ namespace boost
       struct rvalue_from_python_data<Eigen::EigenBase<Derived> const & >
       : rvalue_from_python_storage<Derived const & >
       {
-        typedef Eigen::MatrixBase<Derived> const & T;
+        typedef Eigen::EigenBase<Derived> const & T;
 
 # if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) \
 && (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) \
