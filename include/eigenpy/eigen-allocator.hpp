@@ -11,80 +11,85 @@
 
 namespace eigenpy
 {
-  template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
-  struct initEigenObject
-  {
-    static MatType * run(PyArrayObject * pyArray, void * storage)
-    {
-      assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
 
-      int rows = -1, cols = -1;
-      if(PyArray_NDIM(pyArray) == 2)
-      {
-        rows = (int)PyArray_DIMS(pyArray)[0];
-        cols = (int)PyArray_DIMS(pyArray)[1];
-      }
-      else if(PyArray_NDIM(pyArray) == 1)
-      {
-        rows = (int)PyArray_DIMS(pyArray)[0];
-        cols = 1;
-      }
-              
-      return new (storage) MatType(rows,cols);
-    }
-  };
-
-  template<typename MatType>
-  struct initEigenObject<MatType,true>
+  namespace details
   {
-    static MatType * run(PyArrayObject * pyArray, void * storage)
+    template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
+    struct init_matrix_or_array
     {
-      if(PyArray_NDIM(pyArray) == 1)
+      static MatType * run(PyArrayObject * pyArray, void * storage)
       {
-        const int rows_or_cols = (int)PyArray_DIMS(pyArray)[0];
-        return new (storage) MatType(rows_or_cols);
-      }
-      else
-      {
-        const int rows = (int)PyArray_DIMS(pyArray)[0];
-        const int cols = (int)PyArray_DIMS(pyArray)[1];
+        assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
+
+        int rows = -1, cols = -1;
+        if(PyArray_NDIM(pyArray) == 2)
+        {
+          rows = (int)PyArray_DIMS(pyArray)[0];
+          cols = (int)PyArray_DIMS(pyArray)[1];
+        }
+        else if(PyArray_NDIM(pyArray) == 1)
+        {
+          rows = (int)PyArray_DIMS(pyArray)[0];
+          cols = 1;
+        }
+  
         return new (storage) MatType(rows,cols);
       }
-    }
-  };
+    };
 
-  template<typename Scalar, typename NewScalar, bool cast_is_valid = FromTypeToType<Scalar,NewScalar>::value >
-  struct CastMatToMat
-  {
-    template<typename MatrixIn, typename MatrixOut>
-    static void run(const Eigen::MatrixBase<MatrixIn> & input,
-                    const Eigen::MatrixBase<MatrixOut> & dest)
+    template<typename MatType>
+    struct init_matrix_or_array<MatType,true>
     {
-      MatrixOut & dest_ = const_cast<MatrixOut &>(dest.derived());
-      if(dest.rows() == input.rows())
-        dest_ = input.template cast<NewScalar>();
-      else
-        dest_ = input.transpose().template cast<NewScalar>();
-    }
-  };
+      static MatType * run(PyArrayObject * pyArray, void * storage)
+      {
+        if(PyArray_NDIM(pyArray) == 1)
+        {
+          const int rows_or_cols = (int)PyArray_DIMS(pyArray)[0];
+          return new (storage) MatType(rows_or_cols);
+        }
+        else
+        {
+          const int rows = (int)PyArray_DIMS(pyArray)[0];
+          const int cols = (int)PyArray_DIMS(pyArray)[1];
+          return new (storage) MatType(rows,cols);
+        }
+      }
+    };
 
-  template<typename Scalar, typename NewScalar>
-  struct CastMatToMat<Scalar,NewScalar,false>
-  {
-    template<typename MatrixIn, typename MatrixOut>
-    static void run(const Eigen::MatrixBase<MatrixIn> & /*input*/,
-                    const Eigen::MatrixBase<MatrixOut> & /*dest*/)
+    template<typename Scalar, typename NewScalar, bool cast_is_valid = FromTypeToType<Scalar,NewScalar>::value >
+    struct cast_matrix_or_array
     {
-      // do nothing
-      assert("Must never happened");
-    }
-  };
+      template<typename MatrixIn, typename MatrixOut>
+      static void run(const Eigen::MatrixBase<MatrixIn> & input,
+                      const Eigen::MatrixBase<MatrixOut> & dest)
+      {
+        MatrixOut & dest_ = const_cast<MatrixOut &>(dest.derived());
+        if(dest.rows() == input.rows())
+          dest_ = input.template cast<NewScalar>();
+        else
+          dest_ = input.transpose().template cast<NewScalar>();
+      }
+    };
+
+    template<typename Scalar, typename NewScalar>
+    struct cast_matrix_or_array<Scalar,NewScalar,false>
+    {
+      template<typename MatrixIn, typename MatrixOut>
+      static void run(const Eigen::MatrixBase<MatrixIn> & /*input*/,
+                      const Eigen::MatrixBase<MatrixOut> & /*dest*/)
+      {
+        // do nothing
+        assert("Must never happened");
+      }
+    };
+  
+  } // namespace details
 
 #define EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,Scalar,NewScalar,pyArray,mat) \
-  CastMatToMat<Scalar,NewScalar>::run(MapNumpy<MatType,Scalar>::map(pyArray),mat)
+  details::cast_matrix_or_array<Scalar,NewScalar>::run(MapNumpy<MatType,Scalar>::map(pyArray),mat)
 
 #define EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType,Scalar,NewScalar,mat,pyArray) \
-  CastMatToMat<Scalar,NewScalar>::run(mat,MapNumpy<MatType,NewScalar>::map(pyArray))
+  details::cast_matrix_or_array<Scalar,NewScalar>::run(mat,MapNumpy<MatType,NewScalar>::map(pyArray))
   
   template<typename MatType>
   struct EigenObjectAllocator
@@ -94,7 +99,7 @@ namespace eigenpy
     
     static void allocate(PyArrayObject * pyArray, void * storage)
     {
-      Type * mat_ptr = initEigenObject<Type>::run(pyArray,storage);
+      Type * mat_ptr = details::init_matrix_or_array<Type>::run(pyArray,storage);
       Type & mat = *mat_ptr;
       
       const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
