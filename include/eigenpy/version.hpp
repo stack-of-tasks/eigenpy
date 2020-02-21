@@ -32,8 +32,8 @@ namespace eigenpy
   ///        by the input arguments.
   ///
   bool EIGENPY_DLLEXPORT checkVersionAtLeast(unsigned int major_version,
-                                          unsigned int minor_version,
-                                          unsigned int patch_version);
+                                             unsigned int minor_version,
+                                             unsigned int patch_version);
 }
 
 #endif // __eigenpy_version_hpp__
