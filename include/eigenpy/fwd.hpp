@@ -1,6 +1,5 @@
 /*
- * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2014-2020 CNRS INRIA
  */
 
 #ifndef __eigenpy_fwd_hpp__
@@ -26,5 +25,11 @@
 #endif
 
 #include "eigenpy/expose.hpp"
+
+namespace eigenpy
+{
+  template<typename MatType> struct EigenToPy;
+  template<typename MatType> struct EigenFromPy;
+}
 
 #endif // ifndef __eigenpy_fwd_hpp__
