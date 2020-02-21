@@ -97,7 +97,7 @@ namespace eigenpy
       Type * mat_ptr = initEigenObject<Type>::run(pyArray,storage);
       Type & mat = *mat_ptr;
       
-      const int pyArray_Type = GET_PY_ARRAY_TYPE(pyArray);
+      const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
       if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code)
       {
         mat = MapNumpy<MatType,Scalar>::map(pyArray); // avoid useless cast
@@ -141,7 +141,7 @@ namespace eigenpy
                      PyArrayObject * pyArray)
     {
       const MatrixDerived & mat = const_cast<const MatrixDerived &>(mat_.derived());
-      const int pyArray_Type = GET_PY_ARRAY_TYPE(pyArray);
+      const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
       
       typedef typename MapNumpy<MatType,Scalar>::EigenMap MapType;
       

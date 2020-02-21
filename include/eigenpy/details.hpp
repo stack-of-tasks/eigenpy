@@ -139,7 +139,7 @@ namespace eigenpy
       if(!PyArray_Check(pyArray))
         return 0;
       
-      if(!isScalarConvertible(GET_PY_ARRAY_TYPE(pyArray)))
+      if(!isScalarConvertible(EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
         return 0;
 
       if(MatType::IsVectorAtCompileTime)

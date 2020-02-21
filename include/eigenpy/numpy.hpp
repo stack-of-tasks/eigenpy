@@ -18,6 +18,8 @@
 
 #include <numpy/noprefix.h>
 
+#define EIGENPY_GET_PY_ARRAY_TYPE(array) PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
+
 namespace eigenpy
 {
   void EIGENPY_DLLEXPORT import_numpy();
