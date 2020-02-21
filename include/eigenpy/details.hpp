@@ -12,6 +12,7 @@
 #include <patchlevel.h> // For PY_MAJOR_VERSION
 #include <iostream>
 
+#include "eigenpy/scalar-conversion.hpp"
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/registration.hpp"
@@ -55,36 +56,7 @@ namespace boost { namespace python { namespace detail {
 namespace eigenpy
 {
 
-  template <typename SCALAR1, typename SCALAR2>
-  struct FromTypeToType : public boost::false_type {};
-  
-  template <typename SCALAR>
-  struct FromTypeToType<SCALAR,SCALAR> : public boost::true_type {};
-  
-  template <> struct FromTypeToType<int,long> : public boost::true_type {};
-  template <> struct FromTypeToType<int,float> : public boost::true_type {};
-  template <> struct FromTypeToType<int,std::complex<float> > : public boost::true_type {};
-  template <> struct FromTypeToType<int,double> : public boost::true_type {};
-  template <> struct FromTypeToType<int,std::complex<double> > : public boost::true_type {};
-  template <> struct FromTypeToType<int,long double> : public boost::true_type {};
-  template <> struct FromTypeToType<int,std::complex<long double> > : public boost::true_type {};
-  
-  template <> struct FromTypeToType<long,float> : public boost::true_type {};
-  template <> struct FromTypeToType<long,std::complex<float> > : public boost::true_type {};
-  template <> struct FromTypeToType<long,double> : public boost::true_type {};
-  template <> struct FromTypeToType<long,std::complex<double> > : public boost::true_type {};
-  template <> struct FromTypeToType<long,long double> : public boost::true_type {};
-  template <> struct FromTypeToType<long,std::complex<long double> > : public boost::true_type {};
-  
-  template <> struct FromTypeToType<float,std::complex<float> > : public boost::true_type {};
-  template <> struct FromTypeToType<float,double> : public boost::true_type {};
-  template <> struct FromTypeToType<float,std::complex<double> > : public boost::true_type {};
-  template <> struct FromTypeToType<float,long double> : public boost::true_type {};
-  template <> struct FromTypeToType<float,std::complex<long double> > : public boost::true_type {};
 
-  template <> struct FromTypeToType<double,std::complex<double> > : public boost::true_type {};
-  template <> struct FromTypeToType<double,long double> : public boost::true_type {};
-  template <> struct FromTypeToType<double,std::complex<long double> > : public boost::true_type {};
 
   namespace bp = boost::python;
 

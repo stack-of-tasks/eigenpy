@@ -102,6 +102,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/computation-info.hpp
   include/eigenpy/eigenpy.hpp
   include/eigenpy/exception.hpp
+  include/eigenpy/scalar-conversion.hpp
   include/eigenpy/expose.hpp
   include/eigenpy/details.hpp
   include/eigenpy/fwd.hpp
