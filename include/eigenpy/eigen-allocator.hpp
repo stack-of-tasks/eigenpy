@@ -92,7 +92,7 @@ namespace eigenpy
   details::cast_matrix_or_array<Scalar,NewScalar>::run(mat,MapNumpy<MatType,NewScalar>::map(pyArray))
   
   template<typename MatType>
-  struct EigenObjectAllocator
+  struct EigenAllocator
   {
     typedef MatType Type;
     typedef typename MatType::Scalar Scalar;
@@ -194,7 +194,7 @@ namespace eigenpy
   
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
   template<typename MatType>
-  struct EigenObjectAllocator< eigenpy::Ref<MatType> >
+  struct EigenAllocator< eigenpy::Ref<MatType> >
   {
     typedef eigenpy::Ref<MatType> Type;
     typedef typename MatType::Scalar Scalar;
@@ -207,7 +207,7 @@ namespace eigenpy
     
     static void copy(Type const & mat, PyArrayObject * pyArray)
     {
-      EigenObjectAllocator<MatType>::copy(mat,pyArray);
+      EigenAllocator<MatType>::copy(mat,pyArray);
     }
   };
 #endif

@@ -91,8 +91,8 @@ namespace eigenpy
                                                      NumpyEquivalentType<Scalar>::type_code);
       }
 
-      // Allocate memory
-      EigenObjectAllocator<MatType>::copy(mat,pyArray);
+      // Copy data
+      EigenAllocator<MatType>::copy(mat,pyArray);
       
       // Create an instance (either np.array or np.matrix)
       return NumpyType::getInstance().make(pyArray).ptr();
@@ -271,7 +271,7 @@ namespace eigenpy
       void* storage = reinterpret_cast<bp::converter::rvalue_from_python_storage<MatType>*>
                      (reinterpret_cast<void*>(memory))->storage.bytes;
       
-      EigenObjectAllocator<MatType>::allocate(pyArray,storage);
+      EigenAllocator<MatType>::allocate(pyArray,storage);
 
       memory->convertible = storage;
     }
