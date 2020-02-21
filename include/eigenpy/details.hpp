@@ -8,13 +8,12 @@
 
 #include "eigenpy/details/rvalue_from_python_data.hpp"
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/eigenpy.hpp"
 
-#include <patchlevel.h> // For PY_MAJOR_VERSION
 #include <iostream>
 
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/scalar-conversion.hpp"
-#include "eigenpy/eigenpy.hpp"
 
 #include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/eigen-to-python.hpp"
