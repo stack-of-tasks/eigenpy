@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2020 INRIA
 */
 
 #ifndef __eigenpy_numpy_type_hpp__
@@ -102,9 +102,11 @@ namespace eigenpy
     }
 
   protected:
+    
     NumpyType()
     {
       pyModule = bp::import("numpy");
+      
 #if PY_MAJOR_VERSION >= 3
       // TODO I don't know why this Py_INCREF is necessary.
       // Without it, the destructor of NumpyType SEGV sometimes.
@@ -132,7 +134,45 @@ namespace eigenpy
 
     NP_TYPE np_type;
   };
+
+  namespace details
+  {
+    struct import_numpy
+    {
     
+      static bool status()
+      {
+        return instance().imported;
+      }
+      
+    protected:
+      
+      static import_numpy & instance()
+      {
+        static import_numpy m_instance;
+        return m_instance;
+      }
+      
+      import_numpy()
+      : imported(false)
+      {
+        if(_import_array() < 0)
+        {
+          PyErr_Print();
+          PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
+        }
+        else
+          imported = true;
+      }
+      
+      bool imported;
+    };
+  } //  namespace details
+    
+  inline bool numpy_import_array()
+  {
+    return details::import_numpy::status();
+  }
 }
 
 #endif // ifndef __eigenpy_numpy_type_hpp__

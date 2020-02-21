@@ -573,7 +573,6 @@ namespace eigenpy
   };
 #endif
 
-#define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
   
   template<typename MatType,typename EigenEquivalentType>
   EIGENPY_DEPRECATED
