@@ -13,6 +13,17 @@
 namespace eigenpy
 {
   namespace bp = boost::python;
+
+  template <typename SCALAR>  struct NumpyEquivalentType {};
+
+  template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
+  template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
+  template <> struct NumpyEquivalentType<double>  { enum { type_code = NPY_DOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<double> >  { enum { type_code = NPY_CDOUBLE };};
+  template <> struct NumpyEquivalentType<long double>  { enum { type_code = NPY_LONGDOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
+  template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
+  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
    
   enum NP_TYPE
   {
