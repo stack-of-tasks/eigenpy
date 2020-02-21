@@ -514,13 +514,6 @@ namespace eigenpy
     }
   };
   
-  template<typename MatType,typename EigenEquivalentType>
-  EIGENPY_DEPRECATED
-  void enableEigenPySpecific()
-  {
-    enableEigenPySpecific<MatType>();
-  }
-  
   template<typename MatType>
   struct EigenFromPyConverter
   {
@@ -582,6 +575,13 @@ namespace eigenpy
 
 #define numpy_import_array() {if (_import_array() < 0) {PyErr_Print(); PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import"); } }
   
+  template<typename MatType,typename EigenEquivalentType>
+  EIGENPY_DEPRECATED
+  void enableEigenPySpecific()
+  {
+    enableEigenPySpecific<MatType>();
+  }
+
   template<typename MatType>
   void enableEigenPySpecific()
   {
