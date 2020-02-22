@@ -9,8 +9,6 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/eigenpy.hpp"
 
-#include <iostream>
-
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/scalar-conversion.hpp"
 

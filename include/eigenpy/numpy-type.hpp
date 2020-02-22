@@ -7,7 +7,6 @@
 
 #include "eigenpy/fwd.hpp"
 
-#include <iostream>
 #include <patchlevel.h> // For PY_MAJOR_VERSION
 
 namespace eigenpy
