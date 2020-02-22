@@ -46,7 +46,6 @@ namespace eigenpy
                                                              NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED,
                                                              NULL);
       
-      
       return pyArray;
     }
   };
@@ -63,10 +62,9 @@ namespace eigenpy
       
       PyArrayObject * pyArray = (PyArrayObject*) PyArray_New(&PyArray_Type, nd, shape,
                                                              NumpyEquivalentType<Scalar>::type_code, NULL,
-                                                             mat.data(), 0,
+                                                             const_cast<SimilarMatrixType &>(mat.derived()).data(), 0,
                                                              NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED,
                                                              NULL);
-      
       
       return pyArray;
     }
