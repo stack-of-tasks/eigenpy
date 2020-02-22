@@ -175,21 +175,12 @@ namespace eigenpy
             
             if(PyArray_DIMS(pyArray)[0] > 1 && PyArray_DIMS(pyArray)[1] > 1)
             {
-#ifndef NDEBUG
-              std::cerr << "The number of dimension of the object does not correspond to a vector" << std::endl;
-#endif
               return 0;
             }
             
             if(((PyArray_DIMS(pyArray)[0] == 1) && (MatType::ColsAtCompileTime == 1))
                || ((PyArray_DIMS(pyArray)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
             {
-#ifndef NDEBUG
-              if(MatType::ColsAtCompileTime == 1)
-                std::cerr << "The object is not a column vector" << std::endl;
-              else
-                std::cerr << "The object is not a row vector" << std::endl;
-#endif
               return 0;
             }
             
@@ -217,9 +208,6 @@ namespace eigenpy
         
         if(PyArray_NDIM(pyArray) != 2)
         {
-#ifndef NDEBUG
-            std::cerr << "The number of dimension of the object is not correct." << std::endl;
-#endif
           return 0;
         }
        
@@ -243,9 +231,6 @@ namespace eigenpy
       if(!(PyArray_FLAGS(pyArray) & NPY_ALIGNED))
 #endif
       {
-#ifndef NDEBUG
-        std::cerr << "NPY non-aligned matrices are not implemented." << std::endl;
-#endif
         return 0;
       }
       
