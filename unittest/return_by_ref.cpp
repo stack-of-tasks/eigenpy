@@ -1,6 +1,5 @@
 /*
- * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2020 INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
