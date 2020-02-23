@@ -10,17 +10,18 @@
 
 namespace eigenpy
 {
-  template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
+  template<typename MatType, int InnerStride = Eigen::Dynamic, int OuterStride = Eigen::Dynamic, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
   struct StrideType
   {
-    typedef Eigen::Stride<Eigen::Dynamic,Eigen::Dynamic> type;
+    typedef Eigen::Stride<OuterStride,InnerStride> type;
   };
   
-  template<typename MatType>
-  struct StrideType<MatType,true>
+  template<typename MatType, int InnerStride, int OuterStride>
+  struct StrideType<MatType,InnerStride,OuterStride,true>
   {
-    typedef Eigen::InnerStride<Eigen::Dynamic> type;
+    typedef Eigen::InnerStride<InnerStride> type;
   };
+
 }
 
 #endif // ifndef __eigenpy_stride_hpp__
