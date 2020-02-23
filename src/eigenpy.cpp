@@ -6,7 +6,6 @@
 #include "eigenpy/eigenpy.hpp"
 #include <stdlib.h>
 
-
 namespace eigenpy
 {
 
@@ -29,6 +28,7 @@ namespace eigenpy
   void enableEigenPy()
   {
     using namespace Eigen;
+    import_numpy();
     
     Exception::registerException();
     

@@ -102,20 +102,25 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/computation-info.hpp
   include/eigenpy/eigenpy.hpp
   include/eigenpy/exception.hpp
+  include/eigenpy/scalar-conversion.hpp
   include/eigenpy/expose.hpp
   include/eigenpy/details.hpp
   include/eigenpy/fwd.hpp
+  include/eigenpy/eigen-allocator.hpp
+  include/eigenpy/eigen-to-python.hpp
+  include/eigenpy/eigen-from-python.hpp
   include/eigenpy/map.hpp
   include/eigenpy/geometry.hpp
   include/eigenpy/geometry-conversion.hpp
   include/eigenpy/memory.hpp
+  include/eigenpy/numpy.hpp
+  include/eigenpy/numpy-allocator.hpp
   include/eigenpy/numpy-type.hpp
   include/eigenpy/registration.hpp
   include/eigenpy/angle-axis.hpp
   include/eigenpy/quaternion.hpp
   include/eigenpy/stride.hpp
   include/eigenpy/ref.hpp
-  include/eigenpy/details/rvalue_from_python_data.hpp
   include/eigenpy/version.hpp
 )
 
@@ -141,6 +146,7 @@ SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
   src/exception.cpp
   src/eigenpy.cpp
+  src/numpy.cpp
   src/matrix-float.cpp
   src/matrix-complex-float.cpp
   src/matrix-complex-double.cpp

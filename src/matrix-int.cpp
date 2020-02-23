@@ -9,5 +9,6 @@ namespace eigenpy
   void exposeMatrixInt()
   {
     exposeType<int>();
+    exposeType<int,Eigen::RowMajor>();
   }
 }

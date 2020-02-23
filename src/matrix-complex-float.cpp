@@ -9,5 +9,6 @@ namespace eigenpy
   void exposeMatrixComplexFloat()
   {
     exposeType<std::complex<float> >();
+    exposeType<std::complex<float>,Eigen::RowMajor>();
   }
 }

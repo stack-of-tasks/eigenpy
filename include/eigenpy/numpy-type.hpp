@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2020 INRIA
 */
 
 #ifndef __eigenpy_numpy_type_hpp__
@@ -7,12 +7,22 @@
 
 #include "eigenpy/fwd.hpp"
 
-#include <iostream>
 #include <patchlevel.h> // For PY_MAJOR_VERSION
 
 namespace eigenpy
 {
   namespace bp = boost::python;
+
+  template <typename SCALAR>  struct NumpyEquivalentType {};
+
+  template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
+  template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
+  template <> struct NumpyEquivalentType<double>  { enum { type_code = NPY_DOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<double> >  { enum { type_code = NPY_CDOUBLE };};
+  template <> struct NumpyEquivalentType<long double>  { enum { type_code = NPY_LONGDOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
+  template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
+  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
    
   enum NP_TYPE
   {
@@ -102,9 +112,11 @@ namespace eigenpy
     }
 
   protected:
+    
     NumpyType()
     {
       pyModule = bp::import("numpy");
+      
 #if PY_MAJOR_VERSION >= 3
       // TODO I don't know why this Py_INCREF is necessary.
       // Without it, the destructor of NumpyType SEGV sometimes.
@@ -132,7 +144,6 @@ namespace eigenpy
 
     NP_TYPE np_type;
   };
-    
 }
 
 #endif // ifndef __eigenpy_numpy_type_hpp__
