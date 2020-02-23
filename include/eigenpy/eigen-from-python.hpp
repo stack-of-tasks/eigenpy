@@ -86,34 +86,7 @@ namespace eigenpy
   template<typename MatType>
   struct EigenFromPy
   {
-    
-    static bool isScalarConvertible(const int np_type)
-    {
-      if(NumpyEquivalentType<typename MatType::Scalar>::type_code == np_type)
-        return true;
-      
-      switch(np_type)
-      {
-        case NPY_INT:
-          return FromTypeToType<int,typename MatType::Scalar>::value;
-        case NPY_LONG:
-          return FromTypeToType<long,typename MatType::Scalar>::value;
-        case NPY_FLOAT:
-          return FromTypeToType<float,typename MatType::Scalar>::value;
-        case NPY_CFLOAT:
-          return FromTypeToType<std::complex<float>,typename MatType::Scalar>::value;
-        case NPY_DOUBLE:
-          return FromTypeToType<double,typename MatType::Scalar>::value;
-        case NPY_CDOUBLE:
-          return FromTypeToType<std::complex<double>,typename MatType::Scalar>::value;
-        case NPY_LONGDOUBLE:
-          return FromTypeToType<long double,typename MatType::Scalar>::value;
-        case NPY_CLONGDOUBLE:
-          return FromTypeToType<std::complex<long double>,typename MatType::Scalar>::value;
-        default:
-          return false;
-      }
-    }
+    typedef typename MatType::Scalar Scalar;
     
     /// \brief Determine if pyObj can be converted into a MatType object
     static void* convertible(PyArrayObject* pyArray)
@@ -121,7 +94,7 @@ namespace eigenpy
       if(!PyArray_Check(pyArray))
         return 0;
       
-      if(!isScalarConvertible(EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
+      if(!np_type_is_convertible_into_scalar<Scalar>(EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
         return 0;
 
       if(MatType::IsVectorAtCompileTime)
