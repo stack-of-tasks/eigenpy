@@ -14,12 +14,11 @@
 
 namespace boost { namespace python { namespace converter {
 
-  /// \brief Template specialization of rvalue_from_python_data
-  template<typename Derived>
-  struct rvalue_from_python_data<Eigen::MatrixBase<Derived> const & >
-  : rvalue_from_python_storage<Derived const & >
+  template<typename MatrixReference>
+  struct rvalue_from_python_data_eigen
+  : rvalue_from_python_storage<MatrixReference>
   {
-    typedef Eigen::MatrixBase<Derived> const & T;
+    typedef MatrixReference T;
     
 # if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) \
 && (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) \
@@ -30,7 +29,7 @@ namespace boost { namespace python { namespace converter {
 # endif
     
     // The usual constructor
-    rvalue_from_python_data(rvalue_from_python_stage1_data const & _stage1)
+    rvalue_from_python_data_eigen(rvalue_from_python_stage1_data const & _stage1)
     {
       this->stage1 = _stage1;
     }
@@ -38,55 +37,47 @@ namespace boost { namespace python { namespace converter {
     // This constructor just sets m_convertible -- used by
     // implicitly_convertible<> to perform the final step of the
     // conversion, where the construct() function is already known.
-    rvalue_from_python_data(void* convertible)
+    rvalue_from_python_data_eigen(void* convertible)
     {
       this->stage1.convertible = convertible;
     }
     
     // Destroys any object constructed in the storage.
-    ~rvalue_from_python_data()
+    ~rvalue_from_python_data_eigen()
     {
+      typedef typename boost::remove_const<typename boost::remove_reference<MatrixReference>::type>::type MatrixType;
       if (this->stage1.convertible == this->storage.bytes)
-        static_cast<Derived *>((void *)this->storage.bytes)->~Derived();
+        static_cast<MatrixType *>((void *)this->storage.bytes)->~MatrixType();
     }
+  };
+
+
+#define RVALUE_FROM_PYTHON_DATA_INIT(type)                                 \
+  typedef rvalue_from_python_data_eigen<type> Base;                        \
+                                                                           \
+  rvalue_from_python_data(rvalue_from_python_stage1_data const & _stage1)  \
+  : Base(_stage1)                                                          \
+  {}                                                                       \
+                                                                           \
+  rvalue_from_python_data(void* convertible) : Base(convertible) {};
+
+  /// \brief Template specialization of rvalue_from_python_data
+  template<typename Derived>
+  struct rvalue_from_python_data<Eigen::MatrixBase<Derived> const &>
+  : rvalue_from_python_data_eigen<Derived const &>
+  {
+    RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
   };
 
   /// \brief Template specialization of rvalue_from_python_data
   template<typename Derived>
-  struct rvalue_from_python_data<Eigen::EigenBase<Derived> const & >
-  : rvalue_from_python_storage<Derived const & >
+  struct rvalue_from_python_data<Eigen::EigenBase<Derived> const &>
+  : rvalue_from_python_data_eigen<Derived const &>
   {
-    typedef Eigen::EigenBase<Derived> const & T;
-    
-# if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) \
-&& (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) \
-&& (!defined(__DECCXX_VER) || __DECCXX_VER > 60590014) \
-&& !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing this */
-    // This must always be a POD struct with m_data its first member.
-    BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,stage1) == 0);
-# endif
-    
-    // The usual constructor
-    rvalue_from_python_data(rvalue_from_python_stage1_data const & _stage1)
-    {
-      this->stage1 = _stage1;
-    }
-    
-    // This constructor just sets m_convertible -- used by
-    // implicitly_convertible<> to perform the final step of the
-    // conversion, where the construct() function is already known.
-    rvalue_from_python_data(void* convertible)
-    {
-      this->stage1.convertible = convertible;
-    }
-    
-    // Destroys any object constructed in the storage.
-    ~rvalue_from_python_data()
-    {
-      if (this->stage1.convertible == this->storage.bytes)
-        static_cast<Derived *>((void *)this->storage.bytes)->~Derived();
-    }
+    RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
   };
+
+#undef RVALUE_FROM_PYTHON_DATA_INIT
 
 } } }
 
@@ -317,8 +308,8 @@ namespace eigenpy
        &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
     }
   };
-
 #endif
+
 }
 
 #endif // __eigenpy_eigen_from_python_hpp__
