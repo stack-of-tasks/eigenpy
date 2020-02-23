@@ -89,31 +89,56 @@ namespace eigenpy
     typedef typename MatType::Scalar Scalar;
     
     /// \brief Determine if pyObj can be converted into a MatType object
-    static void* convertible(PyArrayObject* pyArray)
-    {
-      if(!PyArray_Check(pyArray))
-        return 0;
-      
-      if(!np_type_is_convertible_into_scalar<Scalar>(EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
-        return 0;
+    static void* convertible(PyArrayObject* pyArray);
+ 
+    /// \brief Allocate memory and copy pyObj in the new storage
+    static void construct(PyObject* pyObj,
+                          bp::converter::rvalue_from_python_stage1_data* memory);
+    
+    static void registration();
+  };
 
-      if(MatType::IsVectorAtCompileTime)
+  template<typename MatType>
+  void* EigenFromPy<MatType>::convertible(PyArrayObject* pyArray)
+  {
+    if(!PyArray_Check(pyArray))
+      return 0;
+    
+    if(!np_type_is_convertible_into_scalar<Scalar>(EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
+      return 0;
+    
+    if(MatType::IsVectorAtCompileTime)
+    {
+      const Eigen::DenseIndex size_at_compile_time
+      = MatType::IsRowMajor
+      ? MatType::ColsAtCompileTime
+      : MatType::RowsAtCompileTime;
+      
+      switch(PyArray_NDIM(pyArray))
       {
-        const Eigen::DenseIndex size_at_compile_time
-        = MatType::IsRowMajor
-        ? MatType::ColsAtCompileTime
-        : MatType::RowsAtCompileTime;
-        
-        switch(PyArray_NDIM(pyArray))
+        case 0:
+          return 0;
+        case 1:
         {
-          case 0:
-            return 0;
-          case 1:
+          if(size_at_compile_time != Eigen::Dynamic)
+          {
+            // check that the sizes at compile time matche
+            if(PyArray_DIMS(pyArray)[0] == size_at_compile_time)
+              return pyArray;
+            else
+              return 0;
+          }
+          else // This is a dynamic MatType
+            return pyArray;
+        }
+        case 2:
+        {
+          // Special care of scalar matrix of dimension 1x1.
+          if(PyArray_DIMS(pyArray)[0] == 1 && PyArray_DIMS(pyArray)[1] == 1)
           {
             if(size_at_compile_time != Eigen::Dynamic)
             {
-              // check that the sizes at compile time matche
-              if(PyArray_DIMS(pyArray)[0] == size_at_compile_time)
+              if(size_at_compile_time == 1)
                 return pyArray;
               else
                 return 0;
@@ -121,108 +146,93 @@ namespace eigenpy
             else // This is a dynamic MatType
               return pyArray;
           }
-          case 2:
-          {
-            // Special care of scalar matrix of dimension 1x1.
-            if(PyArray_DIMS(pyArray)[0] == 1 && PyArray_DIMS(pyArray)[1] == 1)
-            {
-              if(size_at_compile_time != Eigen::Dynamic)
-              {
-                if(size_at_compile_time == 1)
-                  return pyArray;
-                else
-                  return 0;
-              }
-              else // This is a dynamic MatType
-                return pyArray;
-            }
-            
-            if(PyArray_DIMS(pyArray)[0] > 1 && PyArray_DIMS(pyArray)[1] > 1)
-            {
-              return 0;
-            }
-            
-            if(((PyArray_DIMS(pyArray)[0] == 1) && (MatType::ColsAtCompileTime == 1))
-               || ((PyArray_DIMS(pyArray)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
-            {
-              return 0;
-            }
-            
-            if(size_at_compile_time != Eigen::Dynamic)
-            { // This is a fixe size vector
-              const Eigen::DenseIndex pyArray_size
-              = PyArray_DIMS(pyArray)[0] > PyArray_DIMS(pyArray)[1]
-              ? PyArray_DIMS(pyArray)[0]
-              : PyArray_DIMS(pyArray)[1];
-              if(size_at_compile_time != pyArray_size)
-                return 0;
-            }
-            break;
-          }
-          default:
-            return 0;
-        }
-      }
-      else // this is a matrix
-      {
-        if(PyArray_NDIM(pyArray) == 1) // We can always convert a vector into a matrix
-        {
-          return pyArray;
-        }
-        
-        if(PyArray_NDIM(pyArray) != 2)
-        {
-          return 0;
-        }
-       
-        if(PyArray_NDIM(pyArray) == 2)
-        {
-          const int R = (int)PyArray_DIMS(pyArray)[0];
-          const int C = (int)PyArray_DIMS(pyArray)[1];
           
-          if( (MatType::RowsAtCompileTime!=R)
-             && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+          if(PyArray_DIMS(pyArray)[0] > 1 && PyArray_DIMS(pyArray)[1] > 1)
+          {
             return 0;
-          if( (MatType::ColsAtCompileTime!=C)
-             && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+          }
+          
+          if(((PyArray_DIMS(pyArray)[0] == 1) && (MatType::ColsAtCompileTime == 1))
+             || ((PyArray_DIMS(pyArray)[1] == 1) && (MatType::RowsAtCompileTime == 1)))
+          {
             return 0;
+          }
+          
+          if(size_at_compile_time != Eigen::Dynamic)
+          { // This is a fixe size vector
+            const Eigen::DenseIndex pyArray_size
+            = PyArray_DIMS(pyArray)[0] > PyArray_DIMS(pyArray)[1]
+            ? PyArray_DIMS(pyArray)[0]
+            : PyArray_DIMS(pyArray)[1];
+            if(size_at_compile_time != pyArray_size)
+              return 0;
+          }
+          break;
         }
+        default:
+          return 0;
       }
-        
-#ifdef NPY_1_8_API_VERSION
-      if(!(PyArray_FLAGS(pyArray)))
-#else
-      if(!(PyArray_FLAGS(pyArray) & NPY_ALIGNED))
-#endif
+    }
+    else // this is a matrix
+    {
+      if(PyArray_NDIM(pyArray) == 1) // We can always convert a vector into a matrix
+      {
+        return pyArray;
+      }
+      
+      if(PyArray_NDIM(pyArray) != 2)
       {
         return 0;
       }
       
-      return pyArray;
-    }
- 
-    /// \brief Allocate memory and copy pyObj in the new storage
-    static void construct(PyObject* pyObj,
-                          bp::converter::rvalue_from_python_stage1_data* memory)
-    {
-      PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-      assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
-      
-      void* storage = reinterpret_cast<bp::converter::rvalue_from_python_storage<MatType>*>
-                     (reinterpret_cast<void*>(memory))->storage.bytes;
-      
-      EigenAllocator<MatType>::allocate(pyArray,storage);
-
-      memory->convertible = storage;
+      if(PyArray_NDIM(pyArray) == 2)
+      {
+        const int R = (int)PyArray_DIMS(pyArray)[0];
+        const int C = (int)PyArray_DIMS(pyArray)[1];
+        
+        if( (MatType::RowsAtCompileTime!=R)
+           && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+          return 0;
+        if( (MatType::ColsAtCompileTime!=C)
+           && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+          return 0;
+      }
     }
     
-    static void registration()
+#ifdef NPY_1_8_API_VERSION
+    if(!(PyArray_FLAGS(pyArray)))
+#else
+    if(!(PyArray_FLAGS(pyArray) & NPY_ALIGNED))
+#endif
     {
-      bp::converter::registry::push_back
-      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &EigenFromPy::construct,bp::type_id<MatType>());
+      return 0;
     }
-  };
+    
+    return pyArray;
+  }
+
+  template<typename MatType>
+  void EigenFromPy<MatType>::construct(PyObject* pyObj,
+                                       bp::converter::rvalue_from_python_stage1_data* memory)
+  {
+    PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
+    assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
+    
+    void* storage = reinterpret_cast<bp::converter::rvalue_from_python_storage<MatType>*>
+                   (reinterpret_cast<void*>(memory))->storage.bytes;
+    
+    EigenAllocator<MatType>::allocate(pyArray,storage);
+
+    memory->convertible = storage;
+  }
+
+  template<typename MatType>
+  void EigenFromPy<MatType>::registration()
+  {
+    bp::converter::registry::push_back
+    (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+     &EigenFromPy::construct,bp::type_id<MatType>());
+  }
   
   template<typename MatType>
   struct EigenFromPyConverter
