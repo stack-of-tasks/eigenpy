@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2020, INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
@@ -37,9 +37,7 @@ void setOnes_wrap(eigenpy::Ref<MatType> mat)
   setOnes(mat);
 }
 
-
-
-BOOST_PYTHON_MODULE(ref)
+BOOST_PYTHON_MODULE(eigenpy_ref)
 {
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
