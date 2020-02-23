@@ -6,6 +6,7 @@
 #define __eigenpy_numpy_type_hpp__
 
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/scalar-conversion.hpp"
 
 #include <patchlevel.h> // For PY_MAJOR_VERSION
 
@@ -23,6 +24,35 @@ namespace eigenpy
   template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+
+  template<typename Scalar>
+  bool np_type_is_convertible_into_scalar(const int np_type)
+  {
+    if(NumpyEquivalentType<Scalar>::type_code == np_type)
+      return true;
+    
+    switch(np_type)
+    {
+      case NPY_INT:
+        return FromTypeToType<int,Scalar>::value;
+      case NPY_LONG:
+        return FromTypeToType<long,Scalar>::value;
+      case NPY_FLOAT:
+        return FromTypeToType<float,Scalar>::value;
+      case NPY_CFLOAT:
+        return FromTypeToType<std::complex<float>,Scalar>::value;
+      case NPY_DOUBLE:
+        return FromTypeToType<double,Scalar>::value;
+      case NPY_CDOUBLE:
+        return FromTypeToType<std::complex<double>,Scalar>::value;
+      case NPY_LONGDOUBLE:
+        return FromTypeToType<long double,Scalar>::value;
+      case NPY_CLONGDOUBLE:
+        return FromTypeToType<std::complex<long double>,Scalar>::value;
+      default:
+        return false;
+    }
+  }
    
   enum NP_TYPE
   {
