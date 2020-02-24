@@ -79,7 +79,7 @@ namespace eigenpy
                       const Eigen::MatrixBase<MatrixOut> & /*dest*/)
       {
         // do nothing
-        assert("Must never happened");
+        assert(false && "Must never happened");
       }
     };
   
