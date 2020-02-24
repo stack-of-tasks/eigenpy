@@ -249,11 +249,11 @@ namespace eigenpy
     {
       EigenFromPy<MatType>::registration();
 
-      // Add also conversion to Eigen::MatrixBase<MatType>
+      // Add conversion to Eigen::MatrixBase<MatType>
       typedef Eigen::MatrixBase<MatType> MatrixBase;
       EigenFromPy<MatrixBase>::registration();
 
-      // Add also conversion to Eigen::EigenBase<MatType>
+      // Add conversion to Eigen::EigenBase<MatType>
       typedef Eigen::EigenBase<MatType> EigenBase;
       EigenFromPy<EigenBase>::registration();
     }
