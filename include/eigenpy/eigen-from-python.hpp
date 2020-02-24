@@ -83,6 +83,22 @@ namespace boost { namespace python { namespace converter {
 
 namespace eigenpy
 {
+
+  template<typename MatOrRefType>
+  void eigen_from_py_construct(PyObject* pyObj,
+                               bp::converter::rvalue_from_python_stage1_data* memory)
+  {
+    PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
+    assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
+    
+    bp::converter::rvalue_from_python_storage<MatOrRefType>* storage = reinterpret_cast<bp::converter::rvalue_from_python_storage<MatOrRefType>*>
+    (reinterpret_cast<void*>(memory));
+    
+    EigenAllocator<MatOrRefType>::allocate(pyArray,storage);
+    
+    memory->convertible = storage->storage.bytes;
+  }
+
   template<typename MatType>
   struct EigenFromPy
   {
@@ -215,15 +231,7 @@ namespace eigenpy
   void EigenFromPy<MatType>::construct(PyObject* pyObj,
                                        bp::converter::rvalue_from_python_stage1_data* memory)
   {
-    PyArrayObject * pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
-    assert((PyArray_DIMS(pyArray)[0]<INT_MAX) && (PyArray_DIMS(pyArray)[1]<INT_MAX));
-    
-    void* storage = reinterpret_cast<bp::converter::rvalue_from_python_storage<MatType>*>
-                   (reinterpret_cast<void*>(memory))->storage.bytes;
-    
-    EigenAllocator<MatType>::allocate(pyArray,storage);
-
-    memory->convertible = storage;
+    eigen_from_py_construct<MatType>(pyObj,memory);
   }
 
   template<typename MatType>
