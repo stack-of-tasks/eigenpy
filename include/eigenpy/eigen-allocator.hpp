@@ -17,7 +17,7 @@ namespace eigenpy
     template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
     struct init_matrix_or_array
     {
-      static MatType * run(PyArrayObject * pyArray, void * storage)
+      static MatType * run(PyArrayObject * pyArray, void * storage = NULL)
       {
         assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
 
@@ -33,25 +33,34 @@ namespace eigenpy
           cols = 1;
         }
   
-        return new (storage) MatType(rows,cols);
+        if(storage)
+          return new (storage) MatType(rows,cols);
+        else
+          return new MatType(rows,cols);
       }
     };
 
     template<typename MatType>
     struct init_matrix_or_array<MatType,true>
     {
-      static MatType * run(PyArrayObject * pyArray, void * storage)
+      static MatType * run(PyArrayObject * pyArray, void * storage = NULL)
       {
         if(PyArray_NDIM(pyArray) == 1)
         {
           const int rows_or_cols = (int)PyArray_DIMS(pyArray)[0];
-          return new (storage) MatType(rows_or_cols);
+          if(storage)
+            return new (storage) MatType(rows_or_cols);
+          else
+            return new MatType(rows_or_cols);
         }
         else
         {
           const int rows = (int)PyArray_DIMS(pyArray)[0];
           const int cols = (int)PyArray_DIMS(pyArray)[1];
-          return new (storage) MatType(rows,cols);
+          if(storage)
+            return new (storage) MatType(rows,cols);
+          else
+            return new MatType(rows,cols);
         }
       }
     };
