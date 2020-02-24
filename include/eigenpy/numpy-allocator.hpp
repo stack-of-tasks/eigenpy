@@ -50,6 +50,15 @@ namespace eigenpy
     }
   };
 
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+
+  template<typename MatType>
+  struct NumpyAllocator<Eigen::Ref<MatType> > : NumpyAllocator<MatType &>
+  {
+  };
+
+#endif
+
   template<typename MatType>
   struct NumpyAllocator<const MatType &>
   {
@@ -69,6 +78,15 @@ namespace eigenpy
       return pyArray;
     }
   };
+
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+
+  template<typename MatType>
+  struct NumpyAllocator<const Eigen::Ref<const MatType> > : NumpyAllocator<const MatType &>
+  {
+  };
+
+#endif
 }
 
 #endif // ifndef __eigenpy_numpy_allocator_hpp__
