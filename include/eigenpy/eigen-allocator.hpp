@@ -106,9 +106,11 @@ namespace eigenpy
     typedef MatType Type;
     typedef typename MatType::Scalar Scalar;
     
-    static void allocate(PyArrayObject * pyArray, void * storage)
+    static void allocate(PyArrayObject * pyArray,
+                         bp::converter::rvalue_from_python_storage<MatType> * storage)
     {
-      Type * mat_ptr = details::init_matrix_or_array<Type>::run(pyArray,storage);
+      void * raw_ptr = storage->storage.bytes;
+      Type * mat_ptr = details::init_matrix_or_array<Type>::run(pyArray,raw_ptr);
       Type & mat = *mat_ptr;
       
       const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
