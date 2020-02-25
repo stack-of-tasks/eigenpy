@@ -16,7 +16,7 @@ namespace eigenpy
 {
   namespace details
   {
-    template<typename MatType, bool is_const = boost::is_const<MatType>::value >
+    template<typename MatType, bool is_const = boost::is_const<MatType>::value>
     struct copy_if_non_const
     {
       static void run(const Eigen::MatrixBase<MatType> & input,
@@ -27,7 +27,7 @@ namespace eigenpy
     };
   
     template<typename MatType>
-    struct copy_if_non_const<MatType,true>
+    struct copy_if_non_const<const MatType,true>
     {
       static void run(const Eigen::MatrixBase<MatType> & /*input*/,
                       PyArrayObject * /*pyArray*/)
