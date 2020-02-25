@@ -204,10 +204,10 @@ namespace eigenpy
   };
   
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
-  template<typename MatType>
-  struct EigenAllocator< Eigen::Ref<MatType> >
+  template<typename MatType, int Options, typename Stride>
+  struct EigenAllocator<Eigen::Ref<MatType,Options,Stride> >
   {
-    typedef Eigen::Ref<MatType> RefType;
+    typedef Eigen::Ref<MatType,Options,Stride> RefType;
     typedef typename MatType::Scalar Scalar;
 
     typedef typename ::boost::python::detail::referent_storage<RefType&>::StorageType StorageType;
@@ -215,7 +215,7 @@ namespace eigenpy
     static void allocate(PyArrayObject * pyArray,
                          bp::converter::rvalue_from_python_storage<RefType> * storage)
     {
-      typedef typename StrideType<MatType,Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime, Eigen::internal::traits<RefType>::StrideType::OuterStrideAtCompileTime >::type Stride;
+      typedef typename StrideType<MatType,Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime, Eigen::internal::traits<RefType>::StrideType::OuterStrideAtCompileTime >::type NumpyMapStride;
 
       bool need_to_allocate = false;
       const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
@@ -278,7 +278,7 @@ namespace eigenpy
       else
       {
         assert(pyArray_Type == NumpyEquivalentType<Scalar>::type_code);
-        typename MapNumpy<MatType,Scalar,Stride>::EigenMap numpyMap = MapNumpy<MatType,Scalar,Stride>::map(pyArray);
+        typename MapNumpy<MatType,Scalar,NumpyMapStride>::EigenMap numpyMap = MapNumpy<MatType,Scalar,NumpyMapStride>::map(pyArray);
         RefType mat_ref(numpyMap);
         new (raw_ptr) StorageType(mat_ref,pyArray);
       }

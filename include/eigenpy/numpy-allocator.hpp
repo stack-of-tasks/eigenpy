@@ -52,8 +52,8 @@ namespace eigenpy
 
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
 
-  template<typename MatType>
-  struct NumpyAllocator<Eigen::Ref<MatType> > : NumpyAllocator<MatType &>
+  template<typename MatType, int Options, typename Stride>
+  struct NumpyAllocator<Eigen::Ref<MatType,Options,Stride> > : NumpyAllocator<MatType &>
   {
   };
 
@@ -81,8 +81,8 @@ namespace eigenpy
 
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
 
-  template<typename MatType>
-  struct NumpyAllocator<const Eigen::Ref<const MatType> > : NumpyAllocator<const MatType &>
+  template<typename MatType, int Options, typename Stride>
+  struct NumpyAllocator<const Eigen::Ref<const MatType,Options,Stride> > : NumpyAllocator<const MatType &>
   {
   };
 

@@ -35,12 +35,12 @@ namespace eigenpy
     };
   
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
-    template<typename MatType> struct referent_storage_eigen_ref;
+    template<typename MatType, int Options, typename Stride> struct referent_storage_eigen_ref;
   
-    template<typename MatType>
+    template<typename MatType, int Options, typename Stride>
     struct referent_storage_eigen_ref
     {
-      typedef Eigen::Ref<MatType> RefType;
+      typedef Eigen::Ref<MatType,Options,Stride> RefType;
       
       typedef ::boost::python::detail::aligned_storage<
           ::boost::python::detail::referent_size<RefType&>::value
@@ -89,10 +89,10 @@ namespace eigenpy
 
 namespace boost { namespace python { namespace detail {
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
-  template<typename MatType>
-  struct referent_storage<Eigen::Ref<MatType> &>
+  template<typename MatType, int Options, typename Stride>
+  struct referent_storage<Eigen::Ref<MatType,Options,Stride> &>
   {
-    typedef ::eigenpy::details::referent_storage_eigen_ref<MatType> StorageType;
+    typedef ::eigenpy::details::referent_storage_eigen_ref<MatType,Options,Stride> StorageType;
     typedef aligned_storage<
         ::boost::python::detail::referent_size<StorageType&>::value
     > type;
@@ -166,10 +166,10 @@ namespace boost { namespace python { namespace converter {
 
 #undef RVALUE_FROM_PYTHON_DATA_INIT
 
-  template<typename MatType>
-  struct rvalue_from_python_data<Eigen::Ref<MatType> &> : rvalue_from_python_storage<Eigen::Ref<MatType> &>
+  template<typename MatType, int Options, typename Stride>
+  struct rvalue_from_python_data<Eigen::Ref<MatType,Options,Stride> &> : rvalue_from_python_storage<Eigen::Ref<MatType,Options,Stride> &>
   {
-    typedef Eigen::Ref<MatType> T;
+    typedef Eigen::Ref<MatType,Options,Stride> T;
 
 # if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) \
 && (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) \
@@ -196,7 +196,7 @@ namespace boost { namespace python { namespace converter {
     // Destroys any object constructed in the storage.
     ~rvalue_from_python_data()
     {
-      typedef ::eigenpy::details::referent_storage_eigen_ref<MatType> StorageType;
+      typedef ::eigenpy::details::referent_storage_eigen_ref<MatType, Options,Stride> StorageType;
       if (this->stage1.convertible == this->storage.bytes)
         static_cast<StorageType *>((void *)this->storage.bytes)->~StorageType();
     }
@@ -418,10 +418,10 @@ namespace eigenpy
 
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
 
-  template<typename MatType, int Options, typename StrideType>
-  struct EigenFromPy<Eigen::Ref<MatType,Options,StrideType> >
+  template<typename MatType, int Options, typename Stride>
+  struct EigenFromPy<Eigen::Ref<MatType,Options,Stride> >
   {
-    typedef Eigen::Ref<MatType,Options,StrideType> RefType;
+    typedef Eigen::Ref<MatType,Options,Stride> RefType;
     typedef typename MatType::Scalar Scalar;
     
     /// \brief Determine if pyObj can be converted into a MatType object
