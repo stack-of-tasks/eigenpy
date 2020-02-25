@@ -20,6 +20,8 @@
   #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned
 #endif
 
+#define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
+
 #include "eigenpy/expose.hpp"
 
 namespace eigenpy
