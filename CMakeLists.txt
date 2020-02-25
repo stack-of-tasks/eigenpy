@@ -74,6 +74,7 @@ SEARCH_FOR_BOOST()
 SET(${PROJECT_NAME}_UTILS_HEADERS
   include/eigenpy/utils/scalar-name.hpp
   include/eigenpy/utils/is-approx.hpp
+  include/eigenpy/utils/is-aligned.hpp
   )
 
 SET(${PROJECT_NAME}_SOLVERS_HEADERS
