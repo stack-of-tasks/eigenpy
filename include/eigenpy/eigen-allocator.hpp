@@ -9,6 +9,8 @@
 #include "eigenpy/map.hpp"
 #include "eigenpy/scalar-conversion.hpp"
 
+#include <boost/align/is_aligned.hpp>
+
 namespace eigenpy
 {
 
@@ -228,6 +230,12 @@ namespace eigenpy
         need_to_allocate |= false;
       else
         need_to_allocate |= true;
+      if(Options != Eigen::Unaligned) // we need to check whether the memory is correctly aligned and composed of a continuous segment
+      {
+        void * data_ptr = PyArray_DATA(pyArray);
+        if(!PyArray_ISONESEGMENT(pyArray) || !boost::alignment::is_aligned(data_ptr,Options))
+          need_to_allocate |= true;
+      }
       
       void * raw_ptr = storage->storage.bytes;
       if(need_to_allocate)
