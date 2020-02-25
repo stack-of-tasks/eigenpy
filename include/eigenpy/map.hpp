@@ -12,14 +12,14 @@
 
 namespace eigenpy
 {
-  template<typename MatType, typename InputScalar, typename Stride, bool IsVector = MatType::IsVectorAtCompileTime>
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride, bool IsVector = MatType::IsVectorAtCompileTime>
   struct MapNumpyTraits {};
  
   /* Wrap a numpy::array with an Eigen::Map. No memory copy. */
-  template<typename MatType, typename InputScalar, typename Stride = typename StrideType<MatType>::type>
+  template<typename MatType, typename InputScalar, int AlignmentValue = EIGENPY_NO_ALIGNMENT_VALUE, typename Stride = typename StrideType<MatType>::type>
   struct MapNumpy
   {
-    typedef MapNumpyTraits<MatType, InputScalar, Stride> Impl;
+    typedef MapNumpyTraits<MatType, InputScalar, AlignmentValue, Stride> Impl;
     typedef typename Impl::EigenMap EigenMap;
 
     static EigenMap map(PyArrayObject* pyArray);
@@ -33,11 +33,11 @@ namespace eigenpy
 
 namespace eigenpy
 {
-  template<typename MatType, typename InputScalar, typename Stride>
-  struct MapNumpyTraits<MatType,InputScalar,Stride,false>
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
+  struct MapNumpyTraits<MatType,InputScalar,AlignmentValue,Stride,false>
   {
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
-    typedef Eigen::Map<EquivalentInputMatrixType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
+    typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
 
     static EigenMap mapImpl(PyArrayObject* pyArray)
     {
@@ -103,15 +103,21 @@ namespace eigenpy
       
       InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
       
+      std::cout << "OuterStrideAtCompileTime: " << OuterStrideAtCompileTime << std::endl;
+      std::cout << "InnerStrideAtCompileTime: " << InnerStrideAtCompileTime << std::endl;
+      std::cout << "rows: " << rows << std::endl;
+      std::cout << "cols: " << cols << std::endl;
+      std::cout << "inner_stride: " << inner_stride << std::endl;
+      std::cout << "outer_stride: " << outer_stride << std::endl;
       return EigenMap(pyData, rows, cols, stride);
     }
   };
 
-  template<typename MatType, typename InputScalar, typename Stride>
-  struct MapNumpyTraits<MatType,InputScalar,Stride,true>
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
+  struct MapNumpyTraits<MatType,InputScalar,AlignmentValue,Stride,true>
   {
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
-    typedef Eigen::Map<EquivalentInputMatrixType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
+    typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
  
     static EigenMap mapImpl(PyArrayObject* pyArray)
     {
@@ -139,9 +145,9 @@ namespace eigenpy
     }
   };
 
-  template<typename MatType, typename InputScalar, typename Stride>
-  typename MapNumpy<MatType,InputScalar,Stride>::EigenMap
-  MapNumpy<MatType,InputScalar,Stride>::map(PyArrayObject * pyArray)
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
+  typename MapNumpy<MatType,InputScalar,AlignmentValue,Stride>::EigenMap
+  MapNumpy<MatType,InputScalar,AlignmentValue,Stride>::map(PyArrayObject * pyArray)
   {
     return Impl::mapImpl(pyArray);
   }
