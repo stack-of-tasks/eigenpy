@@ -1,4 +1,4 @@
-EigenPy — Efficient Python bindings between Numpy and Eigen
+EigenPy — Efficient Python bindings between Numpy/Eigen
 ======
 
 <p align="center">
