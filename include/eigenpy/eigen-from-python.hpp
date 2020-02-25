@@ -218,7 +218,7 @@ namespace eigenpy
     (reinterpret_cast<void*>(memory));
     
     EigenAllocator<MatOrRefType>::allocate(pyArray,storage);
-    
+
     memory->convertible = storage->storage.bytes;
   }
 

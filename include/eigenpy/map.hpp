@@ -103,12 +103,6 @@ namespace eigenpy
       
       InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
       
-      std::cout << "OuterStrideAtCompileTime: " << OuterStrideAtCompileTime << std::endl;
-      std::cout << "InnerStrideAtCompileTime: " << InnerStrideAtCompileTime << std::endl;
-      std::cout << "rows: " << rows << std::endl;
-      std::cout << "cols: " << cols << std::endl;
-      std::cout << "inner_stride: " << inner_stride << std::endl;
-      std::cout << "outer_stride: " << outer_stride << std::endl;
       return EigenMap(pyData, rows, cols, stride);
     }
   };

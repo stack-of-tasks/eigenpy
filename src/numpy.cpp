@@ -13,6 +13,5 @@ namespace eigenpy
       PyErr_Print();
       PyErr_SetString(PyExc_ImportError, "numpy.core.multiarray failed to import");
     }
-    //        std::cout << "init _import_array " << std::endl;
   }
 }
