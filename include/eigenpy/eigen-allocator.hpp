@@ -278,7 +278,7 @@ namespace eigenpy
       else
       {
         assert(pyArray_Type == NumpyEquivalentType<Scalar>::type_code);
-        typename MapNumpy<MatType,Scalar,NumpyMapStride>::EigenMap numpyMap = MapNumpy<MatType,Scalar,NumpyMapStride>::map(pyArray);
+        typename MapNumpy<MatType,Scalar,Options,NumpyMapStride>::EigenMap numpyMap = MapNumpy<MatType,Scalar,Options,NumpyMapStride>::map(pyArray);
         RefType mat_ref(numpyMap);
         new (raw_ptr) StorageType(mat_ref,pyArray);
       }
