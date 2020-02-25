@@ -12,18 +12,17 @@
 
 namespace eigenpy
 {
-  template<typename MatType, typename InputScalar, bool IsVector>
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride, bool IsVector = MatType::IsVectorAtCompileTime>
   struct MapNumpyTraits {};
  
   /* Wrap a numpy::array with an Eigen::Map. No memory copy. */
-  template<typename MatType, typename InputScalar>
+  template<typename MatType, typename InputScalar, int AlignmentValue = EIGENPY_NO_ALIGNMENT_VALUE, typename Stride = typename StrideType<MatType>::type>
   struct MapNumpy
   {
-    typedef MapNumpyTraits<MatType, InputScalar, MatType::IsVectorAtCompileTime> Impl;
+    typedef MapNumpyTraits<MatType, InputScalar, AlignmentValue, Stride> Impl;
     typedef typename Impl::EigenMap EigenMap;
-    typedef typename Impl::Stride Stride;
 
-    static inline EigenMap map( PyArrayObject* pyArray );
+    static EigenMap map(PyArrayObject* pyArray);
    };
 
 } // namespace eigenpy
@@ -34,19 +33,23 @@ namespace eigenpy
 
 namespace eigenpy
 {
-  template<typename MatType, typename InputScalar>
-  struct MapNumpyTraits<MatType,InputScalar,false>
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
+  struct MapNumpyTraits<MatType,InputScalar,AlignmentValue,Stride,false>
   {
-    typedef typename StrideType<MatType>::type Stride;
-    typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime> EquivalentInputMatrixType;
-    typedef Eigen::Map<EquivalentInputMatrixType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
+    typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
+    typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
 
-    static EigenMap mapImpl( PyArrayObject* pyArray )
+    static EigenMap mapImpl(PyArrayObject* pyArray)
     {
+      enum {
+        OuterStrideAtCompileTime = Stride::OuterStrideAtCompileTime,
+        InnerStrideAtCompileTime = Stride::InnerStrideAtCompileTime,
+      };
+      
       assert(PyArray_NDIM(pyArray) == 2 ||  PyArray_NDIM(pyArray) == 1);
     
       const long int itemsize = PyArray_ITEMSIZE(pyArray);
-      int stride1 = -1, stride2 = -1;
+      int inner_stride = -1, outer_stride = -1;
       int rows = -1, cols = -1;
       if(PyArray_NDIM(pyArray) == 2)
       {
@@ -57,8 +60,17 @@ namespace eigenpy
         
         rows = (int)PyArray_DIMS(pyArray)[0];
         cols = (int)PyArray_DIMS(pyArray)[1];
-        stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
-        stride2 = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
+        
+        if(EquivalentInputMatrixType::IsRowMajor)
+        {
+          inner_stride = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
+          outer_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+        }
+        else
+        {
+          inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+          outer_stride = (int)PyArray_STRIDE(pyArray, 1) / (int)itemsize;
+        }
       }
       else if(PyArray_NDIM(pyArray) == 1)
       {
@@ -68,33 +80,40 @@ namespace eigenpy
         rows = (int)PyArray_DIMS(pyArray)[0];
         cols = 1;
         
-        stride1 = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
-        stride2 = 0;
+        inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+        outer_stride = 0;
       }
       
-      Stride stride(stride2,stride1);
+      // Specific care for Eigen::Stride<-1,0>
+      if(InnerStrideAtCompileTime==0 && OuterStrideAtCompileTime==Eigen::Dynamic)
+      {
+        outer_stride = std::max(inner_stride,outer_stride); inner_stride = 0;
+      }
       
-      if( (MatType::RowsAtCompileTime!=rows)
-         && (MatType::RowsAtCompileTime!=Eigen::Dynamic) )
+      Stride stride(OuterStrideAtCompileTime==Eigen::Dynamic?outer_stride:OuterStrideAtCompileTime,
+                    InnerStrideAtCompileTime==Eigen::Dynamic?inner_stride:InnerStrideAtCompileTime);
+
+      if(   (MatType::RowsAtCompileTime != rows)
+         && (MatType::RowsAtCompileTime != Eigen::Dynamic) )
       { throw eigenpy::Exception("The number of rows does not fit with the matrix type."); }
-      if( (MatType::ColsAtCompileTime!=cols)
-         && (MatType::ColsAtCompileTime!=Eigen::Dynamic) )
+      
+      if(   (MatType::ColsAtCompileTime != cols)
+         && (MatType::ColsAtCompileTime != Eigen::Dynamic) )
       {  throw eigenpy::Exception("The number of columns does not fit with the matrix type."); }
       
       InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
       
-      return EigenMap( pyData, rows, cols, stride );
+      return EigenMap(pyData, rows, cols, stride);
     }
   };
 
-  template<typename MatType, typename InputScalar>
-  struct MapNumpyTraits<MatType,InputScalar,true>
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
+  struct MapNumpyTraits<MatType,InputScalar,AlignmentValue,Stride,true>
   {
-    typedef typename StrideType<MatType>::type Stride;
-    typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime> EquivalentInputMatrixType;
-    typedef Eigen::Map<EquivalentInputMatrixType,EIGENPY_DEFAULT_ALIGNMENT_VALUE,Stride> EigenMap;
+    typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
+    typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
  
-    static EigenMap mapImpl( PyArrayObject* pyArray )
+    static EigenMap mapImpl(PyArrayObject* pyArray)
     {
       assert( PyArray_NDIM(pyArray) <= 2 );
 
@@ -110,8 +129,8 @@ namespace eigenpy
       const long int itemsize = PyArray_ITEMSIZE(pyArray);
       const int stride = (int) PyArray_STRIDE(pyArray, rowMajor) / (int) itemsize;;
 
-      if( (MatType::MaxSizeAtCompileTime!=R)
-         && (MatType::MaxSizeAtCompileTime!=Eigen::Dynamic) )
+      if(   (MatType::MaxSizeAtCompileTime != R)
+         && (MatType::MaxSizeAtCompileTime != Eigen::Dynamic) )
       { throw eigenpy::Exception("The number of elements does not fit with the vector type."); }
 
       InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
@@ -120,11 +139,11 @@ namespace eigenpy
     }
   };
 
-  template<typename MatType, typename InputScalar>
-  typename MapNumpy<MatType,InputScalar>::EigenMap
-  MapNumpy<MatType,InputScalar>::map(PyArrayObject * pyArray)
+  template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
+  typename MapNumpy<MatType,InputScalar,AlignmentValue,Stride>::EigenMap
+  MapNumpy<MatType,InputScalar,AlignmentValue,Stride>::map(PyArrayObject * pyArray)
   {
-    return Impl::mapImpl(pyArray); 
+    return Impl::mapImpl(pyArray);
   }
 
 } // namespace eigenpy

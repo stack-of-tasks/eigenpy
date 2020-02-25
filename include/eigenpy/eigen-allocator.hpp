@@ -8,6 +8,7 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/map.hpp"
 #include "eigenpy/scalar-conversion.hpp"
+#include "eigenpy/utils/is-aligned.hpp"
 
 namespace eigenpy
 {
@@ -17,7 +18,7 @@ namespace eigenpy
     template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
     struct init_matrix_or_array
     {
-      static MatType * run(PyArrayObject * pyArray, void * storage)
+      static MatType * run(PyArrayObject * pyArray, void * storage = NULL)
       {
         assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
 
@@ -33,25 +34,34 @@ namespace eigenpy
           cols = 1;
         }
   
-        return new (storage) MatType(rows,cols);
+        if(storage)
+          return new (storage) MatType(rows,cols);
+        else
+          return new MatType(rows,cols);
       }
     };
 
     template<typename MatType>
     struct init_matrix_or_array<MatType,true>
     {
-      static MatType * run(PyArrayObject * pyArray, void * storage)
+      static MatType * run(PyArrayObject * pyArray, void * storage = NULL)
       {
         if(PyArray_NDIM(pyArray) == 1)
         {
           const int rows_or_cols = (int)PyArray_DIMS(pyArray)[0];
-          return new (storage) MatType(rows_or_cols);
+          if(storage)
+            return new (storage) MatType(rows_or_cols);
+          else
+            return new MatType(rows_or_cols);
         }
         else
         {
           const int rows = (int)PyArray_DIMS(pyArray)[0];
           const int cols = (int)PyArray_DIMS(pyArray)[1];
-          return new (storage) MatType(rows,cols);
+          if(storage)
+            return new (storage) MatType(rows,cols);
+          else
+            return new MatType(rows,cols);
         }
       }
     };
@@ -79,7 +89,7 @@ namespace eigenpy
                       const Eigen::MatrixBase<MatrixOut> & /*dest*/)
       {
         // do nothing
-        assert("Must never happened");
+        assert(false && "Must never happened");
       }
     };
   
@@ -97,9 +107,11 @@ namespace eigenpy
     typedef MatType Type;
     typedef typename MatType::Scalar Scalar;
     
-    static void allocate(PyArrayObject * pyArray, void * storage)
+    static void allocate(PyArrayObject * pyArray,
+                         bp::converter::rvalue_from_python_storage<MatType> * storage)
     {
-      Type * mat_ptr = details::init_matrix_or_array<Type>::run(pyArray,storage);
+      void * raw_ptr = storage->storage.bytes;
+      Type * mat_ptr = details::init_matrix_or_array<Type>::run(pyArray,raw_ptr);
       Type & mat = *mat_ptr;
       
       const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
@@ -193,6 +205,190 @@ namespace eigenpy
   };
   
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
+  template<typename MatType, int Options, typename Stride>
+  struct EigenAllocator<Eigen::Ref<MatType,Options,Stride> >
+  {
+    typedef Eigen::Ref<MatType,Options,Stride> RefType;
+    typedef typename MatType::Scalar Scalar;
+
+    typedef typename ::boost::python::detail::referent_storage<RefType&>::StorageType StorageType;
+    
+    static void allocate(PyArrayObject * pyArray,
+                         bp::converter::rvalue_from_python_storage<RefType> * storage)
+    {
+      typedef typename StrideType<MatType,Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime, Eigen::internal::traits<RefType>::StrideType::OuterStrideAtCompileTime >::type NumpyMapStride;
+
+      bool need_to_allocate = false;
+      const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
+      if(pyArray_Type != NumpyEquivalentType<Scalar>::type_code)
+        need_to_allocate |= true;
+      if(    (MatType::IsRowMajor && (PyArray_IS_C_CONTIGUOUS(pyArray) && !PyArray_IS_F_CONTIGUOUS(pyArray)))
+          || (!MatType::IsRowMajor && (PyArray_IS_F_CONTIGUOUS(pyArray) && !PyArray_IS_C_CONTIGUOUS(pyArray)))
+          || MatType::IsVectorAtCompileTime
+          || (PyArray_IS_F_CONTIGUOUS(pyArray) && PyArray_IS_C_CONTIGUOUS(pyArray))) // no need to allocate
+        need_to_allocate |= false;
+      else
+        need_to_allocate |= true;
+      if(Options != Eigen::Unaligned) // we need to check whether the memory is correctly aligned and composed of a continuous segment
+      {
+        void * data_ptr = PyArray_DATA(pyArray);
+        if(!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr,Options))
+          need_to_allocate |= true;
+      }
+      
+      void * raw_ptr = storage->storage.bytes;
+      if(need_to_allocate)
+      {
+        MatType * mat_ptr;
+        mat_ptr = details::init_matrix_or_array<MatType>::run(pyArray);
+        RefType mat_ref(*mat_ptr);
+        
+        new (raw_ptr) StorageType(mat_ref,pyArray,mat_ptr);
+        
+        RefType & mat = *reinterpret_cast<RefType*>(raw_ptr);
+        if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code)
+        {
+          mat = MapNumpy<MatType,Scalar>::map(pyArray); // avoid useless cast
+          return;
+        }
+        
+        switch(pyArray_Type)
+        {
+          case NPY_INT:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,int,Scalar,pyArray,mat);
+            break;
+          case NPY_LONG:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,long,Scalar,pyArray,mat);
+            break;
+          case NPY_FLOAT:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,float,Scalar,pyArray,mat);
+            break;
+          case NPY_CFLOAT:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<float>,Scalar,pyArray,mat);
+            break;
+          case NPY_DOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,double,Scalar,pyArray,mat);
+            break;
+          case NPY_CDOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<double>,Scalar,pyArray,mat);
+            break;
+          case NPY_LONGDOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,long double,Scalar,pyArray,mat);
+            break;
+          case NPY_CLONGDOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<long double>,Scalar,pyArray,mat);
+            break;
+          default:
+            throw Exception("You asked for a conversion which is not implemented.");
+        }
+      }
+      else
+      {
+        assert(pyArray_Type == NumpyEquivalentType<Scalar>::type_code);
+        typename MapNumpy<MatType,Scalar,Options,NumpyMapStride>::EigenMap numpyMap = MapNumpy<MatType,Scalar,Options,NumpyMapStride>::map(pyArray);
+        RefType mat_ref(numpyMap);
+        new (raw_ptr) StorageType(mat_ref,pyArray);
+      }
+    }
+    
+    static void copy(RefType const & ref, PyArrayObject * pyArray)
+    {
+      EigenAllocator<MatType>::copy(ref,pyArray);
+    }
+  };
+
+  template<typename MatType, int Options, typename Stride>
+  struct EigenAllocator<const Eigen::Ref<const MatType,Options,Stride> >
+  {
+    typedef const Eigen::Ref<const MatType,Options,Stride> RefType;
+    typedef typename MatType::Scalar Scalar;
+
+    typedef typename ::boost::python::detail::referent_storage<RefType&>::StorageType StorageType;
+    
+    static void allocate(PyArrayObject * pyArray,
+                         bp::converter::rvalue_from_python_storage<RefType> * storage)
+    {
+      typedef typename StrideType<MatType,Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime, Eigen::internal::traits<RefType>::StrideType::OuterStrideAtCompileTime >::type NumpyMapStride;
+
+      bool need_to_allocate = false;
+      const int pyArray_Type = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
+      if(pyArray_Type != NumpyEquivalentType<Scalar>::type_code)
+        need_to_allocate |= true;
+      if(    (MatType::IsRowMajor && (PyArray_IS_C_CONTIGUOUS(pyArray) && !PyArray_IS_F_CONTIGUOUS(pyArray)))
+          || (!MatType::IsRowMajor && (PyArray_IS_F_CONTIGUOUS(pyArray) && !PyArray_IS_C_CONTIGUOUS(pyArray)))
+          || MatType::IsVectorAtCompileTime
+          || (PyArray_IS_F_CONTIGUOUS(pyArray) && PyArray_IS_C_CONTIGUOUS(pyArray))) // no need to allocate
+        need_to_allocate |= false;
+      else
+        need_to_allocate |= true;
+      if(Options != Eigen::Unaligned) // we need to check whether the memory is correctly aligned and composed of a continuous segment
+      {
+        void * data_ptr = PyArray_DATA(pyArray);
+        if(!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr,Options))
+          need_to_allocate |= true;
+      }
+      
+      void * raw_ptr = storage->storage.bytes;
+      if(need_to_allocate)
+      {
+        MatType * mat_ptr;
+        mat_ptr = details::init_matrix_or_array<MatType>::run(pyArray);
+        RefType mat_ref(*mat_ptr);
+        
+        new (raw_ptr) StorageType(mat_ref,pyArray,mat_ptr);
+        
+        MatType & mat = *mat_ptr;
+        if(pyArray_Type == NumpyEquivalentType<Scalar>::type_code)
+        {
+          mat = MapNumpy<MatType,Scalar>::map(pyArray); // avoid useless cast
+          return;
+        }
+        
+        switch(pyArray_Type)
+        {
+          case NPY_INT:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,int,Scalar,pyArray,mat);
+            break;
+          case NPY_LONG:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,long,Scalar,pyArray,mat);
+            break;
+          case NPY_FLOAT:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,float,Scalar,pyArray,mat);
+            break;
+          case NPY_CFLOAT:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<float>,Scalar,pyArray,mat);
+            break;
+          case NPY_DOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,double,Scalar,pyArray,mat);
+            break;
+          case NPY_CDOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<double>,Scalar,pyArray,mat);
+            break;
+          case NPY_LONGDOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,long double,Scalar,pyArray,mat);
+            break;
+          case NPY_CLONGDOUBLE:
+            EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType,std::complex<long double>,Scalar,pyArray,mat);
+            break;
+          default:
+            throw Exception("You asked for a conversion which is not implemented.");
+        }
+      }
+      else
+      {
+        assert(pyArray_Type == NumpyEquivalentType<Scalar>::type_code);
+        typename MapNumpy<MatType,Scalar,Options,NumpyMapStride>::EigenMap numpyMap = MapNumpy<MatType,Scalar,Options,NumpyMapStride>::map(pyArray);
+        RefType mat_ref(numpyMap);
+        new (raw_ptr) StorageType(mat_ref,pyArray);
+      }
+    }
+    
+    static void copy(RefType const & ref, PyArrayObject * pyArray)
+    {
+      EigenAllocator<MatType>::copy(ref,pyArray);
+    }
+  };
+
   template<typename MatType>
   struct EigenAllocator< eigenpy::Ref<MatType> >
   {

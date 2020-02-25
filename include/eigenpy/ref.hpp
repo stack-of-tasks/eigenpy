@@ -20,10 +20,10 @@ namespace eigenpy
 
   template<typename PlainObjectTypeT>
   struct Ref
-  : Eigen::Ref<PlainObjectTypeT,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename StrideType<PlainObjectTypeT>::type>
+  : Eigen::Ref<PlainObjectTypeT,EIGENPY_NO_ALIGNMENT_VALUE,typename StrideType<PlainObjectTypeT>::type>
   {
   public:
-    typedef Eigen::Ref<PlainObjectTypeT,EIGENPY_DEFAULT_ALIGNMENT_VALUE,typename eigenpy::template StrideType<PlainObjectTypeT>::type> Base;
+    typedef Eigen::Ref<PlainObjectTypeT,EIGENPY_NO_ALIGNMENT_VALUE,typename eigenpy::template StrideType<PlainObjectTypeT>::type> Base;
 
   private:
     typedef Eigen::internal::traits<Base> Traits;

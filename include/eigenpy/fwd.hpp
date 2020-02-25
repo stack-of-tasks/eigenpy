@@ -14,15 +14,13 @@
   #include "eigenpy/numpy.hpp"
 #undef NO_IMPORT_ARRAY
 
-#ifdef NPY_ALIGNED
 #if EIGEN_VERSION_AT_LEAST(3,2,90)
   #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
 #else
   #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned
 #endif
-#else
-  #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Unaligned
-#endif
+
+#define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
 #include "eigenpy/expose.hpp"
 
