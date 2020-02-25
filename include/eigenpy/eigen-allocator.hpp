@@ -232,7 +232,7 @@ namespace eigenpy
       if(Options != Eigen::Unaligned) // we need to check whether the memory is correctly aligned and composed of a continuous segment
       {
         void * data_ptr = PyArray_DATA(pyArray);
-        if(!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr,Option))
+        if(!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr,Options))
           need_to_allocate |= true;
       }
       
