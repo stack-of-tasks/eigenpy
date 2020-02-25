@@ -10,7 +10,7 @@ using namespace Eigen;
 using namespace eigenpy;
 
 template<typename MatType>
-void printMatrix(const Eigen::Ref<MatType> & mat)
+void printMatrix(const Eigen::Ref<const MatType> mat)
 {
   if(MatType::IsVectorAtCompileTime)
     std::cout << "isVector" << std::endl;
@@ -19,7 +19,7 @@ void printMatrix(const Eigen::Ref<MatType> & mat)
 }
 
 template<typename VecType>
-void printVector(const Eigen::Ref<VecType> & vec)
+void printVector(const Eigen::Ref<const VecType> & vec)
 {
   EIGEN_STATIC_ASSERT_VECTOR_ONLY(VecType);
   printMatrix(vec);
@@ -28,9 +28,13 @@ void printVector(const Eigen::Ref<VecType> & vec)
 template<typename MatType>
 void setOnes(Eigen::Ref<MatType> mat)
 {
-  printMatrix(mat);
   mat.setOnes();
-  printMatrix(mat);
+}
+
+template<typename MatType>
+void fill(Eigen::Ref<MatType> mat, const typename MatType::Scalar & value)
+{
+  mat.fill(value);
 }
 
 BOOST_PYTHON_MODULE(eigen_ref)
@@ -48,4 +52,8 @@ BOOST_PYTHON_MODULE(eigen_ref)
   bp::def("setOnes", setOnes<Vector3d>);
   bp::def("setOnes", setOnes<VectorXd>);
   bp::def("setOnes", setOnes<MatrixXd>);
+  
+  bp::def("fillVec3", fill<Vector3d>);
+  bp::def("fillVec", fill<VectorXd>);
+  bp::def("fill", fill<MatrixXd>);
 }
