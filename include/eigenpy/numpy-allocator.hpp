@@ -20,8 +20,8 @@ namespace eigenpy
     {
       typedef typename SimilarMatrixType::Scalar Scalar;
       
-      PyArrayObject * pyArray = (PyArrayObject*) PyArray_SimpleNew(nd, shape,
-                                                                   NumpyEquivalentType<Scalar>::type_code);
+      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_SimpleNew(nd, shape,
+                                                                        NumpyEquivalentType<Scalar>::type_code);
       
       // Copy data
       EigenAllocator<SimilarMatrixType>::copy(mat,pyArray);
@@ -40,11 +40,10 @@ namespace eigenpy
       typedef typename SimilarMatrixType::Scalar Scalar;
       enum { NPY_ARRAY_MEMORY_CONTIGUOUS = SimilarMatrixType::IsRowMajor ? NPY_ARRAY_CARRAY : NPY_ARRAY_FARRAY };
       
-      PyArrayObject * pyArray = (PyArrayObject*) PyArray_New(&PyArray_Type, nd, shape,
-                                                             NumpyEquivalentType<Scalar>::type_code, NULL,
-                                                             mat.data(), 0,
-                                                             NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED,
-                                                             NULL);
+      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(nd, shape,
+                                                                  NumpyEquivalentType<Scalar>::type_code,
+                                                                  mat.data(),
+                                                                  NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
       
       return pyArray;
     }
@@ -69,11 +68,10 @@ namespace eigenpy
       typedef typename SimilarMatrixType::Scalar Scalar;
       enum { NPY_ARRAY_MEMORY_CONTIGUOUS_RO = SimilarMatrixType::IsRowMajor ? NPY_ARRAY_CARRAY_RO : NPY_ARRAY_FARRAY_RO };
       
-      PyArrayObject * pyArray = (PyArrayObject*) PyArray_New(&PyArray_Type, nd, shape,
-                                                             NumpyEquivalentType<Scalar>::type_code, NULL,
-                                                             const_cast<SimilarMatrixType &>(mat.derived()).data(), 0,
-                                                             NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED,
-                                                             NULL);
+      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(nd, shape,
+                                                                  NumpyEquivalentType<Scalar>::type_code,
+                                                                  const_cast<SimilarMatrixType &>(mat.derived()).data(),
+                                                                  NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED);
       
       return pyArray;
     }
