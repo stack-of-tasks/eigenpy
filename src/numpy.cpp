@@ -17,12 +17,12 @@ namespace eigenpy
 
 #if defined _WIN32 || defined __CYGWIN__
 
-  PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, NPY_TYPES np_type)
+  PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type)
   {
     return PyArray_SimpleNew(nd,shape,np_type);
   }
 
-  PyObject* call_PyArray_New(int nd, npy_intp * shape, NPY_TYPES np_type, void * data_ptr, int options)
+  PyObject* call_PyArray_New(int nd, npy_intp * shape, int np_type, void * data_ptr, int options)
   {
     return PyArray_New(&PyArray_Type,nd,shape,np_type,NULL,data_ptr,0,options,NULL);
   }
