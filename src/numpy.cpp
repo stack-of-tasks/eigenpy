@@ -19,10 +19,10 @@ namespace eigenpy
 
   PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, NPY_TYPES np_type)
   {
-    return (PyArrayObject*)PyArray_SimpleNew(nd,shape,np_type);
+    return PyArray_SimpleNew(nd,shape,np_type);
   }
 
-  PyObject* call_PyArray_New(int nd, npy_intp * shape, NPY_TYPES np_type, void * data_ptr, npy_intp options)
+  PyObject* call_PyArray_New(int nd, npy_intp * shape, NPY_TYPES np_type, void * data_ptr, int options)
   {
     return PyArray_New(&PyArray_Type,nd,shape,np_type,NULL,data_ptr,0,options,NULL);
   }

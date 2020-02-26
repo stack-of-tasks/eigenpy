@@ -37,7 +37,7 @@ namespace eigenpy
 {
   EIGENPY_DLLEXPORT PyObject*  call_PyArray_SimpleNew(int nd, npy_intp * shape, NPY_TYPES np_type);
 
-  EIGENPY_DLLEXPORT PyObject* call_PyArray_New(int nd, npy_intp * shape, NPY_TYPES np_type, void * data_ptr, npy_intp options);
+  EIGENPY_DLLEXPORT PyObject* call_PyArray_New(int nd, npy_intp * shape, NPY_TYPES np_type, void * data_ptr, int options);
 
   EIGENPY_DLLEXPORT int call_PyArray_ObjectType(PyObject *, int);
 }
