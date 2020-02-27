@@ -6,7 +6,7 @@
 #define __eigenpy_eigen_allocator_hpp__
 
 #include "eigenpy/fwd.hpp"
-#include "eigenpy/map.hpp"
+#include "eigenpy/numpy-map.hpp"
 #include "eigenpy/scalar-conversion.hpp"
 #include "eigenpy/utils/is-aligned.hpp"
 

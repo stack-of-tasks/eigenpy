@@ -3,8 +3,8 @@
  * Copyright 2018-2020, INRIA
  */
 
-#ifndef __eigenpy_map_hpp__
-#define __eigenpy_map_hpp__
+#ifndef __eigenpy_numpy_map_hpp__
+#define __eigenpy_numpy_map_hpp__
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/exception.hpp"
@@ -148,4 +148,4 @@ namespace eigenpy
 
 } // namespace eigenpy
 
-#endif // define __eigenpy_map_hpp__
+#endif // define __eigenpy_numpy_map_hpp__
