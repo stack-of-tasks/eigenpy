@@ -17,7 +17,6 @@
 #include "eigenpy/eigen-from-python.hpp"
 
 #include "eigenpy/registration.hpp"
-#include "eigenpy/map.hpp"
 #include "eigenpy/exception.hpp"
 
 namespace boost { namespace python { namespace detail {

@@ -3,8 +3,8 @@
  * Copyright 2018-2020, INRIA
  */
 
-#ifndef __eigenpy_map_hpp__
-#define __eigenpy_map_hpp__
+#ifndef __eigenpy_numpy_map_hpp__
+#define __eigenpy_numpy_map_hpp__
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/exception.hpp"
@@ -13,13 +13,13 @@
 namespace eigenpy
 {
   template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride, bool IsVector = MatType::IsVectorAtCompileTime>
-  struct MapNumpyTraits {};
+  struct NumpyMapTraits {};
  
   /* Wrap a numpy::array with an Eigen::Map. No memory copy. */
   template<typename MatType, typename InputScalar, int AlignmentValue = EIGENPY_NO_ALIGNMENT_VALUE, typename Stride = typename StrideType<MatType>::type>
-  struct MapNumpy
+  struct NumpyMap
   {
-    typedef MapNumpyTraits<MatType, InputScalar, AlignmentValue, Stride> Impl;
+    typedef NumpyMapTraits<MatType, InputScalar, AlignmentValue, Stride> Impl;
     typedef typename Impl::EigenMap EigenMap;
 
     static EigenMap map(PyArrayObject* pyArray);
@@ -34,7 +34,7 @@ namespace eigenpy
 namespace eigenpy
 {
   template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
-  struct MapNumpyTraits<MatType,InputScalar,AlignmentValue,Stride,false>
+  struct NumpyMapTraits<MatType,InputScalar,AlignmentValue,Stride,false>
   {
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
     typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
@@ -108,7 +108,7 @@ namespace eigenpy
   };
 
   template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
-  struct MapNumpyTraits<MatType,InputScalar,AlignmentValue,Stride,true>
+  struct NumpyMapTraits<MatType,InputScalar,AlignmentValue,Stride,true>
   {
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
     typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
@@ -140,12 +140,12 @@ namespace eigenpy
   };
 
   template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
-  typename MapNumpy<MatType,InputScalar,AlignmentValue,Stride>::EigenMap
-  MapNumpy<MatType,InputScalar,AlignmentValue,Stride>::map(PyArrayObject * pyArray)
+  typename NumpyMap<MatType,InputScalar,AlignmentValue,Stride>::EigenMap
+  NumpyMap<MatType,InputScalar,AlignmentValue,Stride>::map(PyArrayObject * pyArray)
   {
     return Impl::mapImpl(pyArray);
   }
 
 } // namespace eigenpy
 
-#endif // define __eigenpy_map_hpp__
+#endif // define __eigenpy_numpy_map_hpp__

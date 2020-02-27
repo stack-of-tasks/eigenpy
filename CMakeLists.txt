@@ -110,7 +110,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/eigen-allocator.hpp
   include/eigenpy/eigen-to-python.hpp
   include/eigenpy/eigen-from-python.hpp
-  include/eigenpy/map.hpp
+  include/eigenpy/numpy-map.hpp
   include/eigenpy/geometry.hpp
   include/eigenpy/geometry-conversion.hpp
   include/eigenpy/memory.hpp
