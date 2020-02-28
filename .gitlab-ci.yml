@@ -1,6 +1,6 @@
+# https://rainboard.laas.fr/project/eigenpy/.gitlab-ci.yml
+
 variables:
-  GIT_SUBMODULE_STRATEGY: "recursive"
-  GIT_DEPTH: "3"
   CCACHE_BASEDIR: "${CI_PROJECT_DIR}"
   CCACHE_DIR: "${CI_PROJECT_DIR}/ccache"
 
@@ -9,25 +9,36 @@ cache:
     - ccache
 
 .robotpkg-py-eigenpy: &robotpkg-py-eigenpy
+  retry:
+    max: 2
+    when: runner_system_failure
   except:
     - gh-pages
   script:
     - mkdir -p ccache
-    - cd /root/robotpkg/math/py-eigenpy
+    - cd /root/robotpkg/math
     - git pull
-    - make checkout MASTER_REPOSITORY="dir ${CI_PROJECT_DIR}"
+    - cd py-eigenpy
+    - make checkout MASTER_REPOSITORY="git ${CI_PROJECT_DIR}/.git"
     - make install
-    - cd work.$(hostname)/$(make show-var VARNAME=DISTNAME)
+    - build=$(make show-var VARNAME=CONFIGURE_DIRS); cd $(make show-var VARNAME=WRKSRC); cd $build
     - make test
-    - make uninstall
+
+robotpkg-py-eigenpy-16.04-debug:
+  <<: *robotpkg-py-eigenpy
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:16.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
 
 robotpkg-py-eigenpy-16.04-release:
   <<: *robotpkg-py-eigenpy
   image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:16.04
 
-robotpkg-py-eigenpy-18.04-release:
+robotpkg-py-eigenpy-py3-16.04-debug:
   <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:18.04
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:16.04
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
 
 robotpkg-py-eigenpy-py3-16.04-release:
   <<: *robotpkg-py-eigenpy
@@ -37,37 +48,15 @@ robotpkg-py-eigenpy-py3-18.04-release:
   <<: *robotpkg-py-eigenpy
   image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:18.04
 
-robotpkg-py-eigenpy-14.04-release:
+robotpkg-py-eigenpy-py3-18.04-debug:
   <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:14.04
-
-robotpkg-py-eigenpy-14.04-debug:
-  <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:14.04
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:18.04
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
 
-robotpkg-py-eigenpy-py3-14.04-release:
+robotpkg-py-eigenpy-18.04-release:
   <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
-
-robotpkg-py-eigenpy-py3-14.04-debug:
-  <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:14.04
-  before_script:
-    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
-
-robotpkg-py-eigenpy-16.04-debug:
-  <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:16.04
-  before_script:
-    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
-
-robotpkg-py-eigenpy-py3-16.04-debug:
-  <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:16.04
-  before_script:
-    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:18.04
 
 robotpkg-py-eigenpy-18.04-debug:
   <<: *robotpkg-py-eigenpy
@@ -75,9 +64,53 @@ robotpkg-py-eigenpy-18.04-debug:
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
 
-robotpkg-py-eigenpy-py3-18.04-debug:
+robotpkg-py-eigenpy-stretch-debug:
   <<: *robotpkg-py-eigenpy
-  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:18.04
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:stretch
   before_script:
     - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
 
+robotpkg-py-eigenpy-stretch-release:
+  <<: *robotpkg-py-eigenpy
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:stretch
+
+robotpkg-py-eigenpy-py3-stretch-release:
+  <<: *robotpkg-py-eigenpy
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:stretch
+
+robotpkg-py-eigenpy-py3-stretch-debug:
+  <<: *robotpkg-py-eigenpy
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy-py3:stretch
+  before_script:
+    - echo PKG_OPTIONS.py-eigenpy=debug >> /opt/openrobots/etc/robotpkg.conf
+
+doc-coverage:
+  <<: *robotpkg-py-eigenpy
+  image: memmos.laas.fr:5000/stack-of-tasks/eigenpy/py-eigenpy:18.04
+  before_script:
+    - echo -e 'CXXFLAGS+= --coverage\nLDFLAGS+= --coverage\nPKG_DEFAULT_OPTIONS= debug' >> /opt/openrobots/etc/robotpkg.conf
+  after_script:
+    - cd /root/robotpkg/math/py-eigenpy
+    - build=$(make show-var VARNAME=CONFIGURE_DIRS); cd $(make show-var VARNAME=WRKSRC); cd $build
+    - mkdir -p ${CI_PROJECT_DIR}/coverage/
+    - gcovr -r .
+    - gcovr -r . --html --html-details -o ${CI_PROJECT_DIR}/coverage/index.html
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - doxygen-html/
+      - coverage/
+
+format:
+  allow_failure: true
+  image: gepetto/linters
+  retry:
+    max: 2
+    when: runner_system_failure
+  before_script:
+    - test -f /builds/setup.cfg || ln -s /root/setup.cfg /builds
+    - test -f /builds/.clang-format || ln -s /root/.clang-format /builds
+  script:
+    - check-clang-format.sh
+    - flake8 .
+    - yapf -dr .
