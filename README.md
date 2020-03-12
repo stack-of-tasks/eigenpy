@@ -10,6 +10,7 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
 </p>
 
 **EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python.
+
 **EigenPy** provides: 
  - the fill sharing of memory between Numpy and Eigen avoiding memory allocation.
  - the full support Eigen::Ref avoiding memory allocation.
