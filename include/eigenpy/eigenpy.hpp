@@ -10,19 +10,8 @@
 #include "eigenpy/deprecated.hpp"
 #include "eigenpy/config.hpp"
 
-#if EIGEN_VERSION_AT_LEAST(3,2,0)
-#include "eigenpy/ref.hpp"
-
-#define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
-  ::eigenpy::enableEigenPySpecific<TYPE>(); \
-  ::eigenpy::enableEigenPySpecific< eigenpy::Ref<TYPE> >();
-
-#else // if EIGEN_VERSION_AT_LEAST(3,2,0)
-
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
   ::eigenpy::enableEigenPySpecific<TYPE>();
-
-#endif // if EIGEN_VERSION_AT_LEAST(3,2,0)
 
 #define EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, Size, SizeSuffix)   \
   /** \ingroup matrixtypedefs */                                    \

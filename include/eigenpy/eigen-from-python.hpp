@@ -512,18 +512,6 @@ namespace eigenpy
        &eigen_from_py_construct<ConstRefType>,bp::type_id<ConstRefType>());
     }
   };
-
-  // Template specialization for Eigen::Ref
-  template<typename MatType>
-  struct EigenFromPyConverter< eigenpy::Ref<MatType> >
-  {
-    static void registration()
-    {
-      bp::converter::registry::push_back
-      (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy<MatType>::convertible),
-       &EigenFromPy<MatType>::construct,bp::type_id<MatType>());
-    }
-  };
 #endif
 
 }

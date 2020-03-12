@@ -388,24 +388,6 @@ namespace eigenpy
       EigenAllocator<MatType>::copy(ref,pyArray);
     }
   };
-
-  template<typename MatType>
-  struct EigenAllocator< eigenpy::Ref<MatType> >
-  {
-    typedef eigenpy::Ref<MatType> Type;
-    typedef typename MatType::Scalar Scalar;
-    
-    static void allocate(PyArrayObject * pyArray, void * storage)
-    {
-      typename NumpyMap<MatType,Scalar>::EigenMap numpyMap = NumpyMap<MatType,Scalar>::map(pyArray);
-      new (storage) Type(numpyMap);
-    }
-    
-    static void copy(Type const & mat, PyArrayObject * pyArray)
-    {
-      EigenAllocator<MatType>::copy(mat,pyArray);
-    }
-  };
 #endif
 }
 
