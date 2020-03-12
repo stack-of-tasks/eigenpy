@@ -35,7 +35,6 @@ ADD_LIB_UNIT_TEST(complex "eigen3")
 ADD_LIB_UNIT_TEST(return_by_ref "eigen3")
 IF(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
   ADD_LIB_UNIT_TEST(eigen_ref "eigen3")
-  ADD_LIB_UNIT_TEST(eigenpy_ref "eigen3")
 ENDIF()
 
 ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
