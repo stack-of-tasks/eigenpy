@@ -40,12 +40,19 @@ namespace eigenpy
       typedef typename SimilarMatrixType::Scalar Scalar;
       enum { NPY_ARRAY_MEMORY_CONTIGUOUS = SimilarMatrixType::IsRowMajor ? NPY_ARRAY_CARRAY : NPY_ARRAY_FARRAY };
       
-      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(nd, shape,
-                                                                  NumpyEquivalentType<Scalar>::type_code,
-                                                                  mat.data(),
-                                                                  NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
-      
-      return pyArray;
+      if(NumpyType::sharedMemory())
+      {
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(nd, shape,
+                                                                    NumpyEquivalentType<Scalar>::type_code,
+                                                                    mat.data(),
+                                                                    NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
+        
+        return pyArray;
+      }
+      else
+      {
+        return NumpyAllocator<MatType>::allocate(mat.derived(),nd,shape);
+      }
     }
   };
 
@@ -68,12 +75,19 @@ namespace eigenpy
       typedef typename SimilarMatrixType::Scalar Scalar;
       enum { NPY_ARRAY_MEMORY_CONTIGUOUS_RO = SimilarMatrixType::IsRowMajor ? NPY_ARRAY_CARRAY_RO : NPY_ARRAY_FARRAY_RO };
       
-      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(nd, shape,
-                                                                  NumpyEquivalentType<Scalar>::type_code,
-                                                                  const_cast<SimilarMatrixType &>(mat.derived()).data(),
-                                                                  NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED);
-      
-      return pyArray;
+      if(NumpyType::sharedMemory())
+      {
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(nd, shape,
+                                                                    NumpyEquivalentType<Scalar>::type_code,
+                                                                    const_cast<SimilarMatrixType &>(mat.derived()).data(),
+                                                                    NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED);
+                                                                    
+        return pyArray;
+      }
+      else
+      {
+        return NumpyAllocator<MatType>::allocate(mat.derived(),nd,shape);
+      }
     }
   };
 

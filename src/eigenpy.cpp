@@ -45,6 +45,17 @@ namespace eigenpy
     bp::def("switchToNumpyMatrix",&NumpyType::switchToNumpyMatrix,
             "Set the conversion from Eigen::Matrix to numpy.matrix.");
     
+    bp::def("sharedMemory",
+            (void (*)(const bool))NumpyType::sharedMemory,
+            bp::arg("value"),
+            "Share the memory when converting from Eigen to Numpy.");
+    
+    bp::def("sharedMemory",
+            (bool (*)())NumpyType::sharedMemory,
+            "Status of the shared memory when converting from Eigen to Numpy.\n"
+            "If True, the memory is shared when converting an Eigen::Matrix to a numpy.array.\n"
+            "Otherwise, a deep copy of the Eigen::Matrix is performed.");
+    
     bp::def("seed",&seed,bp::arg("seed_value"),
             "Initialize the pseudo-random number generator with the argument seed_value.");
     

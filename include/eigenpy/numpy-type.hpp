@@ -96,6 +96,16 @@ namespace eigenpy
         switchToNumpyArray();
     }
     
+    static void sharedMemory(const bool value)
+    {
+      getInstance().shared_memory = value;
+    }
+    
+    static bool sharedMemory()
+    {
+      return getInstance().shared_memory;
+    }
+    
     static void switchToNumpyArray()
     {
       getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
@@ -162,6 +172,8 @@ namespace eigenpy
       
       CurrentNumpyType = NumpyArrayObject; // default conversion
       np_type = ARRAY_TYPE;
+      
+      shared_memory = true;
     }
 
     bp::object CurrentNumpyType;
@@ -173,6 +185,8 @@ namespace eigenpy
     bp::object NumpyArrayObject; PyTypeObject * NumpyArrayType;
 
     NP_TYPE np_type;
+    
+    bool shared_memory;
   };
 }
 
