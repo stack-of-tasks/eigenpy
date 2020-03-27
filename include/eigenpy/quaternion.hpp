@@ -83,7 +83,7 @@ namespace eigenpy
                                 "\tquat: a quaternion."))
       .def("__init__",bp::make_constructor(&QuaternionVisitor::FromTwoVectors,
                                            bp::default_call_policies(),
-                                           (bp::arg("u: a 3D vector"),bp::arg("v: a 3D vector"))),
+                                           (bp::arg("u"),bp::arg("v"))),
            "Initialize from two vectors u and v")
       .def(bp::init<Scalar,Scalar,Scalar,Scalar>
            ((bp::arg("self"),bp::arg("w"),bp::arg("x"),bp::arg("y"),bp::arg("z")),
