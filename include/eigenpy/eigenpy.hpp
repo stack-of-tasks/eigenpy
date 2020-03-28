@@ -53,15 +53,6 @@ namespace eigenpy
    * using a native Eigen::MatrixBase, simply repeat the same arg twice. */
   template<typename MatType,typename EigenEquivalentType>
   EIGENPY_DEPRECATED void enableEigenPySpecific();
-
-  template<typename Scalar, int Options>
-  EIGEN_DONT_INLINE void exposeType();
-
-  template<typename Scalar>
-  EIGEN_DONT_INLINE void exposeType()
-  {
-    exposeType<Scalar,0>();
-  }
     
 } // namespace eigenpy
 
