@@ -8,10 +8,37 @@
 
 namespace eigenpy
 {
-
   void seed(unsigned int seed_value)
   {
     srand(seed_value);
+  }
+
+  template<typename Scalar, int Options>
+  EIGEN_DONT_INLINE void exposeType()
+  {
+    EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Scalar,Options,s);
+
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector2s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVector2s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2Xs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixX2s);
+
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector3s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVector3s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix3s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix3Xs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixX3s);
+
+    ENABLE_SPECIFIC_MATRIX_TYPE(Vector4s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVector4s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix4s);
+    ENABLE_SPECIFIC_MATRIX_TYPE(Matrix4Xs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixX4s);
+
+    ENABLE_SPECIFIC_MATRIX_TYPE(VectorXs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(RowVectorXs);
+    ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXs);
   }
 
   void exposeMatrixInt();
