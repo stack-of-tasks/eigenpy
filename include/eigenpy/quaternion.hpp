@@ -19,7 +19,7 @@ namespace boost { namespace python { namespace converter {
   struct rvalue_from_python_data<Eigen::QuaternionBase<Quaternion> const &>
   : rvalue_from_python_data_eigen<Quaternion const &>
   {
-    RVALUE_FROM_PYTHON_DATA_INIT(Quaternion const &)
+    EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Quaternion const &)
   };
 
   template <class Quaternion>
