@@ -6,6 +6,7 @@
 #define __eigenpy_decomposition_self_adjoint_eigen_solver_hpp__
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/eigen-to-python.hpp"
 
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
@@ -37,10 +38,10 @@ namespace eigenpy
        
       .def("eigenvalues",&Solver::eigenvalues,bp::arg("self"),
            "Returns the eigenvalues of given matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           bp::return_internal_reference<>())
       .def("eigenvectors",&Solver::eigenvectors,bp::arg("self"),
            "Returns the eigenvectors of given matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           bp::return_internal_reference<>())
       
       .def("compute",&SelfAdjointEigenSolverVisitor::compute_proxy<MatrixType>,
            bp::args("self","matrix"),
@@ -49,23 +50,21 @@ namespace eigenpy
       .def("compute",(Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> & matrix, int options))&Solver::compute,
            bp::args("self","matrix","options"),
            "Computes the eigendecomposition of given matrix.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
       
       .def("computeDirect",&SelfAdjointEigenSolverVisitor::computeDirect_proxy,
            bp::args("self","matrix"),
            "Computes eigendecomposition of given matrix using a closed-form algorithm.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
       .def("computeDirect",(Solver & (Solver::*)(const MatrixType & matrix, int options))&Solver::computeDirect,
            bp::args("self","matrix","options"),
            "Computes eigendecomposition of given matrix using a closed-form algorithm.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
        
       .def("operatorInverseSqrt",&Solver::operatorInverseSqrt,bp::arg("self"),
-           "Computes the inverse square root of the matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           "Computes the inverse square root of the matrix.")
       .def("operatorSqrt",&Solver::operatorSqrt,bp::arg("self"),
-           "Computes the inverse square root of the matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           "Computes the inverse square root of the matrix.")
       
       .def("info",&Solver::info,bp::arg("self"),
            "NumericalIssue if the input contains INF or NaN values or overflow occured. Returns Success otherwise.")

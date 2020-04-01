@@ -53,22 +53,22 @@ namespace eigenpy
       
       .def("matrixLDLT",&Solver::matrixLDLT,bp::arg("self"),
            "Returns the LDLT decomposition matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           bp::return_internal_reference<>())
       
       .def("rankUpdate",(Solver & (Solver::*)(const Eigen::MatrixBase<VectorType> &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
            bp::args("self","vector","sigma"),
-           bp::return_value_policy<bp::reference_existing_object>() )
+           bp::return_self<>())
     
 #if EIGEN_VERSION_AT_LEAST(3,3,0)
       .def("adjoint",&Solver::adjoint,bp::arg("self"),
            "Returns the adjoint, that is, a reference to the decomposition itself as if the underlying matrix is self-adjoint.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
 #endif
       
       .def("compute",(Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> & matrix))&Solver::compute,
            bp::args("self","matrix"),
            "Computes the LDLT of given matrix.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
       
       .def("info",&Solver::info,bp::arg("self"),
            "NumericalIssue if the input contains INF or NaN values or overflow occured. Returns Success otherwise.")
