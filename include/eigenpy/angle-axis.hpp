@@ -1,12 +1,11 @@
 /*
- * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2014-2020 CNRS INRIA
  */
 
 #ifndef __eigenpy_angle_axis_hpp__
 #define __eigenpy_angle_axis_hpp__
 
-#include "eigenpy/fwd.hpp"
+#include "eigenpy/eigenpy.hpp"
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
