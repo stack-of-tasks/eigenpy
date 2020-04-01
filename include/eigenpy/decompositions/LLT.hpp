@@ -5,7 +5,8 @@
 #ifndef __eigenpy_decomposition_llt_hpp__
 #define __eigenpy_decomposition_llt_hpp__
 
-#include <boost/python.hpp>
+#include "eigenpy/eigenpy.hpp"
+
 #include <Eigen/Core>
 #include <Eigen/Cholesky>
 
