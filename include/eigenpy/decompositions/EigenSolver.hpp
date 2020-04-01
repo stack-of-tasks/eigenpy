@@ -6,6 +6,7 @@
 #define __eigenpy_decomposition_eigen_solver_hpp__
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/eigen-to-python.hpp"
 
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
@@ -37,31 +38,30 @@ namespace eigenpy
        
       .def("eigenvalues",&Solver::eigenvalues,bp::arg("self"),
            "Returns the eigenvalues of given matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           bp::return_internal_reference<>())
       .def("eigenvectors",&Solver::eigenvectors,bp::arg("self"),
-           "Returns the eigenvectors of given matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           "Returns the eigenvectors of given matrix.")
       
       .def("compute",&EigenSolverVisitor::compute_proxy<MatrixType>,
            bp::args("self","matrix"),
            "Computes the eigendecomposition of given matrix.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
       .def("compute",(Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> & matrix, bool))&Solver::compute,
            bp::args("self","matrix","compute_eigen_vectors"),
            "Computes the eigendecomposition of given matrix.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
       
       .def("getMaxIterations",&Solver::getMaxIterations,bp::arg("self"),
            "Returns the maximum number of iterations.")
       .def("setMaxIterations",&Solver::setMaxIterations,bp::args("self","max_iter"),
            "Sets the maximum number of iterations allowed.",
-           bp::return_value_policy<bp::reference_existing_object>())
+           bp::return_self<>())
       
       .def("pseudoEigenvalueMatrix",&Solver::pseudoEigenvalueMatrix,bp::arg("self"),
            "Returns the block-diagonal matrix in the pseudo-eigendecomposition.")
       .def("pseudoEigenvectors",&Solver::pseudoEigenvectors ,bp::arg("self"),
            "Returns the pseudo-eigenvectors of given matrix.",
-           bp::return_value_policy<bp::return_by_value>())
+           bp::return_internal_reference<>())
       
       .def("info",&Solver::info,bp::arg("self"),
            "NumericalIssue if the input contains INF or NaN values or overflow occured. Returns Success otherwise.")

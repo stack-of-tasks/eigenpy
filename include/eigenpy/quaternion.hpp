@@ -155,7 +155,7 @@ namespace eigenpy
       .def("coeffs",(const Vector4 & (Quaternion::*)()const)&Quaternion::coeffs,
            bp::arg("self"),
            "Returns a vector of the coefficients (x,y,z,w)",
-           bp::return_value_policy<bp::copy_const_reference>())
+           bp::return_internal_reference<>())
       .def("matrix",&Quaternion::matrix,
            bp::arg("self"),
            "Returns an equivalent 3x3 rotation matrix. Similar to toRotationMatrix.")
@@ -216,9 +216,13 @@ namespace eigenpy
       .def("__setitem__",&QuaternionVisitor::__setitem__)
       .def("__getitem__",&QuaternionVisitor::__getitem__)
       .def("assign",&assign<Quaternion>,
-           bp::args("self","quat"),"Set *this from an quaternion quat and returns a reference to *this.",bp::return_self<>())
+           bp::args("self","quat"),
+           "Set *this from an quaternion quat and returns a reference to *this.",
+           bp::return_self<>())
       .def("assign",(Quaternion & (Quaternion::*)(const AngleAxis &))&Quaternion::operator=,
-           bp::args("self","aa"),"Set *this from an angle-axis aa and returns a reference to *this.",bp::return_self<>())
+           bp::args("self","aa"),
+           "Set *this from an angle-axis aa and returns a reference to *this.",
+           bp::return_self<>())
       .def("__str__",&print)
       .def("__repr__",&print)
       
@@ -251,9 +255,9 @@ namespace eigenpy
     { return self = quat; }
 
     static Quaternion* FromTwoVectors(const Vector3& u, const Vector3& v)
-    { 
+    {
       Quaternion* q(new Quaternion); q->setFromTwoVectors(u,v);
-      return q; 
+      return q;
     }
   
     static bool __eq__(const Quaternion & u, const Quaternion & v)
