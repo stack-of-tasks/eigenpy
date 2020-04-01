@@ -173,8 +173,6 @@ namespace boost { namespace python { namespace converter {
     RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
   };
 
-#undef RVALUE_FROM_PYTHON_DATA_INIT
-
   template<typename MatType, int Options, typename Stride>
   struct rvalue_from_python_data<Eigen::Ref<MatType,Options,Stride> &>
   : rvalue_from_python_storage<Eigen::Ref<MatType,Options,Stride> &>
