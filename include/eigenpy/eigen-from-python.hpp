@@ -148,7 +148,7 @@ namespace boost { namespace python { namespace converter {
     }
   };
 
-#define RVALUE_FROM_PYTHON_DATA_INIT(type)                                 \
+#define EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(type)                                 \
   typedef rvalue_from_python_data_eigen<type> Base;                        \
                                                                            \
   rvalue_from_python_data(rvalue_from_python_stage1_data const & _stage1)  \
@@ -162,7 +162,7 @@ namespace boost { namespace python { namespace converter {
   struct rvalue_from_python_data<Eigen::MatrixBase<Derived> const &>
   : rvalue_from_python_data_eigen<Derived const &>
   {
-    RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
+    EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
   };
 
   /// \brief Template specialization of rvalue_from_python_data
@@ -170,10 +170,8 @@ namespace boost { namespace python { namespace converter {
   struct rvalue_from_python_data<Eigen::EigenBase<Derived> const &>
   : rvalue_from_python_data_eigen<Derived const &>
   {
-    RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
+    EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
   };
-
-#undef RVALUE_FROM_PYTHON_DATA_INIT
 
   template<typename MatType, int Options, typename Stride>
   struct rvalue_from_python_data<Eigen::Ref<MatType,Options,Stride> &>
