@@ -309,7 +309,7 @@ namespace eigenpy
       
       // Cast to Eigen::QuaternionBase and vice-versa
       bp::implicitly_convertible<Quaternion,QuaternionBase >();
-      bp::implicitly_convertible<QuaternionBase,Quaternion >();
+//      bp::implicitly_convertible<QuaternionBase,Quaternion >();
     }
 
   };
