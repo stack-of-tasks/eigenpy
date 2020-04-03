@@ -71,12 +71,12 @@ install: pip install coveralls numpy --user
 script:
   - export CMAKE_ADDITIONAL_OPTIONS="-DCMAKE_BUILD_TYPE=${BUILDTYPE}"
   - ./.travis/run ../travis_custom/custom_build
-  - cd $TRAVIS_BUILD_DIR/unittest/cmake
-  - mkdir build
-  - cd build
-  - export CMAKE_PREFIX_PATH=/tmp/_ci/install
   - export PYTHON_DEFAULT_VERSION=$(which python2)
   - if [[ $TRAVIS_PYTHON_VERSION -gt 30 ]]; then export PYTHON_DEFAULT_VERSION=$(which python3); fi
+  - export CMAKE_PREFIX_PATH=/tmp/_ci/install
+  - cd $TRAVIS_BUILD_DIR/unittest/packaging/cmake
+  - mkdir build
+  - cd build
   - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION 
   - make
   - ./extra_lib
