@@ -80,6 +80,12 @@ script:
   - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION 
   - make
   - ./extra_lib
+  - cd $TRAVIS_BUILD_DIR/unittest/packaging/cmake-2x
+  - mkdir build
+  - cd build
+  - cmake .. -DPYTHON_EXECUTABLE=$PYTHON_DEFAULT_VERSION 
+  - make
+  - ./extra_lib
   - cd $TRAVIS_BUILD_DIR/unittest/packaging/pkgconfig
   - export PKG_CONFIG_PATH=/tmp/_ci/install/lib/pkgconfig:$PKG_CONFIG_PATH
   - mkdir build
