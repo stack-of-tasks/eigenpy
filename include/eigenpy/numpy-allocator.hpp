@@ -42,7 +42,10 @@ namespace eigenpy
       
       if(NumpyType::sharedMemory())
       {
-        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(static_cast<int>(nd), shape,
+        PyTypeObject * py_type_ptr = &PyArray_Type;
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(py_type_ptr,
+                                                                    static_cast<int>(nd),
+                                                                    shape,
                                                                     NumpyEquivalentType<Scalar>::type_code,
                                                                     mat.data(),
                                                                     NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
@@ -77,7 +80,10 @@ namespace eigenpy
       
       if(NumpyType::sharedMemory())
       {
-        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(static_cast<int>(nd), shape,
+        PyTypeObject * py_type_ptr = &PyArray_Type;
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(py_type_ptr,
+                                                                    static_cast<int>(nd),
+                                                                    shape,
                                                                     NumpyEquivalentType<Scalar>::type_code,
                                                                     const_cast<SimilarMatrixType &>(mat.derived()).data(),
                                                                     NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED);

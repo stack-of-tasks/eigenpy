@@ -35,16 +35,16 @@ namespace eigenpy
 #if defined _WIN32 || defined __CYGWIN__
 namespace eigenpy
 {
-  EIGENPY_DLLEXPORT PyObject*  call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type);
+  EIGENPY_DLLEXPORT PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type);
 
-  EIGENPY_DLLEXPORT PyObject* call_PyArray_New(int nd, npy_intp * shape, int np_type, void * data_ptr, int options);
+  EIGENPY_DLLEXPORT PyObject* call_PyArray_New(PyTypeObject * py_type_ptr, int nd, npy_intp * shape, int np_type, void * data_ptr, int options);
 
   EIGENPY_DLLEXPORT int call_PyArray_ObjectType(PyObject *, int);
 }
 #else
   #define call_PyArray_SimpleNew PyArray_SimpleNew
-  #define call_PyArray_New(nd,shape,np_type,data_ptr,options) \
-    PyArray_New(&PyArray_Type,nd,shape,np_type,NULL,data_ptr,0,options,NULL)
+  #define call_PyArray_New(py_type_ptr,nd,shape,np_type,data_ptr,options) \
+    PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL)
 #endif
 
 #endif // ifndef __eigenpy_numpy_hpp__
