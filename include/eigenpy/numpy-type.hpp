@@ -14,7 +14,8 @@ namespace eigenpy
 {
   namespace bp = boost::python;
 
-  template <typename SCALAR>  struct NumpyEquivalentType {};
+  // By default, the Scalar is considered as a Python object
+  template <typename Scalar>  struct NumpyEquivalentType { enum  { type_code = NPY_OBJECT };};
 
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
   template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
