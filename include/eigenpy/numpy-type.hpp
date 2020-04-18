@@ -41,7 +41,8 @@ namespace eigenpy
         ss << "The type " << typeid(Scalar).name() << " does not have a registered converter inside Boot.Python." << std::endl;
         throw std::invalid_argument(ss.str());
       }
-      return *py_type_ptr;
+      PyTypeObject * py_type_ptr = const_cast<PyTypeObject *>(const_py_type_ptr);
+      return py_type_ptr;
     }
     else
       return getPyArrayType();
