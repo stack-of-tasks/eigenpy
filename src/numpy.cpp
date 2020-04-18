@@ -32,5 +32,7 @@ namespace eigenpy
     return PyArray_ObjectType(obj,val);
   }
 
+  PyTypeObject getPyArrayType() { return PyArray_Type; }
+
 #endif
 }
