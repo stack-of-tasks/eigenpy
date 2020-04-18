@@ -34,8 +34,8 @@ namespace eigenpy
   {
     if(NumpyEquivalentType<Scalar>::type_code == NPY_OBJECT)
     {
-      const PyTypeObject * py_type_ptr = bp::converter::registered_pytype<Scalar>::get_pytype();
-      if(not py_type_ptr)
+      const PyTypeObject * const_py_type_ptr = bp::converter::registered_pytype<Scalar>::get_pytype();
+      if(const_py_type_ptr == NULL)
       {
         std::stringstream ss;
         ss << "The type " << typeid(Scalar).name() << " does not have a registered converter inside Boot.Python." << std::endl;
