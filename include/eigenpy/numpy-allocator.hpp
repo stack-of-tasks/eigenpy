@@ -42,8 +42,8 @@ namespace eigenpy
       
       if(NumpyType::sharedMemory())
       {
-        PyTypeObject * py_type_ptr = &PyArray_Type;
-        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(py_type_ptr,
+        PyTypeObject py_type = getPyType<Scalar>();
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(&py_type,
                                                                     static_cast<int>(nd),
                                                                     shape,
                                                                     NumpyEquivalentType<Scalar>::type_code,
@@ -80,8 +80,8 @@ namespace eigenpy
       
       if(NumpyType::sharedMemory())
       {
-        PyTypeObject * py_type_ptr = &PyArray_Type;
-        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(py_type_ptr,
+        PyTypeObject py_type = getPyType<Scalar>();
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(&py_type,
                                                                     static_cast<int>(nd),
                                                                     shape,
                                                                     NumpyEquivalentType<Scalar>::type_code,
