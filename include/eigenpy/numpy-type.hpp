@@ -9,13 +9,16 @@
 #include "eigenpy/scalar-conversion.hpp"
 
 #include <patchlevel.h> // For PY_MAJOR_VERSION
+#include <stdexcept>
+#include <typeinfo>
+#include <sstream>
 
 namespace eigenpy
 {
   namespace bp = boost::python;
 
   // By default, the Scalar is considered as a Python object
-  template <typename Scalar>  struct NumpyEquivalentType { enum  { type_code = NPY_OBJECT };};
+  template <typename Scalar> struct NumpyEquivalentType { enum  { type_code = NPY_OBJECT };};
 
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
   template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
@@ -25,6 +28,24 @@ namespace eigenpy
   template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+
+  template<typename Scalar>
+  PyTypeObject getPyType()
+  {
+    if(NumpyEquivalentType<Scalar>::type_code == NPY_OBJECT)
+    {
+      const PyTypeObject * py_type_ptr = bp::converter::registered_pytype<Scalar>::get_pytype();
+      if(not py_type_ptr)
+      {
+        std::stringstream ss;
+        ss << "The type " << typeid(Scalar).name() << " does not have a registered converter inside Boot.Python." << std::endl;
+        throw std::invalid_argument(ss.str());
+      }
+      return *py_type_ptr;
+    }
+    else
+      return getPyArrayType();
+  }
 
   template<typename Scalar>
   bool np_type_is_convertible_into_scalar(const int np_type)
