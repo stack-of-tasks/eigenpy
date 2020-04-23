@@ -44,9 +44,14 @@ namespace eigenpy
       .def("matrixLLT",&Solver::matrixLLT,bp::arg("self"),
            "Returns the LLT decomposition matrix.",
            bp::return_internal_reference<>())
-      
+
+#if EIGEN_VERSION_AT_LEAST(3,3,90)
+      .def("rankUpdate",(Solver& (Solver::*)(const VectorType &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
+           bp::args("self","vector","sigma"), bp::return_self<>())
+#else
       .def("rankUpdate",(Solver (Solver::*)(const VectorType &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
            bp::args("self","vector","sigma"))
+#endif
       
 #if EIGEN_VERSION_AT_LEAST(3,3,0)
       .def("adjoint",&Solver::adjoint,bp::arg("self"),
