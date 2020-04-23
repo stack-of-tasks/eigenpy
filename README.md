@@ -19,7 +19,7 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
 
 ## Setup
 
-The installation of **EigenPy** on your computer is made easy for Linux/BSD and Mac OS X environments.
+The installation of **EigenPy** on your computer is made easy for Linux/BSD, Mac OS X and Windows environments.
 
 ### The Conda approach
 
@@ -68,10 +68,6 @@ brew tap gepetto/homebrew-gepetto
 and then install **EigenPy** for Python 3.x with:
 ```
 brew install eigenpy
-```
-or for Python 2.7:
-```
-brew install eigenpy@2
 ```
 
 ## Credits
