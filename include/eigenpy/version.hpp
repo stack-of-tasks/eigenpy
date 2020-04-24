@@ -6,7 +6,6 @@
 #define __eigenpy_version_hpp__
 
 #include "eigenpy/config.hpp"
-#include "eigenpy/config.hpp"
 
 #include <string>
 
