@@ -30,9 +30,17 @@ namespace eigenpy
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
 
   template<typename Scalar>
-  PyTypeObject getPyType()
+  bool isNumpyNativeType()
   {
     if(NumpyEquivalentType<Scalar>::type_code == NPY_OBJECT)
+      return false;
+    return true;
+  }
+
+  template<typename Scalar>
+  PyTypeObject * getPyType()
+  {
+    if(!isNumpyNativeType<Scalar>())
     {
       const PyTypeObject * const_py_type_ptr = bp::converter::registered_pytype<Scalar>::get_pytype();
       if(const_py_type_ptr == NULL)
