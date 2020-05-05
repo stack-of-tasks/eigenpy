@@ -187,7 +187,7 @@ namespace eigenpy
     PyArray_SetItemFunc * setitem = &internal::SpecialMethods<Scalar>::setitem;
     PyArray_NonzeroFunc * nonzero = &internal::SpecialMethods<Scalar>::nonzero;
     PyArray_CopySwapFunc * copyswap = &internal::SpecialMethods<Scalar>::copyswap;
-    PyArray_CopySwapNFunc * copyswapn = &internal::SpecialMethods<Scalar>::copyswapn;
+    PyArray_CopySwapNFunc * copyswapn = reinterpret_cast<PyArray_CopySwapNFunc*>(&internal::SpecialMethods<Scalar>::copyswapn);
     PyArray_DotFunc * dotfunc = &internal::SpecialMethods<Scalar>::dotfunc;
 //    PyArray_CastFunc * cast = &internal::SpecialMethods<Scalar>::cast;
     
