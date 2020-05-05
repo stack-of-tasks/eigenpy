@@ -57,7 +57,7 @@ namespace eigenpy
   
   } // namespace internal
   
-#define REGISTER_BINARY_UFUNC(name,code,T1,T2,R) { \
+#define EIGENPY_REGISTER_BINARY_UFUNC(name,code,T1,T2,R) { \
    PyUFuncObject* ufunc = \
        (PyUFuncObject*)PyObject_GetAttrString(numpy, #name); \
    int _types[3] = { Register::getTypeCode<T1>(), Register::getTypeCode<T2>(), Register::getTypeCode<R>()}; \
@@ -97,18 +97,18 @@ namespace eigenpy
     // load numpy
     import_ufunc();
 
-    REGISTER_BINARY_UFUNC(add,code,Scalar,Scalar,Scalar);
-    REGISTER_BINARY_UFUNC(subtract,code,Scalar,Scalar,Scalar);
-    REGISTER_BINARY_UFUNC(multiply,code,Scalar,Scalar,Scalar);
-    REGISTER_BINARY_UFUNC(divide,code,Scalar,Scalar,Scalar);
+    EIGENPY_REGISTER_BINARY_UFUNC(add,code,Scalar,Scalar,Scalar);
+    EIGENPY_REGISTER_BINARY_UFUNC(subtract,code,Scalar,Scalar,Scalar);
+    EIGENPY_REGISTER_BINARY_UFUNC(multiply,code,Scalar,Scalar,Scalar);
+    EIGENPY_REGISTER_BINARY_UFUNC(divide,code,Scalar,Scalar,Scalar);
   
     // Comparison operators
-    REGISTER_BINARY_UFUNC(equal,code,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(not_equal,code,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(greater,code,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(less,code,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(greater_equal,code,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(less_equal,code,Scalar,Scalar,bool);
+    EIGENPY_REGISTER_BINARY_UFUNC(equal,code,Scalar,Scalar,bool);
+    EIGENPY_REGISTER_BINARY_UFUNC(not_equal,code,Scalar,Scalar,bool);
+    EIGENPY_REGISTER_BINARY_UFUNC(greater,code,Scalar,Scalar,bool);
+    EIGENPY_REGISTER_BINARY_UFUNC(less,code,Scalar,Scalar,bool);
+    EIGENPY_REGISTER_BINARY_UFUNC(greater_equal,code,Scalar,Scalar,bool);
+    EIGENPY_REGISTER_BINARY_UFUNC(less_equal,code,Scalar,Scalar,bool);
 
     Py_DECREF(numpy);
   }
