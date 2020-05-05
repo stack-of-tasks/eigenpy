@@ -44,12 +44,21 @@ namespace eigenpy
   EIGENPY_DLLEXPORT int call_PyArray_ObjectType(PyObject *, int);
 
   EIGENPY_DLLEXPORT PyTypeObject * getPyArrayType();
+
+  EIGENPY_DLLEXPORT int call_PyArray_DescrFromType(int typenum);
+
+  EIGENPY_DLLEXPORT void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs);
+
+  EIGENPY_DLLEXPORT int call_PyArray_RegisterDataType(PyArray_Descr * dtype);
 }
 #else
   #define call_PyArray_SimpleNew PyArray_SimpleNew
   #define call_PyArray_New(py_type_ptr,nd,shape,np_type,data_ptr,options) \
     PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL)
   #define getPyArrayType() &PyArray_Type
+  #define call_PyArray_DescrFromType(typenum) PyArray_DescrFromType(typenum)
+  #define call_PyArray_InitArrFuncs(funcs) PyArray_InitArrFuncs(funcs)
+ #define call_PyArray_RegisterDataType(dtype) PyArray_RegisterDataType(dtype)
 #endif
 
 #endif // ifndef __eigenpy_numpy_hpp__

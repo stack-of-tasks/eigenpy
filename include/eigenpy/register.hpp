@@ -70,7 +70,7 @@ namespace eigenpy
       }
       else
       {
-        PyArray_Descr * new_descr = PyArray_DescrFromType(NumpyEquivalentType<Scalar>::type_code);
+        PyArray_Descr * new_descr = call_PyArray_DescrFromType(NumpyEquivalentType<Scalar>::type_code);
         return new_descr->typeobj;
       }
     }
@@ -107,7 +107,7 @@ namespace eigenpy
     {
       namespace bp = boost::python;
   
-      PyArray_Descr * descr_ptr = new PyArray_Descr(*PyArray_DescrFromType(NPY_OBJECT));
+      PyArray_Descr * descr_ptr = new PyArray_Descr(*call_PyArray_DescrFromType(NPY_OBJECT));
       PyArray_Descr & descr = *descr_ptr;
       descr.typeobj = py_type_ptr;
       descr.kind = 'V';
@@ -120,7 +120,7 @@ namespace eigenpy
       PyArray_ArrFuncs * funcs_ptr = new PyArray_ArrFuncs;
       PyArray_ArrFuncs & funcs = *funcs_ptr;
       descr.f = funcs_ptr;
-      PyArray_InitArrFuncs(funcs_ptr);
+      call_PyArray_InitArrFuncs(funcs_ptr);
       funcs.getitem = getitem;
       funcs.setitem = setitem;
       funcs.nonzero = nonzero;
@@ -129,9 +129,9 @@ namespace eigenpy
       funcs.dotfunc = dotfunc;
 //      f->cast = cast;
 
-      const int code = PyArray_RegisterDataType(descr_ptr);
+      const int code = call_PyArray_RegisterDataType(descr_ptr);
       assert(code >= 0 && "The return code should be positive");
-      PyArray_Descr * new_descr = PyArray_DescrFromType(code);
+      PyArray_Descr * new_descr = call_PyArray_DescrFromType(code);
 
       type_to_py_type_bindings.insert(std::make_pair(type_info_ptr,py_type_ptr));
       py_array_descr_bindings[py_type_ptr] = new_descr;

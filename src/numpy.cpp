@@ -38,6 +38,21 @@ namespace eigenpy
   }
 
   PyTypeObject * getPyArrayType() { return &PyArray_Type; }
+
+  int call_PyArray_DescrFromType(int typenum)
+  {
+    return PyArray_DescrFromType(typenum);
+  }
+
+  void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs)
+  {
+    PyArray_InitArrFuncs(funcs);
+  }
+
+  int call_PyArray_RegisterDataType(PyArray_Descr * dtype)
+  {
+    return PyArray_RegisterDataType(dtype);
+  }
   
 #endif
 }
