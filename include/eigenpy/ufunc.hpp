@@ -5,15 +5,7 @@
 #ifndef __eigenpy_ufunc_hpp__
 #define __eigenpy_ufunc_hpp__
 
-#include "eigenpy/fwd.hpp"
-#include "eigenpy/numpy-type.hpp"
-#include "eigenpy/exception.hpp"
 #include "eigenpy/user-type.hpp"
-
-#include <algorithm>
-#include <map>
-#include <typeinfo>
-#include <string>
 
 namespace eigenpy
 {
