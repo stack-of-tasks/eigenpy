@@ -27,6 +27,8 @@ namespace eigenpy
       static void copyswapn(void * /*dest*/, long /*dstride*/, void * /*src*/,
                             long /*sstride*/, long /*n*/, int /*swap*/, void * /*arr*/) {};
       static npy_bool nonzero(void * /*ip*/, void * /*array*/) { return (npy_bool)false; };
+      static void dotfunc(void * /*ip0_*/, npy_intp /*is0*/, void * /*ip1_*/, npy_intp /*is1*/,
+                          void * /*op*/, npy_intp /*n*/, void * /*arr*/);
 //      static void cast(void * /*from*/, void * /*to*/, npy_intp /*n*/, void * /*fromarr*/, void * /*toarr*/) {};
     };
   
@@ -144,6 +146,23 @@ namespace eigenpy
         }
       }
       
+      static void dotfunc(void * ip0_, npy_intp is0, void * ip1_, npy_intp is1,
+                          void * op, npy_intp n, void * /*arr*/)
+      {
+          T res = T(0);
+          char *ip0 = (char*)ip0_, *ip1 = (char*)ip1_;
+          npy_intp i;
+          for(i = 0; i < n; i++)
+          {
+            
+            res += *static_cast<T*>(static_cast<void*>(ip0))
+            * *static_cast<T*>(static_cast<void*>(ip1));
+            ip0 += is0;
+            ip1 += is1;
+          }
+          *static_cast<T*>(op) = res;
+      }
+      
 //      static void cast(void * from, void * to, npy_intp n, void * fromarr, void * toarr)
 //      {
 //      }
@@ -237,7 +256,8 @@ namespace eigenpy
                                PyArray_SetItemFunc * setitem,
                                PyArray_NonzeroFunc * nonzero,
                                PyArray_CopySwapFunc * copyswap,
-                               PyArray_CopySwapNFunc * copyswapn)
+                               PyArray_CopySwapNFunc * copyswapn,
+                               PyArray_DotFunc * dotfunc)
     {
       namespace bp = boost::python;
   
@@ -260,6 +280,7 @@ namespace eigenpy
       funcs.nonzero = nonzero;
       funcs.copyswap = copyswap;
       funcs.copyswapn = copyswapn;
+      funcs.dotfunc = dotfunc;
 //      f->cast = cast;
 
       const int code = PyArray_RegisterDataType(descr_ptr);
@@ -334,13 +355,15 @@ namespace eigenpy
     PyArray_NonzeroFunc * nonzero = &internal::SpecialMethods<Scalar>::nonzero;
     PyArray_CopySwapFunc * copyswap = &internal::SpecialMethods<Scalar>::copyswap;
     PyArray_CopySwapNFunc * copyswapn = &internal::SpecialMethods<Scalar>::copyswapn;
+    PyArray_DotFunc * dotfunc = &internal::SpecialMethods<Scalar>::dotfunc;
 //    PyArray_CastFunc * cast = &internal::SpecialMethods<Scalar>::cast;
     
     int code =  Register::registerNewType(py_type_ptr,
                                           &typeid(Scalar),
                                           sizeof(Scalar),
                                           getitem, setitem, nonzero,
-                                          copyswap, copyswapn);
+                                          copyswap, copyswapn,
+                                          dotfunc);
     
     return code;
   }
