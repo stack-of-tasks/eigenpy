@@ -18,6 +18,7 @@
 #endif
 
 #include <numpy/noprefix.h>
+#include <numpy/ufuncobject.h>
 
 #if defined _WIN32 || defined __CYGWIN__
   #define EIGENPY_GET_PY_ARRAY_TYPE(array) \
