@@ -141,10 +141,10 @@ namespace eigenpy
       return code;
     }
     
-    static Register & instance()
-    {
-      return self;
-    }
+//    static Register & instance()
+//    {
+//      return self;
+//    }
     
   private:
     
@@ -175,7 +175,7 @@ namespace eigenpy
     typedef std::map<PyTypeObject *,int,Compare_PyTypeObject> MapCode;
     static MapCode py_array_code_bindings;
     
-    static Register self;
+//    static Register self;
     
   };
   
