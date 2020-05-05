@@ -39,25 +39,6 @@ namespace eigenpy
   }
 
   template<typename Scalar>
-  PyTypeObject * getPyType()
-  {
-    if(!isNumpyNativeType<Scalar>())
-    {
-      const PyTypeObject * const_py_type_ptr = bp::converter::registered_pytype<Scalar>::get_pytype();
-      if(const_py_type_ptr == NULL)
-      {
-        std::stringstream ss;
-        ss << "The type " << typeid(Scalar).name() << " does not have a registered converter inside Boot.Python." << std::endl;
-        throw std::invalid_argument(ss.str());
-      }
-      PyTypeObject * py_type_ptr = const_cast<PyTypeObject *>(const_py_type_ptr);
-      return py_type_ptr;
-    }
-    else
-      return getPyArrayType();
-  }
-
-  template<typename Scalar>
   bool np_type_is_convertible_into_scalar(const int np_type)
   {
     if(NumpyEquivalentType<Scalar>::type_code == np_type)
