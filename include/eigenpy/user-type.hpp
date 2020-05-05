@@ -13,7 +13,6 @@
 #include <map>
 #include <typeinfo>
 #include <string>
-#include <iostream>
 
 namespace eigenpy
 {
@@ -134,8 +133,6 @@ namespace eigenpy
         if(py_array == NULL || PyArray_ISBEHAVED_RO(py_array))
         {
           const T & value = *static_cast<T*>(ip);
-          std::cout << "value != ZeroValue: " << (bool)(value != ZeroValue) << std::endl;
-          std::cout << "value != ZeroValue: " << (npy_bool)(value != ZeroValue) << std::endl;
           return (npy_bool)(value != ZeroValue);
         }
         else
@@ -157,7 +154,6 @@ namespace eigenpy
     template<typename T1, typename T2, typename R> \
     void binary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * /*data*/) \
     { \
-std::cout << "binary_op_##name" << std::endl; \
       npy_intp is0 = steps[0], is1 = steps[1], \
       os = steps[2], n = *dimensions; \
       char * i0 = args[0], *i1 = args[1], *o = args[2]; \
@@ -262,9 +258,6 @@ std::cout << "binary_op_##name" << std::endl; \
           PyTypeObject * py_type = type_to_py_type_bindings[&info];
           int code = py_array_code_bindings[py_type];
   
-  std::cout << "type name: " << py_type->tp_name << std::endl;
-  std::cout << "code: " << code << std::endl;
-  std::cout << "PyArray_TypeNum(py_type): " << PyArray_TypeNum(py_type) << std::endl;
           return code;
         }
         else
@@ -288,15 +281,10 @@ std::cout << "binary_op_##name" << std::endl; \
       descr.typeobj = py_type_ptr;
       descr.kind = 'V';
       descr.byteorder = '=';
-      std::cout << "type name: " << py_type_ptr->tp_name << std::endl;
       descr.elsize = type_size;
       descr.flags = NPY_LIST_PICKLE | NPY_USE_GETITEM | NPY_USE_SETITEM | NPY_NEEDS_INIT | NPY_NEEDS_PYAPI;
 //      descr->names = PyTuple_New(0);
 //      descr->fields = PyDict_New();
-      
-      std::cout << "descr->elsize: " << descr.elsize << std::endl;
-//      std::cout << "size of Scalar: " << sizeof(Scalar) << std::endl;
-      std::cout << "type_num: " << descr.type_num << std::endl;
       
       PyArray_ArrFuncs * funcs_ptr = new PyArray_ArrFuncs;
       PyArray_ArrFuncs & funcs = *funcs_ptr;
@@ -312,8 +300,7 @@ std::cout << "binary_op_##name" << std::endl; \
       const int code = PyArray_RegisterDataType(descr_ptr);
       assert(code >= 0 && "The return code should be positive");
       PyArray_Descr * new_descr = PyArray_DescrFromType(code);
-      std::cout << "new type_num: " << new_descr->type_num << std::endl;
-  
+
       type_to_py_type_bindings.insert(std::make_pair(type_info_ptr,py_type_ptr));
       py_array_descr_bindings[py_type_ptr] = new_descr;
       py_array_code_bindings[py_type_ptr] = code;
@@ -390,7 +377,6 @@ std::cout << "binary_op_##name" << std::endl; \
                                           getitem, setitem, nonzero,
                                           copyswap, copyswapn);
     
-    std::cout << "code: " << code << std::endl;
     PyObject* numpy_str;
 #if PY_MAJOR_VERSION >= 3
     numpy_str = PyUnicode_FromString("numpy");
@@ -402,37 +388,29 @@ std::cout << "binary_op_##name" << std::endl; \
     Py_DECREF(numpy_str);
     
     // load numpy
-    std::cout << "numpy loaded" << std::endl;
     import_ufunc();
     #define REGISTER_BINARY_UFUNC(name,T1,T2,R) { \
          PyUFuncObject* ufunc = \
              (PyUFuncObject*)PyObject_GetAttrString(numpy, #name); \
-std::cout << "ufunc" << std::endl; \
          int _types[3] = { Register::getTypeCode<T1>(), Register::getTypeCode<T2>(), Register::getTypeCode<R>()}; \
          if (!ufunc) { \
-         std::cout << "ufunc not available" << std::endl; \
              /*goto fail; \*/ \
          } \
-         std::cout << "step 1" << std::endl; \
          if (sizeof(_types)/sizeof(int)!=ufunc->nargs) { \
              PyErr_Format(PyExc_AssertionError, \
                           "ufunc %s takes %d arguments, our loop takes %lu", \
                           #name, ufunc->nargs, (unsigned long) \
                           (sizeof(_types)/sizeof(int))); \
              Py_DECREF(ufunc); \
-std::cout << "failed 1" << std::endl; \
          } \
-         std::cout << "step 2" << std::endl; \
          if (PyUFunc_RegisterLoopForType((PyUFuncObject*)ufunc, code, \
               internal::binary_op_##name<T1,T2,R>, _types, 0) < 0) { \
              /*Py_DECREF(ufunc);*/ \
-             std::cout << "failed 2" << std::endl; \
              /*goto fail; \*/ \
          } \
          Py_DECREF(ufunc); \
      }
 
-    std::cout << "register func" << std::endl;
     REGISTER_BINARY_UFUNC(add,Scalar,Scalar,Scalar);
     REGISTER_BINARY_UFUNC(subtract,Scalar,Scalar,Scalar);
     REGISTER_BINARY_UFUNC(multiply,Scalar,Scalar,Scalar);
@@ -445,8 +423,7 @@ std::cout << "failed 1" << std::endl; \
     REGISTER_BINARY_UFUNC(less,Scalar,Scalar,bool);
     REGISTER_BINARY_UFUNC(greater_equal,Scalar,Scalar,bool);
     REGISTER_BINARY_UFUNC(less_equal,Scalar,Scalar,bool);
-    std::cout << "register func" << std::endl;
-    
+
     Py_DECREF(numpy);
     
     return code;
