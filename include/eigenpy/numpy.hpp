@@ -45,7 +45,7 @@ namespace eigenpy
 
   EIGENPY_DLLEXPORT PyTypeObject * getPyArrayType();
 
-  EIGENPY_DLLEXPORT int call_PyArray_DescrFromType(int typenum);
+  EIGENPY_DLLEXPORT PyArray_Descr * call_PyArray_DescrFromType(int typenum);
 
   EIGENPY_DLLEXPORT void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs);
 

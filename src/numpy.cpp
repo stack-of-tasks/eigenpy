@@ -39,7 +39,7 @@ namespace eigenpy
 
   PyTypeObject * getPyArrayType() { return &PyArray_Type; }
 
-  int call_PyArray_DescrFromType(int typenum)
+  PyArray_Descr * call_PyArray_DescrFromType(int typenum)
   {
     return PyArray_DescrFromType(typenum);
   }
