@@ -47,6 +47,31 @@ namespace eigenpy
     EIGENPY_REGISTER_BINARY_OPERATOR(less_equal,<=)
     EIGENPY_REGISTER_BINARY_OPERATOR(greater_equal,>=)
   
+  #define EIGENPY_REGISTER_UNARY_OPERATOR(name,op) \
+    template<typename T, typename R> \
+    void unary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * /*data*/) \
+    { \
+      npy_intp is = steps[0], \
+      os = steps[1], n = *dimensions; \
+      char * i = args[0], *o = args[1]; \
+      int k; \
+      for (k = 0; k < n; k++) \
+      { \
+        T & x = *static_cast<T*>(static_cast<void*>(i)); \
+        R & res = *static_cast<R*>(static_cast<void*>(o)); \
+        res = op x; \
+        i += is; o += os; \
+      } \
+    } \
+    \
+    template<typename T> \
+    void unary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * data) \
+    { \
+      unary_op_##name<T,T>(args,dimensions,steps,data); \
+    }
+  
+    EIGENPY_REGISTER_UNARY_OPERATOR(negative,-)
+  
   } // namespace internal
   
 #define EIGENPY_REGISTER_BINARY_UFUNC(name,code,T1,T2,R) { \
@@ -70,6 +95,28 @@ namespace eigenpy
    } \
    Py_DECREF(ufunc); \
 }
+  
+#define EIGENPY_REGISTER_UNARY_UFUNC(name,code,T,R) { \
+   PyUFuncObject* ufunc = \
+       (PyUFuncObject*)PyObject_GetAttrString(numpy, #name); \
+   int _types[2] = { Register::getTypeCode<T>(), Register::getTypeCode<R>()}; \
+   if (!ufunc) { \
+       /*goto fail; \*/ \
+   } \
+   if (sizeof(_types)/sizeof(int)!=ufunc->nargs) { \
+       PyErr_Format(PyExc_AssertionError, \
+                    "ufunc %s takes %d arguments, our loop takes %lu", \
+                    #name, ufunc->nargs, (unsigned long) \
+                    (sizeof(_types)/sizeof(int))); \
+       Py_DECREF(ufunc); \
+   } \
+   if (PyUFunc_RegisterLoopForType((PyUFuncObject*)ufunc, code, \
+        internal::unary_op_##name<T,R>, _types, 0) < 0) { \
+       /*Py_DECREF(ufunc);*/ \
+       /*goto fail; \*/ \
+   } \
+   Py_DECREF(ufunc); \
+}
 
   template<typename Scalar>
   void registerCommonUfunc()
@@ -86,9 +133,9 @@ namespace eigenpy
     numpy = PyImport_Import(numpy_str);
     Py_DECREF(numpy_str);
     
-    // load numpy
     import_ufunc();
 
+    // Binary operators
     EIGENPY_REGISTER_BINARY_UFUNC(add,code,Scalar,Scalar,Scalar);
     EIGENPY_REGISTER_BINARY_UFUNC(subtract,code,Scalar,Scalar,Scalar);
     EIGENPY_REGISTER_BINARY_UFUNC(multiply,code,Scalar,Scalar,Scalar);
@@ -101,6 +148,9 @@ namespace eigenpy
     EIGENPY_REGISTER_BINARY_UFUNC(less,code,Scalar,Scalar,bool);
     EIGENPY_REGISTER_BINARY_UFUNC(greater_equal,code,Scalar,Scalar,bool);
     EIGENPY_REGISTER_BINARY_UFUNC(less_equal,code,Scalar,Scalar,bool);
+  
+    // Unary operators
+    EIGENPY_REGISTER_UNARY_UFUNC(negative,code,Scalar,Scalar);
 
     Py_DECREF(numpy);
   }
