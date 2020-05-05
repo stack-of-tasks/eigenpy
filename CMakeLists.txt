@@ -121,6 +121,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/angle-axis.hpp
   include/eigenpy/quaternion.hpp
   include/eigenpy/user-type.hpp
+  include/eigenpy/ufunc.hpp
   include/eigenpy/stride.hpp
   include/eigenpy/version.hpp
 )
