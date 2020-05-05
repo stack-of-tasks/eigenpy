@@ -9,7 +9,7 @@
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/eigen-allocator.hpp"
 
-#include "eigenpy/user-type.hpp"
+#include "eigenpy/register.hpp"
 
 namespace eigenpy
 {

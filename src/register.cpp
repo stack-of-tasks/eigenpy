@@ -2,7 +2,7 @@
  * Copyright 2020 INRIA
  */
 
-#include "eigenpy/user-type.hpp"
+#include "eigenpy/register.hpp"
 
 namespace eigenpy
 {

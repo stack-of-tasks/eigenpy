@@ -122,6 +122,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/quaternion.hpp
   include/eigenpy/user-type.hpp
   include/eigenpy/ufunc.hpp
+  include/eigenpy/register.hpp
   include/eigenpy/stride.hpp
   include/eigenpy/version.hpp
 )
@@ -152,7 +153,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/matrix-float.cpp
   src/matrix-complex-float.cpp
   src/matrix-complex-double.cpp
-  src/user-type.cpp
+  src/register.cpp
   src/matrix-double.cpp
   src/matrix-long-double.cpp
   src/matrix-complex-long-double.cpp

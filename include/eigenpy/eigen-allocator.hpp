@@ -7,7 +7,7 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/numpy-map.hpp"
-#include "eigenpy/user-type.hpp"
+#include "eigenpy/register.hpp"
 #include "eigenpy/scalar-conversion.hpp"
 #include "eigenpy/utils/is-aligned.hpp"
 

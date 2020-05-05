@@ -5,7 +5,7 @@
 #ifndef __eigenpy_ufunc_hpp__
 #define __eigenpy_ufunc_hpp__
 
-#include "eigenpy/user-type.hpp"
+#include "eigenpy/register.hpp"
 
 namespace eigenpy
 {
