@@ -26,6 +26,7 @@ namespace eigenpy
   template <> struct NumpyEquivalentType< std::complex<double> >  { enum { type_code = NPY_CDOUBLE };};
   template <> struct NumpyEquivalentType<long double>  { enum { type_code = NPY_LONGDOUBLE };};
   template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
+  template <> struct NumpyEquivalentType<bool>    { enum { type_code = NPY_BOOL  };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
 
