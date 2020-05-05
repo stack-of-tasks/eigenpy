@@ -39,10 +39,5 @@ namespace eigenpy
 
   PyTypeObject * getPyArrayType() { return &PyArray_Type; }
   
-  int call_PyArray_TypeNumFromName(const std::string & name)
-  {
-    return PyArray_TypeNumFromName(name.c_str());
-  }
-
 #endif
 }
