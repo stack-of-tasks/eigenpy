@@ -41,7 +41,7 @@ namespace eigenpy
   
   int call_PyArray_TypeNumFromName(const std::string & name)
   {
-    return getPyArrayType(name.c_str());
+    return PyArray_TypeNumFromName(name.c_str());
   }
 
 #endif
