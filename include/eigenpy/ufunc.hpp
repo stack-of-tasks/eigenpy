@@ -8,6 +8,7 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/exception.hpp"
+#include "eigenpy/user-type.hpp"
 
 #include <algorithm>
 #include <map>
@@ -56,7 +57,7 @@ namespace eigenpy
   
   } // namespace internal
   
-#define REGISTER_BINARY_UFUNC(name,T1,T2,R) { \
+#define REGISTER_BINARY_UFUNC(name,code,T1,T2,R) { \
    PyUFuncObject* ufunc = \
        (PyUFuncObject*)PyObject_GetAttrString(numpy, #name); \
    int _types[3] = { Register::getTypeCode<T1>(), Register::getTypeCode<T2>(), Register::getTypeCode<R>()}; \
@@ -81,6 +82,8 @@ namespace eigenpy
   template<typename Scalar>
   void registerCommonUfunc()
   {
+    const int code = Register::getTypeCode<Scalar>();
+  
     PyObject* numpy_str;
 #if PY_MAJOR_VERSION >= 3
     numpy_str = PyUnicode_FromString("numpy");
@@ -94,18 +97,18 @@ namespace eigenpy
     // load numpy
     import_ufunc();
 
-    REGISTER_BINARY_UFUNC(add,Scalar,Scalar,Scalar);
-    REGISTER_BINARY_UFUNC(subtract,Scalar,Scalar,Scalar);
-    REGISTER_BINARY_UFUNC(multiply,Scalar,Scalar,Scalar);
-    REGISTER_BINARY_UFUNC(divide,Scalar,Scalar,Scalar);
+    REGISTER_BINARY_UFUNC(add,code,Scalar,Scalar,Scalar);
+    REGISTER_BINARY_UFUNC(subtract,code,Scalar,Scalar,Scalar);
+    REGISTER_BINARY_UFUNC(multiply,code,Scalar,Scalar,Scalar);
+    REGISTER_BINARY_UFUNC(divide,code,Scalar,Scalar,Scalar);
   
     // Comparison operators
-    REGISTER_BINARY_UFUNC(equal,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(not_equal,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(greater,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(less,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(greater_equal,Scalar,Scalar,bool);
-    REGISTER_BINARY_UFUNC(less_equal,Scalar,Scalar,bool);
+    REGISTER_BINARY_UFUNC(equal,code,Scalar,Scalar,bool);
+    REGISTER_BINARY_UFUNC(not_equal,code,Scalar,Scalar,bool);
+    REGISTER_BINARY_UFUNC(greater,code,Scalar,Scalar,bool);
+    REGISTER_BINARY_UFUNC(less,code,Scalar,Scalar,bool);
+    REGISTER_BINARY_UFUNC(greater_equal,code,Scalar,Scalar,bool);
+    REGISTER_BINARY_UFUNC(less_equal,code,Scalar,Scalar,bool);
 
     Py_DECREF(numpy);
   }
