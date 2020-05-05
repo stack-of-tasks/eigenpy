@@ -15,6 +15,11 @@ namespace eigenpy
     }
   }
 
+  int PyArray_TypeNum(PyTypeObject * type)
+  {
+    return PyArray_TypeNumFromName(const_cast<char*>(type->tp_name));
+  }
+
 #if defined _WIN32 || defined __CYGWIN__
 
   PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type)
@@ -32,7 +37,12 @@ namespace eigenpy
     return PyArray_ObjectType(obj,val);
   }
 
-  PyTypeObject getPyArrayType() { return PyArray_Type; }
+  PyTypeObject * getPyArrayType() { return &PyArray_Type; }
+  
+  int call_PyArray_TypeNumFromName(const std::string & name)
+  {
+    return getPyArrayType(name.c_str());
+  }
 
 #endif
 }

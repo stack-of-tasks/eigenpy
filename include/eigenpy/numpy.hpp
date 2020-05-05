@@ -30,6 +30,7 @@
 namespace eigenpy
 {
   void EIGENPY_DLLEXPORT import_numpy();
+  int EIGENPY_DLLEXPORT PyArray_TypeNum(PyTypeObject * type);
 }
 
 #if defined _WIN32 || defined __CYGWIN__
@@ -41,13 +42,16 @@ namespace eigenpy
 
   EIGENPY_DLLEXPORT int call_PyArray_ObjectType(PyObject *, int);
 
-  EIGENPY_DLLEXPORT PyTypeObject getPyArrayType();
+  EIGENPY_DLLEXPORT PyTypeObject * getPyArrayType();
+
+  EIGENPY_DLLEXPORT int call_PyArray_TypeNumFromName(const std::string & name);
 }
 #else
   #define call_PyArray_SimpleNew PyArray_SimpleNew
   #define call_PyArray_New(py_type_ptr,nd,shape,np_type,data_ptr,options) \
     PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL)
-  #define getPyArrayType() PyArray_Type
+  #define getPyArrayType() &PyArray_Type
+  #define call_PyArray_TypeNumFromName(name) PyArray_TypeNumFromName(name.c_str())
 #endif
 
 #endif // ifndef __eigenpy_numpy_hpp__
