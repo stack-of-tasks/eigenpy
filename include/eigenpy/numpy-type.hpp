@@ -9,12 +9,16 @@
 #include "eigenpy/scalar-conversion.hpp"
 
 #include <patchlevel.h> // For PY_MAJOR_VERSION
+#include <stdexcept>
+#include <typeinfo>
+#include <sstream>
 
 namespace eigenpy
 {
   namespace bp = boost::python;
 
-  template <typename SCALAR>  struct NumpyEquivalentType {};
+  // By default, the Scalar is considered as a Python object
+  template <typename Scalar> struct NumpyEquivalentType { enum  { type_code = NPY_USERDEF };};
 
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
   template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
@@ -22,8 +26,17 @@ namespace eigenpy
   template <> struct NumpyEquivalentType< std::complex<double> >  { enum { type_code = NPY_CDOUBLE };};
   template <> struct NumpyEquivalentType<long double>  { enum { type_code = NPY_LONGDOUBLE };};
   template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
+  template <> struct NumpyEquivalentType<bool>    { enum { type_code = NPY_BOOL  };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+
+  template<typename Scalar>
+  bool isNumpyNativeType()
+  {
+    if(NumpyEquivalentType<Scalar>::type_code == NPY_USERDEF)
+      return false;
+    return true;
+  }
 
   template<typename Scalar>
   bool np_type_is_convertible_into_scalar(const int np_type)

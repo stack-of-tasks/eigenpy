@@ -25,7 +25,7 @@ namespace boost { namespace python {
     
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
     inline PyTypeObject const*
-    get_pytype()const
+    get_pytype() const
     {
       return converter::registered_pytype<MatrixRef>::get_pytype();
     }

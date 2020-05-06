@@ -9,8 +9,11 @@
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/eigen-allocator.hpp"
 
+#include "eigenpy/register.hpp"
+
 namespace eigenpy
 {
+
   template<typename MatType>
   struct NumpyAllocator
   {
@@ -20,8 +23,8 @@ namespace eigenpy
     {
       typedef typename SimilarMatrixType::Scalar Scalar;
       
-      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_SimpleNew(static_cast<int>(nd), shape,
-                                                                        NumpyEquivalentType<Scalar>::type_code);
+      const int code = Register::getTypeCode<Scalar>();
+      PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_SimpleNew(static_cast<int>(nd), shape, code);
       
       // Copy data
       EigenAllocator<SimilarMatrixType>::copy(mat,pyArray);
@@ -42,8 +45,11 @@ namespace eigenpy
       
       if(NumpyType::sharedMemory())
       {
-        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(static_cast<int>(nd), shape,
-                                                                    NumpyEquivalentType<Scalar>::type_code,
+        const int Scalar_type_code = Register::getTypeCode<Scalar>();
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(getPyArrayType(),
+                                                                    static_cast<int>(nd),
+                                                                    shape,
+                                                                    Scalar_type_code,
                                                                     mat.data(),
                                                                     NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
         
@@ -77,8 +83,11 @@ namespace eigenpy
       
       if(NumpyType::sharedMemory())
       {
-        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(static_cast<int>(nd), shape,
-                                                                    NumpyEquivalentType<Scalar>::type_code,
+        const int Scalar_type_code = Register::getTypeCode<Scalar>();
+        PyArrayObject * pyArray = (PyArrayObject*) call_PyArray_New(getPyArrayType(),
+                                                                    static_cast<int>(nd),
+                                                                    shape,
+                                                                    Scalar_type_code,
                                                                     const_cast<SimilarMatrixType &>(mat.derived()).data(),
                                                                     NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED);
                                                                     
