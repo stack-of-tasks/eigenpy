@@ -47,3 +47,4 @@ jobs:
           -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe ^
           ..
         cmake --build . --config Release --target install
+        make test
