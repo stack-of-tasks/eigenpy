@@ -150,6 +150,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/exception.cpp
   src/eigenpy.cpp
   src/numpy.cpp
+  src/numpy-type.cpp
   src/matrix-float.cpp
   src/matrix-complex-float.cpp
   src/matrix-complex-double.cpp
