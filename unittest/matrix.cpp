@@ -81,11 +81,21 @@ MatrixDerived base(const Eigen::MatrixBase<MatrixDerived> & m)
   return m.derived();
 }
 
+template<typename Scalar>
+Eigen::Matrix<Scalar,6,6> matrix6(const Scalar & value)
+{
+  typedef Eigen::Matrix<Scalar,6,6> ReturnType;
+  return ReturnType::Constant(value);
+}
+
 BOOST_PYTHON_MODULE(matrix)
 {
   using namespace Eigen;
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
+
+  typedef Eigen::Matrix<double,6,6> Matrix6;
+  eigenpy::enableEigenPySpecific<Matrix6>();
 
   Eigen::MatrixXd (*naturalsXX)(int,int,bool) = naturals;
   Eigen::VectorXd (*naturalsX)(int,bool) = naturals;
@@ -108,4 +118,6 @@ BOOST_PYTHON_MODULE(matrix)
   
   bp::def("base", base<VectorXd>);
   bp::def("base", base<MatrixXd>);
+
+  bp::def("matrix6", matrix6<double>);
 }

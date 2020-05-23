@@ -8,7 +8,6 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/scalar-conversion.hpp"
 
-#include <patchlevel.h> // For PY_MAJOR_VERSION
 #include <stdexcept>
 #include <typeinfo>
 #include <sstream>
@@ -73,121 +72,42 @@ namespace eigenpy
     ARRAY_TYPE
   };
   
-  struct NumpyType
+  struct EIGENPY_DLLEXPORT NumpyType
   {
     
-    static NumpyType & getInstance()
-    {
-      static NumpyType instance;
-      return instance;
-    }
+    static NumpyType & getInstance();
 
     operator bp::object () { return getInstance().CurrentNumpyType; }
 
-    static bp::object make(PyArrayObject* pyArray, bool copy = false)
-    { return make((PyObject*)pyArray,copy); }
+    static bp::object make(PyArrayObject* pyArray, bool copy = false);
     
-    static bp::object make(PyObject* pyObj, bool copy = false)
-    {
-      bp::object m;
-      if(isMatrix())
-        m = getInstance().NumpyMatrixObject(bp::object(bp::handle<>(pyObj)), bp::object(), copy);
-//        m = NumpyAsMatrixObject(bp::object(bp::handle<>(pyObj)));
-      else if(isArray())
-        m = bp::object(bp::handle<>(pyObj)); // nothing to do here
-
-      Py_INCREF(m.ptr());
-      return m;
-    }
+    static bp::object make(PyObject* pyObj, bool copy = false);
     
-    static void setNumpyType(bp::object & obj)
-    {
-      PyTypeObject * obj_type = PyType_Check(obj.ptr()) ? reinterpret_cast<PyTypeObject*>(obj.ptr()) : obj.ptr()->ob_type;
-      if(PyType_IsSubtype(obj_type,getInstance().NumpyMatrixType))
-        switchToNumpyMatrix();
-      else if(PyType_IsSubtype(obj_type,getInstance().NumpyArrayType))
-        switchToNumpyArray();
-    }
+    static void setNumpyType(bp::object & obj);
     
-    static void sharedMemory(const bool value)
-    {
-      getInstance().shared_memory = value;
-    }
+    static void sharedMemory(const bool value);
     
-    static bool sharedMemory()
-    {
-      return getInstance().shared_memory;
-    }
+    static bool sharedMemory();
     
-    static void switchToNumpyArray()
-    {
-      getInstance().CurrentNumpyType = getInstance().NumpyArrayObject;
-      getInstance().getType() = ARRAY_TYPE;
-    }
+    static void switchToNumpyArray();
     
-    static void switchToNumpyMatrix()
-    {
-      getInstance().CurrentNumpyType = getInstance().NumpyMatrixObject;
-      getInstance().getType() = MATRIX_TYPE;
-    }
+    static void switchToNumpyMatrix();
     
-    static NP_TYPE & getType()
-    {
-      return getInstance().np_type;
-    }
+    static NP_TYPE & getType();
     
-    static bp::object getNumpyType()
-    {
-      return getInstance().CurrentNumpyType;
-    }
+    static bp::object getNumpyType();
     
-    static const PyTypeObject * getNumpyMatrixType()
-    {
-      return getInstance().NumpyMatrixType;
-    }
+    static const PyTypeObject * getNumpyMatrixType();
     
-    static const PyTypeObject * getNumpyArrayType()
-    {
-      return getInstance().NumpyArrayType;
-    }
+    static const PyTypeObject * getNumpyArrayType();
     
-    static bool isMatrix()
-    {
-      return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
-                              getInstance().NumpyMatrixType);
-    }
+    static bool isMatrix();
     
-    static bool isArray()
-    {
-      if(getInstance().isMatrix()) return false;
-      return PyType_IsSubtype(reinterpret_cast<PyTypeObject*>(getInstance().CurrentNumpyType.ptr()),
-                              getInstance().NumpyArrayType);
-    }
+    static bool isArray();
 
   protected:
     
-    NumpyType()
-    {
-      pyModule = bp::import("numpy");
-      
-#if PY_MAJOR_VERSION >= 3
-      // TODO I don't know why this Py_INCREF is necessary.
-      // Without it, the destructor of NumpyType SEGV sometimes.
-      Py_INCREF(pyModule.ptr());
-#endif
-      
-      NumpyMatrixObject = pyModule.attr("matrix");
-      NumpyMatrixType = reinterpret_cast<PyTypeObject*>(NumpyMatrixObject.ptr());
-      NumpyArrayObject = pyModule.attr("ndarray");
-      NumpyArrayType = reinterpret_cast<PyTypeObject*>(NumpyArrayObject.ptr());
-      //NumpyAsMatrixObject = pyModule.attr("asmatrix");
-      //NumpyAsMatrixType = reinterpret_cast<PyTypeObject*>(NumpyAsMatrixObject.ptr());
-      
-      CurrentNumpyType = NumpyArrayObject; // default conversion
-      np_type = ARRAY_TYPE;
-      
-      shared_memory = true;
-    }
+    NumpyType();
 
     bp::object CurrentNumpyType;
     bp::object pyModule;

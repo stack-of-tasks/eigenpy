@@ -126,3 +126,7 @@ assert(mat1x1[0,0] == value)
 vec1x1 = eigenpy.vector1x1(value)
 assert(vec1x1.size == 1)
 assert(vec1x1[0] == value)
+
+# test registration of matrix6
+mat6 = eigenpy.matrix6(0.)
+assert(mat6.size == 36)

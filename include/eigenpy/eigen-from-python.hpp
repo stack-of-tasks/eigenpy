@@ -285,7 +285,7 @@ namespace eigenpy
   template<typename MatType>
   void* EigenFromPy<MatType>::convertible(PyArrayObject* pyArray)
   {
-    if(!PyArray_Check(pyArray))
+    if(!call_PyArray_Check(reinterpret_cast<PyObject*>(pyArray)))
       return 0;
     
     if(!np_type_is_convertible_into_scalar<Scalar>(EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
@@ -476,7 +476,7 @@ namespace eigenpy
     /// \brief Determine if pyObj can be converted into a MatType object
     static void* convertible(PyArrayObject * pyArray)
     {
-      if(!PyArray_Check(pyArray))
+      if(!call_PyArray_Check(reinterpret_cast<PyObject*>(pyArray)))
         return 0;
       if(!PyArray_ISWRITEABLE(pyArray))
         return 0;

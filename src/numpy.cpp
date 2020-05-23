@@ -22,6 +22,11 @@ namespace eigenpy
 
 #if defined _WIN32 || defined __CYGWIN__
 
+  bool call_PyArray_Check(PyObject * py_obj)
+  {
+    return PyArray_Check(py_obj);
+  }
+
   PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type)
   {
     return PyArray_SimpleNew(nd,shape,np_type);
