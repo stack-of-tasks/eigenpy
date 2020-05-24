@@ -32,7 +32,7 @@ namespace eigenpy
   template<typename Scalar>
   bool isNumpyNativeType()
   {
-    if(NumpyEquivalentType<Scalar>::type_code == NPY_USERDEF)
+    if((int)NumpyEquivalentType<Scalar>::type_code == NPY_USERDEF)
       return false;
     return true;
   }
