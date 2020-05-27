@@ -3,7 +3,7 @@
 # Copyright (c) 2018-2020 INRIA
 #
 
-MACRO(ADD_LIB_UNIT_TEST test PKGS)
+MACRO(ADD_LIB_UNIT_TEST test)
   CREATE_CTEST_BUILD_TESTS_TARGET()
 
   IF(BUILD_TESTING)
@@ -11,10 +11,6 @@ MACRO(ADD_LIB_UNIT_TEST test PKGS)
   ELSE(BUILD_TESTING)
     ADD_LIBRARY(${test} SHARED EXCLUDE_FROM_ALL ${test})
   ENDIF(BUILD_TESTING)
-
-  FOREACH(PKG ${PKGS})
-    PKG_CONFIG_USE_DEPENDENCY(${test} ${PKG})
-  ENDFOREACH(PKG)
 
   TARGET_LINK_LIBRARIES(${test} PUBLIC ${PROJECT_NAME})
   SET_TARGET_PROPERTIES(${test} PROPERTIES PREFIX "")
@@ -29,14 +25,14 @@ MACRO(ADD_LIB_UNIT_TEST test PKGS)
   ENDIF(NOT BUILD_TESTING)
 ENDMACRO(ADD_LIB_UNIT_TEST)
 
-ADD_LIB_UNIT_TEST(matrix "eigen3")
-ADD_LIB_UNIT_TEST(geometry "eigen3")
-ADD_LIB_UNIT_TEST(complex "eigen3")
-ADD_LIB_UNIT_TEST(return_by_ref "eigen3")
+ADD_LIB_UNIT_TEST(matrix)
+ADD_LIB_UNIT_TEST(geometry)
+ADD_LIB_UNIT_TEST(complex)
+ADD_LIB_UNIT_TEST(return_by_ref)
 IF(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
-  ADD_LIB_UNIT_TEST(eigen_ref "eigen3")
+  ADD_LIB_UNIT_TEST(eigen_ref)
 ENDIF()
-ADD_LIB_UNIT_TEST(user_type "eigen3")
+ADD_LIB_UNIT_TEST(user_type)
 
 ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
 ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
