@@ -47,16 +47,6 @@ jobs:
         - BUILDTYPE=Release
         - TRAVIS_PYTHON_VERSION=35 
       python: 3.5
-    - dist: trusty 
-      env: 
-        - BUILDTYPE=Release
-        - TRAVIS_PYTHON_VERSION=27 
-      python: 2.7
-    - dist: trusty 
-      env: 
-        - BUILDTYPE=Release
-        - TRAVIS_PYTHON_VERSION=34
-      python: 3.4
 
 notifications:
   email:
