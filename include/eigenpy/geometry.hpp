@@ -11,10 +11,10 @@
 namespace eigenpy
 {
   
-  void EIGENPY_DLLEXPORT exposeQuaternion();
-  void EIGENPY_DLLEXPORT exposeAngleAxis();
+  void EIGENPY_DLLAPI exposeQuaternion();
+  void EIGENPY_DLLAPI exposeAngleAxis();
   
-  void EIGENPY_DLLEXPORT exposeGeometryConversion();
+  void EIGENPY_DLLAPI exposeGeometryConversion();
   
 } // namespace eigenpy
 

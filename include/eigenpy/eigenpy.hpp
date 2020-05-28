@@ -40,7 +40,7 @@ namespace eigenpy
 {
 
   /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instance. */
-  void EIGENPY_DLLEXPORT enableEigenPy();
+  void EIGENPY_DLLAPI enableEigenPy();
 
   /* Enable the Eigen--Numpy serialization for the templated MatrixBase class.
    * The second template argument is used for inheritance of Eigen classes. If

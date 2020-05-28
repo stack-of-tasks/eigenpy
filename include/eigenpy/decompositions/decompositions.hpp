@@ -9,7 +9,7 @@
 
 namespace eigenpy
 {
-  void EIGENPY_DLLEXPORT exposeDecompositions();
+  void EIGENPY_DLLAPI exposeDecompositions();
 } // namespace eigenpy
 
 #endif // define __eigenpy_decompositions_decompositions_hpp__

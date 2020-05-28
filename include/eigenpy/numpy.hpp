@@ -30,28 +30,28 @@
 
 namespace eigenpy
 {
-  void EIGENPY_DLLEXPORT import_numpy();
-  int EIGENPY_DLLEXPORT PyArray_TypeNum(PyTypeObject * type);
+  void EIGENPY_DLLAPI import_numpy();
+  int EIGENPY_DLLAPI PyArray_TypeNum(PyTypeObject * type);
 }
 
 #if defined _WIN32 || defined __CYGWIN__
 namespace eigenpy
 {
-  EIGENPY_DLLEXPORT bool call_PyArray_Check(PyObject *);
+  EIGENPY_DLLAPI bool call_PyArray_Check(PyObject *);
 
-  EIGENPY_DLLEXPORT PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type);
+  EIGENPY_DLLAPI PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type);
 
-  EIGENPY_DLLEXPORT PyObject* call_PyArray_New(PyTypeObject * py_type_ptr, int nd, npy_intp * shape, int np_type, void * data_ptr, int options);
+  EIGENPY_DLLAPI PyObject* call_PyArray_New(PyTypeObject * py_type_ptr, int nd, npy_intp * shape, int np_type, void * data_ptr, int options);
 
-  EIGENPY_DLLEXPORT int call_PyArray_ObjectType(PyObject *, int);
+  EIGENPY_DLLAPI int call_PyArray_ObjectType(PyObject *, int);
 
-  EIGENPY_DLLEXPORT PyTypeObject * getPyArrayType();
+  EIGENPY_DLLAPI PyTypeObject * getPyArrayType();
 
-  EIGENPY_DLLEXPORT PyArray_Descr * call_PyArray_DescrFromType(int typenum);
+  EIGENPY_DLLAPI PyArray_Descr * call_PyArray_DescrFromType(int typenum);
 
-  EIGENPY_DLLEXPORT void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs);
+  EIGENPY_DLLAPI void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs);
 
-  EIGENPY_DLLEXPORT int call_PyArray_RegisterDataType(PyArray_Descr * dtype);
+  EIGENPY_DLLAPI int call_PyArray_RegisterDataType(PyArray_Descr * dtype);
 }
 #else
   #define call_PyArray_Check(py_obj) PyArray_Check(py_obj)

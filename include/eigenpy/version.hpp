@@ -17,7 +17,7 @@ namespace eigenpy
   ///        the following standard:
   ///        EIGENPY_MINOR_VERSION.EIGENPY_MINOR_VERSION.EIGENPY_PATCH_VERSION
   ///
-  std::string EIGENPY_DLLEXPORT printVersion(const std::string & delimiter = ".");
+  std::string EIGENPY_DLLAPI printVersion(const std::string & delimiter = ".");
   
   ///
   /// \brief Checks if the current version of EigenPy is at least the version provided
@@ -30,7 +30,7 @@ namespace eigenpy
   /// \returns true if the current version of EigenPy is greater than the version provided
   ///        by the input arguments.
   ///
-  bool EIGENPY_DLLEXPORT checkVersionAtLeast(unsigned int major_version,
+  bool EIGENPY_DLLAPI checkVersionAtLeast(unsigned int major_version,
                                              unsigned int minor_version,
                                              unsigned int patch_version);
 }
