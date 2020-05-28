@@ -12,7 +12,7 @@
 
 namespace eigenpy
 {
-  inline void EIGENPY_DLLAPI exposeComputationInfo()
+  inline void exposeComputationInfo()
   {
     boost::python::enum_<Eigen::ComputationInfo>("ComputationInfo")
     .value("Success",Eigen::Success)
