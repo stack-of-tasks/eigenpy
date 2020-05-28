@@ -11,7 +11,7 @@ namespace eigenpy
 {
   struct SolversScope {};
   
-  void EIGENPY_DLLEXPORT exposeSolvers();
+  void EIGENPY_DLLAPI exposeSolvers();
   
 } // namespace eigenpy
 

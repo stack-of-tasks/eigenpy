@@ -18,7 +18,7 @@ namespace eigenpy
 {
 
   /// \brief Structure collecting all the types registers in Numpy via EigenPy
-  struct EIGENPY_DLLEXPORT Register
+  struct EIGENPY_DLLAPI Register
   {
     
     static PyArray_Descr * getPyArrayDescr(PyTypeObject * py_type_ptr);

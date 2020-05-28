@@ -72,7 +72,7 @@ namespace eigenpy
     ARRAY_TYPE
   };
   
-  struct EIGENPY_DLLEXPORT NumpyType
+  struct EIGENPY_DLLAPI NumpyType
   {
     
     static NumpyType & getInstance();

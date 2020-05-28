@@ -22,7 +22,7 @@
 namespace eigenpy
 {
   
-  void EIGENPY_DLLEXPORT exposePreconditioners();
+  void EIGENPY_DLLAPI exposePreconditioners();
   
 } // namespace eigenpy
 
