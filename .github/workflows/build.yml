@@ -1,10 +1,5 @@
-name: Build Eigenpy
-on:
-  pull_request:
-  push:
-    branches:
-      - master
-      - devel
+name: Build Eigenpy on Windows via Conda
+on: [push,pull_request]
 
 jobs:
   build:
