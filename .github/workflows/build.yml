@@ -40,4 +40,4 @@ jobs:
           -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe ^
           ..
         cmake --build . --config Release --target install
-        ctest --output-on-failure
+        ctest --output-on-failure -C Release
