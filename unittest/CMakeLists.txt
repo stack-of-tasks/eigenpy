@@ -41,23 +41,23 @@ ADD_PYTHON_UNIT_TEST("py-return-by-ref" "unittest/python/test_return_by_ref.py" 
 ADD_PYTHON_UNIT_TEST("py-eigen-ref" "unittest/python/test_eigen_ref.py" "unittest")
 ADD_PYTHON_UNIT_TEST("py-user-type" "unittest/python/test_user_type.py" "unittest")
 
-ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-switch" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-dimensions" "unittest/python/test_dimensions.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-dimensions" "unittest/python/test_dimensions.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-version" "unittest/python/test_version.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-version" "unittest/python/test_version.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-version" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-eigen-solver" "unittest/python/test_eigen_solver.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-eigen-solver" "unittest/python/test_eigen_solver.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-eigen-solver" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-self-adjoint-eigen-solver" "unittest/python/test_self_adjoint_eigen_solver.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-self-adjoint-eigen-solver" "unittest/python/test_self_adjoint_eigen_solver.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-self-adjoint-eigen-solver" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-LLT" "unittest/python/test_LLT.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-LLT" "unittest/python/test_LLT.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-LLT" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-LDLT" "unittest/python/test_LDLT.py" "python/eigenpy")
+ADD_PYTHON_UNIT_TEST("py-LDLT" "unittest/python/test_LDLT.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-LDLT" PROPERTIES DEPENDS ${PYWRAP})
