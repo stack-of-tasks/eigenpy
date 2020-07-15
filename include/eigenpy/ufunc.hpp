@@ -12,9 +12,15 @@ namespace eigenpy
   namespace internal
   {
   
+#ifdef NPY_1_19_API_VERSION
+  #define EIGENPY_NPY_CONST_UFUNC_ARG const
+#else
+  #define EIGENPY_NPY_CONST_UFUNC_ARG
+#endif
+  
 #define EIGENPY_REGISTER_BINARY_OPERATOR(name,op) \
     template<typename T1, typename T2, typename R> \
-    void binary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * /*data*/) \
+    void binary_op_##name(char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * dimensions, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * steps, void * /*data*/) \
     { \
       npy_intp is0 = steps[0], is1 = steps[1], \
       os = steps[2], n = *dimensions; \
@@ -31,7 +37,7 @@ namespace eigenpy
     } \
     \
     template<typename T> \
-    void binary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * data) \
+    void binary_op_##name(char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * dimensions, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * steps, void * data) \
     { \
       binary_op_##name<T,T,T>(args,dimensions,steps,data); \
     }
@@ -49,7 +55,7 @@ namespace eigenpy
   
   #define EIGENPY_REGISTER_UNARY_OPERATOR(name,op) \
     template<typename T, typename R> \
-    void unary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * /*data*/) \
+    void unary_op_##name(char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * dimensions, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * steps, void * /*data*/) \
     { \
       npy_intp is = steps[0], \
       os = steps[1], n = *dimensions; \
@@ -65,7 +71,7 @@ namespace eigenpy
     } \
     \
     template<typename T> \
-    void unary_op_##name(char** args, npy_intp * dimensions, npy_intp * steps, void * data) \
+    void unary_op_##name(char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * dimensions, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp * steps, void * data) \
     { \
       unary_op_##name<T,T>(args,dimensions,steps,data); \
     }
