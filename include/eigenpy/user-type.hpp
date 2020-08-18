@@ -191,12 +191,12 @@ namespace eigenpy
     PyArray_DotFunc * dotfunc = &internal::SpecialMethods<Scalar>::dotfunc;
 //    PyArray_CastFunc * cast = &internal::SpecialMethods<Scalar>::cast;
     
-    int code =  Register::registerNewType(py_type_ptr,
-                                          &typeid(Scalar),
-                                          sizeof(Scalar),
-                                          getitem, setitem, nonzero,
-                                          copyswap, copyswapn,
-                                          dotfunc);
+    int code = Register::registerNewType(py_type_ptr,
+                                         &typeid(Scalar),
+                                         sizeof(Scalar),
+                                         getitem, setitem, nonzero,
+                                         copyswap, copyswapn,
+                                         dotfunc);
     
     return code;
   }
