@@ -22,6 +22,8 @@
 
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
+#define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
+
 #include "eigenpy/expose.hpp"
 
 namespace eigenpy
