@@ -94,8 +94,13 @@ BOOST_PYTHON_MODULE(matrix)
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
 
+  // Square matrix
   typedef Eigen::Matrix<double,6,6> Matrix6;
   eigenpy::enableEigenPySpecific<Matrix6>();
+  
+  // Non-square matrix
+  typedef Eigen::Matrix<double,4,6> Matrix46;
+  eigenpy::enableEigenPySpecific<Matrix46>();
 
   Eigen::MatrixXd (*naturalsXX)(int,int,bool) = naturals;
   Eigen::VectorXd (*naturalsX)(int,bool) = naturals;

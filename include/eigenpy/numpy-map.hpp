@@ -22,7 +22,7 @@ namespace eigenpy
     typedef NumpyMapTraits<MatType, InputScalar, AlignmentValue, Stride> Impl;
     typedef typename Impl::EigenMap EigenMap;
 
-    static EigenMap map(PyArrayObject* pyArray);
+    static EigenMap map(PyArrayObject* pyArray, bool swap_dimensions = false);
    };
 
 } // namespace eigenpy
@@ -39,7 +39,7 @@ namespace eigenpy
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
     typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
 
-    static EigenMap mapImpl(PyArrayObject* pyArray)
+    static EigenMap mapImpl(PyArrayObject* pyArray, bool swap_dimensions = false)
     {
       enum {
         OuterStrideAtCompileTime = Stride::OuterStrideAtCompileTime,
@@ -77,11 +77,22 @@ namespace eigenpy
         assert( (PyArray_DIMS(pyArray)[0]  < INT_MAX)
              && (PyArray_STRIDE(pyArray,0) < INT_MAX));
         
-        rows = (int)PyArray_DIMS(pyArray)[0];
-        cols = 1;
-        
-        inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
-        outer_stride = 0;
+        if(!swap_dimensions)
+        {
+          rows = (int)PyArray_DIMS(pyArray)[0];
+          cols = 1;
+          
+          inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+          outer_stride = 0;
+        }
+        else
+        {
+          rows = 1;
+          cols = (int)PyArray_DIMS(pyArray)[0];
+          
+          inner_stride = 0;
+          outer_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+        }
       }
       
       // Specific care for Eigen::Stride<-1,0>
@@ -113,8 +124,9 @@ namespace eigenpy
     typedef Eigen::Matrix<InputScalar,MatType::RowsAtCompileTime,MatType::ColsAtCompileTime,MatType::Options> EquivalentInputMatrixType;
     typedef Eigen::Map<EquivalentInputMatrixType,AlignmentValue,Stride> EigenMap;
  
-    static EigenMap mapImpl(PyArrayObject* pyArray)
+    static EigenMap mapImpl(PyArrayObject* pyArray, bool swap_dimensions = false)
     {
+      EIGENPY_UNUSED_VARIABLE(swap_dimensions);
       assert( PyArray_NDIM(pyArray) <= 2 );
 
       int rowMajor;
@@ -141,9 +153,9 @@ namespace eigenpy
 
   template<typename MatType, typename InputScalar, int AlignmentValue, typename Stride>
   typename NumpyMap<MatType,InputScalar,AlignmentValue,Stride>::EigenMap
-  NumpyMap<MatType,InputScalar,AlignmentValue,Stride>::map(PyArrayObject * pyArray)
+  NumpyMap<MatType,InputScalar,AlignmentValue,Stride>::map(PyArrayObject * pyArray, bool swap_dimensions)
   {
-    return Impl::mapImpl(pyArray);
+    return Impl::mapImpl(pyArray,swap_dimensions);
   }
 
 } // namespace eigenpy
