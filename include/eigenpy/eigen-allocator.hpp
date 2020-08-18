@@ -166,6 +166,7 @@ namespace eigenpy
       {
         MapType map_pyArray = NumpyMap<MatType,Scalar>::map(pyArray);
         map_pyArray = mat;
+        return;
       }
       
       switch(pyArray_type_code)
