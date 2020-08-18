@@ -66,6 +66,17 @@ namespace eigenpy
         }
       }
     };
+  
+    template<typename MatType>
+    bool check_swap(PyArrayObject * pyArray,
+                    const Eigen::MatrixBase<MatType> & mat)
+    {
+      if(PyArray_NDIM(pyArray) == 0) return false;
+      if(mat.rows() == PyArray_DIMS(pyArray)[0])
+        return false;
+      else
+        return true;
+    }
 
     template<typename Scalar, typename NewScalar, bool cast_is_valid = FromTypeToType<Scalar,NewScalar>::value >
     struct cast_matrix_or_array
