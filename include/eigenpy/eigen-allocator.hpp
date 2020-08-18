@@ -75,10 +75,7 @@ namespace eigenpy
                       const Eigen::MatrixBase<MatrixOut> & dest)
       {
         MatrixOut & dest_ = const_cast<MatrixOut &>(dest.derived());
-        if(dest.rows() == input.rows())
-          dest_ = input.template cast<NewScalar>();
-        else
-          dest_ = input.transpose().template cast<NewScalar>();
+        dest_ = input.template cast<NewScalar>();
       }
     };
 
@@ -168,11 +165,7 @@ namespace eigenpy
       if(pyArray_type_code == Scalar_type_code) // no cast needed
       {
         MapType map_pyArray = NumpyMap<MatType,Scalar>::map(pyArray);
-        if(mat.rows() == map_pyArray.rows())
-          map_pyArray = mat;
-        else
-          map_pyArray = mat.transpose();
-        return;
+        map_pyArray = mat;
       }
       
       switch(pyArray_type_code)
