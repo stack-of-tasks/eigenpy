@@ -36,6 +36,10 @@ Mref = np.reshape(np.array(range(64),np.double),[8,8])
 Mref_from_base = eigenpy.base(Mref)
 assert( np.array_equal(Mref,Mref_from_base) );
 
+# Test plain function
+Mref_from_plain = eigenpy.plain(Mref)
+assert( np.array_equal(Mref,Mref_from_plain) );
+
 if verbose: print("===> Matrix 8x8")
 M = Mref
 assert( np.array_equal(M,eigenpy.reflex(M,verbose)) );
