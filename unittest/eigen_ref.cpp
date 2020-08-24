@@ -37,6 +37,14 @@ void fill(Eigen::Ref<MatType> mat, const typename MatType::Scalar & value)
   mat.fill(value);
 }
 
+template<typename MatType>
+Eigen::Ref<MatType> asRef(const int rows, const int cols)
+{
+  static MatType mat(rows,cols);
+  std::cout << "mat:\n" << mat << std::endl;
+  return mat;
+}
+
 BOOST_PYTHON_MODULE(eigen_ref)
 {
   namespace bp = boost::python;
@@ -56,4 +64,6 @@ BOOST_PYTHON_MODULE(eigen_ref)
   bp::def("fillVec3", fill<Vector3d>);
   bp::def("fillVec", fill<VectorXd>);
   bp::def("fill", fill<MatrixXd>);
+  
+  bp::def("asRef", asRef<MatrixXd>);
 }
