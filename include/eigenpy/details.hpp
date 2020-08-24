@@ -49,6 +49,20 @@ namespace boost { namespace python { namespace detail {
           std::size_t, value = sizeof(MatType));
   };
 
+  template<class MatType>
+  struct referent_size<Eigen::PlainObjectBase<MatType>&>
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
+  template<class MatType>
+  struct referent_size<Eigen::PlainObjectBase<MatType> >
+  {
+      BOOST_STATIC_CONSTANT(
+          std::size_t, value = sizeof(MatType));
+  };
+
 }}}
 
 namespace eigenpy
@@ -65,7 +79,13 @@ namespace eigenpy
   {
     if(check_registration<MatType>()) return;
     
+    // to-python
     EigenToPyConverter<MatType>::registration();
+#if EIGEN_VERSION_AT_LEAST(3,2,0)
+    EigenToPyConverter< Eigen::Ref<MatType> >::registration();
+#endif
+    
+    // from-python
     EigenFromPyConverter<MatType>::registration();
   }
 

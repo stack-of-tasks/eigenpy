@@ -82,6 +82,36 @@ namespace eigenpy
     }
   };
 
+  template<typename MatType, int Options, typename Stride>
+  struct EigenToPy< Eigen::Ref<MatType,Options,Stride> >
+  {
+    static PyObject* convert(const Eigen::Ref<MatType,Options,Stride> & mat)
+    {
+      typedef Eigen::Ref<MatType,Options,Stride> EigenRef;
+      
+      assert( (mat.rows()<INT_MAX) && (mat.cols()<INT_MAX)
+             && "Matrix range larger than int ... should never happen." );
+      const npy_intp R = (npy_intp)mat.rows(), C = (npy_intp)mat.cols();
+      
+      PyArrayObject* pyArray;
+      // Allocate Python memory
+      if( ( ((!(C == 1) != !(R == 1)) && !MatType::IsVectorAtCompileTime) || MatType::IsVectorAtCompileTime)
+         && NumpyType::getType() == ARRAY_TYPE) // Handle array with a single dimension
+      {
+        npy_intp shape[1] = { C == 1 ? R : C };
+        pyArray = NumpyAllocator<EigenRef>::allocate(const_cast<EigenRef &>(mat),1,shape);
+      }
+      else
+      {
+        npy_intp shape[2] = { R,C };
+        pyArray = NumpyAllocator<EigenRef>::allocate(const_cast<EigenRef &>(mat),2,shape);
+      }
+      
+      // Create an instance (either np.array or np.matrix)
+      return NumpyType::make(pyArray).ptr();
+    }
+  };
+
   template<typename MatType>
   struct EigenToPyConverter
   {
