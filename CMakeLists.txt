@@ -66,6 +66,9 @@ ENDIF(WIN32)
 # ----------------------------------------------------
 ADD_PROJECT_DEPENDENCY(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
 
+SET_BOOST_DEFAULT_OPTIONS()
+EXPORT_BOOST_DEFAULT_OPTIONS()
+FIND_PACKAGE(Boost REQUIRED)
 SEARCH_FOR_BOOST_PYTHON()
 
 # ----------------------------------------------------
