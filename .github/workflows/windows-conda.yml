@@ -14,12 +14,16 @@ jobs:
       run: |
         git submodule update --init
     - uses: goanpeca/setup-miniconda@v1
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       with:
         activate-environment: eigenpy
         environment-file: .github/workflows/conda/environment.yml
         python-version: 3.7
     - name: Build Eigenpy
       shell: cmd /C CALL {0}
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
       run: |
         :: unset extra Boost envs
         set Boost_ROOT=
