@@ -3,7 +3,7 @@
 # Copyright (c) 2018-2020 INRIA
 #
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
 
 SET(PROJECT_NAME eigenpy)
 SET(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
@@ -187,6 +187,12 @@ IF(NOT WIN32)
   TARGET_COMPILE_OPTIONS(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj> "-Wno-conversion")
 ELSE()
   TARGET_COMPILE_OPTIONS(${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj>)
+ENDIF()
+
+IF(Boost_VERSION GREATER 107299)
+  # Silence a warning about a deprecated use of boost bind by boost python
+  # at least fo boost 1.73 to 1.75
+  ADD_DEFINITIONS(-DBOOST_BIND_GLOBAL_PLACEHOLDERS)
 ENDIF()
 
 TARGET_LINK_BOOST_PYTHON(${PROJECT_NAME} PUBLIC)
