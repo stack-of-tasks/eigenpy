@@ -88,8 +88,6 @@ namespace eigenpy
     }
   };
 
-  BOOST_PYTHON_FUNCTION_OVERLOADS(isApproxQuaternion_overload,call<Eigen::Quaterniond>::isApprox,2,3)
-
   template<typename Quaternion>
   class QuaternionVisitor
   :  public bp::def_visitor< QuaternionVisitor<Quaternion> >
@@ -103,6 +101,8 @@ namespace eigenpy
     typedef typename QuaternionBase::Matrix3 Matrix3;
 
     typedef typename QuaternionBase::AngleAxisType AngleAxis;
+    
+    BOOST_PYTHON_FUNCTION_OVERLOADS(isApproxQuaternion_overload,call<Quaternion>::isApprox,2,3)
 
   public:
 
