@@ -16,13 +16,13 @@ namespace eigenpy
     template<typename T, int type_code = NumpyEquivalentType<T>::type_code>
     struct SpecialMethods
     {
-      static void copyswap(void * /*dst*/, void * /*src*/, int /*swap*/, void * /*arr*/) {};
-      static PyObject * getitem(void * /*ip*/, void * /*ap*/) { return NULL; };
-      static int setitem(PyObject * /*op*/, void * /*ov*/, void * /*ap*/) { return -1; }
-      static void copyswapn(void * /*dest*/, long /*dstride*/, void * /*src*/,
-                            long /*sstride*/, long /*n*/, int /*swap*/, void * /*arr*/) {};
-      static npy_bool nonzero(void * /*ip*/, void * /*array*/) { return (npy_bool)false; };
-      static void dotfunc(void * /*ip0_*/, npy_intp /*is0*/, void * /*ip1_*/, npy_intp /*is1*/,
+      inline static void copyswap(void * /*dst*/, void * /*src*/, int /*swap*/, void * /*arr*/) /*{}*/;
+      inline static PyObject * getitem(void * /*ip*/, void * /*ap*/) /*{ return NULL; }*/;
+      inline static int setitem(PyObject * /*op*/, void * /*ov*/, void * /*ap*/) /*{ return -1; }*/;
+      inline static void copyswapn(void * /*dest*/, long /*dstride*/, void * /*src*/,
+                            long /*sstride*/, long /*n*/, int /*swap*/, void * /*arr*/) /*{}*/;
+      inline static npy_bool nonzero(void * /*ip*/, void * /*array*/) /*{ return (npy_bool)false; }*/;
+      inline static void dotfunc(void * /*ip0_*/, npy_intp /*is0*/, void * /*ip1_*/, npy_intp /*is1*/,
                           void * /*op*/, npy_intp /*n*/, void * /*arr*/);
 //      static void cast(void * /*from*/, void * /*to*/, npy_intp /*n*/, void * /*fromarr*/, void * /*toarr*/) {};
     };
@@ -30,7 +30,7 @@ namespace eigenpy
     template<typename T>
     struct SpecialMethods<T,NPY_USERDEF>
     {
-      static void copyswap(void * dst, void * src, int swap, void * /*arr*/)
+      inline static void copyswap(void * dst, void * src, int swap, void * /*arr*/)
       {
 //        std::cout << "copyswap" << std::endl;
         if (src != NULL)
@@ -48,7 +48,7 @@ namespace eigenpy
         }
       }
       
-      static PyObject * getitem(void * ip, void * ap)
+      inline static PyObject * getitem(void * ip, void * ap)
       {
 //        std::cout << "getitem" << std::endl;
         PyArrayObject * py_array = static_cast<PyArrayObject *>(ap);
@@ -68,7 +68,7 @@ namespace eigenpy
         }
       }
       
-      static int setitem(PyObject * src_obj, void * dest_ptr, void * array)
+      inline static int setitem(PyObject * src_obj, void * dest_ptr, void * array)
       {
 //        std::cout << "setitem" << std::endl;
         if(array == NULL)
@@ -103,8 +103,8 @@ namespace eigenpy
         return 0;
       }
       
-      static void copyswapn(void * dst, long dstride, void * src, long sstride,
-                            long n, int swap, void * array)
+      inline static void copyswapn(void * dst, long dstride, void * src, long sstride,
+                                   long n, int swap, void * array)
       {
 //        std::cout << "copyswapn" << std::endl;
         
@@ -122,7 +122,7 @@ namespace eigenpy
         }
       }
       
-      static npy_bool nonzero(void * ip, void * array)
+      inline static npy_bool nonzero(void * ip, void * array)
       {
 //        std::cout << "nonzero" << std::endl;
         static const T ZeroValue = T(0);
@@ -141,8 +141,8 @@ namespace eigenpy
         }
       }
       
-      static void dotfunc(void * ip0_, npy_intp is0, void * ip1_, npy_intp is1,
-                          void * op, npy_intp n, void * /*arr*/)
+      inline static void dotfunc(void * ip0_, npy_intp is0, void * ip1_, npy_intp is1,
+                                 void * op, npy_intp n, void * /*arr*/)
       {
           T res = T(0);
           char *ip0 = (char*)ip0_, *ip1 = (char*)ip1_;
