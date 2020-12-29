@@ -19,50 +19,67 @@ namespace eigenpy
     template<typename MatType, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
     struct init_matrix_or_array
     {
+      static MatType * run(int rows, int cols, void * storage)
+      {
+        if(storage)
+          return new (storage) MatType(rows,cols);
+        else
+          return new MatType(rows,cols);
+      }
+      
       static MatType * run(PyArrayObject * pyArray, void * storage = NULL)
       {
         assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
 
         int rows = -1, cols = -1;
-        if(PyArray_NDIM(pyArray) == 2)
+        const int ndim = PyArray_NDIM(pyArray);
+        if(ndim == 2)
         {
           rows = (int)PyArray_DIMS(pyArray)[0];
           cols = (int)PyArray_DIMS(pyArray)[1];
         }
-        else if(PyArray_NDIM(pyArray) == 1)
+        else if(ndim == 1)
         {
           rows = (int)PyArray_DIMS(pyArray)[0];
           cols = 1;
         }
   
-        if(storage)
-          return new (storage) MatType(rows,cols);
-        else
-          return new MatType(rows,cols);
+        return run(rows,cols,storage);
       }
     };
 
     template<typename MatType>
     struct init_matrix_or_array<MatType,true>
     {
+      static MatType * run(int rows, int cols, void * storage)
+      {
+        if(storage)
+          return new (storage) MatType(rows,cols);
+        else
+          return new MatType(rows,cols);
+      }
+      
+      static MatType * run(int size, void * storage)
+      {
+        if(storage)
+          return new (storage) MatType(size);
+        else
+          return new MatType(size);
+      }
+      
       static MatType * run(PyArrayObject * pyArray, void * storage = NULL)
       {
-        if(PyArray_NDIM(pyArray) == 1)
+        const int ndim = PyArray_NDIM(pyArray);
+        if(ndim == 1)
         {
-          const int rows_or_cols = (int)PyArray_DIMS(pyArray)[0];
-          if(storage)
-            return new (storage) MatType(rows_or_cols);
-          else
-            return new MatType(rows_or_cols);
+          const int size = (int)PyArray_DIMS(pyArray)[0];
+          return run(size,storage);
         }
         else
         {
           const int rows = (int)PyArray_DIMS(pyArray)[0];
           const int cols = (int)PyArray_DIMS(pyArray)[1];
-          if(storage)
-            return new (storage) MatType(rows,cols);
-          else
-            return new MatType(rows,cols);
+          return run(rows,cols,storage);
         }
       }
     };
