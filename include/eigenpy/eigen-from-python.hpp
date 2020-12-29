@@ -451,8 +451,8 @@ namespace eigenpy
     }
   };
 
-  template<typename MatType, typename _Scalar>
-  struct EigenFromPy< Eigen::MatrixBase<MatType>, _Scalar > : EigenFromPy<MatType>
+  template<typename MatType>
+  struct EigenFromPy< Eigen::MatrixBase<MatType> > : EigenFromPy<MatType>
   {
     typedef EigenFromPy<MatType> EigenFromPyDerived;
     typedef Eigen::MatrixBase<MatType> Base;
@@ -465,8 +465,8 @@ namespace eigenpy
     }
   };
     
-  template<typename MatType, typename _Scalar>
-  struct EigenFromPy< Eigen::EigenBase<MatType>, _Scalar > : EigenFromPy<MatType>
+  template<typename MatType>
+  struct EigenFromPy< Eigen::EigenBase<MatType>, typename MatType::Scalar > : EigenFromPy<MatType>
   {
     typedef EigenFromPy<MatType> EigenFromPyDerived;
     typedef Eigen::EigenBase<MatType> Base;
@@ -479,8 +479,8 @@ namespace eigenpy
     }
   };
     
-  template<typename MatType, typename _Scalar>
-  struct EigenFromPy< Eigen::PlainObjectBase<MatType>, _Scalar > : EigenFromPy<MatType>
+  template<typename MatType>
+  struct EigenFromPy< Eigen::PlainObjectBase<MatType> > : EigenFromPy<MatType>
   {
     typedef EigenFromPy<MatType> EigenFromPyDerived;
     typedef Eigen::PlainObjectBase<MatType> Base;
@@ -495,8 +495,8 @@ namespace eigenpy
 
 #if EIGEN_VERSION_AT_LEAST(3,2,0)
 
-  template<typename MatType, int Options, typename Stride, typename _Scalar>
-  struct EigenFromPy<Eigen::Ref<MatType,Options,Stride>,_Scalar>
+  template<typename MatType, int Options, typename Stride>
+  struct EigenFromPy<Eigen::Ref<MatType,Options,Stride> >
   {
     typedef Eigen::Ref<MatType,Options,Stride> RefType;
     typedef typename MatType::Scalar Scalar;
@@ -520,8 +520,8 @@ namespace eigenpy
     }
   };
 
-  template<typename MatType, int Options, typename Stride, typename _Scalar>
-  struct EigenFromPy<const Eigen::Ref<const MatType,Options,Stride>,_Scalar>
+  template<typename MatType, int Options, typename Stride>
+  struct EigenFromPy<const Eigen::Ref<const MatType,Options,Stride> >
   {
     typedef const Eigen::Ref<const MatType,Options,Stride> ConstRefType;
     typedef typename MatType::Scalar Scalar;
