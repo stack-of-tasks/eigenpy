@@ -28,8 +28,8 @@
 
 namespace eigenpy
 {
-  template<typename MatType> struct EigenToPy;
-  template<typename MatType> struct EigenFromPy;
+  template<typename MatType, typename Scalar = typename boost::remove_reference<MatType>::type::Scalar> struct EigenToPy;
+  template<typename MatType, typename Scalar = typename boost::remove_reference<MatType>::type::Scalar> struct EigenFromPy;
 }
 
 #endif // ifndef __eigenpy_fwd_hpp__

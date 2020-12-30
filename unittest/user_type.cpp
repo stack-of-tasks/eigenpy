@@ -89,7 +89,8 @@ void expose_custom_type(const std::string & name)
   .def("__repr__",&Type::print)
   ;
   
-  eigenpy::registerNewType<Type>();
+  int code = eigenpy::registerNewType<Type>();
+  std::cout << "code: " << code << std::endl;
   eigenpy::registerCommonUfunc<Type>();
 }
 

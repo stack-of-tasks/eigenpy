@@ -34,8 +34,6 @@ namespace eigenpy
     }
   };
 
-  BOOST_PYTHON_FUNCTION_OVERLOADS(isApproxAngleAxis_overload,call<Eigen::AngleAxisd>::isApprox,2,3)
-
   template<typename AngleAxis>
   class AngleAxisVisitor
   : public bp::def_visitor< AngleAxisVisitor<AngleAxis> >
@@ -47,6 +45,8 @@ namespace eigenpy
     
     typedef typename Eigen::Quaternion<Scalar,0> Quaternion;
     typedef Eigen::RotationBase<AngleAxis,3> RotationBase;
+    
+    BOOST_PYTHON_FUNCTION_OVERLOADS(isApproxAngleAxis_overload,call<AngleAxis>::isApprox,2,3)
     
   public:
 

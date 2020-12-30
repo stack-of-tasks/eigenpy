@@ -50,7 +50,7 @@ namespace eigenpy
 {
   namespace bp = boost::python;
 
-  template<typename MatType>
+  template<typename MatType, typename _Scalar>
   struct EigenToPy
   {
     static PyObject* convert(typename boost::add_reference<typename boost::add_const<MatType>::type>::type mat)
@@ -82,8 +82,8 @@ namespace eigenpy
     }
   };
 
-  template<typename MatType, int Options, typename Stride>
-  struct EigenToPy< Eigen::Ref<MatType,Options,Stride> >
+  template<typename MatType, int Options, typename Stride, typename _Scalar>
+  struct EigenToPy< Eigen::Ref<MatType,Options,Stride>,_Scalar >
   {
     static PyObject* convert(const Eigen::Ref<MatType,Options,Stride> & mat)
     {
