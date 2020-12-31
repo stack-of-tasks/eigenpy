@@ -128,6 +128,7 @@ SET(${PROJECT_NAME}_HEADERS
   include/eigenpy/ufunc.hpp
   include/eigenpy/register.hpp
   include/eigenpy/stride.hpp
+  include/eigenpy/swig.hpp
   include/eigenpy/version.hpp
 )
 
