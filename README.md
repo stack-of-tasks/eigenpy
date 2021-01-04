@@ -12,10 +12,11 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
 **EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python.
 
 **EigenPy** provides: 
- - full memory sharing between Numpy and Eigen avoiding memory allocation.
- - full support Eigen::Ref avoiding memory allocation.
- - exposition of the Geometry module of Eigen for easy code prototyping.
+ - full memory sharing between Numpy and Eigen avoiding memory allocation
+ - full support Eigen::Ref avoiding memory allocation
+ - exposition of the Geometry module of Eigen for easy code prototyping
  - standard matrix decomposion routines of Eigen such as the Cholesky decomposition, SVD decomposition, QR decomposition, and etc.
+ - full support of SWIG objects
 
 ## Setup
 
