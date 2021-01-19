@@ -18,6 +18,10 @@ q.normalize()
 assert(isapprox(np.linalg.norm(q.coeffs()),q.norm()))
 assert(isapprox(np.linalg.norm(q.coeffs()),1))
 
+v = np.array([0.5,-0.5,0.5,0.5])
+qv = Quaternion(v)
+assert(isapprox(qv.coeffs(), v))
+
 r = AngleAxis(q)
 q2 = Quaternion(r)
 assert(q==q)
