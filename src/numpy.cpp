@@ -37,9 +37,9 @@ namespace eigenpy
     return PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL);
   }
   
-  int call_PyArray_ObjectType(PyObject * obj, int val)
+  int call_PyArray_MinScalarType(PyObject * obj, int val)
   {
-    return PyArray_ObjectType(obj,val);
+    return PyArray_MinScalarType(obj,val);
   }
 
   PyTypeObject * getPyArrayType() { return &PyArray_Type; }

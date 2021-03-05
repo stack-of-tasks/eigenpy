@@ -22,10 +22,10 @@
 
 #if defined _WIN32 || defined __CYGWIN__
   #define EIGENPY_GET_PY_ARRAY_TYPE(array) \
-    call_PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
+    call_PyArray_MinScalarType(array)->type_num
 #else
   #define EIGENPY_GET_PY_ARRAY_TYPE(array) \
-    PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
+    PyArray_MinScalarType(array)->type_num
 #endif
 
 namespace eigenpy
@@ -43,7 +43,7 @@ namespace eigenpy
 
   EIGENPY_DLLAPI PyObject* call_PyArray_New(PyTypeObject * py_type_ptr, int nd, npy_intp * shape, int np_type, void * data_ptr, int options);
 
-  EIGENPY_DLLAPI int call_PyArray_ObjectType(PyObject *, int);
+  EIGENPY_DLLAPI int call_PyArray_MinScalarType(PyObject *, int);
 
   EIGENPY_DLLAPI PyTypeObject * getPyArrayType();
 
