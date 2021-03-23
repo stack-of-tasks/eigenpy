@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2021, INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
@@ -14,6 +14,7 @@ namespace eigenpy
     srand(seed_value);
   }
 
+  void exposeMatrixBool();
   void exposeMatrixInt();
   void exposeMatrixLong();
   void exposeMatrixFloat();
@@ -59,6 +60,7 @@ namespace eigenpy
     bp::def("seed",&seed,bp::arg("seed_value"),
             "Initialize the pseudo-random number generator with the argument seed_value.");
     
+    exposeMatrixBool();
     exposeMatrixInt();
     exposeMatrixLong();
     exposeMatrixFloat();

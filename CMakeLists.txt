@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2014-2019 CNRS
-# Copyright (c) 2018-2020 INRIA
+# Copyright (c) 2018-2021 INRIA
 #
 
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
@@ -163,6 +163,7 @@ SET(${PROJECT_NAME}_SOURCES
   src/matrix-double.cpp
   src/matrix-long-double.cpp
   src/matrix-complex-long-double.cpp
+  src/matrix-bool.cpp
   src/matrix-int.cpp
   src/matrix-long.cpp
   src/angle-axis.cpp
