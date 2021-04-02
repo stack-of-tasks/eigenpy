@@ -6,9 +6,8 @@
 #ifndef __eigenpy_geometry_conversion_hpp__
 #define __eigenpy_geometry_conversion_hpp__
 
-#include <Eigen/Core>
+#include "eigenpy/fwd.hpp"
 #include <Eigen/Geometry>
-#include <boost/python.hpp>
 
 namespace eigenpy
 {

@@ -17,8 +17,7 @@
 #ifndef __eigenpy_bfgs_preconditioners_hpp__
 #define __eigenpy_bfgs_preconditioners_hpp__
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
+#include "eigenpy/fwd.hpp"
 #include <Eigen/IterativeLinearSolvers>
 
 #include "eigenpy/solvers/BasicPreconditioners.hpp"

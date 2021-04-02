@@ -6,7 +6,7 @@
 #ifndef __eigenpy_memory_hpp__
 #define __eigenpy_memory_hpp__
 
-#include <boost/python.hpp>
+#include "eigenpy/fwd.hpp"
 
 /**
  * This section contains a convenience MACRO which allows an easy specialization of

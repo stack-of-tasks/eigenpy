@@ -3,12 +3,13 @@
  * Copyright 2018-2019, INRIA
  */
 
-#include <boost/python.hpp>
+#ifndef __eigenpy_exception_hpp__
+#define __eigenpy_exception_hpp__
+
 #include <exception>
 #include <string>
 
-#ifndef __eigenpy_exception_hpp__
-#define __eigenpy_exception_hpp__
+#include "eigenpy/fwd.hpp"
 
 namespace eigenpy
 {

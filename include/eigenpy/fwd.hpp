@@ -7,12 +7,20 @@
 
 #include "eigenpy/config.hpp"
 
+// Silence a warning about a deprecated use of boost bind by boost python
+// at least fo boost 1.73 to 1.75
+// ref. https://github.com/stack-of-tasks/tsid/issues/128
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-#include <Eigen/Core>
+#include <boost/python/scope.hpp>
 
 #define NO_IMPORT_ARRAY
   #include "eigenpy/numpy.hpp"
 #undef NO_IMPORT_ARRAY
+
+#undef BOOST_BIND_GLOBAL_PLACEHOLDERS
+
+#include <Eigen/Core>
 
 #if EIGEN_VERSION_AT_LEAST(3,2,90)
   #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
