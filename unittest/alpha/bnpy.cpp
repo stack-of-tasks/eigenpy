@@ -1,6 +1,6 @@
 /* Simple test using the boost::numpy interface: return an array and a matrix. */
 
-#include <boost/python.hpp>
+#include "eigenpy/fwd.hpp"
 #include "boost/numpy.hpp"
 
 namespace bp = boost::python;

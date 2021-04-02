@@ -17,9 +17,7 @@
 #ifndef __eigenpy_iterative_solver_base_hpp__
 #define __eigenpy_iterative_solver_base_hpp__
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
-
+#include "eigenpy/fwd.hpp"
 #include "eigenpy/solvers/SparseSolverBase.hpp"
 
 namespace eigenpy

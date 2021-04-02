@@ -5,11 +5,9 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/geometry.hpp"
-#include <Eigen/Core>
 #include <Eigen/Geometry>
 #include <iostream>
  
-#include <boost/python.hpp>
 namespace bp = boost::python;
 
 Eigen::AngleAxisd testOutAngleAxis()

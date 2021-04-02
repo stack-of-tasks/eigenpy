@@ -6,8 +6,7 @@
 #ifndef __eigenpy_registration_hpp__
 #define __eigenpy_registration_hpp__
 
-#include <boost/python.hpp>
-#include <boost/python/scope.hpp>
+#include "eigenpy/fwd.hpp"
 
 namespace eigenpy
 {

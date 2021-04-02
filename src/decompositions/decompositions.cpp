@@ -2,8 +2,7 @@
  * Copyright 2020 INRIA
  */
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
+#include "eigenpy/fwd.hpp"
 
 #include "eigenpy/decompositions/decompositions.hpp"
 

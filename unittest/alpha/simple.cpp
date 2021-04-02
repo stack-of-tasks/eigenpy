@@ -3,9 +3,9 @@
  * function raises and error at runtime due to inadequate binding.
  */
 
-#include <boost/python.hpp>
 #include <string>
-#include <Eigen/Core>
+
+#include "eigenpy/fwd.hpp"
 
 
 char const* testchar()

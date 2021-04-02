@@ -17,8 +17,7 @@
 #ifndef __eigenpy_sparse_solver_base_hpp__
 #define __eigenpy_sparse_solver_base_hpp__
 
-#include <boost/python.hpp>
-#include <Eigen/Core>
+#include "eigenpy/fwd.hpp"
 
 namespace eigenpy
 {

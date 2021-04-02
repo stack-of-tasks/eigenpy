@@ -5,8 +5,7 @@
 #ifndef __eigenpy_numpy_hpp__
 #define __eigenpy_numpy_hpp__
 
-#include <boost/python.hpp>
-#include "eigenpy/config.hpp"
+#include "eigenpy/fwd.hpp"
 
 #ifndef PY_ARRAY_UNIQUE_SYMBOL
   #define PY_ARRAY_UNIQUE_SYMBOL EIGENPY_ARRAY_API

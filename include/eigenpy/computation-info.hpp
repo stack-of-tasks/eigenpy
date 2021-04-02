@@ -5,10 +5,7 @@
 #ifndef __eigenpy_decompositions_computation_info_hpp__
 #define __eigenpy_decompositions_computation_info_hpp__
 
-#include <Eigen/Core>
-#include <boost/python.hpp>
-
-#include "eigenpy/config.hpp"
+#include "eigenpy/fwd.hpp"
 
 namespace eigenpy
 {

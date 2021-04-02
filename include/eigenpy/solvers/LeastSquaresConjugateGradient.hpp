@@ -17,7 +17,7 @@
 #ifndef __eigenpy_least_square_conjugate_gradient_hpp__
 #define __eigenpy_least_square_conjugate_gradient_hpp__
 
-#include <boost/python.hpp>
+#include "eigenpy/fwd.hpp"
 #include <Eigen/IterativeLinearSolvers>
 
 #include "eigenpy/solvers/IterativeSolverBase.hpp"

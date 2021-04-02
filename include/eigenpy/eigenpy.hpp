@@ -8,7 +8,6 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/deprecated.hpp"
-#include "eigenpy/config.hpp"
 #include "eigenpy/eigen-typedef.hpp"
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \

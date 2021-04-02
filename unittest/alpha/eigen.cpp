@@ -1,5 +1,4 @@
-#include <Eigen/Core>
-#include <boost/python.hpp>
+#include "eigenpy/fwd.hpp"
 #include <boost/numpy.hpp>
 
 
