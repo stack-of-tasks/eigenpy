@@ -21,10 +21,10 @@
 
 #if defined _WIN32 || defined __CYGWIN__
   #define EIGENPY_GET_PY_ARRAY_TYPE(array) \
-    call_PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
+    call_PyArray_MinScalarType(array)->type_num
 #else
   #define EIGENPY_GET_PY_ARRAY_TYPE(array) \
-    PyArray_ObjectType(reinterpret_cast<PyObject *>(array), 0)
+    PyArray_MinScalarType(array)->type_num
 #endif
 
 namespace eigenpy
@@ -51,6 +51,10 @@ namespace eigenpy
   EIGENPY_DLLAPI void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs);
 
   EIGENPY_DLLAPI int call_PyArray_RegisterDataType(PyArray_Descr * dtype);
+
+  EIGENPY_DLLAPI int call_PyArray_RegisterCanCast(PyArray_Descr *descr, int totype, NPY_SCALARKIND scalar);
+
+  EIGENPY_DLLAPI PyArray_Descr * call_PyArray_MinScalarType(PyArrayObject *arr);
 }
 #else
   #define call_PyArray_Check(py_obj) PyArray_Check(py_obj)
@@ -59,8 +63,10 @@ namespace eigenpy
     PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL)
   #define getPyArrayType() &PyArray_Type
   #define call_PyArray_DescrFromType(typenum) PyArray_DescrFromType(typenum)
+  #define call_PyArray_MinScalarType(py_arr) PyArray_MinScalarType(py_arr)
   #define call_PyArray_InitArrFuncs(funcs) PyArray_InitArrFuncs(funcs)
- #define call_PyArray_RegisterDataType(dtype) PyArray_RegisterDataType(dtype)
+  #define call_PyArray_RegisterDataType(dtype) PyArray_RegisterDataType(dtype)
+  #define call_PyArray_RegisterCanCast(descr,totype,scalar) PyArray_RegisterCanCast(descr,totype,scalar)
 #endif
 
 #endif // ifndef __eigenpy_numpy_hpp__

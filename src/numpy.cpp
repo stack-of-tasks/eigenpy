@@ -58,6 +58,16 @@ namespace eigenpy
   {
     return PyArray_RegisterDataType(dtype);
   }
+
+  PyArray_Descr * call_PyArray_MinScalarType(PyArrayObject * arr)
+  {
+    return PyArray_MinScalarType(arr);
+  }
+
+  int call_PyArray_RegisterCanCast(PyArray_Descr *descr, int totype, NPY_SCALARKIND scalar)
+  {
+    return PyArray_RegisterCanCast(descr,totype,scalar);
+  }
   
 #endif
 }

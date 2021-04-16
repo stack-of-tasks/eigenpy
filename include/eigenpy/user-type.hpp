@@ -198,6 +198,9 @@ namespace eigenpy
                                          copyswap, copyswapn,
                                          dotfunc);
     
+    call_PyArray_RegisterCanCast(call_PyArray_DescrFromType(NPY_OBJECT),
+                                 code, NPY_NOSCALAR);
+    
     return code;
   }
   
