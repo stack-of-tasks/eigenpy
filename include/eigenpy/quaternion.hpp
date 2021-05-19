@@ -234,8 +234,9 @@ namespace eigenpy
            "Returns the quaternion which transforms a into b through a rotation.",
            bp::return_value_policy<bp::manage_new_object>())
       .staticmethod("FromTwoVectors")
-      .def("Identity",&Quaternion::Identity,
-           "Returns a quaternion representing an identity rotation.")
+      .def("Identity",&Identity,
+           "Returns a quaternion representing an identity rotation.",
+           bp::return_value_policy<bp::manage_new_object>())
       .staticmethod("Identity")
       ;
     }
@@ -254,6 +255,12 @@ namespace eigenpy
     static Quaternion & assign(Quaternion & self, const OtherQuat & quat)
     { return self = quat; }
 
+    static Quaternion* Identity()
+    {
+      Quaternion* q(new Quaternion); q->setIdentity();
+      return q;
+    }
+    
     static Quaternion* FromTwoVectors(const Vector3& u, const Vector3& v)
     {
       Quaternion* q(new Quaternion); q->setFromTwoVectors(u,v);
