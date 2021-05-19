@@ -288,7 +288,7 @@ namespace eigenpy
     static std::string print(const Quaternion & self)
     {
       std::stringstream ss;
-      ss << "(x,y,z,w) = " << self.coeffs().transpose() << std::endl;
+      ss << "(x,y,z,w) = " << self.coeffs()[0] << " " << self.coeffs()[1] << " " << self.coeffs()[2] << " " << self.coeffs()[3] << std::endl;
       
       return ss.str();
     }
