@@ -110,7 +110,6 @@ namespace eigenpy
     void visit(PyClass& cl) const 
     {
       cl
-      .def(bp::init<>(bp::arg("self"),"Default constructor")[bp::return_value_policy<bp::return_by_value>()])
       .def(bp::init<Matrix3>((bp::arg("self"),bp::arg("R")),
                              "Initialize from rotation matrix.\n"
                              "\tR : a rotation matrix 3x3.")[bp::return_value_policy<bp::return_by_value>()])
@@ -129,6 +128,8 @@ namespace eigenpy
                                            (bp::arg("vec4"))),
            "Initialize from a vector 4D.\n"
            "\tvec4 : a 4D vector representing quaternion coefficients in the order xyzw.")
+      .def("__init__",bp::make_constructor(&QuaternionVisitor::DefaultConstructor),
+           "Default constructor")
       .def(bp::init<Scalar,Scalar,Scalar,Scalar>
            ((bp::arg("self"),bp::arg("w"),bp::arg("x"),bp::arg("y"),bp::arg("z")),
             "Initialize from coefficients.\n\n"
@@ -267,6 +268,11 @@ namespace eigenpy
     {
       Quaternion* q(new Quaternion); q->setFromTwoVectors(u,v);
       return q;
+    }
+    
+    static Quaternion* DefaultConstructor()
+    {
+      return new Quaternion;
     }
     
     static Quaternion* FromOneVector(const Vector4& v)
