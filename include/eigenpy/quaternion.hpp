@@ -277,7 +277,7 @@ namespace eigenpy
     
     static Quaternion* FromOneVector(const Vector4& v)
     {
-      Quaternion* q(new Quaternion(v));
+      Quaternion* q(new Quaternion(v[3],v[0],v[1],v[2]));
       return q;
     }
   
