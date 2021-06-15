@@ -31,6 +31,28 @@ namespace eigenpy
 {
   void EIGENPY_DLLAPI import_numpy();
   int EIGENPY_DLLAPI PyArray_TypeNum(PyTypeObject * type);
+  
+  // By default, the Scalar is considered as a Python object
+  template <typename Scalar> struct NumpyEquivalentType { enum  { type_code = NPY_USERDEF };};
+
+  template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
+  template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
+  template <> struct NumpyEquivalentType<double>  { enum { type_code = NPY_DOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<double> >  { enum { type_code = NPY_CDOUBLE };};
+  template <> struct NumpyEquivalentType<long double>  { enum { type_code = NPY_LONGDOUBLE };};
+  template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
+  template <> struct NumpyEquivalentType<bool>    { enum { type_code = NPY_BOOL  };};
+  template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
+  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+
+  template<typename Scalar>
+  bool isNumpyNativeType()
+  {
+    if((int)NumpyEquivalentType<Scalar>::type_code == NPY_USERDEF)
+      return false;
+    return true;
+  }
+
 }
 
 #if defined _WIN32 || defined __CYGWIN__

@@ -6,7 +6,7 @@
 #define __eigenpy_register_hpp__
 
 #include "eigenpy/fwd.hpp"
-#include "eigenpy/numpy-type.hpp"
+#include "eigenpy/numpy.hpp"
 #include "eigenpy/exception.hpp"
 
 #include <algorithm>
@@ -36,6 +36,7 @@ namespace eigenpy
     template<typename Scalar>
     static PyTypeObject * getPyType()
     {
+      namespace bp = boost::python;
       if(!isNumpyNativeType<Scalar>())
       {
         const PyTypeObject * const_py_type_ptr = bp::converter::registered_pytype<Scalar>::get_pytype();
