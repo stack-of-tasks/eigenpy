@@ -9,6 +9,63 @@
 #include <iostream>
 #include <sstream>
 
+template<typename Scalar> struct CustomType;
+
+namespace Eigen
+{
+  /// @brief Eigen::NumTraits<> specialization for casadi::SX
+  ///
+  template<typename Scalar>
+  struct NumTraits< CustomType<Scalar> >
+  {
+    typedef CustomType<Scalar> Real;
+    typedef CustomType<Scalar> NonInteger;
+    typedef CustomType<Scalar> Literal;
+    typedef CustomType<Scalar> Nested;
+    
+    enum {
+      // does not support complex Base types
+      IsComplex             = 0 ,
+      // does not support integer Base types
+      IsInteger             = 0 ,
+      // only support signed Base types
+      IsSigned              = 1 ,
+      // must initialize an AD<Base> object
+      RequireInitialization = 1 ,
+      // computational cost of the corresponding operations
+      ReadCost              = 1 ,
+      AddCost               = 2 ,
+      MulCost               = 2
+    };
+    
+    static Scalar epsilon()
+    {
+      return CustomType<Scalar>(std::numeric_limits<Scalar>::epsilon());
+    }
+    
+    static CustomType<Scalar> dummy_precision()
+    {
+      return CustomType<Scalar>(NumTraits<Scalar>::dummy_precision());
+    }
+    
+    static CustomType<Scalar> highest()
+    {
+      return CustomType<Scalar>(std::numeric_limits<Scalar>::max());
+    }
+    
+    static CustomType<Scalar> lowest()
+    {
+      return CustomType<Scalar>(std::numeric_limits<Scalar>::min());
+    }
+    
+    static int digits10()
+    {
+      return std::numeric_limits<Scalar>::digits10;
+    }
+  };
+} // namespace Eigen
+
+
 template<typename Scalar>
 struct CustomType
 {
@@ -46,6 +103,12 @@ struct CustomType
     ss << "value: " << m_value << std::endl;
     return ss.str();
   }
+  
+  friend std::ostream & operator <<(std::ostream & os, const CustomType & X)
+  {
+    os << X.m_value;
+    return os;
+  }
  
 protected:
   
@@ -57,6 +120,12 @@ Eigen::Matrix<CustomType<Scalar>,Eigen::Dynamic,Eigen::Dynamic> create(int rows,
 {
   typedef Eigen::Matrix<CustomType<Scalar>,Eigen::Dynamic,Eigen::Dynamic> Matrix;
   return Matrix(rows,cols);
+}
+
+template<typename Scalar>
+void print(const Eigen::Matrix<CustomType<Scalar>,Eigen::Dynamic,Eigen::Dynamic> & mat)
+{
+  std::cout << mat << std::endl;
 }
 
 template<typename Scalar>
@@ -104,13 +173,17 @@ BOOST_PYTHON_MODULE(user_type)
   typedef CustomType<double> DoubleType;
   typedef Eigen::Matrix<DoubleType,Eigen::Dynamic,Eigen::Dynamic> DoubleMatrix;
   eigenpy::EigenToPyConverter<DoubleMatrix>::registration();
+  eigenpy::EigenFromPyConverter<DoubleMatrix>::registration();
   bp::def("create_double",create<double>);
   
   expose_custom_type<float>("CustomFloat");
   typedef CustomType<float> FloatType;
   typedef Eigen::Matrix<FloatType,Eigen::Dynamic,Eigen::Dynamic> FloatMatrix;
   eigenpy::EigenToPyConverter<FloatMatrix>::registration();
+  eigenpy::EigenFromPyConverter<FloatMatrix>::registration();
   bp::def("create_float",create<float>);
   
   bp::def("build_matrix",build_matrix<double>);
+  bp::def("print",print<double>);
+  bp::def("print",print<float>);
 }
