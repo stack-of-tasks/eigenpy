@@ -62,10 +62,13 @@ namespace eigenpy
     descr.typeobj = py_type_ptr;
     descr.kind = 'V';
     descr.byteorder = '=';
+    descr.type = 'r';
     descr.elsize = type_size;
-    descr.flags = NPY_LIST_PICKLE | NPY_USE_GETITEM | NPY_USE_SETITEM | NPY_NEEDS_INIT | NPY_NEEDS_PYAPI;
-    //      descr->names = PyTuple_New(0);
-    //      descr->fields = PyDict_New();
+    descr.flags = NPY_NEEDS_PYAPI | NPY_USE_GETITEM | NPY_USE_SETITEM;
+    descr.type_num = 0;
+    descr.names = 0;
+    descr.fields = 0;
+    descr.alignment = call_PyArray_DescrFromType(NPY_OBJECT)->alignment;
     
     PyArray_ArrFuncs * funcs_ptr = new PyArray_ArrFuncs;
     PyArray_ArrFuncs & funcs = *funcs_ptr;
