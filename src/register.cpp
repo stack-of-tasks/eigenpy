@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2021 INRIA
  */
 
 #include "eigenpy/register.hpp"
@@ -43,6 +43,20 @@ namespace eigenpy
                                 PyArray_CopySwapNFunc * copyswapn,
                                 PyArray_DotFunc * dotfunc)
   {
+    namespace bp = boost::python;
+    bp::list bases(bp::handle<>(bp::borrowed(py_type_ptr->tp_bases)));
+    bases.append((bp::handle<>(bp::borrowed(&PyGenericArrType_Type))));
+
+    bp::tuple tp_bases_extended(bases);
+    Py_INCREF(tp_bases_extended.ptr());
+    py_type_ptr->tp_bases = tp_bases_extended.ptr();
+
+    py_type_ptr->tp_flags &= ~Py_TPFLAGS_READY; // to force the rebuild
+    if(PyType_Ready(py_type_ptr) < 0) // Force rebuilding of the __bases__ and mro
+    {
+      throw std::invalid_argument("PyType_Ready fails to initialize input type.");
+    }
+
     PyArray_Descr * descr_ptr = new PyArray_Descr(*call_PyArray_DescrFromType(NPY_OBJECT));
     PyArray_Descr & descr = *descr_ptr;
     descr.typeobj = py_type_ptr;
