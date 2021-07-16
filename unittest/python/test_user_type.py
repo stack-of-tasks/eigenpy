@@ -1,4 +1,5 @@
 import user_type
+import numpy as np
 
 rows = 10
 cols = 20
@@ -29,3 +30,7 @@ test(mat)
 
 mat = user_type.create_float(rows,cols)
 test(mat)
+
+v = user_type.CustomDouble(1)
+a = np.array(v)
+assert type(v) == a.dtype.type
