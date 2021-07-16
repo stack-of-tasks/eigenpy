@@ -5,7 +5,7 @@ rows = 10
 cols = 20
 
 def test(mat):
-  mat.fill(mat.dtype.type(10.))
+  mat[:] = mat.dtype.type(10.)
   mat_copy = mat.copy()
   assert (mat == mat_copy).all()
   assert not (mat != mat_copy).all()
