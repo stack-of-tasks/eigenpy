@@ -82,6 +82,11 @@ namespace eigenpy
     const int code = call_PyArray_RegisterDataType(descr_ptr);
     assert(code >= 0 && "The return code should be positive");
     PyArray_Descr * new_descr = call_PyArray_DescrFromType(code);
+
+    if(PyDict_SetItemString(py_type_ptr->tp_dict,"dtype",(PyObject*)descr_ptr) < 0)
+    {
+      throw std::invalid_argument("PyDict_SetItemString fails.");
+    }
     
     instance().type_to_py_type_bindings.insert(std::make_pair(type_info_ptr,py_type_ptr));
     instance().py_array_descr_bindings[py_type_ptr] = new_descr;
