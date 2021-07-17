@@ -79,6 +79,7 @@ namespace eigenpy
     static int registerNewType(PyTypeObject * py_type_ptr,
                                const std::type_info * type_info_ptr,
                                const int type_size,
+                               const int alignment,
                                PyArray_GetItemFunc * getitem,
                                PyArray_SetItemFunc * setitem,
                                PyArray_NonzeroFunc * nonzero,

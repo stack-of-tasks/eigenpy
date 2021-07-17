@@ -28,6 +28,18 @@ namespace eigenpy
     };
   
     template<typename T>
+    struct OffsetOf
+    {
+      struct Data
+      {
+        char c;
+        T v;
+      };
+      
+      enum { value = offsetof(Data, v) };
+    };
+  
+    template<typename T>
     struct SpecialMethods<T,NPY_USERDEF>
     {
       inline static void copyswap(void * dst, void * src, int swap, void * /*arr*/)
@@ -194,6 +206,7 @@ namespace eigenpy
     int code = Register::registerNewType(py_type_ptr,
                                          &typeid(Scalar),
                                          sizeof(Scalar),
+                                         internal::OffsetOf<Scalar>::value,
                                          getitem, setitem, nonzero,
                                          copyswap, copyswapn,
                                          dotfunc);

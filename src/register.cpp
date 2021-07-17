@@ -36,6 +36,7 @@ namespace eigenpy
   int Register::registerNewType(PyTypeObject * py_type_ptr,
                                 const std::type_info * type_info_ptr,
                                 const int type_size,
+                                const int alignement,
                                 PyArray_GetItemFunc * getitem,
                                 PyArray_SetItemFunc * setitem,
                                 PyArray_NonzeroFunc * nonzero,
@@ -68,7 +69,7 @@ namespace eigenpy
     descr.type_num = 0;
     descr.names = 0;
     descr.fields = 0;
-    descr.alignment = call_PyArray_DescrFromType(NPY_OBJECT)->alignment;
+    descr.alignment = alignement; //call_PyArray_DescrFromType(NPY_OBJECT)->alignment;
     
     PyArray_ArrFuncs * funcs_ptr = new PyArray_ArrFuncs;
     PyArray_ArrFuncs & funcs = *funcs_ptr;
