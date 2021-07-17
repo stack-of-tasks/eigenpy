@@ -42,7 +42,8 @@ namespace eigenpy
                                 PyArray_NonzeroFunc * nonzero,
                                 PyArray_CopySwapFunc * copyswap,
                                 PyArray_CopySwapNFunc * copyswapn,
-                                PyArray_DotFunc * dotfunc)
+                                PyArray_DotFunc * dotfunc,
+                                PyArray_FillWithScalarFunc * fillwithscalar)
   {
     namespace bp = boost::python;
     bp::list bases(bp::handle<>(bp::borrowed(py_type_ptr->tp_bases)));
@@ -81,6 +82,7 @@ namespace eigenpy
     funcs.copyswap = copyswap;
     funcs.copyswapn = copyswapn;
     funcs.dotfunc = dotfunc;
+    funcs.fillwithscalar = fillwithscalar;
     //      f->cast = cast;
     
     const int code = call_PyArray_RegisterDataType(descr_ptr);

@@ -85,7 +85,8 @@ namespace eigenpy
                                PyArray_NonzeroFunc * nonzero,
                                PyArray_CopySwapFunc * copyswap,
                                PyArray_CopySwapNFunc * copyswapn,
-                               PyArray_DotFunc * dotfunc);
+                               PyArray_DotFunc * dotfunc,
+                               PyArray_FillWithScalarFunc * fillwithscalar);
     
     static Register & instance();
     
