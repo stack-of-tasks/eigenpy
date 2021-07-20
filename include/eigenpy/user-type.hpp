@@ -61,26 +61,39 @@ namespace eigenpy
           std::swap(t1,t2);
         }
       }
-      
+
+      ///
+      /// \brief Get a python object from an array
+      ///        It returns a standard Python object from
+      ///        a single element of the array object arr pointed to by data.
+      /// \param[in] data Pointer to the first element of the C++ data stream
+      /// \param[in] arr  Pointer to the first element of the Python object data stream
+      ///
+      /// \returns PyObject corresponding to the python datastream.
+      ///
       inline static PyObject * getitem(void * ip, void * ap)
       {
-//        std::cout << "getitem" << std::endl;
+//      std::cout << "getitem" << std::endl;
         PyArrayObject * py_array = static_cast<PyArrayObject *>(ap);
-        if((py_array==NULL) || PyArray_ISBEHAVED_RO(py_array))
-        {
-          T * elt_ptr = static_cast<T*>(ip);
-          bp::object m(boost::ref(*elt_ptr));
-          Py_INCREF(m.ptr());
-          return m.ptr();
-        }
-        else
-        {
-          T * elt_ptr = static_cast<T*>(ip);
-          bp::object m(boost::ref(*elt_ptr));
-          Py_INCREF(m.ptr());
-          return m.ptr();
-        }
+        T * elt_ptr = static_cast<T*>(ip);
+        bp::object m(boost::ref(*elt_ptr));
+        Py_INCREF(m.ptr());
+        return m.ptr();
       }
+
+      ///
+      /// \brief Set a python object in an array.
+      ///        It sets the Python object "item" into the array, arr, at the position
+      ///        pointed to by data. This function deals with “misbehaved” arrays.
+      ///        If successful, a zero is returned, otherwise, a negative one is returned
+      ///        (and a Python error set).
+      
+      /// \param[in] src_obj  Pointer to the location of the python object
+      /// \param[in] dest_ptr Pointer to the location in the array where the source object should be saved.
+      /// \param[in] array Pointer to the location of the array
+      ///
+      /// \returns int Success(0) or Failure(-1)
+      ///
       
       inline static int setitem(PyObject * src_obj, void * dest_ptr, void * array)
       {
@@ -189,7 +202,7 @@ namespace eigenpy
 //      {
 //      }
 
-    };
+    };  //     struct SpecialMethods<T,NPY_USERDEF>
   
   } // namespace internal
 
