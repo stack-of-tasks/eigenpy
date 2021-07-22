@@ -10,6 +10,11 @@ def test(mat):
   assert (mat == mat_copy).all()
   assert not (mat != mat_copy).all()
 
+  mat.fill(mat.dtype.type(20.))
+  mat_copy = mat.copy()
+  assert((mat == mat_copy).all())
+  assert(not (mat != mat_copy).all())
+
   mat_op = mat + mat
   mat_op = mat.copy(order='F') + mat.copy(order='C')
   
