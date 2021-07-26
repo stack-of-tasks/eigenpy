@@ -38,7 +38,7 @@ namespace Eigen
       MulCost               = 2
     };
     
-    static Scalar epsilon()
+    static CustomType<Scalar> epsilon()
     {
       return CustomType<Scalar>(std::numeric_limits<Scalar>::epsilon());
     }
