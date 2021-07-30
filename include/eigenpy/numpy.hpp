@@ -44,7 +44,9 @@ namespace eigenpy
   template <> struct NumpyEquivalentType<bool>    { enum { type_code = NPY_BOOL  };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
   template <> struct NumpyEquivalentType<unsigned int>     { enum { type_code = NPY_UINT    };};
-  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+#if __APPLE__
+  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_INT64    };};
+#endif
   template <> struct NumpyEquivalentType<unsigned long>    { enum { type_code = NPY_ULONG    };};
   template <> struct NumpyEquivalentType<int64_t>    { enum { type_code = NPY_INT64 };};
 //  template <> struct NumpyEquivalentType<long long>    { enum { type_code = NPY_LONGLONG };};
