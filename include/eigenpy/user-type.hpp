@@ -257,11 +257,11 @@ namespace eigenpy
 //    PyTypeObject * to_py_type = Register::getPyType<To>();
     int to_typenum = Register::getTypeCode<To>();
     assert(to_typenum >= 0 && "to_typenum is not valid");
-    assert(from_array_descr != NULL && "to_typenum is not valid");
+    assert(from_array_descr != NULL && "from_array_descr is not valid");
     
-    if(PyArray_RegisterCastFunc(from_array_descr,
-                                to_typenum,
-                                static_cast<PyArray_VectorUnaryFunc *>(&eigenpy::internal::cast<From,To>)) < 0)
+    if(call_PyArray_RegisterCastFunc(from_array_descr,
+                                     to_typenum,
+                                     static_cast<PyArray_VectorUnaryFunc *>(&eigenpy::internal::cast<From,To>)) < 0)
     {
       std::stringstream ss;
       ss
@@ -274,9 +274,9 @@ namespace eigenpy
       return false;
     }
     
-    if (safe && PyArray_RegisterCanCast(from_array_descr,
-                                        to_typenum,
-                                        NPY_NOSCALAR) < 0)
+    if (safe && call_PyArray_RegisterCanCast(from_array_descr,
+                                             to_typenum,
+                                             NPY_NOSCALAR) < 0)
     {
       std::stringstream ss;
       ss

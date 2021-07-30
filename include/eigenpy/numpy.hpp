@@ -83,6 +83,8 @@ namespace eigenpy
   EIGENPY_DLLAPI int call_PyArray_RegisterCanCast(PyArray_Descr *descr, int totype, NPY_SCALARKIND scalar);
 
   EIGENPY_DLLAPI PyArray_Descr * call_PyArray_MinScalarType(PyArrayObject *arr);
+
+  EIGENPY_DLLAPI int call_PyArray_RegisterCastFunc(PyArray_Descr* descr, int totype, PyArray_VectorUnaryFunc* castfunc);
 }
 #else
   #define call_PyArray_Check(py_obj) PyArray_Check(py_obj)
@@ -95,6 +97,7 @@ namespace eigenpy
   #define call_PyArray_InitArrFuncs(funcs) PyArray_InitArrFuncs(funcs)
   #define call_PyArray_RegisterDataType(dtype) PyArray_RegisterDataType(dtype)
   #define call_PyArray_RegisterCanCast(descr,totype,scalar) PyArray_RegisterCanCast(descr,totype,scalar)
+  #define call_PyArray_RegisterCastFunc(descr,totype,castfunc) PyArray_RegisterCastFunc(descr,totype,castfunc)
 #endif
 
 #endif // ifndef __eigenpy_numpy_hpp__
