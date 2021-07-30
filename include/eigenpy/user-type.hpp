@@ -109,6 +109,10 @@ namespace eigenpy
         
         if(array_scalar_type != src_obj_type)
         {
+          std::stringstream ss;
+          ss << "The input type is of wrong type. ";
+          ss << "The expected type is " << bp::type_info(typeid(T)).name() << std::endl;
+          eigenpy::Exception(ss.str());
           return -1;
         }
         
