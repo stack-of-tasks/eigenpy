@@ -24,6 +24,7 @@ namespace eigenpy
       inline static npy_bool nonzero(void * /*ip*/, void * /*array*/) /*{ return (npy_bool)false; }*/;
       inline static void dotfunc(void * /*ip0_*/, npy_intp /*is0*/, void * /*ip1_*/, npy_intp /*is1*/,
                           void * /*op*/, npy_intp /*n*/, void * /*arr*/);
+      inline static int fill(void* data_, npy_intp length, void* arr);
       inline static int fillwithscalar(void* buffer_, npy_intp length,
                                        void* value, void* arr);
 //      static void cast(void * /*from*/, void * /*to*/, npy_intp /*n*/, void * /*fromarr*/, void * /*toarr*/) {};
@@ -205,6 +206,21 @@ namespace eigenpy
 //      static void cast(void * from, void * to, npy_intp n, void * fromarr, void * toarr)
 //      {
 //      }
+      
+      static int fill(void* data_, npy_intp length, void* /*arr*/)
+      {
+//        std::cout << "fillwithscalar" << std::endl;
+        T* data = static_cast<T*>(data_);
+        const T delta = data[1] - data[0];
+        T r = data[1];
+        npy_intp i;
+        for (i = 2; i < length; i++) {
+          r = r + delta;
+          data[i] = r;
+        }
+        return 0;
+      }
+      
 
     };  //     struct SpecialMethods<T,NPY_USERDEF>
   
@@ -233,6 +249,7 @@ namespace eigenpy
     PyArray_CopySwapFunc * copyswap = &internal::SpecialMethods<Scalar>::copyswap;
     PyArray_CopySwapNFunc * copyswapn = reinterpret_cast<PyArray_CopySwapNFunc*>(&internal::SpecialMethods<Scalar>::copyswapn);
     PyArray_DotFunc * dotfunc = &internal::SpecialMethods<Scalar>::dotfunc;
+    PyArray_FillFunc * fill = &internal::SpecialMethods<Scalar>::fill;
     PyArray_FillWithScalarFunc * fillwithscalar = &internal::SpecialMethods<Scalar>::fillwithscalar;
 //    PyArray_CastFunc * cast = &internal::SpecialMethods<Scalar>::cast;
     
@@ -243,6 +260,7 @@ namespace eigenpy
                                          getitem, setitem, nonzero,
                                          copyswap, copyswapn,
                                          dotfunc,
+                                         fill,
                                          fillwithscalar);
     
     call_PyArray_RegisterCanCast(call_PyArray_DescrFromType(NPY_OBJECT),
