@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020 INRIA
+// Copyright (c) 2020-2021 INRIA
 //
 
 #ifndef __eigenpy_user_type_hpp__
@@ -11,8 +11,32 @@
 
 namespace eigenpy
 {
+  /// \brief Default cast algo to cast a From to To. Can be specialized for any types.
+  template<typename From, typename To>
+  struct cast
+  {
+    static To run(const From & from)
+    {
+      return static_cast<To>(from);
+    }
+    
+  };
+
   namespace internal
   {
+  
+    template<typename From, typename To>
+    static void cast(void * from_, void * to_, npy_intp n, void * /*fromarr*/, void * /*toarr*/)
+    {
+//      std::cout << "cast::run" << std::endl;
+      const From* from = static_cast<From*>(from_);
+      To* to = static_cast<To*>(to_);
+      for(npy_intp i = 0; i < n; i++)
+      {
+        to[i] = eigenpy::cast<From,To>::run(from[i]);
+      }
+    }
+  
     template<typename T, int type_code = NumpyEquivalentType<T>::type_code>
     struct SpecialMethods
     {
@@ -27,7 +51,6 @@ namespace eigenpy
       inline static int fill(void* data_, npy_intp length, void* arr);
       inline static int fillwithscalar(void* buffer_, npy_intp length,
                                        void* value, void* arr);
-//      static void cast(void * /*from*/, void * /*to*/, npy_intp /*n*/, void * /*fromarr*/, void * /*toarr*/) {};
     };
   
     template<typename T>
@@ -204,9 +227,6 @@ namespace eigenpy
         return 0;
       }
       
-//      static void cast(void * from, void * to, npy_intp n, void * fromarr, void * toarr)
-//      {
-//      }
       
       static int fill(void* data_, npy_intp length, void* /*arr*/)
       {
@@ -226,6 +246,49 @@ namespace eigenpy
     };  //     struct SpecialMethods<T,NPY_USERDEF>
   
   } // namespace internal
+
+
+  template<typename From, typename To>
+  bool registerCast(const bool safe)
+  {
+    PyArray_Descr* from_array_descr = Register::getPyArrayDescr<From>();
+//    int from_typenum = Register::getTypeCode<From>();
+    
+//    PyTypeObject * to_py_type = Register::getPyType<To>();
+    int to_typenum = Register::getTypeCode<To>();
+    
+    if(PyArray_RegisterCastFunc(from_array_descr,
+                                to_typenum,
+                                static_cast<PyArray_VectorUnaryFunc *>(&eigenpy::internal::cast<From,To>)) < 0)
+    {
+      std::stringstream ss;
+      ss
+      << "PyArray_RegisterCastFunc of the cast from "
+      << bp::type_info(typeid(From)).name()
+      << " to "
+      << bp::type_info(typeid(To)).name()
+      << " has failed.";
+      eigenpy::Exception(ss.str());
+      return false;
+    }
+    
+    if (safe && PyArray_RegisterCanCast(from_array_descr,
+                                        to_typenum,
+                                        NPY_NOSCALAR) < 0)
+    {
+      std::stringstream ss;
+      ss
+      << "PyArray_RegisterCanCast of the cast from "
+      << bp::type_info(typeid(From)).name()
+      << " to "
+      << bp::type_info(typeid(To)).name()
+      << " has failed.";
+      eigenpy::Exception(ss.str());
+      return false;
+    }
+    
+    return true;
+  }
 
   template<typename Scalar>
   int registerNewType(PyTypeObject * py_type_ptr = NULL)
@@ -252,7 +315,6 @@ namespace eigenpy
     PyArray_DotFunc * dotfunc = &internal::SpecialMethods<Scalar>::dotfunc;
     PyArray_FillFunc * fill = &internal::SpecialMethods<Scalar>::fill;
     PyArray_FillWithScalarFunc * fillwithscalar = &internal::SpecialMethods<Scalar>::fillwithscalar;
-//    PyArray_CastFunc * cast = &internal::SpecialMethods<Scalar>::cast;
     
     int code = Register::registerNewType(py_type_ptr,
                                          &typeid(Scalar),
