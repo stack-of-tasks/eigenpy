@@ -71,12 +71,11 @@ namespace eigenpy
       ///
       /// \returns PyObject corresponding to the python datastream.
       ///
-      inline static PyObject * getitem(void * ip, void * ap)
+      inline static PyObject * getitem(void * ip, void * /*ap*/)
       {
-//      std::cout << "getitem" << std::endl;
-        PyArrayObject * py_array = static_cast<PyArrayObject *>(ap);
+//        std::cout << "getitem" << std::endl;
         T * elt_ptr = static_cast<T*>(ip);
-        bp::object m(boost::ref(*elt_ptr));
+        bp::object m(*elt_ptr);
         Py_INCREF(m.ptr());
         return m.ptr();
       }
