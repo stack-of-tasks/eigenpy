@@ -43,6 +43,7 @@ namespace eigenpy
                                 PyArray_CopySwapFunc * copyswap,
                                 PyArray_CopySwapNFunc * copyswapn,
                                 PyArray_DotFunc * dotfunc,
+                                PyArray_FillFunc * fill,
                                 PyArray_FillWithScalarFunc * fillwithscalar)
   {
     namespace bp = boost::python;
@@ -82,6 +83,7 @@ namespace eigenpy
     funcs.copyswap = copyswap;
     funcs.copyswapn = copyswapn;
     funcs.dotfunc = dotfunc;
+    funcs.fill = fill;
     funcs.fillwithscalar = fillwithscalar;
     //      f->cast = cast;
     
