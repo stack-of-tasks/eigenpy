@@ -67,7 +67,7 @@ namespace eigenpy
     descr.byteorder = '=';
     descr.type = 'r';
     descr.elsize = type_size;
-    descr.flags = NPY_NEEDS_PYAPI | NPY_USE_GETITEM | NPY_USE_SETITEM;
+    descr.flags = NPY_NEEDS_PYAPI | NPY_USE_GETITEM | NPY_USE_SETITEM | NPY_NEEDS_INIT;
     descr.type_num = 0;
     descr.names = 0;
     descr.fields = 0;
