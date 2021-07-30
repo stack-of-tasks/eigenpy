@@ -54,7 +54,8 @@ namespace eigenpy
     Py_INCREF(tp_bases_extended.ptr());
     py_type_ptr->tp_bases = tp_bases_extended.ptr();
 
-    py_type_ptr->tp_flags &= ~Py_TPFLAGS_READY; // to force the rebuild
+//    py_type_ptr->tp_flags &= ~Py_TPFLAGS_READY; // to force the rebuild
+    py_type_ptr->tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HEAPTYPE;
     if(PyType_Ready(py_type_ptr) < 0) // Force rebuilding of the __bases__ and mro
     {
       throw std::invalid_argument("PyType_Ready fails to initialize input type.");
