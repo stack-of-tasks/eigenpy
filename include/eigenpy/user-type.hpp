@@ -194,8 +194,9 @@ namespace eigenpy
       inline static int fillwithscalar(void* buffer_, npy_intp length,
                                        void* value, void* /*arr*/)
       {
-        T r = *(T*)value;
-        T* buffer = (T*)buffer_;
+//        std::cout << "fillwithscalar" << std::endl;
+        T r = *static_cast<T*>(value);
+        T* buffer = static_cast<T*>(buffer_);
         npy_intp i;
         for (i = 0; i < length; i++) {
           buffer[i] = r;
