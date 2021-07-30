@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2021 INRIA
  */
 
 #ifndef __eigenpy_numpy_hpp__
@@ -43,7 +43,13 @@ namespace eigenpy
   template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
   template <> struct NumpyEquivalentType<bool>    { enum { type_code = NPY_BOOL  };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
-  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+  template <> struct NumpyEquivalentType<unsigned int>     { enum { type_code = NPY_UINT    };};
+#if __APPLE__
+  template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_INT64    };};
+#endif
+  template <> struct NumpyEquivalentType<unsigned long>    { enum { type_code = NPY_ULONG    };};
+  template <> struct NumpyEquivalentType<int64_t>    { enum { type_code = NPY_INT64 };};
+//  template <> struct NumpyEquivalentType<long long>    { enum { type_code = NPY_LONGLONG };};
 
   template<typename Scalar>
   bool isNumpyNativeType()
@@ -77,6 +83,8 @@ namespace eigenpy
   EIGENPY_DLLAPI int call_PyArray_RegisterCanCast(PyArray_Descr *descr, int totype, NPY_SCALARKIND scalar);
 
   EIGENPY_DLLAPI PyArray_Descr * call_PyArray_MinScalarType(PyArrayObject *arr);
+
+  EIGENPY_DLLAPI int call_PyArray_RegisterCastFunc(PyArray_Descr* descr, int totype, PyArray_VectorUnaryFunc* castfunc);
 }
 #else
   #define call_PyArray_Check(py_obj) PyArray_Check(py_obj)
@@ -89,6 +97,7 @@ namespace eigenpy
   #define call_PyArray_InitArrFuncs(funcs) PyArray_InitArrFuncs(funcs)
   #define call_PyArray_RegisterDataType(dtype) PyArray_RegisterDataType(dtype)
   #define call_PyArray_RegisterCanCast(descr,totype,scalar) PyArray_RegisterCanCast(descr,totype,scalar)
+  #define call_PyArray_RegisterCastFunc(descr,totype,castfunc) PyArray_RegisterCastFunc(descr,totype,castfunc)
 #endif
 
 #endif // ifndef __eigenpy_numpy_hpp__

@@ -38,7 +38,7 @@ namespace Eigen
       MulCost               = 2
     };
     
-    static Scalar epsilon()
+    static CustomType<Scalar> epsilon()
     {
       return CustomType<Scalar>(std::numeric_limits<Scalar>::epsilon());
     }
@@ -97,6 +97,11 @@ struct CustomType
   
   CustomType operator-() const { return CustomType(-m_value); }
   
+  operator Scalar () const
+  {
+    return m_value;
+  }
+  
   std::string print() const
   {
     std::stringstream ss;
@@ -110,7 +115,7 @@ struct CustomType
     return os;
   }
  
-protected:
+//protected:
   
   Scalar m_value;
 };
@@ -186,4 +191,16 @@ BOOST_PYTHON_MODULE(user_type)
   bp::def("build_matrix",build_matrix<double>);
   bp::def("print",print<double>);
   bp::def("print",print<float>);
+  
+  eigenpy::registerCast<DoubleType,double>(true);
+  eigenpy::registerCast<double,DoubleType>(true);
+  eigenpy::registerCast<DoubleType,int32_t>(false);
+  eigenpy::registerCast<int32_t,DoubleType>(true);
+  eigenpy::registerCast<DoubleType,int64_t>(false);
+  eigenpy::registerCast<int64_t,DoubleType>(true);
+  eigenpy::registerCast<FloatType,int64_t>(false);
+  eigenpy::registerCast<int64_t,FloatType>(true);
+
+  bp::implicitly_convertible<double,DoubleType>();
+  bp::implicitly_convertible<DoubleType,double>();
 }

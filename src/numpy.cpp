@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2021 INRIA
  */
 
 #include "eigenpy/numpy.hpp"
@@ -68,6 +68,11 @@ namespace eigenpy
   {
     return PyArray_RegisterCanCast(descr,totype,scalar);
   }
-  
+
+  int call_PyArray_RegisterCastFunc(PyArray_Descr* descr, int totype, PyArray_VectorUnaryFunc* castfunc)
+  {
+    return PyArray_RegisterCastFunc(descr,totype,castfunc);
+  }
+
 #endif
 }

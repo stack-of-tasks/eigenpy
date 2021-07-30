@@ -57,6 +57,20 @@ namespace eigenpy
     }
     
     template<typename Scalar>
+    static PyArray_Descr * getPyArrayDescr()
+    {
+      namespace bp = boost::python;
+      if(!isNumpyNativeType<Scalar>())
+      {
+        return getPyArrayDescr(getPyType<Scalar>());
+      }
+      else
+      {
+        return call_PyArray_DescrFromType(NumpyEquivalentType<Scalar>::type_code);
+      }
+    }
+    
+    template<typename Scalar>
     static int getTypeCode()
     {
       if(isNumpyNativeType<Scalar>())
@@ -79,12 +93,15 @@ namespace eigenpy
     static int registerNewType(PyTypeObject * py_type_ptr,
                                const std::type_info * type_info_ptr,
                                const int type_size,
+                               const int alignment,
                                PyArray_GetItemFunc * getitem,
                                PyArray_SetItemFunc * setitem,
                                PyArray_NonzeroFunc * nonzero,
                                PyArray_CopySwapFunc * copyswap,
                                PyArray_CopySwapNFunc * copyswapn,
-                               PyArray_DotFunc * dotfunc);
+                               PyArray_DotFunc * dotfunc,
+                               PyArray_FillFunc * fill,
+                               PyArray_FillWithScalarFunc * fillwithscalar);
     
     static Register & instance();
     
