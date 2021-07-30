@@ -47,10 +47,10 @@ namespace eigenpy
                                 PyArray_FillWithScalarFunc * fillwithscalar)
   {
     namespace bp = boost::python;
-    bp::list bases(bp::handle<>(bp::borrowed(py_type_ptr->tp_bases)));
-    bases.append((bp::handle<>(bp::borrowed(&PyGenericArrType_Type))));
 
-    bp::tuple tp_bases_extended(bases);
+    bp::tuple tp_bases_extended(bp::make_tuple(bp::handle<>(bp::borrowed(&PyGenericArrType_Type))));
+    tp_bases_extended += bp::tuple(bp::handle<>(bp::borrowed(py_type_ptr->tp_bases)));
+                                
     Py_INCREF(tp_bases_extended.ptr());
     py_type_ptr->tp_bases = tp_bases_extended.ptr();
 
