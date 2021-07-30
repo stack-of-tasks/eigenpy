@@ -170,18 +170,19 @@ namespace eigenpy
       inline static void dotfunc(void * ip0_, npy_intp is0, void * ip1_, npy_intp is1,
                                  void * op, npy_intp n, void * /*arr*/)
       {
-          T res = T(0);
-          char *ip0 = (char*)ip0_, *ip1 = (char*)ip1_;
-          npy_intp i;
-          for(i = 0; i < n; i++)
-          {
-            
-            res += *static_cast<T*>(static_cast<void*>(ip0))
-            * *static_cast<T*>(static_cast<void*>(ip1));
-            ip0 += is0;
-            ip1 += is1;
-          }
-          *static_cast<T*>(op) = res;
+//        std::cout << "dotfunc" << std::endl;
+        T res(0);
+        char *ip0 = (char*)ip0_, *ip1 = (char*)ip1_;
+        npy_intp i;
+        for(i = 0; i < n; i++)
+        {
+          
+          res += *static_cast<T*>(static_cast<void*>(ip0))
+          * *static_cast<T*>(static_cast<void*>(ip1));
+          ip0 += is0;
+          ip1 += is1;
+        }
+        *static_cast<T*>(op) = res;
       }
       
       
