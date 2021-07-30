@@ -57,6 +57,20 @@ namespace eigenpy
     }
     
     template<typename Scalar>
+    static PyArray_Descr * getPyArrayDescr()
+    {
+      namespace bp = boost::python;
+      if(!isNumpyNativeType<Scalar>())
+      {
+        return getPyArrayDescr(getPyType<Scalar>());
+      }
+      else
+      {
+        return call_PyArray_DescrFromType(NumpyEquivalentType<Scalar>::type_code);
+      }
+    }
+    
+    template<typename Scalar>
     static int getTypeCode()
     {
       if(isNumpyNativeType<Scalar>())
