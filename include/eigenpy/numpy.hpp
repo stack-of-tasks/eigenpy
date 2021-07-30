@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2021 INRIA
  */
 
 #ifndef __eigenpy_numpy_hpp__
@@ -43,7 +43,11 @@ namespace eigenpy
   template <> struct NumpyEquivalentType< std::complex<long double> >  { enum { type_code = NPY_CLONGDOUBLE };};
   template <> struct NumpyEquivalentType<bool>    { enum { type_code = NPY_BOOL  };};
   template <> struct NumpyEquivalentType<int>     { enum { type_code = NPY_INT    };};
+  template <> struct NumpyEquivalentType<unsigned int>     { enum { type_code = NPY_UINT    };};
   template <> struct NumpyEquivalentType<long>    { enum { type_code = NPY_LONG    };};
+  template <> struct NumpyEquivalentType<unsigned long>    { enum { type_code = NPY_ULONG    };};
+  template <> struct NumpyEquivalentType<int64_t>    { enum { type_code = NPY_INT64 };};
+//  template <> struct NumpyEquivalentType<long long>    { enum { type_code = NPY_LONGLONG };};
 
   template<typename Scalar>
   bool isNumpyNativeType()
