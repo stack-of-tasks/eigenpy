@@ -256,6 +256,8 @@ namespace eigenpy
     
 //    PyTypeObject * to_py_type = Register::getPyType<To>();
     int to_typenum = Register::getTypeCode<To>();
+    assert(to_typenum >= 0 && "to_typenum is not valid");
+    assert(from_array_descr != NULL && "to_typenum is not valid");
     
     if(PyArray_RegisterCastFunc(from_array_descr,
                                 to_typenum,
