@@ -67,8 +67,8 @@ namespace eigenpy
   }
   
   template<typename T>
-  void gufunc_matrix_multiply(char **args, npy_intp const *dimensions,
-                              npy_intp const *steps, void *NPY_UNUSED(func))
+  void gufunc_matrix_multiply(char **args, npy_intp EIGENPY_NPY_CONST_UFUNC_ARG *dimensions,
+                              npy_intp EIGENPY_NPY_CONST_UFUNC_ARG *steps, void *NPY_UNUSED(func))
   {
     /* outer dimensions counter */
     npy_intp N_;
