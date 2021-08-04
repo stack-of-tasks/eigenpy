@@ -33,7 +33,8 @@ def test(dtype):
   assert not (mat < mat).all()
 
   mat2 = mat.dot(mat.T)
-  mat2 = np.matmul(mat,mat.T)
+  if np.__version__ >= '1.17.0':
+    mat2 = np.matmul(mat,mat.T)
 
 def test_cast(from_dtype,to_dtype):
   np.can_cast(from_dtype,to_dtype)
