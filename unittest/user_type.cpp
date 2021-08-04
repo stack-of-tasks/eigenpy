@@ -189,8 +189,10 @@ BOOST_PYTHON_MODULE(user_type)
   bp::def("create_float",create<float>);
   
   bp::def("build_matrix",build_matrix<double>);
+#if EIGEN_VERSION_AT_LEAST(3,3,0)
   bp::def("print",print<double>);
   bp::def("print",print<float>);
+#endif
   
   eigenpy::registerCast<DoubleType,double>(true);
   eigenpy::registerCast<double,DoubleType>(true);
