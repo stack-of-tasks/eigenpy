@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2021 INRIA
  */
 
 #ifndef __eigenpy_decomposition_llt_hpp__
@@ -23,7 +23,8 @@ namespace eigenpy
     typedef _MatrixType MatrixType;
     typedef typename MatrixType::Scalar Scalar;
     typedef typename MatrixType::RealScalar RealScalar;
-    typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1,MatrixType::Options> VectorType;
+    typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1,MatrixType::Options> VectorXs;
+    typedef Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic,MatrixType::Options> MatrixXs;
     typedef Eigen::LLT<MatrixType> Solver;
     
     template<class PyClass>
@@ -46,10 +47,10 @@ namespace eigenpy
            bp::return_internal_reference<>())
 
 #if EIGEN_VERSION_AT_LEAST(3,3,90)
-      .def("rankUpdate",(Solver& (Solver::*)(const VectorType &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
+      .def("rankUpdate",(Solver& (Solver::*)(const VectorXs &, const RealScalar &))&Solver::template rankUpdate<VectorXs>,
            bp::args("self","vector","sigma"), bp::return_self<>())
 #else
-      .def("rankUpdate",(Solver (Solver::*)(const VectorType &, const RealScalar &))&Solver::template rankUpdate<VectorType>,
+      .def("rankUpdate",(Solver (Solver::*)(const VectorXs &, const RealScalar &))&Solver::template rankUpdate<VectorXs>,
            bp::args("self","vector","sigma"))
 #endif
       
@@ -72,8 +73,10 @@ namespace eigenpy
 #endif
       .def("reconstructedMatrix",&Solver::reconstructedMatrix,bp::arg("self"),
            "Returns the matrix represented by the decomposition, i.e., it returns the product: L L^*. This function is provided for debug purpose.")
-      .def("solve",&solve<VectorType>,bp::args("self","b"),
+      .def("solve",&solve<VectorXs>,bp::args("self","b"),
            "Returns the solution x of A x = b using the current decomposition of A.")
+      .def("solve",&solve<MatrixXs>,bp::args("self","B"),
+           "Returns the solution X of A X = B using the current decomposition of A where B is a right hand side matrix.")
       ;
     }
     
@@ -99,8 +102,8 @@ namespace eigenpy
     static MatrixType matrixL(const Solver & self) { return self.matrixL(); }
     static MatrixType matrixU(const Solver & self) { return self.matrixU(); }
     
-    template<typename VectorType>
-    static VectorType solve(const Solver & self, const VectorType & vec)
+    template<typename MatrixOrVector>
+    static MatrixOrVector solve(const Solver & self, const MatrixOrVector & vec)
     {
       return self.solve(vec);
     }
