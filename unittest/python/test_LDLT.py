@@ -1,5 +1,4 @@
 import eigenpy
-eigenpy.switchToNumpyArray()
 
 import numpy as np
 import numpy.linalg as la
@@ -16,3 +15,9 @@ D = ldlt.vectorD()
 P = ldlt.transpositionsP() 
 
 assert eigenpy.is_approx(np.transpose(P).dot(L.dot(np.diag(D).dot(np.transpose(L).dot(P)))),A)
+
+X = np.random.rand(dim,20)
+B = A.dot(X)
+X_est = ldlt.solve(B)
+assert eigenpy.is_approx(X,X_est)
+assert eigenpy.is_approx(A.dot(X_est),B)
