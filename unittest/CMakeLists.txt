@@ -1,6 +1,6 @@
 #
 # Copyright (c) 2014-2019 CNRS
-# Copyright (c) 2018-2020 INRIA
+# Copyright (c) 2018-2021 INRIA
 #
 
 MACRO(ADD_LIB_UNIT_TEST test)
@@ -62,3 +62,6 @@ SET_TESTS_PROPERTIES("py-LLT" PROPERTIES DEPENDS ${PYWRAP})
 
 ADD_PYTHON_UNIT_TEST("py-LDLT" "unittest/python/test_LDLT.py" "python/eigenpy;unittest")
 SET_TESTS_PROPERTIES("py-LDLT" PROPERTIES DEPENDS ${PYWRAP})
+
+ADD_PYTHON_UNIT_TEST("py-MINRES" "unittest/python/test_MINRES.py" "python/eigenpy;unittest")
+SET_TESTS_PROPERTIES("py-MINRES" PROPERTIES DEPENDS ${PYWRAP})
