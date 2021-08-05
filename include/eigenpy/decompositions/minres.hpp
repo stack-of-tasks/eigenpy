@@ -7,6 +7,7 @@
 
 #include "eigenpy/eigenpy.hpp"
 
+#include <iostream>
 #include <Eigen/Core>
 #include <unsupported/Eigen/IterativeSolvers>
 
