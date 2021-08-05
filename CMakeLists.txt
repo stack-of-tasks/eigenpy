@@ -97,6 +97,7 @@ SET(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
   include/eigenpy/decompositions/LDLT.hpp
   include/eigenpy/decompositions/LLT.hpp
   include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
+  include/eigenpy/decompositions/minres.hpp
   )
 
 SET(${PROJECT_NAME}_HEADERS
