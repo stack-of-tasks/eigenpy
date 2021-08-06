@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2021 INRIA
  */
 
 #include "eigenpy/fwd.hpp"
@@ -10,6 +10,7 @@
 #include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
 #include "eigenpy/decompositions/LLT.hpp"
 #include "eigenpy/decompositions/LDLT.hpp"
+#include "eigenpy/decompositions/minres.hpp"
 
 namespace eigenpy
 {
@@ -22,6 +23,8 @@ namespace eigenpy
     SelfAdjointEigenSolverVisitor<MatrixXd>::expose("SelfAdjointEigenSolver");
     LLTSolverVisitor<MatrixXd>::expose("LLT");
     LDLTSolverVisitor<MatrixXd>::expose("LDLT");
+    
+    MINRESSolverVisitor<MatrixXd>::expose("MINRES");
 
     {
       bp::enum_<DecompositionOptions>("DecompositionOptions")
