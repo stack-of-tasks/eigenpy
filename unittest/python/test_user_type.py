@@ -7,6 +7,7 @@ cols = 20
 
 def test(dtype):
   mat = np.ones((rows,cols),dtype=dtype)
+  mat = np.random.rand(rows,cols).astype(dtype)
   mat_copy = mat.copy()
   assert (mat == mat_copy).all()
   assert not (mat != mat_copy).all()
@@ -33,8 +34,11 @@ def test(dtype):
   assert not (mat < mat).all()
 
   mat2 = mat.dot(mat.T)
+  mat2_ref = mat.astype(np.double).dot(mat.T.astype(np.double))
+  assert np.isclose(mat2.astype(np.double),mat2_ref).all()
   if np.__version__ >= '1.17.0':
     mat2 = np.matmul(mat,mat.T)
+    assert np.isclose(mat2.astype(np.double),mat2_ref).all()
 
 def test_cast(from_dtype,to_dtype):
   np.can_cast(from_dtype,to_dtype)
