@@ -200,6 +200,8 @@ BOOST_PYTHON_MODULE(user_type)
   eigenpy::registerCast<int32_t,DoubleType>(true);
   eigenpy::registerCast<DoubleType,int64_t>(false);
   eigenpy::registerCast<int64_t,DoubleType>(true);
+  eigenpy::registerCast<FloatType,double>(true);
+  eigenpy::registerCast<double,FloatType>(false);
   eigenpy::registerCast<FloatType,int64_t>(false);
   eigenpy::registerCast<int64_t,FloatType>(true);
 

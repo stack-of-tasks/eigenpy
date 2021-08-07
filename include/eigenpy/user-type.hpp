@@ -199,18 +199,15 @@ namespace eigenpy
                                  void * op, npy_intp n, void * /*arr*/)
       {
 //        std::cout << "dotfunc" << std::endl;
-        T res(0);
-        char *ip0 = (char*)ip0_, *ip1 = (char*)ip1_;
-        npy_intp i;
-        for(i = 0; i < n; i++)
-        {
-          
-          res += *static_cast<T*>(static_cast<void*>(ip0))
-          * *static_cast<T*>(static_cast<void*>(ip1));
-          ip0 += is0;
-          ip1 += is1;
-        }
-        *static_cast<T*>(op) = res;
+        typedef Eigen::Matrix<T,Eigen::Dynamic,1> VectorT;
+        typedef Eigen::InnerStride<Eigen::Dynamic> InputStride;
+        typedef const Eigen::Map<const VectorT,0,InputStride> ConstMapType;
+
+        ConstMapType
+        v0(static_cast<T*>(ip0_),n,InputStride(is0/sizeof(T))),
+        v1(static_cast<T*>(ip1_),n,InputStride(is1/sizeof(T)));
+        
+        *static_cast<T*>(op) = v0.dot(v1);
       }
       
       
