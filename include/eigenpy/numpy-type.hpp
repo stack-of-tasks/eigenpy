@@ -20,7 +20,7 @@ namespace eigenpy
   template<typename Scalar>
   bool np_type_is_convertible_into_scalar(const int np_type)
   {
-    if(NumpyEquivalentType<Scalar>::type_code >= NPY_USERDEF)
+    if(static_cast<NPY_TYPES>(NumpyEquivalentType<Scalar>::type_code) >= NPY_USERDEF)
       return np_type == Register::getTypeCode<Scalar>();
 
     if(NumpyEquivalentType<Scalar>::type_code == np_type)

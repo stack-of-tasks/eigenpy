@@ -17,7 +17,7 @@ namespace eigenpy
   {
     static To run(const From & from)
     {
-      return static_cast<To>(from);
+      return (To)from;
     }
     
   };
