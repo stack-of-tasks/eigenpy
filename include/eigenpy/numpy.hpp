@@ -33,7 +33,7 @@ namespace eigenpy
   int EIGENPY_DLLAPI PyArray_TypeNum(PyTypeObject * type);
   
   // By default, the Scalar is considered as a Python object
-  template <typename Scalar> struct NumpyEquivalentType { enum  { type_code = NPY_USERDEF };};
+  template <typename Scalar> struct NumpyEquivalentType { enum { type_code = NPY_USERDEF };};
 
   template <> struct NumpyEquivalentType<float>   { enum { type_code = NPY_FLOAT  };};
   template <> struct NumpyEquivalentType< std::complex<float> >   { enum { type_code = NPY_CFLOAT  };};
