@@ -289,6 +289,28 @@ namespace eigenpy
     return true;
   }
 
+
+  /// \brief Get the class object for a wrapped type that has been exposed
+  ///        through Boost.Python.
+  template <typename T>
+  boost::python::object getInstanceClass()
+  {
+    // Query into the registry for type T.
+    namespace bp = boost::python;
+    bp::type_info type = bp::type_id<T>();
+    const bp::converter::registration* registration =
+      bp::converter::registry::query(type);
+    
+    // If the class is not registered, return None.
+    if (!registration) {
+      //std::cerr<<"Class Not Registered. Returning Empty."<<std::endl;
+      return bp::object();
+    }
+    
+    bp::handle<PyTypeObject> handle(bp::borrowed(registration->get_class_object()));
+    return bp::object(handle);
+  }
+  
   template<typename Scalar>
   int registerNewType(PyTypeObject * py_type_ptr = NULL)
   {
