@@ -21,6 +21,20 @@ ENDIF()
 SET(CXX_DISABLE_WERROR True)
 SET(CMAKE_VERBOSE_MAKEFILE True)
 
+# ----------------------------------------------------
+# --- OPTIONS  ---------------------------------------
+# Need to be set before including base.cmake
+# ----------------------------------------------------
+OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
+OPTION(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
+
+IF(DEFINED BUILD_UNIT_TESTS)
+  MESSAGE(AUTHOR_WARNING "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
+    If you are manually building EigenPy from source in an existing build folder,\
+    we suggest that you delete your build folder and make a new one.")
+  SET(BUILD_TESTING ${BUILD_UNIT_TESTS})
+ENDIF(DEFINED BUILD_UNIT_TESTS)
+
 INCLUDE(cmake/base.cmake)
 COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
 PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
@@ -40,19 +54,6 @@ IF(WIN32)
 ELSE(WIN32)
   SET(LINK create_symlink)
 ENDIF(WIN32)
-
-# ----------------------------------------------------
-# --- OPTIONS  ---------------------------------------
-# ----------------------------------------------------
-OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" FALSE)
-OPTION(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
-
-IF(DEFINED BUILD_UNIT_TESTS)
-  MESSAGE(AUTHOR_WARNING "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
-    If you are manually building Pinocchio from source in an existing build folder,\
-    we suggest that you delete your build folder and make a new one.")
-  SET(BUILD_TESTING ${BUILD_UNIT_TESTS})
-ENDIF(DEFINED BUILD_UNIT_TESTS)
 
 FINDPYTHON()
 FIND_NUMPY()
