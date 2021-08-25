@@ -7,11 +7,12 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
   <a href="https://anaconda.org/conda-forge/eigenpy"><img src="https://img.shields.io/conda/dn/conda-forge/eigenpy.svg" alt="Conda Downloads"/></a>
   <a href="https://anaconda.org/conda-forge/eigenpy"><img src="https://img.shields.io/conda/vn/conda-forge/eigenpy.svg" alt="Conda Version"/></a>
   <a href="https://conda.anaconda.org/conda-forge"><img src="https://anaconda.org/conda-forge/eigenpy/badges/installer/conda.svg" alt="Anaconda-Server Badge"/></a>
+  <a href="https://badge.fury.io/py/eigenpy"><img src="https://badge.fury.io/py/eigenpy.svg" alt="PyPI version" height="18"></a>
 </p>
 
 **EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python.
 
-**EigenPy** provides: 
+**EigenPy** provides:
  - full memory sharing between Numpy and Eigen avoiding memory allocation
  - full support Eigen::Ref avoiding memory allocation
  - exposition of the Geometry module of Eigen for easy code prototyping
@@ -60,7 +61,7 @@ where 35 should be replaced by the python 3 you want to work this (e.g. `robotpk
 
 ### Mac OS X
 
-The installation of **EigenPy** on Mac OS X is made via [HomeBrew](https://brew.sh/). 
+The installation of **EigenPy** on Mac OS X is made via [HomeBrew](https://brew.sh/).
 You just need to register the tap of the sofware repository.
 
 ```
