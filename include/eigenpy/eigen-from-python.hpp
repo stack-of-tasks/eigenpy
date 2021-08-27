@@ -93,18 +93,14 @@ namespace boost { namespace python { namespace detail {
   struct referent_storage<Eigen::Ref<MatType,Options,Stride> &>
   {
     typedef ::eigenpy::details::referent_storage_eigen_ref<MatType,Options,Stride> StorageType;
-    typedef aligned_storage<
-        ::boost::python::detail::referent_size<StorageType&>::value
-    > type;
+    typedef aligned_storage<referent_size<StorageType&>::value> type;
   };
 
   template<typename MatType, int Options, typename Stride>
   struct referent_storage<const Eigen::Ref<const MatType,Options,Stride> &>
   {
     typedef ::eigenpy::details::referent_storage_eigen_ref<const MatType,Options,Stride> StorageType;
-    typedef aligned_storage<
-        ::boost::python::detail::referent_size<StorageType&>::value
-    > type;
+    typedef aligned_storage<referent_size<StorageType&>::value> type;
   };
 #endif
 }}}
