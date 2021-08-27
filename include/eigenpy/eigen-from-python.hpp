@@ -41,10 +41,16 @@ namespace eigenpy
     struct referent_storage_eigen_ref
     {
       typedef Eigen::Ref<MatType,Options,Stride> RefType;
-      
+#if BOOST_VERSION / 100 % 1000 >= 77
+      typedef typename aligned_storage<
+          ::boost::python::detail::referent_size<RefType&>::value,
+          ::boost::alignment_of<RefType&>::value
+      >::type type;
+#else
       typedef ::boost::python::detail::aligned_storage<
           ::boost::python::detail::referent_size<RefType&>::value
       > AlignedStorage;
+#endif
       
       referent_storage_eigen_ref()
       : pyArray(NULL)
@@ -93,14 +99,22 @@ namespace boost { namespace python { namespace detail {
   struct referent_storage<Eigen::Ref<MatType,Options,Stride> &>
   {
     typedef ::eigenpy::details::referent_storage_eigen_ref<MatType,Options,Stride> StorageType;
+#if BOOST_VERSION / 100 % 1000 >= 77
+    typedef typename aligned_storage<referent_size<StorageType&>::value>::type type;
+#else
     typedef aligned_storage<referent_size<StorageType&>::value> type;
+#endif
   };
 
   template<typename MatType, int Options, typename Stride>
   struct referent_storage<const Eigen::Ref<const MatType,Options,Stride> &>
   {
     typedef ::eigenpy::details::referent_storage_eigen_ref<const MatType,Options,Stride> StorageType;
+#if BOOST_VERSION / 100 % 1000 >= 77
+    typedef typename aligned_storage<referent_size<StorageType&>::value, alignment_of<StorageType&>::value>::type type;
+#else
     typedef aligned_storage<referent_size<StorageType&>::value> type;
+#endif
   };
 #endif
 }}}
