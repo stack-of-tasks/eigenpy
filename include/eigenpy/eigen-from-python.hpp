@@ -42,10 +42,10 @@ namespace eigenpy
     {
       typedef Eigen::Ref<MatType,Options,Stride> RefType;
 #if BOOST_VERSION / 100 % 1000 >= 77
-      typedef typename aligned_storage<
+      typedef typename ::boost::python::detail::aligned_storage<
           ::boost::python::detail::referent_size<RefType&>::value,
           ::boost::alignment_of<RefType&>::value
-      >::type type;
+      >::type AlignedStorage;
 #else
       typedef ::boost::python::detail::aligned_storage<
           ::boost::python::detail::referent_size<RefType&>::value
