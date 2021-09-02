@@ -34,7 +34,7 @@ namespace eigenpy
     Exception::registerException();
     
     bp::def("setNumpyType",&NumpyType::setNumpyType,
-            bp::arg("Numpy type (np.ndarray or np.matrix)"),
+            bp::arg("numpy_type"),
             "Change the Numpy type returned by the converters from an Eigen object.");
             
     bp::def("getNumpyType",&NumpyType::getNumpyType,
