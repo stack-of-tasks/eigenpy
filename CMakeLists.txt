@@ -27,7 +27,7 @@ SET(CMAKE_VERBOSE_MAKEFILE True)
 # ----------------------------------------------------
 OPTION(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 OPTION(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
-OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" ON)
+CMAKE_DEPENDENT_OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF "NOT WIN32" OFF)
 
 IF(DEFINED BUILD_UNIT_TESTS)
   MESSAGE(AUTHOR_WARNING "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
