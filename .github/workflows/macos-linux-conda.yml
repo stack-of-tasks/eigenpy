@@ -4,8 +4,10 @@ on: [push,pull_request]
 
 jobs:
   eigenpy-conda:
-    name: CI - EigenPy on ${{ matrix.os }} via Conda
+    name: CI on ${{ matrix.os }} via Conda
     runs-on: ${{ matrix.os }}
+    env:
+      CCACHE_DIR: /github/home/.ccache # Enable ccache
 
     strategy:
       fail-fast: false
@@ -14,10 +16,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Checkout submodules
-      run: |
-        git submodule update --init
+      with:
+        submodules: recursive
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
@@ -25,6 +25,11 @@ jobs:
         auto-update-conda: true
         environment-file: .github/workflows/conda/environment.yml
         python-version: 3.8
+
+    - uses: actions/cache@v2
+      with:
+        path: ${{ env.CCACHE_DIR }}
+        key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
 
     - name: Install cmake and update conda
       shell: bash -l {0}
