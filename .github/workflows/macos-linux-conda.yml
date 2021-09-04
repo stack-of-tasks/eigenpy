@@ -31,17 +31,17 @@ jobs:
       run: |
         conda activate eigenpy
         conda install cmake -c main
-    
+
     - name: Build EigenPy
       shell: bash -l {0}
       run: |
         conda activate eigenpy
         echo $CONDA_PREFIX
-        
+
         mkdir build
         cd build
 
-        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3)
+        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3) -DGENERATE_PYTHON_STUBS=ON
         make
         make build_tests
         export CTEST_OUTPUT_ON_FAILURE=1
