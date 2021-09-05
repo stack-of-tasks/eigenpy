@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2021, INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
@@ -19,42 +19,42 @@
 
 using namespace eigenpy;
 
-BOOST_PYTHON_MODULE(eigenpy)
+BOOST_PYTHON_MODULE(eigenpy_pywrap)
 {
   namespace bp = boost::python;
   enableEigenPy();
-  
+
   bp::scope().attr("__version__") = eigenpy::printVersion();
   bp::scope().attr("__raw_version__") = bp::str(EIGENPY_VERSION);
   bp::def("checkVersionAtLeast",&eigenpy::checkVersionAtLeast,
           bp::args("major_version","minor_version","patch_version"),
           "Checks if the current version of EigenPy is at least the version provided by the input arguments.");
-  
+
   exposeAngleAxis();
   exposeQuaternion();
   exposeGeometryConversion();
-  
+
   exposeComputationInfo();
-  
+
   {
     bp::scope solvers = boost::python::class_<SolversScope>("solvers");
     exposeSolvers();
     exposePreconditioners();
-    
+
     register_symbolic_link_to_registered_type<Eigen::ComputationInfo>();
   }
-  
+
   {
     using namespace Eigen;
-    
+
     bp::def("is_approx",(bool (*)(const Eigen::MatrixBase<MatrixXd> &, const Eigen::MatrixBase<MatrixXd> &, const double &))&is_approx<MatrixXd,MatrixXd>,
             bp::args("A","B","prec"),
             "Returns True if A is approximately equal to B, within the precision determined by prec.");
-    
+
     bp::def("is_approx",(bool (*)(const Eigen::MatrixBase<MatrixXd> &, const Eigen::MatrixBase<MatrixXd> &))&is_approx<MatrixXd,MatrixXd>,
             bp::args("A","B"),
             "Returns True if A is approximately equal to B.");
   }
-  
+
   exposeDecompositions();
 }

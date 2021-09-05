@@ -1,6 +1,6 @@
 #
-# Copyright (c) 2017-2019 CNRS INRIA
+# Copyright (c) 2017-2021 CNRS INRIA
 #
 
-from .eigenpy import *
-from .eigenpy import __version__, __raw_version__
+from .eigenpy_pywrap import *
+from .eigenpy_pywrap import __version__, __raw_version__
