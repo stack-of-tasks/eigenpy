@@ -44,6 +44,8 @@ INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/ide.cmake)
 INCLUDE(cmake/apple.cmake)
 
+OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF)
+
 STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # If needed, fix CMake policy for APPLE systems
@@ -60,6 +62,16 @@ FIND_NUMPY()
 
 IF(WIN32)
   LINK_DIRECTORIES(${PYTHON_LIBRARY_DIRS})
+  # Set default Windows build paths
+  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH "Single directory for all libraries")
+  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH "Single directory for all executables")
+  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH "Sing$le directory for all archives")
 ENDIF(WIN32)
 
 # ----------------------------------------------------
@@ -150,7 +162,7 @@ SET(${PROJECT_NAME}_SOLVERS_SOURCES
 SET(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
   src/decompositions/decompositions.cpp
   )
-  
+
 SET(${PROJECT_NAME}_SOURCES
   ${${PROJECT_NAME}_SOLVERS_SOURCES}
   ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
@@ -175,11 +187,11 @@ SET(${PROJECT_NAME}_SOURCES
 )
 
 ADD_LIBRARY(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
-TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME} 
-  SYSTEM PUBLIC 
-  ${Boost_INCLUDE_DIRS} 
+TARGET_INCLUDE_DIRECTORIES(${PROJECT_NAME}
+  SYSTEM PUBLIC
+  ${Boost_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIR}
-  ${PYTHON_INCLUDE_DIRS} 
+  ${PYTHON_INCLUDE_DIRS}
   ${NUMPY_INCLUDE_DIRS}
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
   $<INSTALL_INTERFACE:include>)
