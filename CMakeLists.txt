@@ -43,9 +43,8 @@ INCLUDE(cmake/boost.cmake)
 INCLUDE(cmake/python.cmake)
 INCLUDE(cmake/ide.cmake)
 INCLUDE(cmake/apple.cmake)
-INCLUDE(CMakeDependentOption)
 
-CMAKE_DEPENDENT_OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF "NOT WIN32" OFF)
+OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF)
 
 STRING(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
@@ -63,6 +62,16 @@ FIND_NUMPY()
 
 IF(WIN32)
   LINK_DIRECTORIES(${PYTHON_LIBRARY_DIRS})
+  # Set default Windows build paths
+  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH "Single directory for all libraries")
+  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH "Single directory for all executables")
+  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+    ${PROJECT_BINARY_DIR}/Bin
+    CACHE PATH "Sing$le directory for all archives")
 ENDIF(WIN32)
 
 # ----------------------------------------------------
