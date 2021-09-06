@@ -198,12 +198,14 @@ BOOST_PYTHON_MODULE(user_type)
   eigenpy::registerCast<double,DoubleType>(true);
   eigenpy::registerCast<DoubleType,int32_t>(false);
   eigenpy::registerCast<int32_t,DoubleType>(true);
-  eigenpy::registerCast<DoubleType,int64_t>(false);
-  eigenpy::registerCast<int64_t,DoubleType>(true);
+  eigenpy::registerCast<DoubleType,long long>(false);
+  eigenpy::registerCast<long long,DoubleType>(true);
   eigenpy::registerCast<FloatType,double>(true);
   eigenpy::registerCast<double,FloatType>(false);
-  eigenpy::registerCast<FloatType,int64_t>(false);
-  eigenpy::registerCast<int64_t,FloatType>(true);
+  eigenpy::registerCast<FloatType,long long>(false);
+  eigenpy::registerCast<long long,FloatType>(true);
+  eigenpy::registerCast<FloatType,int32_t>(false);
+  eigenpy::registerCast<int32_t,FloatType>(true);
 
   bp::implicitly_convertible<double,DoubleType>();
   bp::implicitly_convertible<DoubleType,double>();
