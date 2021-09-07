@@ -62,16 +62,16 @@ FIND_NUMPY()
 
 IF(WIN32)
   LINK_DIRECTORIES(${PYTHON_LIBRARY_DIRS})
-  # Set default Windows build paths
-  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY
-    ${PROJECT_BINARY_DIR}/Bin
-    CACHE PATH "Single directory for all libraries")
-  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY
-    ${PROJECT_BINARY_DIR}/Bin
-    CACHE PATH "Single directory for all executables")
-  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
-    ${PROJECT_BINARY_DIR}/Bin
-    CACHE PATH "Sing$le directory for all archives")
+#  # Set default Windows build paths
+#  SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY
+#    ${PROJECT_BINARY_DIR}/Bin
+#    CACHE PATH "Single directory for all libraries")
+#  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+#    ${PROJECT_BINARY_DIR}/Bin
+#    CACHE PATH "Single directory for all executables")
+#  SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY
+#    ${PROJECT_BINARY_DIR}/Bin
+#    CACHE PATH "Sing$le directory for all archives")
 ENDIF(WIN32)
 
 # ----------------------------------------------------

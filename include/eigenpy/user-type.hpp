@@ -9,6 +9,8 @@
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/register.hpp"
 
+#include <iostream>
+
 namespace eigenpy
 {
   /// \brief Default cast algo to cast a From to To. Can be specialized for any types.
@@ -255,6 +257,11 @@ namespace eigenpy
     int to_typenum = Register::getTypeCode<To>();
     assert(to_typenum >= 0 && "to_typenum is not valid");
     assert(from_array_descr != NULL && "from_array_descr is not valid");
+    
+    std::cout << "From: " << bp::type_info(typeid(From)).name() << " " << Register::getTypeCode<From>()
+    << " to: " << bp::type_info(typeid(To)).name() << " " << Register::getTypeCode<To>()
+    << "\n to_typenum: " << to_typenum
+    << std::endl;
     
     if(call_PyArray_RegisterCastFunc(from_array_descr,
                                      to_typenum,
