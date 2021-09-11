@@ -6,7 +6,7 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
   <a href="https://travis-ci.org/stack-of-tasks/eigenpy"><img src="https://travis-ci.org/stack-of-tasks/eigenpy.svg?branch=master" alt="Build Status"/></a>
   <a href="https://anaconda.org/conda-forge/eigenpy"><img src="https://img.shields.io/conda/dn/conda-forge/eigenpy.svg" alt="Conda Downloads"/></a>
   <a href="https://anaconda.org/conda-forge/eigenpy"><img src="https://img.shields.io/conda/vn/conda-forge/eigenpy.svg" alt="Conda Version"/></a>
-  <a href="https://badge.fury.io/py/eigenpy"><img src="https://badge.fury.io/py/eigenpy.svg" alt="PyPI version" height="18"></a>
+  <a href="https://badge.fury.io/py/eigenpy"><img src="https://badge.fury.io/py/eigenpy.svg" alt="PyPI version"></a>
 </p>
 
 **EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python.
