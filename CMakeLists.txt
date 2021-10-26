@@ -13,8 +13,18 @@ SET(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 SET(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 
 # Check if the submodule cmake have been initialized
+set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
 IF(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
-  MESSAGE(FATAL_ERROR "\nPlease run the following command first:\ngit submodule update --init\n")
+  IF(${CMAKE_VERSION} VERSION_LESS "3.14.0")
+    MESSAGE(FATAL_ERROR "\nPlease run the following command first:\ngit submodule update --init\n")
+  ELSE()
+    message(STATUS "JRL cmakemodules not found. Let's fetch it.")
+    include(FetchContent)
+    FetchContent_Declare("jrl-cmakemodules"
+      GIT_REPOSITORY "https://github.com/jrl-umi3218/jrl-cmakemodules.git")
+    FetchContent_MakeAvailable("jrl-cmakemodules")
+    FetchContent_GetProperties("jrl-cmakemodules" SOURCE_DIR JRL_CMAKE_MODULES)
+  ENDIF()
 ENDIF()
 
 # Disable -Werror on Unix for now.
@@ -35,14 +45,14 @@ IF(DEFINED BUILD_UNIT_TESTS)
   SET(BUILD_TESTING ${BUILD_UNIT_TESTS})
 ENDIF(DEFINED BUILD_UNIT_TESTS)
 
-INCLUDE(cmake/base.cmake)
+INCLUDE("${JRL_CMAKE_MODULES}/base.cmake")
 COMPUTE_PROJECT_ARGS(PROJECT_ARGS LANGUAGES CXX)
 PROJECT(${PROJECT_NAME} ${PROJECT_ARGS})
 
-INCLUDE(cmake/boost.cmake)
-INCLUDE(cmake/python.cmake)
-INCLUDE(cmake/ide.cmake)
-INCLUDE(cmake/apple.cmake)
+INCLUDE("${JRL_CMAKE_MODULES}/boost.cmake")
+INCLUDE("${JRL_CMAKE_MODULES}/python.cmake")
+INCLUDE("${JRL_CMAKE_MODULES}/ide.cmake")
+INCLUDE("${JRL_CMAKE_MODULES}/apple.cmake")
 
 OPTION(GENERATE_PYTHON_STUBS "Generate the Python stubs associated to the Python library" OFF)
 

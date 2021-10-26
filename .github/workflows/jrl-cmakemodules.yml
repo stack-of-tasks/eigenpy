@@ -1,0 +1,24 @@
+name: JRL-cmakemodules
+on: [push,pull_request]
+
+jobs:
+  with-submodules:
+    name: Check configuration with git submodules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - run: sudo apt install libboost-all-dev libeigen3-dev python3-numpy
+      - run: cmake .
+
+
+  without-submodules:
+    name: Check configuration without git submodules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: false
+      - run: sudo apt install libboost-all-dev libeigen3-dev python3-numpy
+      - run: cmake .
