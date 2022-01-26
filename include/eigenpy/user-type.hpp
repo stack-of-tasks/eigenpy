@@ -19,7 +19,11 @@ namespace eigenpy
   {
     static To run(const From & from)
     {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#pragma GCC diagnostic ignored "-Wfloat-conversion"
       return static_cast<To>(from);
+#pragma GCC diagnostic pop
     }
 
   };
