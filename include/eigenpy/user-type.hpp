@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020-2021 INRIA
+// Copyright (c) 2020-2022 INRIA
 //
 
 #ifndef __eigenpy_user_type_hpp__
@@ -19,14 +19,14 @@ namespace eigenpy
   {
     static To run(const From & from)
     {
-      return (To)from;
+      return static_cast<To>(from);
     }
-    
+
   };
 
   namespace internal
   {
-  
+
     template<typename From, typename To>
     static void cast(void * from_, void * to_, npy_intp n, void * /*fromarr*/, void * /*toarr*/)
     {
@@ -38,7 +38,7 @@ namespace eigenpy
         to[i] = eigenpy::cast<From,To>::run(from[i]);
       }
     }
-  
+
     template<typename T, int type_code = NumpyEquivalentType<T>::type_code>
     struct SpecialMethods
     {
@@ -54,7 +54,7 @@ namespace eigenpy
       inline static int fillwithscalar(void* buffer_, npy_intp length,
                                        void* value, void* arr);
     };
-  
+
     template<typename T>
     struct OffsetOf
     {
@@ -63,10 +63,10 @@ namespace eigenpy
         char c;
         T v;
       };
-      
+
       enum { value = offsetof(Data, v) };
     };
-  
+
     template<typename T>
     struct SpecialMethods<T,NPY_USERDEF>
     {
@@ -79,7 +79,7 @@ namespace eigenpy
           T & t2 = *static_cast<T*>(src);
           t1 = t2;
         }
-          
+
         if(swap)
         {
           T & t1 = *static_cast<T*>(dst);
@@ -112,14 +112,14 @@ namespace eigenpy
       ///        pointed to by data. This function deals with “misbehaved” arrays.
       ///        If successful, a zero is returned, otherwise, a negative one is returned
       ///        (and a Python error set).
-      
+
       /// \param[in] src_obj  Pointer to the location of the python object
       /// \param[in] dest_ptr Pointer to the location in the array where the source object should be saved.
       /// \param[in] array Pointer to the location of the array
       ///
       /// \returns int Success(0) or Failure(-1)
       ///
-      
+
       inline static int setitem(PyObject * src_obj, void * dest_ptr, void * array)
       {
 //        std::cout << "setitem" << std::endl;
@@ -132,7 +132,7 @@ namespace eigenpy
         PyArray_Descr * descr = PyArray_DTYPE(py_array);
         PyTypeObject * array_scalar_type = descr->typeobj;
         PyTypeObject * src_obj_type = Py_TYPE(src_obj);
-        
+
         if(array_scalar_type != src_obj_type)
         {
           std::stringstream ss;
@@ -141,7 +141,7 @@ namespace eigenpy
           eigenpy::Exception(ss.str());
           return -1;
         }
-        
+
         bp::extract<T&> extract_src_obj(src_obj);
         if(!extract_src_obj.check())
         {
@@ -151,25 +151,25 @@ namespace eigenpy
           eigenpy::Exception(ss.str());
           return -1;
         }
-        
+
         const T & src = extract_src_obj();
         T & dest = *static_cast<T*>(dest_ptr);
         dest = src;
 
         return 0;
       }
-      
+
       inline static void copyswapn(void * dst, long dstride, void * src, long sstride,
                                    long n, int swap, void * array)
       {
 //        std::cout << "copyswapn" << std::endl;
-        
+
         char *dstptr = static_cast<char*>(dst);
         char *srcptr = static_cast<char*>(src);
-        
+
         PyArrayObject * py_array = static_cast<PyArrayObject *>(array);
         PyArray_CopySwapFunc * copyswap = PyArray_DESCR(py_array)->f->copyswap;
-        
+
         for (npy_intp i = 0; i < n; i++)
         {
           copyswap(dstptr, srcptr, swap, array);
@@ -177,7 +177,7 @@ namespace eigenpy
           srcptr += sstride;
         }
       }
-      
+
       inline static npy_bool nonzero(void * ip, void * array)
       {
 //        std::cout << "nonzero" << std::endl;
@@ -196,7 +196,7 @@ namespace eigenpy
           return (npy_bool)(tmp_value != ZeroValue);
         }
       }
-      
+
       inline static void dotfunc(void * ip0_, npy_intp is0, void * ip1_, npy_intp is1,
                                  void * op, npy_intp n, void * /*arr*/)
       {
@@ -208,11 +208,11 @@ namespace eigenpy
         ConstMapType
         v0(static_cast<T*>(ip0_),n,InputStride(is0/sizeof(T))),
         v1(static_cast<T*>(ip1_),n,InputStride(is1/sizeof(T)));
-        
+
         *static_cast<T*>(op) = v0.dot(v1);
       }
-      
-      
+
+
       inline static int fillwithscalar(void* buffer_, npy_intp length,
                                        void* value, void* /*arr*/)
       {
@@ -225,8 +225,8 @@ namespace eigenpy
         }
         return 0;
       }
-      
-      
+
+
       static int fill(void* data_, npy_intp length, void* /*arr*/)
       {
 //        std::cout << "fillwithscalar" << std::endl;
@@ -240,10 +240,10 @@ namespace eigenpy
         }
         return 0;
       }
-      
+
 
     };  //     struct SpecialMethods<T,NPY_USERDEF>
-  
+
   } // namespace internal
 
 
@@ -252,17 +252,17 @@ namespace eigenpy
   {
     PyArray_Descr* from_array_descr = Register::getPyArrayDescr<From>();
 //    int from_typenum = Register::getTypeCode<From>();
-    
+
 //    PyTypeObject * to_py_type = Register::getPyType<To>();
     int to_typenum = Register::getTypeCode<To>();
     assert(to_typenum >= 0 && "to_typenum is not valid");
     assert(from_array_descr != NULL && "from_array_descr is not valid");
-    
+
     std::cout << "From: " << bp::type_info(typeid(From)).name() << " " << Register::getTypeCode<From>()
     << " to: " << bp::type_info(typeid(To)).name() << " " << Register::getTypeCode<To>()
     << "\n to_typenum: " << to_typenum
     << std::endl;
-    
+
     if(call_PyArray_RegisterCastFunc(from_array_descr,
                                      to_typenum,
                                      static_cast<PyArray_VectorUnaryFunc *>(&eigenpy::internal::cast<From,To>)) < 0)
@@ -277,7 +277,7 @@ namespace eigenpy
       eigenpy::Exception(ss.str());
       return false;
     }
-    
+
     if (safe && call_PyArray_RegisterCanCast(from_array_descr,
                                              to_typenum,
                                              NPY_NOSCALAR) < 0)
@@ -292,7 +292,7 @@ namespace eigenpy
       eigenpy::Exception(ss.str());
       return false;
     }
-    
+
     return true;
   }
 
@@ -307,17 +307,17 @@ namespace eigenpy
     bp::type_info type = bp::type_id<T>();
     const bp::converter::registration* registration =
       bp::converter::registry::query(type);
-    
+
     // If the class is not registered, return None.
     if (!registration) {
       //std::cerr<<"Class Not Registered. Returning Empty."<<std::endl;
       return bp::object();
     }
-    
+
     bp::handle<PyTypeObject> handle(bp::borrowed(registration->get_class_object()));
     return bp::object(handle);
   }
-  
+
   template<typename Scalar>
   int registerNewType(PyTypeObject * py_type_ptr = NULL)
   {
@@ -325,16 +325,16 @@ namespace eigenpy
     // In this case, the registration is not required.
     if(isNumpyNativeType<Scalar>())
       return NumpyEquivalentType<Scalar>::type_code;
-    
+
     // Retrieve the registered type for the current Scalar
     if(py_type_ptr == NULL)
     { // retrive the type from Boost.Python
       py_type_ptr = Register::getPyType<Scalar>();
     }
-    
+
     if(Register::isRegistered(py_type_ptr))
       return Register::getTypeCode(py_type_ptr); // the type is already registered
-    
+
     PyArray_GetItemFunc * getitem = &internal::SpecialMethods<Scalar>::getitem;
     PyArray_SetItemFunc * setitem = &internal::SpecialMethods<Scalar>::setitem;
     PyArray_NonzeroFunc * nonzero = &internal::SpecialMethods<Scalar>::nonzero;
@@ -343,7 +343,7 @@ namespace eigenpy
     PyArray_DotFunc * dotfunc = &internal::SpecialMethods<Scalar>::dotfunc;
     PyArray_FillFunc * fill = &internal::SpecialMethods<Scalar>::fill;
     PyArray_FillWithScalarFunc * fillwithscalar = &internal::SpecialMethods<Scalar>::fillwithscalar;
-    
+
     int code = Register::registerNewType(py_type_ptr,
                                          &typeid(Scalar),
                                          sizeof(Scalar),
@@ -353,13 +353,13 @@ namespace eigenpy
                                          dotfunc,
                                          fill,
                                          fillwithscalar);
-    
+
     call_PyArray_RegisterCanCast(call_PyArray_DescrFromType(NPY_OBJECT),
                                  code, NPY_NOSCALAR);
-    
+
     return code;
   }
-  
+
 } // namespace eigenpy
 
 #endif // __eigenpy_user_type_hpp__
