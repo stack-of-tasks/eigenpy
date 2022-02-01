@@ -206,8 +206,8 @@ namespace eigenpy
         typedef const Eigen::Map<const VectorT,0,InputStride> ConstMapType;
 
         ConstMapType
-        v0(static_cast<T*>(ip0_),n,InputStride(is0/sizeof(T))),
-        v1(static_cast<T*>(ip1_),n,InputStride(is1/sizeof(T)));
+        v0(static_cast<T*>(ip0_),n,InputStride(is0/(Eigen::DenseIndex)sizeof(T))),
+        v1(static_cast<T*>(ip1_),n,InputStride(is1/(Eigen::DenseIndex)sizeof(T)));
 
         *static_cast<T*>(op) = v0.dot(v1);
       }
