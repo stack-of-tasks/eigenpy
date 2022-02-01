@@ -275,7 +275,7 @@ namespace eigenpy
       return new Quaternion;
     }
     
-    static Quaternion* FromOneVector(const Vector4& v)
+    static Quaternion* FromOneVector(const Eigen::Ref<Vector4> v)
     {
       Quaternion* q(new Quaternion(v[3],v[0],v[1],v[2]));
       return q;
