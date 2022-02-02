@@ -1,6 +1,5 @@
 /*
- * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2014-2022 CNRS INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
@@ -94,6 +93,61 @@ Eigen::Matrix<Scalar,6,6> matrix6(const Scalar & value)
   return ReturnType::Constant(value);
 }
 
+template<typename Scalar>
+Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor>
+generateRowMajorMatrix(const Eigen::DenseIndex rows,
+                       const Eigen::DenseIndex cols)
+{
+  typedef Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> RowMajorMatrix;
+  RowMajorMatrix A(rows, cols);
+  typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1> Vector;
+  Eigen::Map<Vector>(A.data(),A.size()) = Vector::LinSpaced(A.size(),1,A.size());
+  std::cout << "Matrix values:\n" << A << std::endl;
+  return A;
+}
+
+template<typename Scalar>
+Eigen::Matrix<Scalar,1,Eigen::Dynamic,Eigen::RowMajor>
+generateRowMajorVector(const Eigen::DenseIndex size)
+{
+  typedef Eigen::Matrix<Scalar,1,Eigen::Dynamic,Eigen::RowMajor> RowMajorVector;
+  RowMajorVector A(size);
+  A.setLinSpaced(size,1,size);
+  std::cout << "Vector values: " << A.transpose() << std::endl;
+  return A;
+}
+
+template<typename Scalar>
+Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic>
+generateColMajorMatrix(const Eigen::DenseIndex rows,
+                       const Eigen::DenseIndex cols)
+{
+  typedef Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> ColMajorMatrix;
+  ColMajorMatrix A(rows, cols);
+  typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1> Vector;
+  Eigen::Map<Vector>(A.data(),A.size()) = Vector::LinSpaced(A.size(),1,A.size());
+  std::cout << "Matrix values:\n" << A << std::endl;
+  return A;
+}
+
+template<typename Scalar>
+Eigen::Matrix<Scalar,1,Eigen::Dynamic>
+generateColMajorVector(const Eigen::DenseIndex size)
+{
+  typedef Eigen::Matrix<Scalar,1,Eigen::Dynamic> ColMajorVector;
+  ColMajorVector A(size);
+  A.setLinSpaced(size,1,size);
+  std::cout << "Vector values: " << A.transpose() << std::endl;
+  return A;
+}
+
+template<typename Matrix, typename ReturnMatrix>
+ReturnMatrix
+copy(const Eigen::MatrixBase<Matrix> & mat)
+{
+  return mat;
+}
+
 BOOST_PYTHON_MODULE(matrix)
 {
   using namespace Eigen;
@@ -134,4 +188,16 @@ BOOST_PYTHON_MODULE(matrix)
   bp::def("plain", plain<MatrixXd>);
 
   bp::def("matrix6", matrix6<double>);
+  
+  bp::def("generateRowMajorMatrix", generateRowMajorMatrix<double>);
+  bp::def("generateRowMajorVector", generateRowMajorVector<double>);
+  
+  bp::def("generateColMajorMatrix", generateColMajorMatrix<double>);
+  bp::def("generateColMajorVector", generateColMajorVector<double>);
+  
+  typedef Eigen::Matrix<double,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> RowMajorMatrixXd;
+  bp::def("asRowMajorFromColMajorMatrix", copy<Eigen::MatrixXd,RowMajorMatrixXd>);
+  bp::def("asRowMajorFromColMajorVector", copy<Eigen::VectorXd,Eigen::RowVectorXd>);
+  bp::def("asRowMajorFromRowMajorMatrix", copy<RowMajorMatrixXd,RowMajorMatrixXd>);
+  bp::def("asRowMajorFromRowMajorVector", copy<Eigen::RowVectorXd,Eigen::RowVectorXd>);
 }

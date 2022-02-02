@@ -134,3 +134,15 @@ assert(vec1x1[0] == value)
 # test registration of matrix6
 mat6 = eigenpy.matrix6(0.)
 assert(mat6.size == 36)
+
+# test RowMajor
+
+mat = np.arange(0,10).reshape(2,5)
+assert((eigenpy.asRowMajorFromColMajorMatrix(mat) == mat).all())
+assert((eigenpy.asRowMajorFromRowMajorMatrix(mat) == mat).all())
+
+vec = np.arange(0,10)
+assert((eigenpy.asRowMajorFromColMajorMatrix(vec) == vec).all())
+assert((eigenpy.asRowMajorFromColMajorVector(vec) == vec).all())
+assert((eigenpy.asRowMajorFromRowMajorMatrix(vec) == vec).all())
+assert((eigenpy.asRowMajorFromRowMajorVector(vec) == vec).all())
