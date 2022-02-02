@@ -82,16 +82,32 @@ namespace eigenpy
           rows = (int)PyArray_DIMS(pyArray)[0];
           cols = 1;
           
-          inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
-          outer_stride = 0;
+          if(EquivalentInputMatrixType::IsRowMajor)
+          {
+            outer_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+            inner_stride = 0;
+          }
+          else
+          {
+            inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+            outer_stride = 0;
+          }
         }
         else
         {
           rows = 1;
           cols = (int)PyArray_DIMS(pyArray)[0];
           
-          inner_stride = 0;
-          outer_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+          if(EquivalentInputMatrixType::IsRowMajor)
+          {
+            inner_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+            outer_stride = 0;
+          }
+          else
+          {
+            inner_stride = 0;
+            outer_stride = (int)PyArray_STRIDE(pyArray, 0) / (int)itemsize;
+          }
         }
       }
       
