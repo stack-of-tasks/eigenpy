@@ -13,15 +13,21 @@ def isapprox(a,b,epsilon=1e-6):
         return abs(a-b)<epsilon
 
 # --- Quaternion ---------------------------------------------------------------
+# Coefficient initialisation
+verbose and print("[Quaternion] Coefficient initialisation")
 q = Quaternion(1,2,3,4)
 q.normalize()
 assert(isapprox(np.linalg.norm(q.coeffs()),q.norm()))
 assert(isapprox(np.linalg.norm(q.coeffs()),1))
 
+# Coefficient-vector initialisation
+verbose and print("[Quaternion] Coefficient-vector initialisation")
 v = np.array([0.5,-0.5,0.5,0.5])
 qv = Quaternion(v)
 assert(isapprox(qv.coeffs(), v))
 
+# Angle axis initialisation
+verbose and print("[Quaternion] AngleAxis initialisation")
 r = AngleAxis(q)
 q2 = Quaternion(r)
 assert(q==q)
@@ -34,6 +40,8 @@ Rr = r.matrix()
 assert(isapprox(Rq.dot(Rq.T),np.eye(3)))
 assert(isapprox(Rr,Rq))
 
+# Rotation matrix initialisation
+verbose and print("[Quaternion] Rotation Matrix initialisation")
 qR = Quaternion(Rr)
 assert(q.isApprox(qR))
 assert(isapprox(q.coeffs(),qR.coeffs()))
@@ -43,7 +51,7 @@ try:
    qR[5]
    print("Error, this message should not appear.")
 except RuntimeError as e:
-  if verbose: print("As expected, catched exception: ",e)
+  if verbose: print("As expected, caught exception: ", e)
 
 # --- Angle Vector ------------------------------------------------
 r = AngleAxis(.1,np.array([1,0,0],np.double))
