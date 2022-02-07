@@ -101,7 +101,7 @@ generateRowMajorMatrix(const Eigen::DenseIndex rows,
   typedef Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic,Eigen::RowMajor> RowMajorMatrix;
   RowMajorMatrix A(rows, cols);
   typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1> Vector;
-  Eigen::Map<Vector>(A.data(),A.size()) = Vector::LinSpaced(A.size(),1,A.size());
+  Eigen::Map<Vector>(A.data(),A.size()) = Vector::LinSpaced(A.size(), 1, static_cast<Scalar>(A.size()));
   std::cout << "Matrix values:\n" << A << std::endl;
   return A;
 }
@@ -112,7 +112,7 @@ generateRowMajorVector(const Eigen::DenseIndex size)
 {
   typedef Eigen::Matrix<Scalar,1,Eigen::Dynamic,Eigen::RowMajor> RowMajorVector;
   RowMajorVector A(size);
-  A.setLinSpaced(size,1,size);
+  A.setLinSpaced(size, 1, static_cast<Scalar>(size));
   std::cout << "Vector values: " << A.transpose() << std::endl;
   return A;
 }
@@ -125,7 +125,7 @@ generateColMajorMatrix(const Eigen::DenseIndex rows,
   typedef Eigen::Matrix<Scalar,Eigen::Dynamic,Eigen::Dynamic> ColMajorMatrix;
   ColMajorMatrix A(rows, cols);
   typedef Eigen::Matrix<Scalar,Eigen::Dynamic,1> Vector;
-  Eigen::Map<Vector>(A.data(),A.size()) = Vector::LinSpaced(A.size(),1,A.size());
+  Eigen::Map<Vector>(A.data(),A.size()) = Vector::LinSpaced(A.size(), 1, static_cast<Scalar>(A.size()));
   std::cout << "Matrix values:\n" << A << std::endl;
   return A;
 }
@@ -136,7 +136,7 @@ generateColMajorVector(const Eigen::DenseIndex size)
 {
   typedef Eigen::Matrix<Scalar,1,Eigen::Dynamic> ColMajorVector;
   ColMajorVector A(size);
-  A.setLinSpaced(size,1,size);
+  A.setLinSpaced(size, 1, static_cast<Scalar>(size));
   std::cout << "Vector values: " << A.transpose() << std::endl;
   return A;
 }
