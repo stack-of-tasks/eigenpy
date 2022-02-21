@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 CNRS INRIA
+ * Copyright 2014-2022 CNRS INRIA
  */
 
 #ifndef __eigenpy_quaternion_hpp__
@@ -120,9 +120,11 @@ namespace eigenpy
                                            (bp::arg("aa"))),
                                            "Initialize from an angle axis.\n"
                                            "\taa: angle axis object.")
-      .def(bp::init<Quaternion>((bp::arg("self"),bp::arg("quat")),
-                                "Copy constructor.\n"
-                                "\tquat: a quaternion.")[bp::return_value_policy<bp::return_by_value>()])
+      .def("__init__",bp::make_constructor(&QuaternionVisitor::FromOtherQuaternion,
+                                           bp::default_call_policies(),
+                                           (bp::arg("quat"))),
+           "Copy constructor.\n"
+           "\tquat: a quaternion.")
       .def("__init__",bp::make_constructor(&QuaternionVisitor::FromTwoVectors,
                                            bp::default_call_policies(),
                                            (bp::arg("u"),bp::arg("v"))),
@@ -286,7 +288,13 @@ namespace eigenpy
       Quaternion* q(new Quaternion); q->setFromTwoVectors(u,v);
       return q;
     }
-
+    
+    static Quaternion* FromOtherQuaternion(const Quaternion & other)
+    {
+      Quaternion* q(new Quaternion(other));
+      return q;
+    }
+    
     static Quaternion* DefaultConstructor()
     {
       return new Quaternion;
