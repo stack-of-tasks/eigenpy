@@ -194,7 +194,7 @@ namespace eigenpy
            "Normalizes the quaternion *this.")
       .def("normalized",&Quaternion::normalized,
            bp::arg("self"),
-           "Returns a normalized copy of *this.")
+           "Returns a normalized copy of *this.", bp::return_self<>())
       .def("squaredNorm",&Quaternion::squaredNorm,
            bp::arg("self"),
            "Returns the squared norm of the quaternion's coefficients.")
