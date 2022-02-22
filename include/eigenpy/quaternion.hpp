@@ -185,16 +185,19 @@ namespace eigenpy
            "Returns the quaternion describing the inverse rotation.")
       .def("setIdentity",&Quaternion::setIdentity,
            bp::arg("self"),
-           "Set *this to the idendity rotation.",bp::return_self<>())
+           "Set *this to the idendity rotation.",
+           bp::return_self<>())
       .def("norm",&Quaternion::norm,
            bp::arg("self"),
            "Returns the norm of the quaternion's coefficients.")
       .def("normalize",&Quaternion::normalize,
            bp::arg("self"),
-           "Normalizes the quaternion *this.")
-      .def("normalized",&Quaternion::normalized,
+           "Normalizes the quaternion *this.",
+           bp::return_self<>())
+      .def("normalized",&normalized,
            bp::arg("self"),
-           "Returns a normalized copy of *this.")
+           "Returns a normalized copy of *this.",
+           bp::return_value_policy<bp::manage_new_object>())
       .def("squaredNorm",&Quaternion::squaredNorm,
            bp::arg("self"),
            "Returns the squared norm of the quaternion's coefficients.")
@@ -251,6 +254,11 @@ namespace eigenpy
       ;
     }
   private:
+    
+    static Quaternion * normalized(const Quaternion & self)
+    {
+      return new Quaternion(self.normalized());
+    }
 
     template<int i>
     static void setCoeff(Quaternion & self, Scalar value) { self.coeffs()[i] = value; }
