@@ -185,7 +185,7 @@ namespace eigenpy
            "Returns the quaternion describing the inverse rotation.")
       .def("setIdentity",&Quaternion::setIdentity,
            bp::arg("self"),
-           "Set *this to the idendity rotation.",
+           "Set *this to the identity rotation.",
            bp::return_self<>())
       .def("norm",&Quaternion::norm,
            bp::arg("self"),
