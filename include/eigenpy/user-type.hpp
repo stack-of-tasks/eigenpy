@@ -262,10 +262,10 @@ namespace eigenpy
     assert(to_typenum >= 0 && "to_typenum is not valid");
     assert(from_array_descr != NULL && "from_array_descr is not valid");
 
-    std::cout << "From: " << bp::type_info(typeid(From)).name() << " " << Register::getTypeCode<From>()
-    << " to: " << bp::type_info(typeid(To)).name() << " " << Register::getTypeCode<To>()
-    << "\n to_typenum: " << to_typenum
-    << std::endl;
+//    std::cout << "From: " << bp::type_info(typeid(From)).name() << " " << Register::getTypeCode<From>()
+//    << " to: " << bp::type_info(typeid(To)).name() << " " << Register::getTypeCode<To>()
+//    << "\n to_typenum: " << to_typenum
+//    << std::endl;
 
     if(call_PyArray_RegisterCastFunc(from_array_descr,
                                      to_typenum,
