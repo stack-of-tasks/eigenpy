@@ -62,9 +62,10 @@ namespace eigenpy
 
 }
 
-#if defined _WIN32 || defined __CYGWIN__
+
 namespace eigenpy
 {
+#if defined _WIN32 || defined __CYGWIN__
   EIGENPY_DLLAPI bool call_PyArray_Check(PyObject *);
 
   EIGENPY_DLLAPI PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type);
@@ -86,19 +87,59 @@ namespace eigenpy
   EIGENPY_DLLAPI PyArray_Descr * call_PyArray_MinScalarType(PyArrayObject *arr);
 
   EIGENPY_DLLAPI int call_PyArray_RegisterCastFunc(PyArray_Descr* descr, int totype, PyArray_VectorUnaryFunc* castfunc);
-}
 #else
-  #define call_PyArray_Check(py_obj) PyArray_Check(py_obj)
-  #define call_PyArray_SimpleNew PyArray_SimpleNew
-  #define call_PyArray_New(py_type_ptr,nd,shape,np_type,data_ptr,options) \
-    PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL)
-  #define getPyArrayType() &PyArray_Type
-  #define call_PyArray_DescrFromType(typenum) PyArray_DescrFromType(typenum)
-  #define call_PyArray_MinScalarType(py_arr) PyArray_MinScalarType(py_arr)
-  #define call_PyArray_InitArrFuncs(funcs) PyArray_InitArrFuncs(funcs)
-  #define call_PyArray_RegisterDataType(dtype) PyArray_RegisterDataType(dtype)
-  #define call_PyArray_RegisterCanCast(descr,totype,scalar) PyArray_RegisterCanCast(descr,totype,scalar)
-  #define call_PyArray_RegisterCastFunc(descr,totype,castfunc) PyArray_RegisterCastFunc(descr,totype,castfunc)
+inline bool call_PyArray_Check(PyObject * py_obj)
+{
+  return PyArray_Check(py_obj);
+}
+
+inline PyObject* call_PyArray_SimpleNew(int nd, npy_intp * shape, int np_type)
+{
+  return PyArray_SimpleNew(nd,shape,np_type);
+}
+
+inline PyObject* call_PyArray_New(PyTypeObject * py_type_ptr, int nd, npy_intp * shape, int np_type, void * data_ptr, int options)
+{
+  return PyArray_New(py_type_ptr,nd,shape,np_type,NULL,data_ptr,0,options,NULL);
+}
+
+inline int call_PyArray_ObjectType(PyObject * obj, int val)
+{
+  return PyArray_ObjectType(obj,val);
+}
+
+inline PyTypeObject * getPyArrayType() { return &PyArray_Type; }
+
+inline PyArray_Descr * call_PyArray_DescrFromType(int typenum)
+{
+  return PyArray_DescrFromType(typenum);
+}
+
+inline void call_PyArray_InitArrFuncs(PyArray_ArrFuncs * funcs)
+{
+  PyArray_InitArrFuncs(funcs);
+}
+
+inline int call_PyArray_RegisterDataType(PyArray_Descr * dtype)
+{
+  return PyArray_RegisterDataType(dtype);
+}
+
+inline PyArray_Descr * call_PyArray_MinScalarType(PyArrayObject * arr)
+{
+  return PyArray_MinScalarType(arr);
+}
+
+inline int call_PyArray_RegisterCanCast(PyArray_Descr *descr, int totype, NPY_SCALARKIND scalar)
+{
+  return PyArray_RegisterCanCast(descr,totype,scalar);
+}
+
+inline int call_PyArray_RegisterCastFunc(PyArray_Descr* descr, int totype, PyArray_VectorUnaryFunc* castfunc)
+{
+  return PyArray_RegisterCastFunc(descr,totype,castfunc);
+}
 #endif
+}
 
 #endif // ifndef __eigenpy_numpy_hpp__
