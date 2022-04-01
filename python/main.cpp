@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2021, INRIA
+ * Copyright 2018-2022, INRIA
  */
 
 #include "eigenpy/eigenpy.hpp"
@@ -48,12 +48,8 @@ BOOST_PYTHON_MODULE(eigenpy_pywrap)
     using namespace Eigen;
 
     bp::def("is_approx",(bool (*)(const Eigen::MatrixBase<MatrixXd> &, const Eigen::MatrixBase<MatrixXd> &, const double &))&is_approx<MatrixXd,MatrixXd>,
-            bp::args("A","B","prec"),
+            (bp::arg("A"),bp::arg("B"),bp::arg("prec") = 1e-12),
             "Returns True if A is approximately equal to B, within the precision determined by prec.");
-
-    bp::def("is_approx",(bool (*)(const Eigen::MatrixBase<MatrixXd> &, const Eigen::MatrixBase<MatrixXd> &))&is_approx<MatrixXd,MatrixXd>,
-            bp::args("A","B"),
-            "Returns True if A is approximately equal to B.");
   }
 
   exposeDecompositions();
