@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014-2020 CNRS INRIA
+// Copyright (c) 2014-2022 CNRS INRIA
 //
 
 #ifndef __eigenpy_eigen_from_python_hpp__
@@ -11,6 +11,36 @@
 #include "eigenpy/scalar-conversion.hpp"
 
 #include <boost/python/converter/rvalue_from_python_data.hpp>
+
+namespace eigenpy
+{
+
+template<typename C>
+struct expected_pytype_for_arg {};
+
+template<typename Scalar, int Rows, int Cols, int Options, int MaxRows, int MaxCols>
+struct expected_pytype_for_arg<Eigen::Matrix< Scalar, Rows, Cols, Options, MaxRows, MaxCols> >
+{
+  static PyTypeObject const *get_pytype()
+  {
+    PyTypeObject const * py_type = eigenpy::getPyArrayType();
+    return py_type;
+  }
+};
+
+}
+
+namespace boost {
+namespace python {
+namespace converter {
+
+template<typename Scalar, int Rows, int Cols, int Options, int MaxRows, int MaxCols>
+struct expected_pytype_for_arg<Eigen::Matrix< Scalar, Rows, Cols, Options, MaxRows, MaxCols> >
+: eigenpy::expected_pytype_for_arg<Eigen::Matrix< Scalar, Rows, Cols, Options, MaxRows, MaxCols> >
+{
+};
+
+}}}
 
 namespace eigenpy
 {
@@ -427,7 +457,12 @@ namespace eigenpy
   {
     bp::converter::registry::push_back
     (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-     &EigenFromPy::construct,bp::type_id<MatType>());
+     &EigenFromPy::construct,
+     bp::type_id<MatType>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+     ,&eigenpy::expected_pytype_for_arg<MatType>::get_pytype
+#endif
+     );
   }
   
   template<typename MatType>
@@ -453,7 +488,7 @@ namespace eigenpy
       // Add conversion to Eigen::Ref<MatType>
       typedef Eigen::Ref<MatType> RefType;
       EigenFromPy<RefType>::registration();
-      
+
       // Add conversion to Eigen::Ref<MatType>
       typedef const Eigen::Ref<const MatType> ConstRefType;
       EigenFromPy<ConstRefType>::registration();
@@ -471,7 +506,12 @@ namespace eigenpy
     {
       bp::converter::registry::push_back
       (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &EigenFromPy::construct,bp::type_id<Base>());
+       &EigenFromPy::construct,
+       bp::type_id<Base>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+       ,&eigenpy::expected_pytype_for_arg<MatType>::get_pytype
+#endif
+       );
     }
   };
     
@@ -485,7 +525,12 @@ namespace eigenpy
     {
       bp::converter::registry::push_back
       (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &EigenFromPy::construct,bp::type_id<Base>());
+       &EigenFromPy::construct,
+       bp::type_id<Base>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+       ,&eigenpy::expected_pytype_for_arg<MatType>::get_pytype
+#endif
+       );
     }
   };
     
@@ -499,7 +544,12 @@ namespace eigenpy
     {
       bp::converter::registry::push_back
       (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &EigenFromPy::construct,bp::type_id<Base>());
+       &EigenFromPy::construct,
+       bp::type_id<Base>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+       ,&eigenpy::expected_pytype_for_arg<MatType>::get_pytype
+#endif
+       );
     }
   };
 
@@ -526,7 +576,12 @@ namespace eigenpy
     {
       bp::converter::registry::push_back
       (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &eigen_from_py_construct<RefType>,bp::type_id<RefType>());
+       &eigen_from_py_construct<RefType>,
+       bp::type_id<RefType>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+       ,&eigenpy::expected_pytype_for_arg<MatType>::get_pytype
+#endif
+       );
     }
   };
 
@@ -546,7 +601,12 @@ namespace eigenpy
     {
       bp::converter::registry::push_back
       (reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
-       &eigen_from_py_construct<ConstRefType>,bp::type_id<ConstRefType>());
+       &eigen_from_py_construct<ConstRefType>,
+       bp::type_id<ConstRefType>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+       ,&eigenpy::expected_pytype_for_arg<MatType>::get_pytype
+#endif
+       );
     }
   };
 #endif

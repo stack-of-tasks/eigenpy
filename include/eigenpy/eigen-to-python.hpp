@@ -80,6 +80,11 @@ namespace eigenpy
       // Create an instance (either np.array or np.matrix)
       return NumpyType::make(pyArray).ptr();
     }
+    
+    static PyTypeObject const *get_pytype()
+    {
+      return getPyArrayType();
+    }
   };
 
   template<typename MatType, int Options, typename Stride, typename _Scalar>
@@ -110,6 +115,11 @@ namespace eigenpy
       // Create an instance (either np.array or np.matrix)
       return NumpyType::make(pyArray).ptr();
     }
+    
+    static PyTypeObject const *get_pytype()
+    {
+      return getPyArrayType();
+    }
   };
 
   template<typename MatType>
@@ -117,7 +127,7 @@ namespace eigenpy
   {
     static void registration()
     {
-      bp::to_python_converter<MatType,EigenToPy<MatType> >();
+      bp::to_python_converter<MatType,EigenToPy<MatType>, true>();
     }
   };
 }
