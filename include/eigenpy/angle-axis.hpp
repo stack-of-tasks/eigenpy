@@ -59,7 +59,7 @@ namespace eigenpy
            ((bp::arg("self"),bp::arg("angle"),bp::arg("axis")),
             "Initialize from angle and axis."))
       .def(bp::init<Matrix3>
-           ((bp::arg("self"),bp::arg("rotation matrix")),
+           ((bp::arg("self"),bp::arg("R")),
             "Initialize from a rotation matrix"))
       .def(bp::init<Quaternion>((bp::arg("self"),bp::arg("quaternion")),
                                 "Initialize from a quaternion."))
@@ -84,9 +84,9 @@ namespace eigenpy
            "Sets *this from a 3x3 rotation matrix",
            bp::return_self<>())
       .def("toRotationMatrix",
-//           bp::arg("self"),
            &AngleAxis::toRotationMatrix,
-           "Constructs and returns an equivalent 3x3 rotation matrix.")
+//           bp::arg("self"),
+           "Constructs and returns an equivalent rotation matrix.")
       .def("matrix",&AngleAxis::matrix,
            bp::arg("self"),
            "Returns an equivalent rotation matrix.")

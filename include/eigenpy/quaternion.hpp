@@ -171,7 +171,7 @@ namespace eigenpy
            "Returns an equivalent 3x3 rotation matrix. Similar to toRotationMatrix.")
       .def("toRotationMatrix",&Quaternion::toRotationMatrix,
 //           bp::arg("self"), // Bug in Boost.Python
-           "Returns an equivalent 3x3 rotation matrix.")
+           "Returns an equivalent rotation matrix.")
       
       .def("setFromTwoVectors",&setFromTwoVectors,((bp::arg("self"),bp::arg("a"),bp::arg("b"))),
            "Set *this to be the quaternion which transforms a into b through a rotation."
