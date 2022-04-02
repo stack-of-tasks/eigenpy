@@ -8,20 +8,19 @@
 
 #include <Eigen/Core>
 
-namespace eigenpy
-{
-  template<typename MatType, int InnerStride = Eigen::Dynamic, int OuterStride = Eigen::Dynamic, bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
-  struct StrideType
-  {
-    typedef Eigen::Stride<OuterStride,InnerStride> type;
-  };
-  
-  template<typename MatType, int InnerStride, int OuterStride>
-  struct StrideType<MatType,InnerStride,OuterStride,true>
-  {
-    typedef Eigen::InnerStride<InnerStride> type;
-  };
+namespace eigenpy {
+template <typename MatType, int InnerStride = Eigen::Dynamic,
+          int OuterStride = Eigen::Dynamic,
+          bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
+struct StrideType {
+  typedef Eigen::Stride<OuterStride, InnerStride> type;
+};
 
-}
+template <typename MatType, int InnerStride, int OuterStride>
+struct StrideType<MatType, InnerStride, OuterStride, true> {
+  typedef Eigen::InnerStride<InnerStride> type;
+};
 
-#endif // ifndef __eigenpy_stride_hpp__
+}  // namespace eigenpy
+
+#endif  // ifndef __eigenpy_stride_hpp__

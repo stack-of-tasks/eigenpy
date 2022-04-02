@@ -16,7 +16,7 @@ def test(mat):
 
   A_ref2.fill(0)
   assert np.array_equal(A_ref,A_ref2)
-  
+
 
 rows = 10
 cols = 30

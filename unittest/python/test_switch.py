@@ -6,7 +6,7 @@ import numpy as np
 eigenpy.switchToNumpyMatrix()
 quat = eigenpy.Quaternion()
 # By default, we convert as numpy.matrix
-coeffs_vector = quat.coeffs() 
+coeffs_vector = quat.coeffs()
 print(type(coeffs_vector))
 
 assert isinstance(coeffs_vector,np.matrixlib.defmatrix.matrix)

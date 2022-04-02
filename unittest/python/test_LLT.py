@@ -10,7 +10,7 @@ A = (A + A.T)*0.5 + np.diag(10. + np.random.rand(dim))
 
 llt = eigenpy.LLT(A)
 
-L = llt.matrixL() 
+L = llt.matrixL()
 assert eigenpy.is_approx(L.dot(np.transpose(L)),A)
 
 X = np.random.rand(dim,20)
