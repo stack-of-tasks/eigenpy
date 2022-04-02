@@ -7,12 +7,11 @@
 
 #include "eigenpy/config.hpp"
 
-namespace eigenpy
-{
-  struct SolversScope {};
-  
-  void EIGENPY_DLLAPI exposeSolvers();
-  
-} // namespace eigenpy
+namespace eigenpy {
+struct SolversScope {};
 
-#endif // define __eigenpy_solvers_hpp__
+void EIGENPY_DLLAPI exposeSolvers();
+
+}  // namespace eigenpy
+
+#endif  // define __eigenpy_solvers_hpp__

@@ -7,9 +7,8 @@
 
 #include "eigenpy/config.hpp"
 
-namespace eigenpy
-{
-  void EIGENPY_DLLAPI exposeDecompositions();
-} // namespace eigenpy
+namespace eigenpy {
+void EIGENPY_DLLAPI exposeDecompositions();
+}  // namespace eigenpy
 
-#endif // define __eigenpy_decompositions_decompositions_hpp__
+#endif  // define __eigenpy_decompositions_decompositions_hpp__

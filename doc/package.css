@@ -45,8 +45,8 @@ a:link {
     color:#0066CC
 }
 
-a:hover, a:active { 
-	text-decoration: underline; 
+a:hover, a:active {
+	text-decoration: underline;
 	color: #3C9A35;
 }
 
@@ -57,7 +57,7 @@ a:visited {
 }
 
 DIV.memitem
-{ 
+{
   spacing: 10px;
   width:100%;
   background:#FFFFFF;
@@ -70,7 +70,7 @@ DIV.memitem
 }
 
 DIV.memproto
-{ 
+{
   width:100%;
   background:#F0F0F0;
   font-size:100%;
@@ -82,7 +82,7 @@ DIV.memproto
 }
 
 DIV.memdoc
-{ 
+{
   padding: 10px;
   width:100%;
   font-size:100%;
@@ -189,7 +189,7 @@ DIV.nav
 }
 
 DIV.groupHeader
-{ 
+{
   padding-top: 30px;
   padding-bottom: 20px;
   background       : none;
@@ -201,23 +201,23 @@ DIV.groupHeader
   color:#0066CC;
 }
 
-.directory p 
-{ 
-    margin: 0px; 
-    white-space: nowrap; 
+.directory p
+{
+    margin: 0px;
+    white-space: nowrap;
     font-family: 'Lucida Grande','Lucida Sans Unicode',Verdana,Sans-Serif;
     font-size: 10pt;
     font-weight: normal;
 }
 
 
-.directory h3 
-{ 
+.directory h3
+{
     font-family: 'Lucida Grande','Lucida Sans Unicode',Verdana,Sans-Serif;
-    margin: 0px; 
-    margin-top: 1em; 
+    margin: 0px;
+    margin-top: 1em;
     padding-bottom: 20px;
-    font-size: 12pt; 
+    font-size: 12pt;
     font-variant: small-caps;
     text-align: center;
 }
