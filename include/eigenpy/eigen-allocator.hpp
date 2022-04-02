@@ -122,7 +122,7 @@ struct EigenAllocator {
 
   static void allocate(
       PyArrayObject *pyArray,
-      bp::converter::rvalue_from_python_storage<MatType> *storage) {
+      boost::python::converter::rvalue_from_python_storage<MatType> *storage) {
     void *raw_ptr = storage->storage.bytes;
     Type *mat_ptr = details::init_matrix_or_array<Type>::run(pyArray, raw_ptr);
     Type &mat = *mat_ptr;
@@ -243,7 +243,8 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
 
   static void allocate(
       PyArrayObject *pyArray,
-      bp::converter::rvalue_from_python_storage<RefType> *storage) {
+      ::boost::python::converter::rvalue_from_python_storage<RefType>
+          *storage) {
     typedef typename StrideType<
         MatType,
         Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime,
@@ -351,7 +352,8 @@ struct EigenAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
 
   static void allocate(
       PyArrayObject *pyArray,
-      bp::converter::rvalue_from_python_storage<RefType> *storage) {
+      ::boost::python::converter::rvalue_from_python_storage<RefType>
+          *storage) {
     typedef typename StrideType<
         MatType,
         Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime,
