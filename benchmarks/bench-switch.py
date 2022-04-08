@@ -7,10 +7,11 @@ import time
 import timeit
 
 from IPython import get_ipython
+
 ipython = get_ipython()
 
 quat = eigenpy.Quaternion()
-a = [0., 0., 0.]
+a = [0.0, 0.0, 0.0]
 
 cmd1 = "timeit np.array(a)"
 print("\n")
@@ -50,7 +51,7 @@ print(cmd5)
 ipython.magic(cmd5)
 print("\n")
 
-a_matrix = np.matrix(a);
+a_matrix = np.matrix(a)
 cmd6 = "timeit np.asarray(a_matrix)"
 print(cmd6)
 ipython.magic(cmd6)
