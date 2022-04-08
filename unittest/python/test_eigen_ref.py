@@ -17,10 +17,15 @@ def test(mat):
   A_ref2.fill(0)
   assert np.array_equal(A_ref,A_ref2)
 
+  ref = asRef(mat)
+  assert np.all(ref == mat)
+
+  const_ref = asConstRef(mat)
+  assert np.all(const_ref == mat)
 
 rows = 10
 cols = 30
 
-mat = np.array(np.zeros((rows,cols)))
+mat = np.ones((rows,cols),order='F')
 
 test(mat)

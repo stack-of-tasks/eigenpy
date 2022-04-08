@@ -1,10 +1,11 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2022, INRIA
  */
 
 #include <iostream>
 
+#include "eigenpy/eigen-from-python.hpp"
 #include "eigenpy/eigenpy.hpp"
 
 using namespace Eigen;
@@ -41,6 +42,16 @@ Eigen::Ref<MatType> asRef(const int rows, const int cols) {
   return mat;
 }
 
+template <typename MatType>
+Eigen::Ref<MatType> asRef(Eigen::Ref<MatType> mat) {
+  return Eigen::Ref<MatType>(mat);
+}
+
+template <typename MatType>
+const Eigen::Ref<const MatType> asConstRef(Eigen::Ref<MatType> mat) {
+  return Eigen::Ref<const MatType>(mat);
+}
+
 BOOST_PYTHON_MODULE(eigen_ref) {
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
@@ -60,5 +71,10 @@ BOOST_PYTHON_MODULE(eigen_ref) {
   bp::def("fillVec", fill<VectorXd>);
   bp::def("fill", fill<MatrixXd>);
 
-  bp::def("asRef", asRef<MatrixXd>);
+  bp::def("asRef",
+          (Eigen::Ref<MatrixXd>(*)(const int, const int))asRef<MatrixXd>);
+  bp::def("asRef",
+          (Eigen::Ref<MatrixXd>(*)(Eigen::Ref<MatrixXd>))asRef<MatrixXd>);
+  bp::def("asConstRef", (const Eigen::Ref<const MatrixXd> (*)(
+                            Eigen::Ref<MatrixXd>))asConstRef<MatrixXd>);
 }
