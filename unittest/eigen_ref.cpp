@@ -5,8 +5,8 @@
 
 #include <iostream>
 
-#include "eigenpy/eigen-from-python.hpp"
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/eigen-from-python.hpp"
 
 using namespace Eigen;
 using namespace eigenpy;
