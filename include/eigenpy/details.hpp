@@ -68,6 +68,7 @@ void enableEigenPySpecific() {
   EigenToPyConverter<MatType>::registration();
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
   EigenToPyConverter<Eigen::Ref<MatType> >::registration();
+  EigenToPyConverter<const Eigen::Ref<const MatType> >::registration();
 #endif
 
   // from-python
