@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2022 INRIA
  */
 
 #ifndef __eigenpy_numpy_allocator_hpp__
@@ -116,13 +116,11 @@ template <typename MatType, int Options, typename Stride>
 struct NumpyAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
   typedef const Eigen::Ref<const MatType, Options, Stride> RefType;
 
-  template <typename SimilarMatrixType>
   static PyArrayObject *allocate(RefType &mat, npy_intp nd, npy_intp *shape) {
-    typedef typename SimilarMatrixType::Scalar Scalar;
+    typedef typename RefType::Scalar Scalar;
     enum {
-      NPY_ARRAY_MEMORY_CONTIGUOUS_RO = SimilarMatrixType::IsRowMajor
-                                           ? NPY_ARRAY_CARRAY_RO
-                                           : NPY_ARRAY_FARRAY_RO
+      NPY_ARRAY_MEMORY_CONTIGUOUS_RO =
+          RefType::IsRowMajor ? NPY_ARRAY_CARRAY_RO : NPY_ARRAY_FARRAY_RO
     };
 
     if (NumpyType::sharedMemory()) {
