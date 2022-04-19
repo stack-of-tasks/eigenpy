@@ -24,6 +24,23 @@ def test(mat):
     const_ref = asConstRef(mat)
     assert np.all(const_ref == mat)
 
+    class ModifyBlockImpl(modify_block):
+        def __init__(self):
+            super().__init__()
+
+        def call(self, mat):
+            mat[:, :] = 1.
+
+    modify = ModifyBlockImpl()
+    print("Field J init:\n{}".format(modify.J))
+    modify.modify(2, 3)
+    print("Field J after:\n{}".format(modify.J))
+    Jref = np.zeros((10, 10))
+    Jref[:2, :3] = 1.
+    print("Should be:\n{}".format(Jref))
+
+    assert np.array_equal(Jref, modify.J)
+    
 
 rows = 10
 cols = 30

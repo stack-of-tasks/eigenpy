@@ -52,6 +52,27 @@ const Eigen::Ref<const MatType> asConstRef(Eigen::Ref<MatType> mat) {
   return Eigen::Ref<const MatType>(mat);
 }
 
+struct modify_block
+{
+  MatrixXd J;
+  modify_block() : J(10, 10) { J.setZero(); }
+  void modify(int n, int m)
+  {
+    call(J.topLeftCorner(n, m));
+  }
+  virtual void call(Eigen::Ref<MatrixXd> mat) = 0;
+};
+
+struct modify_wrap : modify_block, bp::wrapper<modify_block>
+{
+  modify_wrap() : modify_block() {}
+  void call(Eigen::Ref<MatrixXd> mat)
+  {
+    this->get_override("call")(mat);
+  }
+};
+
+
 BOOST_PYTHON_MODULE(eigen_ref) {
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
@@ -77,4 +98,11 @@ BOOST_PYTHON_MODULE(eigen_ref) {
           (Eigen::Ref<MatrixXd>(*)(Eigen::Ref<MatrixXd>))asRef<MatrixXd>);
   bp::def("asConstRef", (const Eigen::Ref<const MatrixXd> (*)(
                             Eigen::Ref<MatrixXd>))asConstRef<MatrixXd>);
+
+  bp::class_<modify_wrap, boost::noncopyable>("modify_block", bp::init<>())
+    .def_readonly("J", &modify_block::J)
+    .def("modify", &modify_block::modify)
+    .def("call", bp::pure_virtual(&modify_wrap::call))
+    ;
+
 }
