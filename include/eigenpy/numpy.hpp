@@ -111,8 +111,8 @@ EIGENPY_DLLAPI PyObject* call_PyArray_New(PyTypeObject* py_type_ptr, int nd,
 
 EIGENPY_DLLAPI PyObject* call_PyArray_New(PyTypeObject* py_type_ptr, int nd,
                                           npy_intp* shape, int np_type,
-                                          npy_intp const* strides,
-                                          void* data_ptr, int options);
+                                          npy_intp* strides, void* data_ptr,
+                                          int options);
 
 EIGENPY_DLLAPI int call_PyArray_ObjectType(PyObject*, int);
 
@@ -150,7 +150,7 @@ inline PyObject* call_PyArray_New(PyTypeObject* py_type_ptr, int nd,
 
 inline PyObject* call_PyArray_New(PyTypeObject* py_type_ptr, int nd,
                                   npy_intp* shape, int np_type,
-                                  npy_intp const* strides, void* data_ptr,
+                                  npy_intp* strides, void* data_ptr,
                                   int options) {
   return PyArray_New(py_type_ptr, nd, shape, np_type, strides, data_ptr, 0,
                      options, NULL);
