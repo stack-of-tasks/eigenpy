@@ -29,18 +29,18 @@ def test(mat):
             super().__init__()
 
         def call(self, mat):
-            mat[:, :] = 1.
+            mat[:, :] = 1.0
 
     modify = ModifyBlockImpl()
     print("Field J init:\n{}".format(modify.J))
     modify.modify(2, 3)
     print("Field J after:\n{}".format(modify.J))
     Jref = np.zeros((10, 10))
-    Jref[:2, :3] = 1.
+    Jref[:2, :3] = 1.0
     print("Should be:\n{}".format(Jref))
 
     assert np.array_equal(Jref, modify.J)
-    
+
 
 rows = 10
 cols = 30
