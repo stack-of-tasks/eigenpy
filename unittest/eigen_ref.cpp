@@ -43,7 +43,7 @@ Eigen::Ref<MatType> editBlock(Eigen::Ref<MatType> mat, Eigen::DenseIndex i,
                               Eigen::DenseIndex m) {
   auto B = mat.block(i, j, n, m);
   Eigen::Map<VectorXd> view(B.data(), B.size());
-  view.setLinSpaced(1., (double)view.size());
+  view.setLinSpaced(0., (double)view.size() - 1.);
   return mat;
 }
 
