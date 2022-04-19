@@ -52,12 +52,13 @@ def test(mat):
             super().__init__()
 
         def call(self, mat):
-            mat[:, :] = 1.0
+            n, m = mat.shape
+            mat[:, :] = np.arange(n * m).reshape(n, m)
 
     modify = ModifyBlockImpl()
     modify.modify(2, 3)
     Jref = np.zeros((10, 10))
-    Jref[:2, :3] = 1.0
+    Jref[:2, :3] = np.arange(6).reshape(2, 3)
 
     assert np.array_equal(Jref, modify.J)
 
