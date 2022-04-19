@@ -31,6 +31,13 @@ void setOnes(Eigen::Ref<MatType> mat) {
 }
 
 template <typename MatType>
+Eigen::Ref<MatType> getBlock(Eigen::Ref<MatType> mat, Eigen::DenseIndex i,
+                             Eigen::DenseIndex j, Eigen::DenseIndex n,
+                             Eigen::DenseIndex m) {
+  return mat.block(i, j, n, m);
+}
+
+template <typename MatType>
 void fill(Eigen::Ref<MatType> mat, const typename MatType::Scalar& value) {
   mat.fill(value);
 }
@@ -89,6 +96,8 @@ BOOST_PYTHON_MODULE(eigen_ref) {
           (Eigen::Ref<MatrixXd>(*)(Eigen::Ref<MatrixXd>))asRef<MatrixXd>);
   bp::def("asConstRef", (const Eigen::Ref<const MatrixXd> (*)(
                             Eigen::Ref<MatrixXd>))asConstRef<MatrixXd>);
+
+  bp::def("getBlock", &getBlock<MatrixXd>);
 
   bp::class_<modify_wrap, boost::noncopyable>("modify_block", bp::init<>())
       .def_readonly("J", &modify_block::J)

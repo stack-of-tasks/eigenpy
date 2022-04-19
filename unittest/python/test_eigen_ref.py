@@ -22,7 +22,24 @@ def test(mat):
     assert np.all(ref == mat)
 
     const_ref = asConstRef(mat)
+    # import pdb; pdb.set_trace()
     assert np.all(const_ref == mat)
+
+    mat.fill(0.0)
+    fill(mat[:3, :2], 1.0)
+
+    assert np.all(mat[:3, :2] == np.ones((3, 2)))
+
+    mat.fill(0.0)
+    fill(mat[:2, :3], 1.0)
+
+    assert np.all(mat[:2, :3] == np.ones((2, 3)))
+
+    mat.fill(0.0)
+    mat_as_C_order = np.array(mat, order="F")
+    getBlock(mat_as_C_order, 0, 0, 3, 2)[:, :] = 1.0
+
+    assert np.all(mat_as_C_order[:3, :2] == np.ones((3, 2)))
 
     class ModifyBlockImpl(modify_block):
         def __init__(self):
@@ -32,12 +49,9 @@ def test(mat):
             mat[:, :] = 1.0
 
     modify = ModifyBlockImpl()
-    print("Field J init:\n{}".format(modify.J))
     modify.modify(2, 3)
-    print("Field J after:\n{}".format(modify.J))
     Jref = np.zeros((10, 10))
     Jref[:2, :3] = 1.0
-    print("Should be:\n{}".format(Jref))
 
     assert np.array_equal(Jref, modify.J)
 
