@@ -24,6 +24,44 @@ def test(mat):
     const_ref = asConstRef(mat)
     assert np.all(const_ref == mat)
 
+    mat.fill(0.0)
+    fill(mat[:3, :2], 1.0)
+
+    assert np.all(mat[:3, :2] == np.ones((3, 2)))
+
+    mat.fill(0.0)
+    fill(mat[:2, :3], 1.0)
+
+    assert np.all(mat[:2, :3] == np.ones((2, 3)))
+
+    mat.fill(0.0)
+    mat_as_C_order = np.array(mat, order="F")
+    getBlock(mat_as_C_order, 0, 0, 3, 2)[:, :] = 1.0
+
+    assert np.all(mat_as_C_order[:3, :2] == np.ones((3, 2)))
+
+    mat_as_C_order[:3, :2] = 0.0
+    mat_copy = mat_as_C_order.copy()
+    editBlock(mat_as_C_order, 0, 0, 3, 2)
+    mat_copy[:3, :2] = np.arange(6).reshape(3, 2)
+
+    assert np.all(mat_as_C_order == mat_copy)
+
+    class ModifyBlockImpl(modify_block):
+        def __init__(self):
+            super().__init__()
+
+        def call(self, mat):
+            n, m = mat.shape
+            mat[:, :] = np.arange(n * m).reshape(n, m)
+
+    modify = ModifyBlockImpl()
+    modify.modify(2, 3)
+    Jref = np.zeros((10, 10))
+    Jref[:2, :3] = np.arange(6).reshape(2, 3)
+
+    assert np.array_equal(Jref, modify.J)
+
 
 rows = 10
 cols = 30

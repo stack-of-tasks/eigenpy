@@ -70,9 +70,15 @@ struct NumpyAllocator<Eigen::Ref<MatType, Options, Stride> > {
 
     if (NumpyType::sharedMemory()) {
       const int Scalar_type_code = Register::getTypeCode<Scalar>();
+      Eigen::DenseIndex inner_stride = mat.innerStride(),
+                        outer_stride = mat.outerStride();
+
+      const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
+      npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
+
       PyArrayObject *pyArray = (PyArrayObject *)call_PyArray_New(
           getPyArrayType(), static_cast<int>(nd), shape, Scalar_type_code,
-          mat.data(), NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
+          strides, mat.data(), NPY_ARRAY_MEMORY_CONTIGUOUS | NPY_ARRAY_ALIGNED);
 
       return pyArray;
     } else {
@@ -125,9 +131,15 @@ struct NumpyAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
 
     if (NumpyType::sharedMemory()) {
       const int Scalar_type_code = Register::getTypeCode<Scalar>();
+      Eigen::DenseIndex inner_stride = mat.innerStride(),
+                        outer_stride = mat.outerStride();
+
+      const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
+      npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
+
       PyArrayObject *pyArray = (PyArrayObject *)call_PyArray_New(
           getPyArrayType(), static_cast<int>(nd), shape, Scalar_type_code,
-          const_cast<Scalar *>(mat.data()),
+          strides, const_cast<Scalar *>(mat.data()),
           NPY_ARRAY_MEMORY_CONTIGUOUS_RO | NPY_ARRAY_ALIGNED);
 
       return pyArray;

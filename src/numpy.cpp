@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 INRIA
+ * Copyright 2020-2022 INRIA
  */
 
 #include "eigenpy/numpy.hpp"
@@ -28,6 +28,13 @@ PyObject* call_PyArray_SimpleNew(int nd, npy_intp* shape, int np_type) {
 PyObject* call_PyArray_New(PyTypeObject* py_type_ptr, int nd, npy_intp* shape,
                            int np_type, void* data_ptr, int options) {
   return PyArray_New(py_type_ptr, nd, shape, np_type, NULL, data_ptr, 0,
+                     options, NULL);
+}
+
+PyObject* call_PyArray_New(PyTypeObject* py_type_ptr, int nd, npy_intp* shape,
+                           int np_type, npy_intp* strides, void* data_ptr,
+                           int options) {
+  return PyArray_New(py_type_ptr, nd, shape, np_type, strides, data_ptr, 0,
                      options, NULL);
 }
 
