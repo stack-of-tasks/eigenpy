@@ -37,9 +37,15 @@ def test(mat):
 
     mat.fill(0.0)
     mat_as_C_order = np.array(mat, order="F")
+    mat_copy = mat_as_C_order.copy()
     getBlock(mat_as_C_order, 0, 0, 3, 2)[:, :] = 1.0
 
     assert np.all(mat_as_C_order[:3, :2] == np.ones((3, 2)))
+
+    editBlock(mat_as_C_order, 0, 0, 3, 2)
+    mat_copy[:3, :2] = np.arange(6).reshape(3, 2)
+
+    assert np.all(mat_as_C_order == mat_copy)
 
     class ModifyBlockImpl(modify_block):
         def __init__(self):
