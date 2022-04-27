@@ -16,7 +16,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
 
-#include <numpy/noprefix.h>
+#include <numpy/ndarrayobject.h>
 #include <numpy/ufuncobject.h>
 
 #if defined _WIN32 || defined __CYGWIN__
