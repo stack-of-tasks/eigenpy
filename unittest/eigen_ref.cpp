@@ -86,10 +86,9 @@ struct modify_wrap : modify_block, bp::wrapper<modify_block> {
   void call(Eigen::Ref<MatrixXd> mat) { this->get_override("call")(mat); }
 };
 
-struct has_ref_member
-{
+struct has_ref_member {
   MatrixXd J;
-  Eigen::Ref<MatrixXd> Jref; 
+  Eigen::Ref<MatrixXd> Jref;
   has_ref_member() : J(4, 4), Jref(J.topRightCorner(3, 3)) { J.setZero(); }
 };
 
@@ -129,8 +128,10 @@ BOOST_PYTHON_MODULE(eigen_ref) {
 
   bp::class_<has_ref_member, boost::noncopyable>("has_ref_member", bp::init<>())
       .def_readonly("J", &has_ref_member::J)
-      .add_property("Jref", bp::make_getter(&has_ref_member::Jref,
-                                            bp::return_value_policy<bp::return_by_value>()));
-                                            // can't return Eigen::Ref by reference but by value
-                                            // (def_readonly creates a by-reference getter)
+      .add_property(
+          "Jref",
+          bp::make_getter(&has_ref_member::Jref,
+                          bp::return_value_policy<bp::return_by_value>()));
+  // can't return Eigen::Ref by reference but by value
+  // (def_readonly creates a by-reference getter)
 }
