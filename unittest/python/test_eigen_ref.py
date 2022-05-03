@@ -49,7 +49,7 @@ def test(mat):
 
     class ModifyBlockImpl(modify_block):
         def __init__(self):
-            super().__init__()
+            super(ModifyBlockImpl, self).__init__()
 
         def call(self, mat):
             n, m = mat.shape
