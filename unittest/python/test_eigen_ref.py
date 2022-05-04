@@ -62,6 +62,14 @@ def test(mat):
 
     assert np.array_equal(Jref, modify.J)
 
+    hasref = has_ref_member()
+    A = np.ones((3, 3)) / 2
+    hasref.Jref[:, :] = A
+    J_true = np.zeros((4, 4))
+    J_true[:3, 1:] = A
+
+    assert np.array_equal(hasref.J, J_true)
+
 
 rows = 10
 cols = 30
