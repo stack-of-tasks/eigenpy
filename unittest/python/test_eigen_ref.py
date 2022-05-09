@@ -39,16 +39,16 @@ def test(mat):
     printMatrix(mat)
     mat0 = mat.copy()
     mat_as_C_order = np.array(mat, order="F")
-    for i, rowsize in ([0, 3], [1, 1]):
-        print("taking block [{}:{}, {}:{}]".format(i, rowsize+i, 0, 2))
-        B = getBlock(mat_as_C_order, i, 0, rowsize, 2)
-        lhs = mat_as_C_order[i:rowsize + i, :2]
+    for i, rowsize, colsize in ([0, 3, 2], [1, 1, 2], [0, 3, 1]):
+        print("taking block [{}:{}, {}:{}]".format(i, rowsize+i, 0, colsize))
+        B = getBlock(mat_as_C_order, i, 0, rowsize, colsize)
+        lhs = mat_as_C_order[i:rowsize + i, :colsize]
         print("should be:\n{}\ngot:\n{}".format(lhs, B))
-        assert np.array_equal(lhs, B)
+        assert np.array_equal(lhs, B.reshape(rowsize, colsize))
     
         B[:] = 1.0
-        rhs = np.ones((rowsize, 2))
-        assert np.array_equal(mat_as_C_order[i:rowsize+i, :2], rhs)
+        rhs = np.ones((rowsize, colsize))
+        assert np.array_equal(mat_as_C_order[i:rowsize+i, :colsize], rhs)
 
         mat_as_C_order[:, :] = mat0
 

@@ -70,11 +70,12 @@ struct NumpyAllocator<Eigen::Ref<MatType, Options, Stride> > {
 
     if (NumpyType::sharedMemory()) {
       const int Scalar_type_code = Register::getTypeCode<Scalar>();
-
-      Eigen::DenseIndex inner_stride = MatType::IsRowMajor ? mat.outerStride()
-                                                           : mat.innerStride(),
-                        outer_stride = MatType::IsRowMajor ? mat.innerStride()
-                                                           : mat.outerStride();
+      const npy_int R = (npy_int)mat.rows();
+      const bool reverse_strides = MatType::IsRowMajor || (R == 1);
+      Eigen::DenseIndex inner_stride = reverse_strides ? mat.outerStride()
+                                                       : mat.innerStride(),
+                        outer_stride = reverse_strides ? mat.innerStride()
+                                                       : mat.outerStride();
 
       const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
       npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
