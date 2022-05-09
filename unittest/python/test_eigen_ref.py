@@ -35,17 +35,28 @@ def test(mat):
     assert np.all(mat[:2, :3] == np.ones((2, 3)))
 
     mat.fill(0.0)
+    mat[:, :] = np.arange(rows * cols).reshape(rows, cols)
+    printMatrix(mat)
+    mat0 = mat.copy()
     mat_as_C_order = np.array(mat, order="F")
-    getBlock(mat_as_C_order, 0, 0, 3, 2)[:, :] = 1.0
+    for i, rowsize in ([0, 3], [1, 1]):
+        print("taking block [{}:{}, {}:{}]".format(i, rowsize+i, 0, 2))
+        B = getBlock(mat_as_C_order, i, 0, rowsize, 2)
+        lhs = mat_as_C_order[i:rowsize + i, :2]
+        print("should be:\n{}\ngot:\n{}".format(lhs, B))
+        assert np.array_equal(lhs, B)
+    
+        B[:] = 1.0
+        rhs = np.ones((rowsize, 2))
+        assert np.array_equal(mat_as_C_order[i:rowsize+i, :2], rhs)
 
-    assert np.all(mat_as_C_order[:3, :2] == np.ones((3, 2)))
+        mat_as_C_order[:, :] = mat0
 
-    mat_as_C_order[:3, :2] = 0.0
     mat_copy = mat_as_C_order.copy()
     editBlock(mat_as_C_order, 0, 0, 3, 2)
     mat_copy[:3, :2] = np.arange(6).reshape(3, 2)
 
-    assert np.all(mat_as_C_order == mat_copy)
+    assert np.array_equal(mat_as_C_order, mat_copy)
 
     class ModifyBlockImpl(modify_block):
         def __init__(self):
