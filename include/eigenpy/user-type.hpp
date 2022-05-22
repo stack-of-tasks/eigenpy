@@ -38,6 +38,27 @@ static void cast(void* from_, void* to_, npy_intp n, void* /*fromarr*/,
   }
 }
 
+template <typename T>
+struct getitem {
+  ///
+  /// \brief Get a python object from an array
+  ///        It returns a standard Python object from
+  ///        a single element of the array object arr pointed to by data.
+  /// \param[in] data Pointer to the first element of the C++ data stream
+  /// \param[in] arr  Pointer to the first element of the Python object data
+  /// stream
+  ///
+  /// \returns PyObject corresponding to the python datastream.
+  ///
+  static PyObject* run(void* data, void* /* arr */) {
+    //    std::cout << "getitem" << std::endl;
+    T* elt_ptr = static_cast<T*>(data);
+    bp::object m(boost::ref(*elt_ptr));
+    Py_INCREF(m.ptr());
+    return m.ptr();
+  }
+};
+
 template <typename T, int type_code = NumpyEquivalentType<T>::type_code>
 struct SpecialMethods {
   inline static void copyswap(void* /*dst*/, void* /*src*/, int /*swap*/,
@@ -71,8 +92,8 @@ struct OffsetOf {
 
 template <typename T>
 struct SpecialMethods<T, NPY_USERDEF> {
-  inline static void copyswap(void* dst, void* src, int swap, void* /*arr*/) {
-    //        std::cout << "copyswap" << std::endl;
+  static void copyswap(void* dst, void* src, int swap, void* /*arr*/) {
+    //    std::cout << "copyswap" << std::endl;
     if (src != NULL) {
       T& t1 = *static_cast<T*>(dst);
       T& t2 = *static_cast<T*>(src);
@@ -86,22 +107,8 @@ struct SpecialMethods<T, NPY_USERDEF> {
     }
   }
 
-  ///
-  /// \brief Get a python object from an array
-  ///        It returns a standard Python object from
-  ///        a single element of the array object arr pointed to by data.
-  /// \param[in] data Pointer to the first element of the C++ data stream
-  /// \param[in] arr  Pointer to the first element of the Python object data
-  /// stream
-  ///
-  /// \returns PyObject corresponding to the python datastream.
-  ///
-  inline static PyObject* getitem(void* ip, void* /*ap*/) {
-    //        std::cout << "getitem" << std::endl;
-    T* elt_ptr = static_cast<T*>(ip);
-    bp::object m(*elt_ptr);
-    Py_INCREF(m.ptr());
-    return m.ptr();
+  static PyObject* getitem(void* ip, void* ap) {
+    return eigenpy::internal::getitem<T>::run(ip, ap);
   }
 
   ///
@@ -120,7 +127,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
   ///
 
   inline static int setitem(PyObject* src_obj, void* dest_ptr, void* array) {
-    //        std::cout << "setitem" << std::endl;
+    //    std::cout << "setitem" << std::endl;
     if (array == NULL) {
       eigenpy::Exception("Cannot retrieve the type stored in the array.");
       return -1;
@@ -158,7 +165,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
 
   inline static void copyswapn(void* dst, long dstride, void* src, long sstride,
                                long n, int swap, void* array) {
-    //        std::cout << "copyswapn" << std::endl;
+    //    std::cout << "copyswapn" << std::endl;
 
     char* dstptr = static_cast<char*>(dst);
     char* srcptr = static_cast<char*>(src);
@@ -174,7 +181,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
   }
 
   inline static npy_bool nonzero(void* ip, void* array) {
-    //        std::cout << "nonzero" << std::endl;
+    //    std::cout << "nonzero" << std::endl;
     static const T ZeroValue = T(0);
     PyArrayObject* py_array = static_cast<PyArrayObject*>(array);
     if (py_array == NULL || PyArray_ISBEHAVED_RO(py_array)) {
@@ -190,7 +197,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
 
   inline static void dotfunc(void* ip0_, npy_intp is0, void* ip1_, npy_intp is1,
                              void* op, npy_intp n, void* /*arr*/) {
-    //        std::cout << "dotfunc" << std::endl;
+    //    std::cout << "dotfunc" << std::endl;
     typedef Eigen::Matrix<T, Eigen::Dynamic, 1> VectorT;
     typedef Eigen::InnerStride<Eigen::Dynamic> InputStride;
     typedef const Eigen::Map<const VectorT, 0, InputStride> ConstMapType;
@@ -205,7 +212,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
 
   inline static int fillwithscalar(void* buffer_, npy_intp length, void* value,
                                    void* /*arr*/) {
-    //        std::cout << "fillwithscalar" << std::endl;
+    //    std::cout << "fillwithscalar" << std::endl;
     T r = *static_cast<T*>(value);
     T* buffer = static_cast<T*>(buffer_);
     npy_intp i;
@@ -216,7 +223,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
   }
 
   static int fill(void* data_, npy_intp length, void* /*arr*/) {
-    //        std::cout << "fillwithscalar" << std::endl;
+    //    std::cout << "fill" << std::endl;
     T* data = static_cast<T*>(data_);
     const T delta = data[1] - data[0];
     T r = data[1];
