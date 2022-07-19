@@ -68,7 +68,11 @@ ELSE(WIN32)
   SET(LINK create_symlink)
 ENDIF(WIN32)
 
-set(PYTHON_COMPONENTS Interpreter Development.Module NumPy)
+if(CMAKE_CROSSCOMPILING)
+  set(PYTHON_COMPONENTS Interpreter NumPy)
+else()
+  set(PYTHON_COMPONENTS Interpreter Development.Module NumPy)
+endif()
 FINDPYTHON()
 
 IF(WIN32)
