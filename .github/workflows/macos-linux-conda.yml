@@ -53,6 +53,17 @@ jobs:
         make test
         make install
 
+    - name: Configure hpp-fcl
+        shell: bash -l {0}
+        run: |
+          conda activate eigenpy
+          conda install -c conda-forge octomap assimp qhull
+
+          git clone https://github.com/humanoid-path-planner/hpp-fcl.git --recursive
+          cd hpp-fcl
+          mkdir build && cd build
+          cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3)
+
     - name: Uninstall EigenPy
       shell: bash -l {0}
       run: |
