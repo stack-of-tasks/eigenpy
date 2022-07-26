@@ -30,9 +30,11 @@ jobs:
         set BOOST_ROOT_1_69_0=
         set BOOST_ROOT_1_72_0=
         set PATH=%PATH:C:\hostedtoolcache\windows\Boost\1.72.0;=%
+        if errorlevel 1 exit 1
 
         :: start building
         call "%programfiles(x86)%\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
+        if errorlevel 1 exit 1
         mkdir build
         pushd build
         cmake ^
@@ -43,17 +45,22 @@ jobs:
           -DPYTHON_SITELIB=%CONDA_PREFIX%\Lib\site-packages ^
           -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe ^
           ..
+        if errorlevel 1 exit 1
 
         :: Build and Install
         cmake --build . --config Release --target install
+        if errorlevel 1 exit 1
 
         :: Build stubs
         git clone https://github.com/jcarpent/pybind11-stubgen.git
         python "%CD%\pybind11-stubgen\pybind11_stubgen\__init__.py" -o %CONDA_PREFIX%\Lib\site-packages\eigenpy eigenpy --boost-python --ignore-invalid signature --no-setup-py --root-module-suffix ""
+        if errorlevel 1 exit 1
 
         :: Testing
         ctest --output-on-failure -C Release -V
+        if errorlevel 1 exit 1
 
         :: Test Python import
         cd ..
         python -c "import eigenpy"
+        if errorlevel 1 exit 1
