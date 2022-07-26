@@ -66,6 +66,7 @@ jobs:
         if errorlevel 1 exit 1
 
         :: Test packaging
+        conda install -c conda-forge octomap assimp qhull
         git clone --recursive https://github.com/humanoid-path-planner/hpp-fcl.git
         pushd hpp-fcl
         mkdir build
