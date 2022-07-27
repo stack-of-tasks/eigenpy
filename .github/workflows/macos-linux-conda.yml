@@ -53,6 +53,13 @@ jobs:
         make test
         make install
 
+    - name: Test packaging
+      shell: bash -l {0}
+      run: |
+        conda activate eigenpy
+
+        cmake -B test-packaging -S unittest/packaging/cmake -DPYTHON_EXECUTABLE=$(which python3)
+
     - name: Configure hpp-fcl
       shell: bash -l {0}
       run: |
