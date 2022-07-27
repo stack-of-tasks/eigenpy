@@ -1,69 +1,80 @@
 #
-# Copyright (c) 2014-2019 CNRS
-# Copyright (c) 2018-2021 INRIA
+# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2021 INRIA
 #
 
-MACRO(ADD_LIB_UNIT_TEST test)
-  CREATE_CTEST_BUILD_TESTS_TARGET()
+macro(ADD_LIB_UNIT_TEST test)
+  create_ctest_build_tests_target()
 
-  IF(BUILD_TESTING)
-    ADD_LIBRARY(${test} SHARED "${test}.cpp")
-  ELSE(BUILD_TESTING)
-    ADD_LIBRARY(${test} SHARED EXCLUDE_FROM_ALL "${test}.cpp")
-  ENDIF(BUILD_TESTING)
+  if(BUILD_TESTING)
+    add_library(${test} SHARED "${test}.cpp")
+  else(BUILD_TESTING)
+    add_library(${test} SHARED EXCLUDE_FROM_ALL "${test}.cpp")
+  endif(BUILD_TESTING)
 
-  TARGET_LINK_LIBRARIES(${test} PUBLIC ${PROJECT_NAME})
-  SET_TARGET_PROPERTIES(${test} PROPERTIES PREFIX "")
+  target_link_libraries(${test} PUBLIC ${PROJECT_NAME})
+  set_target_properties(${test} PROPERTIES PREFIX "")
 
-  SET_TARGET_PROPERTIES(${test} PROPERTIES SUFFIX ${PYTHON_EXT_SUFFIX})
+  set_target_properties(${test} PROPERTIES SUFFIX ${PYTHON_EXT_SUFFIX})
 
-  ADD_TEST(NAME ${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
+  add_test(NAME ${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
 
-  ADD_DEPENDENCIES(build_tests ${test})
-  IF(NOT BUILD_TESTING)
-    SET_TESTS_PROPERTIES(${test} PROPERTIES DEPENDS ctest_build_tests)
-  ENDIF(NOT BUILD_TESTING)
-ENDMACRO(ADD_LIB_UNIT_TEST)
+  add_dependencies(build_tests ${test})
+  if(NOT BUILD_TESTING)
+    set_tests_properties(${test} PROPERTIES DEPENDS ctest_build_tests)
+  endif(NOT BUILD_TESTING)
+endmacro(ADD_LIB_UNIT_TEST)
 
-ADD_LIB_UNIT_TEST(matrix)
-ADD_LIB_UNIT_TEST(geometry)
-ADD_LIB_UNIT_TEST(complex)
-ADD_LIB_UNIT_TEST(return_by_ref)
-ADD_LIB_UNIT_TEST(include)
-IF(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
-  ADD_LIB_UNIT_TEST(eigen_ref)
-ENDIF()
-ADD_LIB_UNIT_TEST(user_type)
+add_lib_unit_test(matrix)
+add_lib_unit_test(geometry)
+add_lib_unit_test(complex)
+add_lib_unit_test(return_by_ref)
+add_lib_unit_test(include)
+if(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
+  add_lib_unit_test(eigen_ref)
+endif()
+add_lib_unit_test(user_type)
 
-ADD_PYTHON_UNIT_TEST("py-matrix" "unittest/python/test_matrix.py" "unittest")
-ADD_PYTHON_UNIT_TEST("py-geometry" "unittest/python/test_geometry.py" "unittest")
-ADD_PYTHON_UNIT_TEST("py-complex" "unittest/python/test_complex.py" "unittest")
-ADD_PYTHON_UNIT_TEST("py-return-by-ref" "unittest/python/test_return_by_ref.py" "unittest")
-ADD_PYTHON_UNIT_TEST("py-eigen-ref" "unittest/python/test_eigen_ref.py" "unittest")
-ADD_PYTHON_UNIT_TEST("py-user-type" "unittest/python/test_user_type.py" "unittest")
+add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
+add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"
+                     "unittest")
+add_python_unit_test("py-complex" "unittest/python/test_complex.py" "unittest")
+add_python_unit_test("py-return-by-ref" "unittest/python/test_return_by_ref.py"
+                     "unittest")
+add_python_unit_test("py-eigen-ref" "unittest/python/test_eigen_ref.py"
+                     "unittest")
+add_python_unit_test("py-user-type" "unittest/python/test_user_type.py"
+                     "unittest")
 
-ADD_PYTHON_UNIT_TEST("py-switch" "unittest/python/test_switch.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-switch" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test("py-switch" "unittest/python/test_switch.py"
+                     "python;unittest")
+set_tests_properties("py-switch" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-dimensions" "unittest/python/test_dimensions.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test("py-dimensions" "unittest/python/test_dimensions.py"
+                     "python;unittest")
+set_tests_properties("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-version" "unittest/python/test_version.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-version" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test("py-version" "unittest/python/test_version.py"
+                     "python;unittest")
+set_tests_properties("py-version" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-eigen-solver" "unittest/python/test_eigen_solver.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-eigen-solver" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test("py-eigen-solver" "unittest/python/test_eigen_solver.py"
+                     "python;unittest")
+set_tests_properties("py-eigen-solver" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-self-adjoint-eigen-solver" "unittest/python/test_self_adjoint_eigen_solver.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-self-adjoint-eigen-solver" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test(
+  "py-self-adjoint-eigen-solver"
+  "unittest/python/test_self_adjoint_eigen_solver.py" "python;unittest")
+set_tests_properties("py-self-adjoint-eigen-solver" PROPERTIES DEPENDS
+                                                               ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-LLT" "unittest/python/test_LLT.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-LLT" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test("py-LLT" "unittest/python/test_LLT.py" "python;unittest")
+set_tests_properties("py-LLT" PROPERTIES DEPENDS ${PYWRAP})
 
-ADD_PYTHON_UNIT_TEST("py-LDLT" "unittest/python/test_LDLT.py" "python;unittest")
-SET_TESTS_PROPERTIES("py-LDLT" PROPERTIES DEPENDS ${PYWRAP})
+add_python_unit_test("py-LDLT" "unittest/python/test_LDLT.py" "python;unittest")
+set_tests_properties("py-LDLT" PROPERTIES DEPENDS ${PYWRAP})
 
-IF(NOT WIN32)
-  ADD_PYTHON_UNIT_TEST("py-MINRES" "unittest/python/test_MINRES.py" "python;unittest")
-  SET_TESTS_PROPERTIES("py-MINRES" PROPERTIES DEPENDS ${PYWRAP})
-ENDIF(NOT WIN32)
+if(NOT WIN32)
+  add_python_unit_test("py-MINRES" "unittest/python/test_MINRES.py"
+                       "python;unittest")
+  set_tests_properties("py-MINRES" PROPERTIES DEPENDS ${PYWRAP})
+endif(NOT WIN32)
