@@ -3,58 +3,59 @@
 #
 
 # --- LIBRARY --- #
-SET(PYWRAP ${PROJECT_NAME}_pywrap)
-SET(PYWRAP ${PYWRAP} PARENT_SCOPE)
+set(PYWRAP ${PROJECT_NAME}_pywrap)
+set(PYWRAP
+    ${PYWRAP}
+    PARENT_SCOPE)
 
-MAKE_DIRECTORY("${${PROJECT_NAME}_BINARY_DIR}/python/${PROJECT_NAME}")
+make_directory("${${PROJECT_NAME}_BINARY_DIR}/python/${PROJECT_NAME}")
 include("${JRL_CMAKE_MODULES}/stubs.cmake")
 
-ADD_CUSTOM_TARGET(python)
-SET_TARGET_PROPERTIES(python PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True)
+add_custom_target(python)
+set_target_properties(python PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True)
 
-ADD_LIBRARY(${PYWRAP} SHARED main.cpp)
-ADD_DEPENDENCIES(python ${PYWRAP})
-TARGET_LINK_LIBRARIES(${PYWRAP} PUBLIC ${PROJECT_NAME})
-# BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS spews conversion warnings from int to long unsigned int.
-# Unfortunately, using literals does not work in a macro. As such, this turns them off for the entire wrapper:
-IF(NOT WIN32)
-  TARGET_COMPILE_OPTIONS(${PYWRAP} PRIVATE "-Wno-conversion")
-ENDIF()
-IF(IS_ABSOLUTE ${PYTHON_SITELIB})
-  SET(ABSOLUTE_PYTHON_SITELIB ${PYTHON_SITELIB})
-ELSE()
-  SET(ABSOLUTE_PYTHON_SITELIB ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB})
-ENDIF()
-SET(${PYWRAP}_INSTALL_DIR ${ABSOLUTE_PYTHON_SITELIB}/${PROJECT_NAME})
+add_library(${PYWRAP} SHARED main.cpp)
+add_dependencies(python ${PYWRAP})
+target_link_libraries(${PYWRAP} PUBLIC ${PROJECT_NAME})
+# BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS spews conversion warnings from int to
+# long unsigned int. Unfortunately, using literals does not work in a macro. As
+# such, this turns them off for the entire wrapper:
+if(NOT WIN32)
+  target_compile_options(${PYWRAP} PRIVATE "-Wno-conversion")
+endif()
+if(IS_ABSOLUTE ${PYTHON_SITELIB})
+  set(ABSOLUTE_PYTHON_SITELIB ${PYTHON_SITELIB})
+else()
+  set(ABSOLUTE_PYTHON_SITELIB ${CMAKE_INSTALL_PREFIX}/${PYTHON_SITELIB})
+endif()
+set(${PYWRAP}_INSTALL_DIR ${ABSOLUTE_PYTHON_SITELIB}/${PROJECT_NAME})
 
-SET_TARGET_PROPERTIES(${PYWRAP}
-  PROPERTIES
-  PREFIX ""
-  SUFFIX ${PYTHON_EXT_SUFFIX}
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}"
-  )
+set_target_properties(
+  ${PYWRAP}
+  PROPERTIES PREFIX ""
+             SUFFIX ${PYTHON_EXT_SUFFIX}
+             LIBRARY_OUTPUT_DIRECTORY
+             "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}")
 
-IF(UNIX AND NOT APPLE)
-  SET_TARGET_PROPERTIES(${PYWRAP} PROPERTIES INSTALL_RPATH "\$ORIGIN/../../..")
-ENDIF()
+if(UNIX AND NOT APPLE)
+  set_target_properties(${PYWRAP} PROPERTIES INSTALL_RPATH "\$ORIGIN/../../..")
+endif()
 
-INSTALL(TARGETS ${PYWRAP} DESTINATION ${${PYWRAP}_INSTALL_DIR})
+install(TARGETS ${PYWRAP} DESTINATION ${${PYWRAP}_INSTALL_DIR})
 
 # --- GENERATE STUBS
-IF(GENERATE_PYTHON_STUBS)
-  LOAD_STUBGEN()
+if(GENERATE_PYTHON_STUBS)
+  load_stubgen()
 
-  GENERATE_STUBS(${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_NAME} ${ABSOLUTE_PYTHON_SITELIB})
-ENDIF(GENERATE_PYTHON_STUBS)
+  generate_stubs(${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_NAME}
+                 ${ABSOLUTE_PYTHON_SITELIB})
+endif(GENERATE_PYTHON_STUBS)
 
 # --- INSTALL SCRIPTS
-SET(PYTHON_FILES
-  __init__.py
-  )
+set(PYTHON_FILES __init__.py)
 
-FOREACH(python ${PYTHON_FILES})
-  PYTHON_BUILD(${PROJECT_NAME} ${python})
-  INSTALL(FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/eigenpy/${python}"
-    DESTINATION ${${PYWRAP}_INSTALL_DIR})
-ENDFOREACH(python)
+foreach(python ${PYTHON_FILES})
+  python_build(${PROJECT_NAME} ${python})
+  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/eigenpy/${python}"
+          DESTINATION ${${PYWRAP}_INSTALL_DIR})
+endforeach(python)

@@ -14,3 +14,7 @@ repos:
     rev: 22.6.0
     hooks:
     -   id: black
+-   repo: https://github.com/cheshirekow/cmake-format-precommit
+    rev: v0.6.13
+    hooks:
+    - id: cmake-format
