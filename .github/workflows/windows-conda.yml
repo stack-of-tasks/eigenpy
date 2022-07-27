@@ -66,6 +66,13 @@ jobs:
         if errorlevel 1 exit 1
 
         :: Test packaging
+
+        cmake -B test-packaging -S unittest/packaging/cmake ^
+          -G "NMake Makefiles" ^
+          -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe
+        if errorlevel 1 exit 1
+
+        :: Configure hpp-fcl
         conda install -c conda-forge octomap assimp qhull
         git clone --recursive https://github.com/humanoid-path-planner/hpp-fcl.git
         pushd hpp-fcl
