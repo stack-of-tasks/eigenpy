@@ -219,7 +219,7 @@ modernize_target_link_libraries(
   TARGETS
   Python3::NumPy
   INCLUDE_DIRS
-  ${NUMPY_INCLUDE_DIR})
+  ${NUMPY_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} SYSTEM
                            PRIVATE ${PYTHON_INCLUDE_DIRS})
 
