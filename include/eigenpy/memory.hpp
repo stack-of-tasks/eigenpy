@@ -7,9 +7,8 @@
 #define __eigenpy_memory_hpp__
 
 #include "eigenpy/fwd.hpp"
-#include <patchlevel.h>
 
-#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 8
+#ifndef Py_SET_SIZE
 #define EIGENPY_Py_SET_SIZE(object, size) Py_SIZE(object) = size
 #else
 #define EIGENPY_Py_SET_SIZE(object, size) Py_SET_SIZE(object, size)
