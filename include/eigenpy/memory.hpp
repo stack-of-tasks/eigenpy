@@ -9,7 +9,7 @@
 #include "eigenpy/fwd.hpp"
 #include <patchlevel.h>
 
-#if PY_MAJOR_VERSION >= 3 & PY_MINOR_VERSION <= 8
+#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 8
 #define Py_SET_SIZE(object, size) Py_SIZE(object) = size
 #endif
 
@@ -104,7 +104,7 @@
   }                                                                            \
   }
 
-#if PY_MAJOR_VERSION >= 3 & PY_MINOR_VERSION <= 8
+#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 8
 #undef Py_SET_SIZE
 #endif
 
