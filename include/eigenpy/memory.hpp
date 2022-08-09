@@ -10,7 +10,9 @@
 #include <patchlevel.h>
 
 #if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 8
-#define Py_SET_SIZE(object, size) Py_SIZE(object) = size
+#define EIGENPY_Py_SET_SIZE(object, size) Py_SIZE(object) = size
+#else
+#define EIGENPY_Py_SET_SIZE(object, size) Py_SET_SIZE(object, size)
 #endif
 
 /**
@@ -71,7 +73,7 @@
             reinterpret_cast<Py_ssize_t>(holder) -                             \
             reinterpret_cast<Py_ssize_t>(&instance->storage) +                 \
             static_cast<Py_ssize_t>(offsetof(instance_t, storage));            \
-        Py_SET_SIZE(instance, holder_offset);                                  \
+        EIGENPY_Py_SET_SIZE(instance, holder_offset);                          \
                                                                                \
         protect.cancel();                                                      \
       }                                                                        \
@@ -103,9 +105,5 @@
   }                                                                            \
   }                                                                            \
   }
-
-#if PY_MAJOR_VERSION >= 3 && PY_MINOR_VERSION <= 8
-#undef Py_SET_SIZE
-#endif
 
 #endif  // __eigenpy_memory_hpp__
