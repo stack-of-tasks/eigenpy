@@ -80,7 +80,7 @@ else()
   set(PYTHON_COMPONENTS Interpreter Development.Module NumPy)
 endif()
 set(PYTHON_EXPORT_DEPENDENCY ON)
-findpython()
+findpython(REQUIRED)
 
 if(WIN32)
   link_directories(${PYTHON_LIBRARY_DIRS})
