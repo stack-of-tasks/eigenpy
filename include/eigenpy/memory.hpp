@@ -73,7 +73,7 @@ static inline void _Py_SET_SIZE(PyVarObject* ob, Py_ssize_t size) {
             reinterpret_cast<Py_ssize_t>(holder) -                             \
             reinterpret_cast<Py_ssize_t>(&instance->storage) +                 \
             static_cast<Py_ssize_t>(offsetof(instance_t, storage));            \
-        EIGENPY_Py_SET_SIZE(instance, holder_offset);                          \
+        Py_SET_SIZE(instance, holder_offset);                                  \
                                                                                \
         protect.cancel();                                                      \
       }                                                                        \
