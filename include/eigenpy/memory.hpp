@@ -1,12 +1,19 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2022, INRIA
  */
 
 #ifndef __eigenpy_memory_hpp__
 #define __eigenpy_memory_hpp__
 
 #include "eigenpy/fwd.hpp"
+
+#if PY_VERSION_HEX < 0x030900A4 && !defined(Py_SET_SIZE)
+static inline void _Py_SET_SIZE(PyVarObject* ob, Py_ssize_t size) {
+  ob->ob_size = size;
+}
+#define Py_SET_SIZE(ob, size) _Py_SET_SIZE((PyVarObject*)(ob), size)
+#endif
 
 /**
  * This section contains a convenience MACRO which allows an easy specialization
@@ -66,7 +73,7 @@
             reinterpret_cast<Py_ssize_t>(holder) -                             \
             reinterpret_cast<Py_ssize_t>(&instance->storage) +                 \
             static_cast<Py_ssize_t>(offsetof(instance_t, storage));            \
-        Py_SIZE(instance) = holder_offset;                                     \
+        Py_SET_SIZE(instance, holder_offset);                                  \
                                                                                \
         protect.cancel();                                                      \
       }                                                                        \
