@@ -221,8 +221,6 @@ modernize_target_link_libraries(
   INCLUDE_DIRS
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
-target_include_directories(${PROJECT_NAME} SYSTEM
-                           PRIVATE ${PYTHON_INCLUDE_DIRS})
 
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})
