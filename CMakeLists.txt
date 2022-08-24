@@ -233,6 +233,7 @@ if(NOT WIN32)
 else()
   target_compile_options(${PROJECT_NAME}
                          PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj>)
+  target_compile_definitions(${PROJECT_NAME} PUBLIC "HAVE_SNPRINTF")
 endif()
 
 target_link_boost_python(${PROJECT_NAME} PUBLIC)
