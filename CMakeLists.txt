@@ -287,6 +287,3 @@ add_subdirectory(python)
 add_subdirectory(unittest)
 
 pkg_config_append_libs(${PROJECT_NAME})
-pkg_config_append_cflags("-I${PYTHON_INCLUDE_DIRS}")
-pkg_config_append_cflags("-I${NUMPY_INCLUDE_DIRS}")
-pkg_config_append_boost_libs(${BOOST_COMPONENTS})
