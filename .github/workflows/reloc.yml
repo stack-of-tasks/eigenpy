@@ -1,0 +1,51 @@
+name: Ensure relocatable
+
+on: [push,pull_request]
+
+jobs:
+  relocatable:
+    name: Ensure relocatable
+    runs-on: ubuntu-latest
+    env:
+      CCACHE_DIR: /github/home/.ccache # Enable ccache
+      CMAKE_CXX_COMPILER_LAUNCHER: ccache
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - uses: actions/cache@v3
+      with:
+        path: ${{ env.CCACHE_DIR }}
+        key: reloc
+
+    - name: prepare cache dir
+      run: sudo mkdir -p ${CCACHE_DIR}/tmp && sudo chown -R $(id -un) ${CCACHE_DIR}
+
+    - name: prepare work prefix
+      run: sudo mkdir -p /RELOC/SRC && sudo chown -R $(id -un) /RELOC
+
+    - name: clone in /RELOC/SRC
+      run: git -C /RELOC/SRC clone --recursive $(pwd)
+
+    - name: install dependencies
+      run: sudo apt install libboost-all-dev libeigen3-dev python-is-python3 python3-numpy python3-pip ccache
+
+    - name: update CMake
+      run: pip install -U pip && pip install -U cmake
+
+    - name: configure in /RELOC/BLD
+      run: cmake -S /RELOC/SRC/eigenpy -B /RELOC/BLD -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/RELOC/PFX
+
+    - name: build in /RELOC/BLD
+      run: cmake --build /RELOC/BLD -j2
+
+    - name: install in /RELOC/PFX
+      run: cmake --build /RELOC/BLD -t install
+
+    - name: check installed package doesn't contain references to RELOC
+      run: grep -r RELOC /RELOC/PFX | grep -v Binary | tee references
+
+    - name: exit accordingly
+      run: exit $(wc -l references | cut -d " " -f 1)
