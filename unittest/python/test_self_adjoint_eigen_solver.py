@@ -1,9 +1,8 @@
 import eigenpy
 
-eigenpy.switchToNumpyArray()
-
 import numpy as np
-import numpy.linalg as la
+
+eigenpy.switchToNumpyArray()
 
 dim = 100
 A = np.random.rand(dim, dim)

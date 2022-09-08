@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import eigenpy
-import numpy as np
 
 quat = eigenpy.Quaternion()
 # By default, we convert as numpy.matrix

@@ -1,7 +1,6 @@
 import eigenpy
 
 import numpy as np
-import numpy.linalg as la
 
 dim = 100
 A = np.random.rand(dim, dim)

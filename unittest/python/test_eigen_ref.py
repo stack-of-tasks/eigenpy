@@ -1,5 +1,14 @@
 import numpy as np
-from eigen_ref import *
+from eigen_ref import (
+    printMatrix,
+    asRef,
+    asConstRef,
+    fill,
+    getBlock,
+    editBlock,
+    modify_block,
+    has_ref_member,
+)
 
 
 def test(mat):

@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
-from complex import *
+from complex import switchToNumpyArray, real, imag, ascomplex
 
 switchToNumpyArray()
 
