@@ -14,11 +14,12 @@ def test(dtype):
     assert (mat == mat_copy).all()
     assert not (mat != mat_copy).all()
 
-    #  if version.parse(np.__version__) >= version.parse("1.21.0"): # check if it fixes for new version of NumPy
-    #    mat.fill(mat.dtype.type(20.))
-    #    mat_copy = mat.copy()
-    #    assert((mat == mat_copy).all())
-    #    assert(not (mat != mat_copy).all())
+    # if version.parse(np.__version__) >= version.parse("1.21.0"):
+    # # check if it fixes for new version of NumPy
+    # mat.fill(mat.dtype.type(20.0))
+    # mat_copy = mat.copy()
+    # assert (mat == mat_copy).all()
+    # assert not (mat != mat_copy).all()
 
     mat_op = mat + mat
     mat_op = mat.copy(order="F") + mat.copy(order="C")
