@@ -3,8 +3,8 @@ from __future__ import print_function
 import eigenpy
 import numpy as np
 
-import time
-import timeit
+import time  # noqa
+import timeit  # noqa
 
 from IPython import get_ipython
 

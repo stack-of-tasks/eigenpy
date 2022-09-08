@@ -1,8 +1,15 @@
 from __future__ import print_function
 
-from geometry import *
+from geometry import (
+    AngleAxis,
+    Quaternion,
+    testOutAngleAxis,
+    testInAngleAxis,
+    testOutQuaternion,
+    testInQuaternion,
+)
 import numpy as np
-from numpy import cos, sin
+from numpy import cos
 
 verbose = True
 

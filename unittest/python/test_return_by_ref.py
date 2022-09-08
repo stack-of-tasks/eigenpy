@@ -21,7 +21,7 @@ def test_shared(mat):
     try:
         m_const_ref.fill(2)
         assert False
-    except:
+    except Exception:
         assert True
 
 
@@ -43,7 +43,7 @@ def test_not_shared(mat):
     try:
         m_const_ref.fill(2)
         assert True
-    except:
+    except Exception:
         assert False
 
 
