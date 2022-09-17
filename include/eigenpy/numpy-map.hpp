@@ -158,7 +158,7 @@ struct NumpyMapTraits<MatType, InputScalar, AlignmentValue, Stride, true> {
       rowMajor = (PyArray_DIMS(pyArray)[0] > PyArray_DIMS(pyArray)[1]) ? 0 : 1;
 
     assert((PyArray_DIMS(pyArray)[rowMajor] < INT_MAX) &&
-           (PyArray_STRIDE(pyArray, rowMajor)));
+           (PyArray_STRIDE(pyArray, rowMajor) < INT_MAX));
     const int R = (int)PyArray_DIMS(pyArray)[rowMajor];
     const long int itemsize = PyArray_ITEMSIZE(pyArray);
     const int stride = (int)PyArray_STRIDE(pyArray, rowMajor) / (int)itemsize;
