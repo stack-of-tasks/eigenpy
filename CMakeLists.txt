@@ -155,7 +155,6 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/user-type.hpp
     include/eigenpy/ufunc.hpp
     include/eigenpy/register.hpp
-    include/eigenpy/std-aligned-vector.hpp
     include/eigenpy/std-map.hpp
     include/eigenpy/std-vector.hpp
     include/eigenpy/pickle-vector.hpp
@@ -199,6 +198,7 @@ set(${PROJECT_NAME}_SOURCES
     src/angle-axis.cpp
     src/quaternion.cpp
     src/geometry-conversion.cpp
+    src/std-vector.cpp
     src/version.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}

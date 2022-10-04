@@ -2,13 +2,12 @@
 // Copyright (c) 2016-2021 CNRS INRIA
 //
 
-#ifndef __pinocchio_python_utils_copyable_hpp__
-#define __pinocchio_python_utils_copyable_hpp__
+#ifndef __eigenpy_utils_copyable_hpp__
+#define __eigenpy_utils_copyable_hpp__
 
 #include <boost/python.hpp>
 
-namespace pinocchio {
-namespace python {
+namespace eigenpy {
 
 namespace bp = boost::python;
 
@@ -26,7 +25,6 @@ struct CopyableVisitor : public bp::def_visitor<CopyableVisitor<C> > {
  private:
   static C copy(const C& self) { return C(self); }
 };
-}  // namespace python
-}  // namespace pinocchio
+}  // namespace eigenpy
 
-#endif  // ifndef __pinocchio_python_utils_copyable_hpp__
+#endif  // ifndef __eigenpy_utils_copyable_hpp__

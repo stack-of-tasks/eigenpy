@@ -9,6 +9,7 @@
 #include "eigenpy/decompositions/decompositions.hpp"
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/geometry.hpp"
+#include "eigenpy/std-vector.hpp"
 #include "eigenpy/solvers/preconditioners.hpp"
 #include "eigenpy/solvers/solvers.hpp"
 #include "eigenpy/utils/is-approx.hpp"
@@ -30,6 +31,7 @@ BOOST_PYTHON_MODULE(eigenpy_pywrap) {
   exposeAngleAxis();
   exposeQuaternion();
   exposeGeometryConversion();
+  exposeStdVector();
 
   exposeComputationInfo();
 
