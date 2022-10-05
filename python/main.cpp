@@ -9,9 +9,9 @@
 #include "eigenpy/decompositions/decompositions.hpp"
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/geometry.hpp"
-#include "eigenpy/std-vector.hpp"
 #include "eigenpy/solvers/preconditioners.hpp"
 #include "eigenpy/solvers/solvers.hpp"
+#include "eigenpy/std-vector.hpp"
 #include "eigenpy/utils/is-approx.hpp"
 #include "eigenpy/version.hpp"
 
