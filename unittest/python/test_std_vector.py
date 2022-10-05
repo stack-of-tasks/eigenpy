@@ -1,9 +1,14 @@
 import numpy as np
 import eigenpy
+import inspect
+import vector
+from vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector
 
-x0 = np.random.randn(3)
-l1 = [x0, x0, x0]
-l2 = eigenpy.StdVec_VectorXd(3, x0)
+np.random.seed(0)
+
+l1 = [np.random.randn(3), np.random.randn(2)]
+l2 = eigenpy.StdVec_VectorXd(l1)
+l3 = [np.random.randn(2, 2), np.random.randn(1, 2), np.random.randn(2, 6)]
 
 
 def checkAllValues(li1, li2):
@@ -14,3 +19,25 @@ def checkAllValues(li1, li2):
 
 
 checkAllValues(l1, l2)
+checkAllValues(l1, copyStdVector(l1))
+
+
+printVectorOfMatrix(l1)
+print()
+printVectorOfMatrix(l2)
+print()
+printVectorOfMatrix(l3)
+print()
+
+
+l4 = [np.random.randn(3, 3) for _ in range(4)]
+assert "StdVec_Mat3d" in printVectorOf3x3.__doc__
+printVectorOf3x3(l4)
+
+l4_copy = copyStdVector(l4)
+assert isinstance(l4_copy, eigenpy.StdVec_MatrixXd)
+print(l4_copy)
+
+l4_copy2 = vector.copyStdVec_3x3(l4)
+assert isinstance(l4_copy2, vector.StdVec_Mat3d)
+print(l4_copy2)
