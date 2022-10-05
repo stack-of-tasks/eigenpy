@@ -18,10 +18,19 @@ std::vector<MatType> copy(const std::vector<MatType> &Ms) {
   return out;
 }
 
+template<typename MatType>
+void setZero(std::vector<MatType> Ms) {
+  for (std::size_t i = 0; i < Ms.size(); i++) {
+    Ms[i].setZero();
+  }
+}
+
+
 BOOST_PYTHON_MODULE(vector) {
   namespace bp = boost::python;
+  using namespace eigenpy;
 
-  eigenpy::enableEigenPy();
+  enableEigenPy();
 
   bp::def("printVectorOfMatrix", printVectorOfMatrix<Eigen::VectorXd>);
   bp::def("printVectorOfMatrix", printVectorOfMatrix<Eigen::MatrixXd>);
@@ -29,8 +38,12 @@ BOOST_PYTHON_MODULE(vector) {
   bp::def("copyStdVector", copy<Eigen::MatrixXd>);
   bp::def("copyStdVector", copy<Eigen::VectorXd>);
 
-  eigenpy::StdVectorPythonVisitor<std::vector<Eigen::Matrix3d>>::expose(
+  StdVectorPythonVisitor<std::vector<Eigen::Matrix3d>>::expose(
       "StdVec_Mat3d", "3D matrices.");
   bp::def("printVectorOf3x3", printVectorOfMatrix<Eigen::Matrix3d>);
   bp::def("copyStdVec_3x3", copy<Eigen::Matrix3d>, bp::args("mats"));
+
+  typedef Eigen::Ref<Eigen::MatrixXd> MatRef;
+  StdVectorPythonVisitor<std::vector<MatRef>, true>::expose("StdVec_MatRef");
+  bp::def("setZero", setZero<MatRef>, "Sets the coeff in [0,0] to 0.");
 }
