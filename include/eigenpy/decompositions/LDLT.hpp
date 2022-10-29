@@ -29,11 +29,12 @@ struct LDLTSolverVisitor
   template <class PyClass>
   void visit(PyClass &cl) const {
     namespace bp = boost::python;
-    cl.def(bp::init<>("Default constructor"))
+    cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
-            bp::arg("size"), "Default constructor with memory preallocation"))
+            bp::args("self", "size"),
+            "Default constructor with memory preallocation"))
         .def(bp::init<MatrixType>(
-            bp::arg("matrix"),
+            bp::args("self", "matrix"),
             "Constructs a LDLT factorization from a given matrix."))
 
         .def("isNegative", &Solver::isNegative, bp::arg("self"),
