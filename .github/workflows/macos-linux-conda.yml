@@ -36,6 +36,7 @@ jobs:
       run: |
         conda activate eigenpy
         conda install cmake -c main
+        conda list
 
     - name: Build EigenPy
       shell: bash -l {0}
