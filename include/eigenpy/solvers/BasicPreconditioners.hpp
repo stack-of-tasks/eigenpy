@@ -34,7 +34,7 @@ struct PreconditionerBaseVisitor
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def(bp::init<>("Default constructor"))
-        .def(bp::init<MatrixType>(bp::arg("A"),
+        .def(bp::init<MatrixType>(bp::args("self", "A"),
                                   "Initialize the preconditioner with matrix A "
                                   "for further Az=b solving."))
 #if EIGEN_VERSION_AT_LEAST(3, 3, 0)

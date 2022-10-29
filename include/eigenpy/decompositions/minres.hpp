@@ -138,9 +138,9 @@ struct MINRESSolverVisitor
   template <class PyClass>
   void visit(PyClass& cl) const {
     namespace bp = boost::python;
-    cl.def(bp::init<>("Default constructor"))
+    cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<MatrixType>(
-            bp::arg("matrix"),
+            bp::args("self", "matrix"),
             "Initialize the solver with matrix A for further Ax=b solving.\n"
             "This constructor is a shortcut for the default constructor "
             "followed by a call to compute()."))

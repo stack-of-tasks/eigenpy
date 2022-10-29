@@ -46,15 +46,13 @@ class AngleAxisVisitor : public bp::def_visitor<AngleAxisVisitor<AngleAxis> > {
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
-        .def(bp::init<Scalar, Vector3>(
-            (bp::arg("self"), bp::arg("angle"), bp::arg("axis")),
-            "Initialize from angle and axis."))
-        .def(bp::init<Matrix3>((bp::arg("self"), bp::arg("R")),
+        .def(bp::init<Scalar, Vector3>(bp::args("self", "angle", "axis"),
+                                       "Initialize from angle and axis."))
+        .def(bp::init<Matrix3>(bp::args("self", "R"),
                                "Initialize from a rotation matrix"))
-        .def(bp::init<Quaternion>((bp::arg("self"), bp::arg("quaternion")),
+        .def(bp::init<Quaternion>(bp::args("self", "quaternion"),
                                   "Initialize from a quaternion."))
-        .def(bp::init<AngleAxis>((bp::arg("self"), bp::arg("copy")),
-                                 "Copy constructor."))
+        .def(bp::init<AngleAxis>(bp::args("self", "copy"), "Copy constructor."))
 
         /* --- Properties --- */
         .add_property(

@@ -24,7 +24,7 @@ jobs:
         activate-environment: eigenpy
         auto-update-conda: true
         environment-file: .github/workflows/conda/environment.yml
-        python-version: 3.8
+        python-version: '3.10'
 
     - uses: actions/cache@v2
       with:
@@ -36,6 +36,7 @@ jobs:
       run: |
         conda activate eigenpy
         conda install cmake -c main
+        conda list
 
     - name: Build EigenPy
       shell: bash -l {0}
