@@ -72,7 +72,8 @@ struct build_list<vector_type, true> {
 };
 
 /// \brief Change the behaviour of indexing (method __getitem__ in Python).
-/// This is suitable for container of Eigen matrix objects if you want to mutate them.
+/// This is suitable for container of Eigen matrix objects if you want to mutate
+/// them.
 template <typename Container>
 struct overload_base_get_item_for_std_vector
     : public boost::python::def_visitor<
@@ -129,8 +130,8 @@ struct overload_base_get_item_for_std_vector
 namespace boost {
 namespace python {
 
-/// \brief Specialization of the boost::python::extract struct for references to Eigen
-/// matrix objects.
+/// \brief Specialization of the boost::python::extract struct for references to
+/// Eigen matrix objects.
 template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
