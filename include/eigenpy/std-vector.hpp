@@ -15,6 +15,7 @@
 
 #include "eigenpy/config.hpp"
 #include "eigenpy/copyable.hpp"
+#include "eigenpy/eigen-to-python.hpp"
 #include "eigenpy/pickle-vector.hpp"
 #include "eigenpy/registration.hpp"
 
@@ -69,11 +70,88 @@ struct build_list<vector_type, true> {
     return bp::list(iterator()(vec));
   }
 };
+
+/// \brief Change the behaviour of indexing (method __getitem__ in Python).
+/// This is suitable for container of Eigen matrix objects if you want to mutate them.
+template <typename Container>
+struct overload_base_get_item_for_std_vector
+    : public boost::python::def_visitor<
+          overload_base_get_item_for_std_vector<Container> > {
+  typedef typename Container::value_type value_type;
+  typedef typename Container::value_type data_type;
+  typedef size_t index_type;
+
+  template <class Class>
+  void visit(Class &cl) const {
+    cl.def("__getitem__", &base_get_item);
+  }
+
+ private:
+  static boost::python::object base_get_item(
+      boost::python::back_reference<Container &> container, PyObject *i_) {
+    namespace bp = ::boost::python;
+
+    index_type idx = convert_index(container.get(), i_);
+    typename Container::iterator i = container.get().begin();
+    std::advance(i, idx);
+    if (i == container.get().end()) {
+      PyErr_SetString(PyExc_KeyError, "Invalid index");
+      bp::throw_error_already_set();
+    }
+
+    typename bp::to_python_indirect<data_type &,
+                                    bp::detail::make_reference_holder>
+        convert;
+    return bp::object(bp::handle<>(convert(*i)));
+  }
+
+  static index_type convert_index(Container &container, PyObject *i_) {
+    namespace bp = boost::python;
+    bp::extract<long> i(i_);
+    if (i.check()) {
+      long index = i();
+      if (index < 0) index += container.size();
+      if (index >= long(container.size()) || index < 0) {
+        PyErr_SetString(PyExc_IndexError, "Index out of range");
+        bp::throw_error_already_set();
+      }
+      return (index_type)index;
+    }
+
+    PyErr_SetString(PyExc_TypeError, "Invalid index type");
+    bp::throw_error_already_set();
+    return index_type();
+  }
+};
 }  // namespace details
 }  // namespace eigenpy
 
 namespace boost {
 namespace python {
+
+/// \brief Specialization of the boost::python::extract struct for references to Eigen
+/// matrix objects.
+template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
+          int MaxCols>
+struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
+    : converter::extract_rvalue<Eigen::Ref<
+          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> > > {
+  typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>
+      MatrixType;
+  typedef Eigen::Ref<MatrixType> RefType;
+
+ private:
+  typedef converter::extract_rvalue<RefType> base;
+
+ public:
+  typedef RefType result_type;
+
+  operator result_type() const { return (*this)(); }
+
+  extract(PyObject *o) : base(o) {}
+  extract(api::object const &o) : base(o.ptr()) {}
+};
+
 namespace converter {
 
 template <typename Type, class Allocator>
@@ -82,6 +160,7 @@ struct reference_arg_from_python<std::vector<Type, Allocator> &>
   typedef std::vector<Type, Allocator> vector_type;
   typedef vector_type &ref_vector_type;
   typedef ref_vector_type result_type;
+  typedef extract<Type &> extract_type;
 
   reference_arg_from_python(PyObject *py_obj)
       : arg_lvalue_from_python_base(converter::get_lvalue_from_python(
@@ -117,7 +196,7 @@ struct reference_arg_from_python<std::vector<Type, Allocator> &>
       const vector_type &vec = *vec_ptr;
       list bp_list(handle<>(borrowed(m_source)));
       for (size_t i = 0; i < vec.size(); ++i) {
-        Type &elt = extract<Type &>(bp_list[i]);
+        typename extract_type::result_type elt = extract_type(bp_list[i]);
         elt = vec[i];
       }
     }
@@ -335,6 +414,16 @@ struct StdVectorPythonVisitor
  * Expose std::vector for given matrix or vector sizes.
  */
 void EIGENPY_DLLAPI exposeStdVector();
+
+template <typename MatType>
+void exposeStdVectorEigenSpecificType(const char *name) {
+  typedef std::vector<MatType> VecMatType;
+  std::string full_name = "StdVec_";
+  full_name += name;
+  StdVectorPythonVisitor<VecMatType, false>::expose(
+      full_name.c_str(),
+      details::overload_base_get_item_for_std_vector<VecMatType>());
+}
 
 }  // namespace eigenpy
 

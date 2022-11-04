@@ -1,6 +1,7 @@
 import numpy as np
 import eigenpy
 import inspect
+import pprint
 import vector
 from vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector
 
@@ -19,8 +20,14 @@ def checkAllValues(li1, li2):
 
 
 checkAllValues(l1, l2)
+print("firstcall")
 checkAllValues(l1, copyStdVector(l1))
 
+print(l2[0])
+l2[0][:2] = 0.0
+printVectorOfMatrix(l2)
+
+assert np.allclose(l2[0][:2], 0.0)
 
 printVectorOfMatrix(l1)
 print()
@@ -47,6 +54,7 @@ def checkZero(l):
         assert np.allclose(x, 0.0), "x = {}".format(x)
 
 
+print("Check setZero() works:")
 print("l1:")
 vector.setZero(l1)
 print(l1)
@@ -55,9 +63,15 @@ checkZero(l1)
 print("l2:")
 l2_py = l2.tolist()
 vector.setZero(l2_py)
-print(l2_py)
+pprint.pp(l2_py)
 checkZero(l2_py)
+print("-----------------")
 
+l3_std = eigenpy.StdVec_MatrixXd(l3)
+# l3_std = vector.StdVec_MatRef(l3)
+# l3_std = l3
 print("l3:")
-vector.setZero(l3)
-checkZero(l3)
+vector.setZero(l3_std)
+print("result")
+pprint.pp(list(l3_std))
+checkZero(l3_std)
