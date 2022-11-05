@@ -1,6 +1,7 @@
-//
-// Copyright (c) 2016-2022 CNRS INRIA
-//
+/// Copyright (c) 2016-2022 CNRS INRIA
+/// This file was taken from Pinocchio (header
+/// <pinocchio/bindings/python/utils/std-vector.hpp>)
+///
 
 #ifndef __eigenpy_utils_std_vector_hpp__
 #define __eigenpy_utils_std_vector_hpp__
@@ -77,7 +78,7 @@ struct build_list<vector_type, true> {
 template <typename Container>
 struct overload_base_get_item_for_std_vector
     : public boost::python::def_visitor<
-          overload_base_get_item_for_std_vector<Container> > {
+          overload_base_get_item_for_std_vector<Container>> {
   typedef typename Container::value_type value_type;
   typedef typename Container::value_type data_type;
   typedef size_t index_type;
@@ -130,15 +131,9 @@ struct overload_base_get_item_for_std_vector
 namespace boost {
 namespace python {
 
-/// \brief Specialization of the boost::python::extract struct for references to
-/// Eigen matrix objects.
-template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
-          int MaxCols>
-struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
-    : converter::extract_rvalue<Eigen::Ref<
-          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> > > {
-  typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>
-      MatrixType;
+template <typename MatrixType>
+struct extract_to_eigen_ref
+    : converter::extract_rvalue<Eigen::Ref<MatrixType>> {
   typedef Eigen::Ref<MatrixType> RefType;
 
  private:
@@ -147,10 +142,41 @@ struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
  public:
   typedef RefType result_type;
 
-  operator result_type() const { return (*this)(); }
+  operator result_type() const {
+    return (*this)();
+  }
 
-  extract(PyObject *o) : base(o) {}
-  extract(api::object const &o) : base(o.ptr()) {}
+  extract_to_eigen_ref(PyObject *o) : base(o) {}
+  extract_to_eigen_ref(api::object const &o) : base(o.ptr()) {}
+};
+
+/// \brief Specialization of the boost::python::extract struct for references to
+/// Eigen matrix objects.
+template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
+          int MaxCols>
+struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
+    : extract_to_eigen_ref<
+          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>> {
+  typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>
+      MatrixType;
+  typedef extract_to_eigen_ref<MatrixType> base;
+  using base::base;
+};
+
+template <typename Derived>
+struct extract<Eigen::MatrixBase<Derived> &>
+    : extract_to_eigen_ref<Eigen::MatrixBase<Derived>> {
+  typedef Eigen::MatrixBase<Derived> MatrixType;
+  typedef extract_to_eigen_ref<MatrixType> base;
+  using base::base;
+};
+
+template <typename Derived>
+struct extract<Eigen::RefBase<Derived> &>
+    : extract_to_eigen_ref<Eigen::RefBase<Derived>> {
+  typedef Eigen::RefBase<Derived> MatrixType;
+  typedef extract_to_eigen_ref<MatrixType> base;
+  using base::base;
 };
 
 namespace converter {

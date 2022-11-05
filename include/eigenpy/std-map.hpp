@@ -1,6 +1,7 @@
-//
-// Copyright (c) 2020 INRIA
-//
+/// Copyright (c) 2016-2022 CNRS INRIA
+/// This file was taken from Pinocchio (header
+/// <pinocchio/bindings/python/utils/std-vector.hpp>)
+///
 
 #ifndef __eigenpy_utils_map_hpp__
 #define __eigenpy_utils_map_hpp__
