@@ -142,9 +142,7 @@ struct extract_to_eigen_ref
  public:
   typedef RefType result_type;
 
-  operator result_type() const {
-    return (*this)();
-  }
+  operator result_type() const { return (*this)(); }
 
   extract_to_eigen_ref(PyObject *o) : base(o) {}
   extract_to_eigen_ref(api::object const &o) : base(o.ptr()) {}
@@ -313,21 +311,22 @@ namespace internal {
 template <typename T>
 struct has_operator_equal
     : boost::mpl::if_<typename boost::is_base_of<Eigen::EigenBase<T>, T>::type,
-                      has_operator_equal<Eigen::EigenBase<T> >,
+                      has_operator_equal<Eigen::EigenBase<T>>,
                       boost::true_type>::type {};
 
 template <typename T, class A>
-struct has_operator_equal<std::vector<T, A> > : has_operator_equal<T> {};
+struct has_operator_equal<std::vector<T, A>> : has_operator_equal<T> {};
 
 template <>
 struct has_operator_equal<bool> : boost::true_type {};
 
 template <typename EigenObject>
-struct has_operator_equal<Eigen::EigenBase<EigenObject> >
+struct has_operator_equal<Eigen::EigenBase<EigenObject>>
     : has_operator_equal<typename EigenObject::Scalar> {};
 
-template <typename T, bool has_operator_equal_value = boost::is_base_of<
-                          boost::true_type, has_operator_equal<T> >::value>
+template <typename T,
+          bool has_operator_equal_value =
+              boost::is_base_of<boost::true_type, has_operator_equal<T>>::value>
 struct contains_algo;
 
 template <typename T>
@@ -354,7 +353,7 @@ template <class Container, bool NoProxy>
 struct contains_vector_derived_policies
     : public ::boost::python::vector_indexing_suite<
           Container, NoProxy,
-          contains_vector_derived_policies<Container, NoProxy> > {
+          contains_vector_derived_policies<Container, NoProxy>> {
   typedef typename Container::value_type key_type;
 
   static bool contains(Container &container, key_type const &key) {
@@ -385,7 +384,7 @@ template <class vector_type, bool NoProxy = false,
 struct StdVectorPythonVisitor
     : public ::boost::python::vector_indexing_suite<
           vector_type, NoProxy,
-          internal::contains_vector_derived_policies<vector_type, NoProxy> >,
+          internal::contains_vector_derived_policies<vector_type, NoProxy>>,
       public StdContainerFromPythonList<vector_type, NoProxy> {
   typedef typename vector_type::value_type value_type;
   typedef typename vector_type::allocator_type allocator_type;
