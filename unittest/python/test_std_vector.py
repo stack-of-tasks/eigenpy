@@ -9,8 +9,11 @@ np.random.seed(0)
 
 l1 = [np.random.randn(3), np.random.randn(2)]
 l2 = eigenpy.StdVec_VectorXd(l1)
-l3 = [np.random.randn(2, 2).T, np.random.randn(3, 1), np.random.randn(4, 2)]
-l4 = [np.random.randn(3, 3).T for _ in range(4)]
+l3 = [np.random.randn(2, 2).T, np.random.randn(3, 1)]
+l3.append(np.eye(2, order="F"))
+l3.append(np.eye(2, order="C"))
+l4 = [np.random.randn(3, 3).T for _ in range(3)]
+l4[-1] = l4[-1].T
 
 
 def checkAllValues(li1, li2):
@@ -23,10 +26,7 @@ def checkAllValues(li1, li2):
 checkAllValues(l1, l2)
 checkAllValues(l1, copyStdVector(l1))
 
-print(l2[0])
 l2[0][:2] = 0.0
-printVectorOfMatrix(l2)
-
 assert np.allclose(l2[0][:2], 0.0)
 
 print("l1")
@@ -57,6 +57,7 @@ print("l1:")
 vector.setZero(l1)
 print(l1)
 checkZero(l1)
+print("-----------------")
 
 print("l2:")
 l2_py = l2.tolist()
@@ -70,8 +71,14 @@ print("l3_std:")
 vector.setZero(l3_copy)
 pprint.pp(list(l3_copy))
 checkZero(l3_copy)
+print("-----------------")
 
 print("l3:")
 vector.setZero(l3)
 pprint.pp(list(l3))
 # checkZero(l3)
+print("-----------------")
+
+print("l4:")
+vector.setZero(l4)
+pprint.pp(list(l4))
