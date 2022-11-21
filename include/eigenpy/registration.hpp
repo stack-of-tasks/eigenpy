@@ -34,7 +34,7 @@ inline bool check_registration() {
 ///
 /// \brief Symlink to the current scope the already registered class T.
 ///
-/// \returns true if the type T is effectively symlinked.
+///  \returns true if the type T is effectively symlinked.
 ///
 /// \tparam T The type to symlink.
 ///
