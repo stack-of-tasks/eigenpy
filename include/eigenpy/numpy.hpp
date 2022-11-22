@@ -76,15 +76,15 @@ template <>
 struct NumpyEquivalentType<long> {
   enum { type_code = NPY_LONG };
 };
-//#if defined _WIN32 || defined __CYGWIN__
+// #if defined _WIN32 || defined __CYGWIN__
 template <>
 struct NumpyEquivalentType<long long> {
   enum { type_code = NPY_LONGLONG };
 };
-//#else
-//  template <> struct NumpyEquivalentType<long long>    { enum { type_code =
-//  NPY_LONGLONG    };};
-//#endif
+// #else
+//   template <> struct NumpyEquivalentType<long long>    { enum { type_code =
+//   NPY_LONGLONG    };};
+// #endif
 template <>
 struct NumpyEquivalentType<unsigned long> {
   enum { type_code = NPY_ULONG };
