@@ -2,6 +2,8 @@
 #include <type_traits>
 
 #include "eigenpy/eigenpy.hpp"
+// include main first
+#include "eigenpy/eigen-from-python.hpp"
 #include "eigenpy/std-vector.hpp"
 
 template <typename MatType>
