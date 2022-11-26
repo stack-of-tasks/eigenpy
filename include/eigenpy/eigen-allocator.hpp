@@ -271,10 +271,9 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
     if (pyArray_type_code != Scalar_type_code) need_to_allocate |= true;
-    if (is_arr_layout_compatible_with_mat_type<MatType>(pyArray))
-      need_to_allocate |= false;  // no need to allocate
-    else
-      need_to_allocate |= true;
+    bool incompatible_layout =
+        !is_arr_layout_compatible_with_mat_type<MatType>(pyArray);
+    need_to_allocate |= incompatible_layout;
     if (Options !=
         Eigen::Unaligned)  // we need to check whether the memory is correctly
                            // aligned and composed of a continuous segment
@@ -286,10 +285,6 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
 
     void *raw_ptr = storage->storage.bytes;
     if (need_to_allocate) {
-      PyObject *pyarr_transposed = PyArray_Transpose(pyArray, NULL);
-      allocate((PyArrayObject *)pyarr_transposed, storage);
-      /*
-      std::cout << "  doing allocate\n";
       MatType *mat_ptr;
       mat_ptr = details::init_matrix_or_array<MatType>::run(pyArray);
       RefType mat_ref(*mat_ptr);
@@ -340,7 +335,6 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
           throw Exception(
               "You asked for a conversion which is not implemented.");
       }
-      */
     } else {
       assert(pyArray_type_code == Scalar_type_code);
       typename NumpyMap<MatType, Scalar, Options, NumpyMapStride>::EigenMap
@@ -380,10 +374,9 @@ struct EigenAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
     if (pyArray_type_code != Scalar_type_code) need_to_allocate |= true;
-    if (is_arr_layout_compatible_with_mat_type<MatType>(pyArray))
-      need_to_allocate |= false;  // no need to allocate
-    else
-      need_to_allocate |= true;
+    bool incompatible_layout =
+        !is_arr_layout_compatible_with_mat_type<MatType>(pyArray);
+    need_to_allocate |= incompatible_layout;
     if (Options !=
         Eigen::Unaligned)  // we need to check whether the memory is correctly
                            // aligned and composed of a continuous segment
