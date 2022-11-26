@@ -294,8 +294,8 @@ class QuaternionVisitor
     return q;
   }
 
-  static Quaternion* FromTwoVectors(const Eigen::Ref<Vector3> u,
-                                    const Eigen::Ref<Vector3> v) {
+  static Quaternion* FromTwoVectors(const Eigen::Ref<const Vector3> u,
+                                    const Eigen::Ref<const Vector3> v) {
     Quaternion* q(new Quaternion);
     q->setFromTwoVectors(u, v);
     return q;
@@ -308,12 +308,12 @@ class QuaternionVisitor
 
   static Quaternion* DefaultConstructor() { return new Quaternion; }
 
-  static Quaternion* FromOneVector(const Eigen::Ref<Vector4> v) {
+  static Quaternion* FromOneVector(const Eigen::Ref<const Vector4> v) {
     Quaternion* q(new Quaternion(v[3], v[0], v[1], v[2]));
     return q;
   }
 
-  static Quaternion* FromRotationMatrix(const Eigen::Ref<Matrix3> R) {
+  static Quaternion* FromRotationMatrix(const Eigen::Ref<const Matrix3> R) {
     Quaternion* q(new Quaternion(R));
     return q;
   }
