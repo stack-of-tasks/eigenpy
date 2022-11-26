@@ -9,9 +9,9 @@ np.random.seed(0)
 
 l1 = [np.random.randn(3), np.random.randn(2)]
 l2 = eigenpy.StdVec_VectorXd(l1)
-l3 = [np.random.randn(2, 2).T, np.random.randn(3, 1)]
-l3.append(np.eye(2, order="F"))
-l3.append(np.eye(2, order="C"))
+l3 = [np.random.randn(2, 2), np.random.randn(3, 1)]
+l3.append(np.asfortranarray(np.eye(2)))
+l3.append(np.eye(2))
 l4 = [np.random.randn(3, 3).T for _ in range(3)]
 l4[-1] = l4[-1].T
 
@@ -73,13 +73,13 @@ pprint.pp(list(l3_copy))
 checkZero(l3_copy)
 print("-----------------")
 
-print("l3:")
-vector.setZero(l3)
-pprint.pp(list(l3))
-checkZero(l3)
-print("-----------------")
+# print("l3_python:")
+# vector.setZero(l3)
+# pprint.pprint(list(l3))
+# checkZero(l3)
+# print("-----------------")
 
-print("l4:")
-vector.setZero(l4)
-pprint.pp(list(l4))
-checkZero(l4)
+# print("l4:")
+# vector.setZero(l4)
+# pprint.pprint(list(l4))
+# checkZero(l4)

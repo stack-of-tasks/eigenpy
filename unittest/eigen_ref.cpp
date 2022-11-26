@@ -73,7 +73,6 @@ Eigen::Ref<MatType> asRef(Eigen::Ref<MatType> mat) {
 
 template <typename MatType>
 const Eigen::Ref<const MatType> asConstRef(Eigen::Ref<const MatType> mat) {
-  std::cout << "create const Ref to input\n";
   return Eigen::Ref<const MatType>(mat);
 }
 
