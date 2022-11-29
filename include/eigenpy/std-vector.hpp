@@ -136,7 +136,7 @@ struct extract_to_eigen_ref
     : converter::extract_rvalue<Eigen::Ref<MatrixType> > {
   typedef Eigen::Ref<MatrixType> RefType;
 
- private:
+ protected:
   typedef converter::extract_rvalue<RefType> base;
 
  public:
