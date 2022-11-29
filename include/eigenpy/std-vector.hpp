@@ -78,7 +78,7 @@ struct build_list<vector_type, true> {
 template <typename Container>
 struct overload_base_get_item_for_std_vector
     : public boost::python::def_visitor<
-          overload_base_get_item_for_std_vector<Container>> {
+          overload_base_get_item_for_std_vector<Container> > {
   typedef typename Container::value_type value_type;
   typedef typename Container::value_type data_type;
   typedef size_t index_type;
@@ -133,7 +133,7 @@ namespace python {
 
 template <typename MatrixType>
 struct extract_to_eigen_ref
-    : converter::extract_rvalue<Eigen::Ref<MatrixType>> {
+    : converter::extract_rvalue<Eigen::Ref<MatrixType> > {
   typedef Eigen::Ref<MatrixType> RefType;
 
  private:
@@ -154,7 +154,7 @@ template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
     : extract_to_eigen_ref<
-          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>> {
+          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> > {
   typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>
       MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
@@ -163,7 +163,7 @@ struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
 
 template <typename Derived>
 struct extract<Eigen::MatrixBase<Derived> &>
-    : extract_to_eigen_ref<Eigen::MatrixBase<Derived>> {
+    : extract_to_eigen_ref<Eigen::MatrixBase<Derived> > {
   typedef Eigen::MatrixBase<Derived> MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
   using base::base;
@@ -171,7 +171,7 @@ struct extract<Eigen::MatrixBase<Derived> &>
 
 template <typename Derived>
 struct extract<Eigen::RefBase<Derived> &>
-    : extract_to_eigen_ref<Eigen::RefBase<Derived>> {
+    : extract_to_eigen_ref<Eigen::RefBase<Derived> > {
   typedef Eigen::RefBase<Derived> MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
   using base::base;
@@ -311,22 +311,21 @@ namespace internal {
 template <typename T>
 struct has_operator_equal
     : boost::mpl::if_<typename boost::is_base_of<Eigen::EigenBase<T>, T>::type,
-                      has_operator_equal<Eigen::EigenBase<T>>,
+                      has_operator_equal<Eigen::EigenBase<T> >,
                       boost::true_type>::type {};
 
 template <typename T, class A>
-struct has_operator_equal<std::vector<T, A>> : has_operator_equal<T> {};
+struct has_operator_equal<std::vector<T, A> > : has_operator_equal<T> {};
 
 template <>
 struct has_operator_equal<bool> : boost::true_type {};
 
 template <typename EigenObject>
-struct has_operator_equal<Eigen::EigenBase<EigenObject>>
+struct has_operator_equal<Eigen::EigenBase<EigenObject> >
     : has_operator_equal<typename EigenObject::Scalar> {};
 
-template <typename T,
-          bool has_operator_equal_value =
-              boost::is_base_of<boost::true_type, has_operator_equal<T>>::value>
+template <typename T, bool has_operator_equal_value = boost::is_base_of<
+                          boost::true_type, has_operator_equal<T> >::value>
 struct contains_algo;
 
 template <typename T>
@@ -353,7 +352,7 @@ template <class Container, bool NoProxy>
 struct contains_vector_derived_policies
     : public ::boost::python::vector_indexing_suite<
           Container, NoProxy,
-          contains_vector_derived_policies<Container, NoProxy>> {
+          contains_vector_derived_policies<Container, NoProxy> > {
   typedef typename Container::value_type key_type;
 
   static bool contains(Container &container, key_type const &key) {
@@ -384,7 +383,7 @@ template <class vector_type, bool NoProxy = false,
 struct StdVectorPythonVisitor
     : public ::boost::python::vector_indexing_suite<
           vector_type, NoProxy,
-          internal::contains_vector_derived_policies<vector_type, NoProxy>>,
+          internal::contains_vector_derived_policies<vector_type, NoProxy> >,
       public StdContainerFromPythonList<vector_type, NoProxy> {
   typedef typename vector_type::value_type value_type;
   typedef typename vector_type::allocator_type allocator_type;
