@@ -1,6 +1,7 @@
 import numpy as np
 from eigen_ref import (
     printMatrix,
+    getRefToStatic,
     asRef,
     asConstRef,
     fill,
@@ -30,11 +31,11 @@ def test_create_ref_to_static(mat):
     # create ref to static:
     print()
     print("[asRef(int, int)]")
-    A_ref = asRef(mat.shape[0], mat.shape[1])
+    A_ref = getRefToStatic(mat.shape[0], mat.shape[1])
     A_ref.fill(1.0)
     A_ref[0, 1] = -1.0
     print("make second reference:")
-    A_ref2 = asRef(mat.shape[0], mat.shape[1])
+    A_ref2 = getRefToStatic(mat.shape[0], mat.shape[1])
     print(A_ref2)
 
     assert np.array_equal(A_ref, A_ref2)

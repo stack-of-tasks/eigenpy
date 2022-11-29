@@ -58,8 +58,9 @@ void fill(Eigen::Ref<MatType> mat, const typename MatType::Scalar& value) {
   mat.fill(value);
 }
 
+/// Get ref to a static matrix of size ( @p rows, @p cols )
 template <typename MatType>
-Eigen::Ref<MatType> asRef(const int rows, const int cols) {
+Eigen::Ref<MatType> getRefToStatic(const int rows, const int cols) {
   static MatType mat(rows, cols);
   std::cout << "create ref to matrix of size (" << rows << "," << cols << ")\n";
   return mat;
@@ -113,10 +114,8 @@ BOOST_PYTHON_MODULE(eigen_ref) {
   bp::def("fillVec", fill<VectorXd>);
   bp::def("fill", fill<MatrixXd>);
 
-  bp::def<Eigen::Ref<MatrixXd> (*)(const int, const int)>("asRef",
-                                                          asRef<MatrixXd>);
-  bp::def<Eigen::Ref<MatrixXd> (*)(Eigen::Ref<MatrixXd>)>("asRef",
-                                                          asRef<MatrixXd>);
+  bp::def("getRefToStatic", getRefToStatic<MatrixXd>);
+  bp::def("asRef", asRef<MatrixXd>);
   bp::def("asConstRef", asConstRef<MatrixXd>);
 
   bp::def("getBlock", &getBlock<MatrixXd>);
