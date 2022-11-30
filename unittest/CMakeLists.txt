@@ -33,7 +33,7 @@ if(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
   add_lib_unit_test(eigen_ref)
 endif()
 add_lib_unit_test(user_type)
-add_lib_unit_test(vector)
+add_lib_unit_test(std_vector)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
 add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"

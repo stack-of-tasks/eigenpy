@@ -28,7 +28,7 @@ void setZero(std::vector<MatType> &Ms) {
   }
 }
 
-BOOST_PYTHON_MODULE(vector) {
+BOOST_PYTHON_MODULE(std_vector) {
   namespace bp = boost::python;
   using namespace eigenpy;
 

@@ -2,8 +2,8 @@ import numpy as np
 import eigenpy
 import inspect
 import pprint
-import vector
-from vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector
+import std_vector
+from std_vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector
 
 np.random.seed(0)
 
@@ -43,8 +43,8 @@ assert isinstance(l4_copy, eigenpy.StdVec_MatrixXd)
 assert "StdVec_Mat3d" in printVectorOf3x3.__doc__
 printVectorOf3x3(l4)
 
-l4_copy2 = vector.copyStdVec_3x3(l4)
-assert isinstance(l4_copy2, vector.StdVec_Mat3d)
+l4_copy2 = std_vector.copyStdVec_3x3(l4)
+assert isinstance(l4_copy2, std_vector.StdVec_Mat3d)
 
 
 def checkZero(l):
@@ -54,21 +54,21 @@ def checkZero(l):
 
 print("Check setZero() works:")
 print("l1:")
-vector.setZero(l1)
+std_vector.setZero(l1)
 print(l1)
 checkZero(l1)
 print("-----------------")
 
 print("l2:")
 l2_py = l2.tolist()
-vector.setZero(l2_py)
+std_vector.setZero(l2_py)
 pprint.pprint(l2_py)
 checkZero(l2_py)
 print("-----------------")
 
 l3_copy = copyStdVector(l3)
 print("l3_std:")
-vector.setZero(l3_copy)
+std_vector.setZero(l3_copy)
 pprint.pprint(list(l3_copy))
 checkZero(l3_copy)
 print("-----------------")
