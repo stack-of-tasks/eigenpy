@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
-// include main header first
 #include "eigenpy/eigen-from-python.hpp"
 
 using namespace Eigen;

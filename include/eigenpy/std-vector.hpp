@@ -112,7 +112,7 @@ struct overload_base_get_item_for_std_vector
     bp::extract<long> i(i_);
     if (i.check()) {
       long index = i();
-      if (index < 0) index += container.size();
+      if (index < 0) index += (long)container.size();
       if (index >= long(container.size()) || index < 0) {
         PyErr_SetString(PyExc_IndexError, "Index out of range");
         bp::throw_error_already_set();
@@ -158,7 +158,8 @@ struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
   typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>
       MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
-  using base::base;
+  extract(PyObject *o) : base(o) {}
+  extract(api::object const &o) : base(o.ptr()) {}
 };
 
 template <typename Derived>
@@ -166,7 +167,8 @@ struct extract<Eigen::MatrixBase<Derived> &>
     : extract_to_eigen_ref<Eigen::MatrixBase<Derived> > {
   typedef Eigen::MatrixBase<Derived> MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
-  using base::base;
+  extract(PyObject *o) : base(o) {}
+  extract(api::object const &o) : base(o.ptr()) {}
 };
 
 template <typename Derived>
@@ -174,7 +176,8 @@ struct extract<Eigen::RefBase<Derived> &>
     : extract_to_eigen_ref<Eigen::RefBase<Derived> > {
   typedef Eigen::RefBase<Derived> MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
-  using base::base;
+  extract(PyObject *o) : base(o) {}
+  extract(api::object const &o) : base(o.ptr()) {}
 };
 
 namespace converter {
