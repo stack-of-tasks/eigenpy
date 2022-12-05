@@ -232,6 +232,22 @@ struct EigenAllocator {
 };
 
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
+/// @brief Check if we need to allocate @tparam MatType to convert @param
+/// pyArray.
+/// @details do not allocate if:
+/// want row-major & data C-contiguous OR
+/// want col-major & data F-contiguous OR
+/// you want a compile-time vector
+/// in these cases, data layout fits desired view layout
+template <typename MatType>
+inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
+  bool is_array_C_cont = PyArray_IS_C_CONTIGUOUS(pyArray);
+  bool is_array_F_cont = PyArray_IS_F_CONTIGUOUS(pyArray);
+  return (MatType::IsRowMajor && is_array_C_cont) ||
+         (!MatType::IsRowMajor && is_array_F_cont) ||
+         MatType::IsVectorAtCompileTime;
+}
+
 template <typename MatType, int Options, typename Stride>
 struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
@@ -255,16 +271,9 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
     if (pyArray_type_code != Scalar_type_code) need_to_allocate |= true;
-    if ((MatType::IsRowMajor && (PyArray_IS_C_CONTIGUOUS(pyArray) &&
-                                 !PyArray_IS_F_CONTIGUOUS(pyArray))) ||
-        (!MatType::IsRowMajor && (PyArray_IS_F_CONTIGUOUS(pyArray) &&
-                                  !PyArray_IS_C_CONTIGUOUS(pyArray))) ||
-        MatType::IsVectorAtCompileTime ||
-        (PyArray_IS_F_CONTIGUOUS(pyArray) &&
-         PyArray_IS_C_CONTIGUOUS(pyArray)))  // no need to allocate
-      need_to_allocate |= false;
-    else
-      need_to_allocate |= true;
+    bool incompatible_layout =
+        !is_arr_layout_compatible_with_mat_type<MatType>(pyArray);
+    need_to_allocate |= incompatible_layout;
     if (Options !=
         Eigen::Unaligned)  // we need to check whether the memory is correctly
                            // aligned and composed of a continuous segment
@@ -365,16 +374,9 @@ struct EigenAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
     if (pyArray_type_code != Scalar_type_code) need_to_allocate |= true;
-    if ((MatType::IsRowMajor && (PyArray_IS_C_CONTIGUOUS(pyArray) &&
-                                 !PyArray_IS_F_CONTIGUOUS(pyArray))) ||
-        (!MatType::IsRowMajor && (PyArray_IS_F_CONTIGUOUS(pyArray) &&
-                                  !PyArray_IS_C_CONTIGUOUS(pyArray))) ||
-        MatType::IsVectorAtCompileTime ||
-        (PyArray_IS_F_CONTIGUOUS(pyArray) &&
-         PyArray_IS_C_CONTIGUOUS(pyArray)))  // no need to allocate
-      need_to_allocate |= false;
-    else
-      need_to_allocate |= true;
+    bool incompatible_layout =
+        !is_arr_layout_compatible_with_mat_type<MatType>(pyArray);
+    need_to_allocate |= incompatible_layout;
     if (Options !=
         Eigen::Unaligned)  // we need to check whether the memory is correctly
                            // aligned and composed of a continuous segment

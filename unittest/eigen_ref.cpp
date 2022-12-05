@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include "eigenpy/eigenpy.hpp"
-// include main header first
 #include "eigenpy/eigen-from-python.hpp"
 
 using namespace Eigen;
@@ -15,7 +14,7 @@ using namespace eigenpy;
 template <typename MatType>
 void printMatrix(const Eigen::Ref<const MatType> mat) {
   if (MatType::IsVectorAtCompileTime) std::cout << "isVector" << std::endl;
-  std::cout << "size: cols " << mat.cols() << " rows " << mat.rows()
+  std::cout << "input size: cols " << mat.cols() << " rows " << mat.rows()
             << std::endl;
   std::cout << mat << std::endl;
 }
@@ -58,20 +57,22 @@ void fill(Eigen::Ref<MatType> mat, const typename MatType::Scalar& value) {
   mat.fill(value);
 }
 
+/// Get ref to a static matrix of size ( @p rows, @p cols )
 template <typename MatType>
-Eigen::Ref<MatType> asRef(const int rows, const int cols) {
+Eigen::Ref<MatType> getRefToStatic(const int rows, const int cols) {
   static MatType mat(rows, cols);
-  std::cout << "mat:\n" << mat << std::endl;
+  std::cout << "create ref to matrix of size (" << rows << "," << cols << ")\n";
   return mat;
 }
 
 template <typename MatType>
 Eigen::Ref<MatType> asRef(Eigen::Ref<MatType> mat) {
+  std::cout << "create Ref to input mutable Ref\n";
   return Eigen::Ref<MatType>(mat);
 }
 
 template <typename MatType>
-const Eigen::Ref<const MatType> asConstRef(Eigen::Ref<MatType> mat) {
+const Eigen::Ref<const MatType> asConstRef(Eigen::Ref<const MatType> mat) {
   return Eigen::Ref<const MatType>(mat);
 }
 
@@ -82,8 +83,8 @@ struct modify_block {
   virtual void call(Eigen::Ref<MatrixXd> mat) = 0;
 };
 
-struct modify_wrap : modify_block, bp::wrapper<modify_block> {
-  modify_wrap() : modify_block() {}
+struct modify_block_wrap : modify_block, bp::wrapper<modify_block> {
+  modify_block_wrap() : modify_block() {}
   void call(Eigen::Ref<MatrixXd> mat) { this->get_override("call")(mat); }
 };
 
@@ -112,20 +113,18 @@ BOOST_PYTHON_MODULE(eigen_ref) {
   bp::def("fillVec", fill<VectorXd>);
   bp::def("fill", fill<MatrixXd>);
 
-  bp::def("asRef",
-          (Eigen::Ref<MatrixXd>(*)(const int, const int))asRef<MatrixXd>);
-  bp::def("asRef",
-          (Eigen::Ref<MatrixXd>(*)(Eigen::Ref<MatrixXd>))asRef<MatrixXd>);
-  bp::def("asConstRef", (const Eigen::Ref<const MatrixXd> (*)(
-                            Eigen::Ref<MatrixXd>))asConstRef<MatrixXd>);
+  bp::def("getRefToStatic", getRefToStatic<MatrixXd>);
+  bp::def("asRef", asRef<MatrixXd>);
+  bp::def("asConstRef", asConstRef<MatrixXd>);
 
   bp::def("getBlock", &getBlock<MatrixXd>);
   bp::def("editBlock", &editBlock<MatrixXd>);
 
-  bp::class_<modify_wrap, boost::noncopyable>("modify_block", bp::init<>())
+  bp::class_<modify_block_wrap, boost::noncopyable>("modify_block",
+                                                    bp::init<>())
       .def_readonly("J", &modify_block::J)
       .def("modify", &modify_block::modify)
-      .def("call", bp::pure_virtual(&modify_wrap::call));
+      .def("call", bp::pure_virtual(&modify_block_wrap::call));
 
   bp::class_<has_ref_member, boost::noncopyable>("has_ref_member", bp::init<>())
       .def_readonly("J", &has_ref_member::J)

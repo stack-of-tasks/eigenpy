@@ -1,6 +1,7 @@
 import numpy as np
 from eigen_ref import (
     printMatrix,
+    getRefToStatic,
     asRef,
     asConstRef,
     fill,
@@ -11,61 +12,79 @@ from eigen_ref import (
 )
 
 
-def test(mat):
+def test_fill_print(mat):
 
+    print("print matrix:")
     printMatrix(mat)
+    print("calling fill():")
     fill(mat, 1.0)
-    printMatrix(mat)
     assert np.array_equal(mat, np.full(mat.shape, 1.0))
 
-    A_ref = asRef(mat.shape[0], mat.shape[1])
+    print("fill a slice")
+    mat[:, :] = 0.0
+    fill(mat[:3, :2], 1.0)
+    printMatrix(mat[:3, :2])
+    assert np.array_equal(mat[:3, :2], np.ones((3, 2)))
+
+
+def test_create_ref_to_static(mat):
+    # create ref to static:
+    print()
+    print("[asRef(int, int)]")
+    A_ref = getRefToStatic(mat.shape[0], mat.shape[1])
     A_ref.fill(1.0)
-    A_ref2 = asRef(mat.shape[0], mat.shape[1])
+    A_ref[0, 1] = -1.0
+    print("make second reference:")
+    A_ref2 = getRefToStatic(mat.shape[0], mat.shape[1])
+    print(A_ref2)
 
     assert np.array_equal(A_ref, A_ref2)
 
     A_ref2.fill(0)
     assert np.array_equal(A_ref, A_ref2)
 
+
+def test_create_ref(mat):
+    print("[asRef(mat)]")
     ref = asRef(mat)
-    assert np.all(ref == mat)
+    assert np.array_equal(ref, mat), "ref=\n{}\nmat=\n{}".format(ref, mat)
+    assert not (ref.flags.owndata)
+    assert ref.flags.writeable
 
+
+def test_create_const_ref(mat):
+    print("[asConstRef]")
     const_ref = asConstRef(mat)
-    assert np.all(const_ref == mat)
+    assert np.array_equal(const_ref, mat), "ref=\n{}\nmat=\n{}".format(const_ref, mat)
+    assert not (const_ref.flags.writeable)
+    assert not (const_ref.flags.owndata)
 
-    mat.fill(0.0)
-    fill(mat[:3, :2], 1.0)
 
-    assert np.all(mat[:3, :2] == np.ones((3, 2)))
-
-    mat.fill(0.0)
-    fill(mat[:2, :3], 1.0)
-
-    assert np.all(mat[:2, :3] == np.ones((2, 3)))
-
+def test_edit_block(rows, cols):
+    print("set mat data to arange()")
     mat.fill(0.0)
     mat[:, :] = np.arange(rows * cols).reshape(rows, cols)
-    printMatrix(mat)
     mat0 = mat.copy()
-    mat_as_C_order = np.array(mat, order="F")
     for i, rowsize, colsize in ([0, 3, 2], [1, 1, 2], [0, 3, 1]):
         print("taking block [{}:{}, {}:{}]".format(i, rowsize + i, 0, colsize))
-        B = getBlock(mat_as_C_order, i, 0, rowsize, colsize)
-        lhs = mat_as_C_order[i : rowsize + i, :colsize]
-        print("should be:\n{}\ngot:\n{}".format(lhs, B))
-        assert np.array_equal(lhs, B.reshape(rowsize, colsize))
+        B = getBlock(mat, i, 0, rowsize, colsize)
+        B = B.reshape(rowsize, colsize)
+        lhs = mat[i : rowsize + i, :colsize]
+        assert np.array_equal(lhs, B), "got lhs\n{}\nrhs B=\n{}".format(lhs, B)
 
         B[:] = 1.0
         rhs = np.ones((rowsize, colsize))
-        assert np.array_equal(mat_as_C_order[i : rowsize + i, :colsize], rhs)
+        assert np.array_equal(mat[i : rowsize + i, :colsize], rhs)
 
-        mat_as_C_order[:, :] = mat0
+        mat[:, :] = mat0
 
-    mat_copy = mat_as_C_order.copy()
-    editBlock(mat_as_C_order, 0, 0, 3, 2)
+    mat.fill(0.0)
+    mat_copy = mat.copy()
+    print("[editBlock]")
+    editBlock(mat, 0, 0, 3, 2)
     mat_copy[:3, :2] = np.arange(6).reshape(3, 2)
 
-    assert np.array_equal(mat_as_C_order, mat_copy)
+    assert np.array_equal(mat, mat_copy)
 
     class ModifyBlockImpl(modify_block):
         def __init__(self):
@@ -91,9 +110,26 @@ def test(mat):
     assert np.array_equal(hasref.J, J_true)
 
 
-rows = 10
-cols = 30
+def do_test(mat):
+    test_fill_print(mat)
+    test_create_ref_to_static(mat)
+    test_create_const_ref(mat)
+    test_create_ref(mat)
+    test_edit_block(rows, cols)
+    print("=" * 10)
 
-mat = np.ones((rows, cols), order="F")
 
-test(mat)
+if __name__ == "__main__":
+    rows = 8
+    cols = 10
+
+    mat = np.ones((rows, cols), order="F")
+    mat[0, 0] = 0
+    mat[1:5, 1:5] = 6
+    do_test(mat)
+
+    # mat2 = np.ones((rows, cols))
+    # mat2[:2, :5] = 0.
+    # mat2[2:4, 1:4] = 2
+    # mat2[:, -1] = 3
+    # do_test(mat2)

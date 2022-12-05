@@ -35,6 +35,12 @@ set_target_properties(
   PROPERTIES PREFIX ""
              SUFFIX ${PYTHON_EXT_SUFFIX}
              LIBRARY_OUTPUT_DIRECTORY
+             "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}"
+             LIBRARY_OUTPUT_DIRECTORY_<CONFIG>
+             "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}"
+             RUNTIME_OUTPUT_DIRECTORY
+             "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}"
+             RUNTIME_OUTPUT_DIRECTORY_<CONFIG>
              "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}")
 
 if(UNIX AND NOT APPLE)

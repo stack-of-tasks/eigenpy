@@ -5,7 +5,7 @@ repos:
     rev: v15.0.4
     hooks:
     -   id: clang-format
-        args: [--style=Google]
+        args: ['--style={BasedOnStyle: Google, SortIncludes: false}']
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
