@@ -9,6 +9,8 @@ from eigen_ref import (
     editBlock,
     modify_block,
     has_ref_member,
+    copyVectorFromConstRef,
+    copyRowVectorFromConstRef,
 )
 
 
@@ -42,6 +44,18 @@ def test_create_ref_to_static(mat):
 
     A_ref2.fill(0)
     assert np.array_equal(A_ref, A_ref2)
+
+
+def test_read_block():
+    data = np.array([[0, 0.2, 0.3, 0.4], [0, 1, 0, 0], [0, 0, 0, 0], [1, 0, 0, 0]])
+
+    data_strided = data[:, 0]
+
+    data_strided_copy = copyVectorFromConstRef(data_strided)
+    assert np.all(data_strided == data_strided_copy)
+
+    data_strided_copy = copyRowVectorFromConstRef(data_strided)
+    assert np.all(data_strided == data_strided_copy)
 
 
 def test_create_ref(mat):
@@ -116,6 +130,7 @@ def do_test(mat):
     test_create_const_ref(mat)
     test_create_ref(mat)
     test_edit_block(rows, cols)
+    test_read_block()
     print("=" * 10)
 
 
