@@ -30,6 +30,12 @@ void setOnes(Eigen::Ref<MatType> mat) {
   mat.setOnes();
 }
 
+template <typename VecType>
+VecType copyVectorFromConstRef(const Eigen::Ref<const VecType> vec) {
+  std::cout << "copyVectorFromConstRef::vec: " << vec.transpose() << std::endl;
+  return VecType(vec);
+}
+
 template <typename MatType>
 Eigen::Ref<MatType> getBlock(Eigen::Ref<MatType> mat, Eigen::DenseIndex i,
                              Eigen::DenseIndex j, Eigen::DenseIndex n,
@@ -119,6 +125,9 @@ BOOST_PYTHON_MODULE(eigen_ref) {
 
   bp::def("getBlock", &getBlock<MatrixXd>);
   bp::def("editBlock", &editBlock<MatrixXd>);
+
+  bp::def("copyVectorFromConstRef", &copyVectorFromConstRef<VectorXd>);
+  bp::def("copyRowVectorFromConstRef", &copyVectorFromConstRef<RowVectorXd>);
 
   bp::class_<modify_block_wrap, boost::noncopyable>("modify_block",
                                                     bp::init<>())

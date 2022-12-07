@@ -161,7 +161,6 @@ struct NumpyMapTraits<MatType, InputScalar, AlignmentValue, Stride, true> {
     const int R = (int)PyArray_DIMS(pyArray)[rowMajor];
     const long int itemsize = PyArray_ITEMSIZE(pyArray);
     const int stride = (int)PyArray_STRIDE(pyArray, rowMajor) / (int)itemsize;
-    ;
 
     if ((MatType::MaxSizeAtCompileTime != R) &&
         (MatType::MaxSizeAtCompileTime != Eigen::Dynamic)) {
@@ -171,6 +170,8 @@ struct NumpyMapTraits<MatType, InputScalar, AlignmentValue, Stride, true> {
 
     InputScalar* pyData = reinterpret_cast<InputScalar*>(PyArray_DATA(pyArray));
 
+    assert(Stride(stride).inner() == stride &&
+           "Stride should be a dynamic stride");
     return EigenMap(pyData, R, Stride(stride));
   }
 };

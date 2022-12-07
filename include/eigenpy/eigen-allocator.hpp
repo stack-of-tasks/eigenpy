@@ -245,7 +245,8 @@ inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
   bool is_array_F_cont = PyArray_IS_F_CONTIGUOUS(pyArray);
   return (MatType::IsRowMajor && is_array_C_cont) ||
          (!MatType::IsRowMajor && is_array_F_cont) ||
-         MatType::IsVectorAtCompileTime;
+         (MatType::IsVectorAtCompileTime &&
+          (is_array_C_cont || is_array_F_cont));
 }
 
 template <typename MatType, int Options, typename Stride>
