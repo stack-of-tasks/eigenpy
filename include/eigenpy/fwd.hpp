@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 CNRS INRIA
+ * Copyright 2014-2023 CNRS INRIA
  */
 
 #ifndef __eigenpy_fwd_hpp__
@@ -27,6 +27,8 @@
 #else
 #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned
 #endif
+
+#define EIGENPY_DEFAULT_ALIGN_BYTES EIGEN_DEFAULT_ALIGN_BYTES
 
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
