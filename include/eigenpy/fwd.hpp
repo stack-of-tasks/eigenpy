@@ -21,6 +21,7 @@
 #undef BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90)
 #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16

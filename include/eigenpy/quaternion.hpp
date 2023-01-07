@@ -1,15 +1,13 @@
 /*
- * Copyright 2014-2022 CNRS INRIA
+ * Copyright 2014-2023 CNRS INRIA
  */
 
 #ifndef __eigenpy_quaternion_hpp__
 #define __eigenpy_quaternion_hpp__
 
-#include <Eigen/Core>
-#include <Eigen/Geometry>
-
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/exception.hpp"
+#include "eigenpy/eigen-from-python.hpp"
 
 namespace boost {
 namespace python {
@@ -18,7 +16,7 @@ namespace converter {
 /// \brief Template specialization of rvalue_from_python_data
 template <typename Quaternion>
 struct rvalue_from_python_data<Eigen::QuaternionBase<Quaternion> const&>
-    : rvalue_from_python_data_eigen<Quaternion const&> {
+    : ::eigenpy::rvalue_from_python_data<Quaternion const&> {
   EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Quaternion const&)
 };
 

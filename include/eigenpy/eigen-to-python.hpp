@@ -7,8 +7,9 @@
 
 #include <boost/type_traits.hpp>
 
-#include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/fwd.hpp"
+
+#include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/numpy-allocator.hpp"
 #include "eigenpy/numpy-type.hpp"
 

@@ -1,14 +1,12 @@
 //
-// Copyright (c) 2014-2022 CNRS INRIA
+// Copyright (c) 2014-2023 CNRS INRIA
 //
 
 #ifndef __eigenpy_eigen_from_python_hpp__
 #define __eigenpy_eigen_from_python_hpp__
 
-#include <boost/python/converter/rvalue_from_python_data.hpp>
-
-#include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/scalar-conversion.hpp"
 
@@ -67,15 +65,9 @@ struct referent_storage_eigen_ref;
 template <typename MatType, int Options, typename Stride>
 struct referent_storage_eigen_ref {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
-#if BOOST_VERSION / 100 % 1000 >= 77
-  typedef typename ::boost::python::detail::aligned_storage<
-      ::boost::python::detail::referent_size<RefType &>::value,
-      ::boost::alignment_of<RefType &>::value>::type AlignedStorage;
-#else
-  typedef ::boost::python::detail::aligned_storage<
-      ::boost::python::detail::referent_size<RefType &>::value>
+  typedef typename ::eigenpy::aligned_storage<
+      ::boost::python::detail::referent_size<RefType &>::value>::type
       AlignedStorage;
-#endif
 
   referent_storage_eigen_ref()
       : pyArray(NULL),
@@ -121,12 +113,8 @@ struct referent_storage<Eigen::Ref<MatType, Options, Stride> &> {
   typedef ::eigenpy::details::referent_storage_eigen_ref<MatType, Options,
                                                          Stride>
       StorageType;
-#if BOOST_VERSION / 100 % 1000 >= 77
-  typedef
-      typename aligned_storage<referent_size<StorageType &>::value>::type type;
-#else
-  typedef aligned_storage<referent_size<StorageType &>::value> type;
-#endif
+  typedef typename ::eigenpy::aligned_storage<
+      referent_size<StorageType &>::value>::type type;
 };
 
 template <typename MatType, int Options, typename Stride>
@@ -134,13 +122,8 @@ struct referent_storage<const Eigen::Ref<const MatType, Options, Stride> &> {
   typedef ::eigenpy::details::referent_storage_eigen_ref<const MatType, Options,
                                                          Stride>
       StorageType;
-#if BOOST_VERSION / 100 % 1000 >= 77
-  typedef
-      typename aligned_storage<referent_size<StorageType &>::value,
-                               alignment_of<StorageType &>::value>::type type;
-#else
-  typedef aligned_storage<referent_size<StorageType &>::value> type;
-#endif
+  typedef typename ::eigenpy::aligned_storage<
+      referent_size<StorageType &>::value>::type type;
 };
 #endif
 }  // namespace detail
@@ -151,69 +134,39 @@ namespace boost {
 namespace python {
 namespace converter {
 
-template <typename MatrixReference>
-struct rvalue_from_python_data_eigen
-    : rvalue_from_python_storage<MatrixReference> {
-  typedef MatrixReference T;
-
-#if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) &&                        \
-    (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) &&                 \
-    (!defined(__DECCXX_VER) || __DECCXX_VER > 60590014) &&                   \
-    !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing \
-                                       this */
-  // This must always be a POD struct with m_data its first member.
-  BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,
-                                            stage1) == 0);
-#endif
-
-  // The usual constructor
-  rvalue_from_python_data_eigen(rvalue_from_python_stage1_data const &_stage1) {
-    this->stage1 = _stage1;
-  }
-
-  // This constructor just sets m_convertible -- used by
-  // implicitly_convertible<> to perform the final step of the
-  // conversion, where the construct() function is already known.
-  rvalue_from_python_data_eigen(void *convertible) {
-    this->stage1.convertible = convertible;
-  }
-
-  // Destroys any object constructed in the storage.
-  ~rvalue_from_python_data_eigen() {
-    typedef typename boost::remove_const<
-        typename boost::remove_reference<MatrixReference>::type>::type
-        MatrixType;
-    if (this->stage1.convertible == this->storage.bytes)
-      static_cast<MatrixType *>((void *)this->storage.bytes)->~MatrixType();
-  }
-};
-
 #define EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(type)                       \
-  typedef rvalue_from_python_data_eigen<type> Base;                      \
+  typedef ::eigenpy::rvalue_from_python_data<type> Base;                 \
                                                                          \
   rvalue_from_python_data(rvalue_from_python_stage1_data const &_stage1) \
       : Base(_stage1) {}                                                 \
                                                                          \
   rvalue_from_python_data(void *convertible) : Base(convertible){};
 
-/// \brief Template specialization of rvalue_from_python_data
+template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
+          int MaxCols>
+struct rvalue_from_python_data<
+    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> const &>
+    : ::eigenpy::rvalue_from_python_data<Eigen::Matrix<
+          Scalar, Rows, Cols, Options, MaxRows, MaxCols> const &> {
+  typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> T;
+  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(T const &)
+};
+
 template <typename Derived>
 struct rvalue_from_python_data<Eigen::MatrixBase<Derived> const &>
-    : rvalue_from_python_data_eigen<Derived const &> {
+    : ::eigenpy::rvalue_from_python_data<Derived const &> {
   EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
 };
 
-/// \brief Template specialization of rvalue_from_python_data
 template <typename Derived>
 struct rvalue_from_python_data<Eigen::EigenBase<Derived> const &>
-    : rvalue_from_python_data_eigen<Derived const &> {
+    : ::eigenpy::rvalue_from_python_data<Derived const &> {
   EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
 };
 
-/// \brief Template specialization of rvalue_from_python_data
 template <typename Derived>
 struct rvalue_from_python_data<Eigen::PlainObjectBase<Derived> const &>
-    : rvalue_from_python_data_eigen<Derived const &> {
+    : ::eigenpy::rvalue_from_python_data<Derived const &> {
   EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
 };
 

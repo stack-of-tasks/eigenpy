@@ -1,12 +1,10 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2021, INRIA
+ * Copyright 2018-2023, INRIA
  */
 
 #ifndef __eigenpy_geometry_conversion_hpp__
 #define __eigenpy_geometry_conversion_hpp__
-
-#include <Eigen/Geometry>
 
 #include "eigenpy/fwd.hpp"
 
