@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 
+#include "eigenpy/eigenpy.hpp"
 #include "eigenpy/config.hpp"
 #include "eigenpy/copyable.hpp"
 #include "eigenpy/eigen-to-python.hpp"
@@ -445,7 +446,7 @@ void EIGENPY_DLLAPI exposeStdVector();
 
 template <typename MatType>
 void exposeStdVectorEigenSpecificType(const char *name) {
-  typedef std::vector<MatType> VecMatType;
+  typedef std::vector<MatType, Eigen::aligned_allocator<MatType> > VecMatType;
   std::string full_name = "StdVec_";
   full_name += name;
   StdVectorPythonVisitor<VecMatType, false>::expose(
