@@ -47,4 +47,6 @@ template <typename MatType,
 struct EigenFromPy;
 }  // namespace eigenpy
 
+#include "eigenpy/alignment.hpp"
+
 #endif  // ifndef __eigenpy_fwd_hpp__
