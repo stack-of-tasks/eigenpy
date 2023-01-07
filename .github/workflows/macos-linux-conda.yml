@@ -16,6 +16,15 @@ jobs:
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
 
+
+        exclude:
+          - build_type: Debug
+            cxx_options: -mavx2
+            os: macos-latest
+          - build_type: Release
+            cxx_options: -mavx2
+            os: macos-latest
+
     steps:
     - uses: actions/checkout@v2
       with:
