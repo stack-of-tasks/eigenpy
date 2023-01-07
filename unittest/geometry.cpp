@@ -1,14 +1,10 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2019, INRIA
+ * Copyright 2018-2023, INRIA
  */
 
-#include "eigenpy/geometry.hpp"
-
-#include <Eigen/Geometry>
-#include <iostream>
-
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/geometry.hpp"
 
 namespace bp = boost::python;
 
