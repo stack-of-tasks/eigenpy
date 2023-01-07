@@ -53,8 +53,8 @@ def checkZero(l):
 
 
 print("Check setZero() works:")
-print("l1:")
 std_vector.setZero(l1)
+print("l1:")
 print(l1)
 checkZero(l1)
 print("-----------------")
