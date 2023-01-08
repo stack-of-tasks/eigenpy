@@ -71,6 +71,19 @@ struct referent_storage<const Eigen::Quaternion<Scalar, Options> &> {
 }  // namespace python
 }  // namespace boost
 
+namespace boost {
+namespace python {
+namespace objects {
+
+// Force alignment of instance with value_holder
+template <typename Derived>
+struct instance<value_holder<Derived> >
+    : ::eigenpy::aligned_instance<value_holder<Derived> > {};
+
+}  // namespace objects
+}  // namespace python
+}  // namespace boost
+
 namespace eigenpy {
 
 template <class T>
