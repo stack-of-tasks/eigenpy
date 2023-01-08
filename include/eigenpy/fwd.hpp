@@ -5,6 +5,45 @@
 #ifndef __eigenpy_fwd_hpp__
 #define __eigenpy_fwd_hpp__
 
+#if defined(__clang__)
+#define EIGENPY_CLANG_COMPILER
+#elif defined(__GNUC__)
+#define EIGENPY_GCC_COMPILER
+#elif defined(_MSC_VER)
+#define EIGENPY_MSVC_COMPILER
+#endif
+
+#define EIGENPY_STRING_LITERAL(string) #string
+
+// For more details, visit
+// https://stackoverflow.com/questions/171435/portability-of-warning-preprocessor-directive
+#if defined(EIGENPY_CLANG_COMPILER) || defined(EIGENPY_GCC_COMPILER)
+#define EIGENPY_PRAGMA(x) _Pragma(#x)
+#define EIGENPY_PRAGMA_MESSAGE(the_message) \
+  EIGENPY_PRAGMA(GCC message #the_message)
+#define EIGENPY_PRAGMA_WARNING(the_message) \
+  EIGENPY_PRAGMA(GCC warning #the_message)
+#define EIGENPY_PRAGMA_DEPRECATED(the_message) \
+  EIGENPY_PRAGMA_WARNING(Deprecated : #the_message)
+#define EIGENPY_PRAGMA_DEPRECATED_HEADER(old_header, new_header) \
+  EIGENPY_PRAGMA_WARNING(                                        \
+      Deprecated header file                                     \
+      : #old_header has been replaced                            \
+            by #new_header.\n Please use #new_header instead of #old_header.)
+#elif defined(WIN32)
+#define EIGENPY_PRAGMA(x) __pragma(#x)
+#define EIGENPY_PRAGMA_MESSAGE(the_message) \
+  EIGENPY_PRAGMA(message(#the_message))
+#define EIGENPY_PRAGMA_WARNING(the_message) \
+  EIGENPY_PRAGMA(message("WARNING: " #the_message))
+#endif
+
+#define EIGENPY_DEPRECATED_MACRO(macro, the_message) \
+  EIGENPY_PRAGMA_WARNING("this macro is deprecated: " the_message)
+#define EIGENPY_DEPRECATED_FILE(the_message)                                 \
+  EIGENPY_PRAGMA_WARNING(EIGENPY_STRING_LITERAL("this file is deprecated: ") \
+                             the_message)
+
 #include "eigenpy/config.hpp"
 
 // Silence a warning about a deprecated use of boost bind by boost python
