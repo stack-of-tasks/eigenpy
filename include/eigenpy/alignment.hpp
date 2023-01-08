@@ -20,6 +20,15 @@ struct aligned_storage {
   };
 };
 
+template <class Data>
+struct aligned_instance {
+  PyObject_VAR_HEAD PyObject *dict;
+  PyObject *weakrefs;
+  boost::python::instance_holder *objects;
+
+  typename aligned_storage<sizeof(Data)>::type storage;
+};
+
 }  // namespace eigenpy
 
 namespace boost {
