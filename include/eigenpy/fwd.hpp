@@ -14,17 +14,21 @@
 #endif
 
 #define EIGENPY_STRING_LITERAL(string) #string
+#define EIGENPY_STRINGIZE(string) EIGENPY_STRING_LITERAL(string)
+#define _EIGENPY_PPCAT(A, B) A##B
+#define EIGENPY_PPCAT(A, B) _EIGENPY_PPCAT(A, B)
+#define EIGENPY_STRINGCAT(A, B) A B
 
 // For more details, visit
 // https://stackoverflow.com/questions/171435/portability-of-warning-preprocessor-directive
 #if defined(EIGENPY_CLANG_COMPILER) || defined(EIGENPY_GCC_COMPILER)
 #define EIGENPY_PRAGMA(x) _Pragma(#x)
 #define EIGENPY_PRAGMA_MESSAGE(the_message) \
-  EIGENPY_PRAGMA(GCC message #the_message)
+  EIGENPY_PRAGMA(GCC message the_message)
 #define EIGENPY_PRAGMA_WARNING(the_message) \
-  EIGENPY_PRAGMA(GCC warning #the_message)
+  EIGENPY_PRAGMA(GCC warning the_message)
 #define EIGENPY_PRAGMA_DEPRECATED(the_message) \
-  EIGENPY_PRAGMA_WARNING(Deprecated : #the_message)
+  EIGENPY_PRAGMA_WARNING(Deprecated : the_message)
 #define EIGENPY_PRAGMA_DEPRECATED_HEADER(old_header, new_header) \
   EIGENPY_PRAGMA_WARNING(                                        \
       Deprecated header file                                     \
@@ -33,16 +37,17 @@
 #elif defined(WIN32)
 #define EIGENPY_PRAGMA(x) __pragma(#x)
 #define EIGENPY_PRAGMA_MESSAGE(the_message) \
-  EIGENPY_PRAGMA(message(#the_message))
+  EIGENPY_PRAGMA(message(EIGENPY_STRINGIZE(the_message)))
 #define EIGENPY_PRAGMA_WARNING(the_message) \
-  EIGENPY_PRAGMA(message("WARNING: " #the_message))
+  EIGENPY_PRAGMA(message("WARNING: " EIGENPY_STRINGIZE(the_message)))
 #endif
 
 #define EIGENPY_DEPRECATED_MACRO(macro, the_message) \
-  EIGENPY_PRAGMA_WARNING("this macro is deprecated: " the_message)
-#define EIGENPY_DEPRECATED_FILE(the_message)                                 \
-  EIGENPY_PRAGMA_WARNING(EIGENPY_STRING_LITERAL("this file is deprecated: ") \
-                             the_message)
+  EIGENPY_PRAGMA_WARNING(                            \
+      EIGENPY_STRINGCAT("this macro is deprecated: ", the_message))
+#define EIGENPY_DEPRECATED_FILE(the_message) \
+  EIGENPY_PRAGMA_WARNING(                    \
+      EIGENPY_STRINGCAT("this file is deprecated: ", the_message))
 
 #include "eigenpy/config.hpp"
 
