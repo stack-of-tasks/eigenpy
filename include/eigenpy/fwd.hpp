@@ -37,9 +37,9 @@
 #elif defined(WIN32)
 #define EIGENPY_PRAGMA(x) __pragma(#x)
 #define EIGENPY_PRAGMA_MESSAGE(the_message) \
-  EIGENPY_PRAGMA(message(EIGENPY_STRINGIZE(the_message)))
+  EIGENPY_PRAGMA(message(#the_message))
 #define EIGENPY_PRAGMA_WARNING(the_message) \
-  EIGENPY_PRAGMA(message("WARNING: " EIGENPY_STRINGIZE(the_message)))
+  EIGENPY_PRAGMA(message(EIGENPY_STRINGCAT("WARNING: ", the_message)))
 #endif
 
 #define EIGENPY_DEPRECATED_MACRO(macro, the_message) \
