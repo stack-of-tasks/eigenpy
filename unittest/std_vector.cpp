@@ -7,26 +7,24 @@
 #include "eigenpy/eigen-from-python.hpp"
 #include "eigenpy/std-vector.hpp"
 
-template <typename MatType,
-          typename Allocator = Eigen::aligned_allocator<MatType> >
-void printVectorOfMatrix(const std::vector<MatType, Allocator> &Ms) {
+template <typename MatType>
+void printVectorOfMatrix(
+    const std::vector<MatType, Eigen::aligned_allocator<MatType> > &Ms) {
   const std::size_t n = Ms.size();
   for (std::size_t i = 0; i < n; i++) {
     std::cout << "el[" << i << "] =\n" << Ms[i] << '\n';
   }
 }
 
-template <typename MatType,
-          typename Allocator = Eigen::aligned_allocator<MatType> >
-std::vector<MatType, Allocator> copy(
-    const std::vector<MatType, Allocator> &Ms) {
-  std::vector<MatType, Allocator> out = Ms;
+template <typename MatType>
+std::vector<MatType, Eigen::aligned_allocator<MatType> > copy(
+    const std::vector<MatType, Eigen::aligned_allocator<MatType> > &Ms) {
+  std::vector<MatType, Eigen::aligned_allocator<MatType> > out = Ms;
   return out;
 }
 
-template <typename MatType,
-          typename Allocator = Eigen::aligned_allocator<MatType> >
-void setZero(std::vector<MatType, Allocator> &Ms) {
+template <typename MatType>
+void setZero(std::vector<MatType, Eigen::aligned_allocator<MatType> > &Ms) {
   for (std::size_t i = 0; i < Ms.size(); i++) {
     Ms[i].setZero();
   }
