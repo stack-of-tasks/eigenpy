@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2022 INRIA
+# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2023 INRIA
 #
 
 cmake_minimum_required(VERSION 3.1)
@@ -130,6 +130,7 @@ set(${PROJECT_NAME}_HEADERS
     ${${PROJECT_NAME}_UTILS_HEADERS}
     ${${PROJECT_NAME}_SOLVERS_HEADERS}
     ${${PROJECT_NAME}_DECOMPOSITIONS_HEADERS}
+    include/eigenpy/alignment.hpp
     include/eigenpy/computation-info.hpp
     include/eigenpy/eigenpy.hpp
     include/eigenpy/exception.hpp

@@ -1,10 +1,10 @@
-name: CI - EigenPy for Mac OS X/Linux via Conda
+name: Conda-CI
 
 on: [push,pull_request]
 
 jobs:
   eigenpy-conda:
-    name: CI on ${{ matrix.os }} via Conda
+    name: ${{ matrix.os }} - ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
       CCACHE_DIR: /github/home/.ccache # Enable ccache
@@ -13,6 +13,17 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macos-latest"]
+        cxx_options: ['', '-mavx2']
+        build_type: [Release, Debug]
+
+
+        exclude:
+          - build_type: Debug
+            cxx_options: -mavx2
+            os: macos-latest
+          - build_type: Release
+            cxx_options: -mavx2
+            os: macos-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +40,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.CCACHE_DIR }}
-        key: ccache-${{ matrix.os }}
+        key: ccache-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}
 
     - name: Install cmake and update conda
       shell: bash -l {0}
@@ -47,7 +58,7 @@ jobs:
         mkdir build
         cd build
 
-        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3) -DGENERATE_PYTHON_STUBS=ON
+        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3) -DGENERATE_PYTHON_STUBS=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         make
         make build_tests
         export CTEST_OUTPUT_ON_FAILURE=1

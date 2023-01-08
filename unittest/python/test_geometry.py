@@ -32,7 +32,8 @@ assert isapprox(np.linalg.norm(q.coeffs()), 1)
 # Coefficient-vector initialisation
 verbose and print("[Quaternion] Coefficient-vector initialisation")
 v = np.array([0.5, -0.5, 0.5, 0.5])
-qv = Quaternion(v)
+for k in range(10000):
+    qv = Quaternion(v)
 assert isapprox(qv.coeffs(), v)
 
 # Angle axis initialisation

@@ -124,6 +124,9 @@ struct EigenAllocator {
       PyArrayObject *pyArray,
       boost::python::converter::rvalue_from_python_storage<MatType> *storage) {
     void *raw_ptr = storage->storage.bytes;
+    assert(is_aligned(raw_ptr, EIGENPY_DEFAULT_ALIGN_BYTES) &&
+           "The pointer is not aligned.");
+
     Type *mat_ptr = details::init_matrix_or_array<Type>::run(pyArray, raw_ptr);
     Type &mat = *mat_ptr;
 

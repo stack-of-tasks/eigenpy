@@ -28,6 +28,9 @@ BOOST_PYTHON_MODULE(eigenpy_pywrap) {
           "Checks if the current version of EigenPy is at least the version "
           "provided by the input arguments.");
 
+  bp::def("SimdInstructionSetsInUse", &Eigen::SimdInstructionSetsInUse,
+          "Get the set of SIMD instructions in use with Eigen.");
+
   exposeAngleAxis();
   exposeQuaternion();
   exposeGeometryConversion();

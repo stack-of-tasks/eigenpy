@@ -1,58 +1,20 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2023, INRIA
  */
 
 #ifndef __eigenpy_details_hpp__
 #define __eigenpy_details_hpp__
 
+#include "eigenpy/fwd.hpp"
 #include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/eigen-from-python.hpp"
 #include "eigenpy/eigen-to-python.hpp"
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/exception.hpp"
-#include "eigenpy/fwd.hpp"
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/registration.hpp"
 #include "eigenpy/scalar-conversion.hpp"
-
-namespace boost {
-namespace python {
-namespace detail {
-
-template <class MatType>
-struct referent_size<Eigen::MatrixBase<MatType>&> {
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(MatType));
-};
-
-template <class MatType>
-struct referent_size<Eigen::MatrixBase<MatType> > {
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(MatType));
-};
-
-template <class MatType>
-struct referent_size<Eigen::EigenBase<MatType>&> {
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(MatType));
-};
-
-template <class MatType>
-struct referent_size<Eigen::EigenBase<MatType> > {
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(MatType));
-};
-
-template <class MatType>
-struct referent_size<Eigen::PlainObjectBase<MatType>&> {
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(MatType));
-};
-
-template <class MatType>
-struct referent_size<Eigen::PlainObjectBase<MatType> > {
-  BOOST_STATIC_CONSTANT(std::size_t, value = sizeof(MatType));
-};
-
-}  // namespace detail
-}  // namespace python
-}  // namespace boost
 
 namespace eigenpy {
 template <typename MatType, typename EigenEquivalentType>

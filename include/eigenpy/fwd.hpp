@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 CNRS INRIA
+ * Copyright 2014-2023 CNRS INRIA
  */
 
 #ifndef __eigenpy_fwd_hpp__
@@ -21,12 +21,15 @@
 #undef BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 #include <Eigen/Core>
+#include <Eigen/Geometry>
 
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90)
 #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
 #else
 #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned
 #endif
+
+#define EIGENPY_DEFAULT_ALIGN_BYTES EIGEN_DEFAULT_ALIGN_BYTES
 
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
@@ -44,5 +47,7 @@ template <typename MatType,
               typename boost::remove_reference<MatType>::type::Scalar>
 struct EigenFromPy;
 }  // namespace eigenpy
+
+#include "eigenpy/alignment.hpp"
 
 #endif  // ifndef __eigenpy_fwd_hpp__

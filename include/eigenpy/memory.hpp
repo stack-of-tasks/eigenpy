@@ -42,7 +42,7 @@ static inline void _Py_SET_SIZE(PyVarObject* ob, Py_ssize_t size) {
                                                                                \
     union {                                                                    \
       align_t align;                                                           \
-      char bytes[sizeof(Data) + 16];                                           \
+      char bytes[sizeof(Data) + EIGENPY_DEFAULT_ALIGN_BYTES];                  \
     } storage;                                                                 \
   };                                                                           \
                                                                                \
@@ -96,7 +96,9 @@ static inline void _Py_SET_SIZE(PyVarObject* ob, Py_ssize_t size) {
         void* storage, PyObject* instance,                                     \
         reference_wrapper<__VA_ARGS__ const> x) {                              \
       void* aligned_storage = reinterpret_cast<void*>(                         \
-          (reinterpret_cast<size_t>(storage) & ~(size_t(15))) + 16);           \
+          (reinterpret_cast<size_t>(storage) &                                 \
+           ~(size_t(EIGENPY_DEFAULT_ALIGN_BYTES - 1))) +                       \
+          EIGENPY_DEFAULT_ALIGN_BYTES);                                        \
       value_holder<__VA_ARGS__>* new_holder =                                  \
           new (aligned_storage) value_holder<__VA_ARGS__>(instance, x);        \
       return new_holder;                                                       \
