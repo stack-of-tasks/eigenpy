@@ -20,6 +20,15 @@ struct aligned_storage {
   };
 };
 
+template <class Data>
+struct aligned_instance {
+  PyObject_VAR_HEAD PyObject *dict;
+  PyObject *weakrefs;
+  boost::python::instance_holder *objects;
+
+  typename aligned_storage<sizeof(Data)>::type storage;
+};
+
 }  // namespace eigenpy
 
 namespace boost {
@@ -59,6 +68,19 @@ struct referent_storage<const Eigen::Quaternion<Scalar, Options> &> {
 };
 
 }  // namespace detail
+}  // namespace python
+}  // namespace boost
+
+namespace boost {
+namespace python {
+namespace objects {
+
+// Force alignment of instance with value_holder
+template <typename Derived>
+struct instance<value_holder<Derived> >
+    : ::eigenpy::aligned_instance<value_holder<Derived> > {};
+
+}  // namespace objects
 }  // namespace python
 }  // namespace boost
 
