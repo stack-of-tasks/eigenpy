@@ -8,10 +8,10 @@ jobs:
     runs-on: "ubuntu-${{ matrix.ubuntu }}.04"
     strategy:
       matrix:
-        python: [2, 3]
+        python: [3]
         ubuntu: [18, 20, 22]
-        exclude:
-          - ubuntu: 22
+        include:
+          - ubuntu: 18
             python: 2
     steps:
       - uses: actions/checkout@v3
