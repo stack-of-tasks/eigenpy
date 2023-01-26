@@ -21,5 +21,5 @@ jobs:
           sudo apt-get update
           sudo apt-get install cmake libboost-all-dev libeigen3-dev python*-numpy python*-dev
       - run: cmake -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) .
-      - run: make
+      - run: make -j2
       - run: make test
