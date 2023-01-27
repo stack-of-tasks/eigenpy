@@ -32,7 +32,10 @@ add_lib_unit_test(include)
 if(NOT ${EIGEN3_VERSION} VERSION_LESS "3.2.0")
   add_lib_unit_test(eigen_ref)
 endif()
-add_lib_unit_test(user_type)
+
+if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
+  add_lib_unit_test(user_type)
+endif()
 add_lib_unit_test(std_vector)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
@@ -43,8 +46,11 @@ add_python_unit_test("py-return-by-ref" "unittest/python/test_return_by_ref.py"
                      "unittest")
 add_python_unit_test("py-eigen-ref" "unittest/python/test_eigen_ref.py"
                      "unittest")
-add_python_unit_test("py-user-type" "unittest/python/test_user_type.py"
-                     "unittest")
+
+if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
+  add_python_unit_test("py-user-type" "unittest/python/test_user_type.py"
+                       "unittest")
+endif()
 
 add_python_unit_test("py-switch" "unittest/python/test_switch.py"
                      "python;unittest")

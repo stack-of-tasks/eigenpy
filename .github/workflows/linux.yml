@@ -1,0 +1,25 @@
+name: Check build on linux
+
+on: ["push", "pull_request"]
+
+jobs:
+  test:
+    name: "Test python ${{ matrix.python }} on ${{ matrix.ubuntu }}.04"
+    runs-on: "ubuntu-${{ matrix.ubuntu }}.04"
+    strategy:
+      matrix:
+        python: [3]
+        ubuntu: [18, 20, 22]
+        include:
+          - ubuntu: 18
+            python: 2
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'true'
+      - run: |
+          sudo apt-get update
+          sudo apt-get install cmake libboost-all-dev libeigen3-dev python*-numpy python*-dev
+      - run: cmake -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) .
+      - run: make -j2
+      - run: make test
