@@ -30,6 +30,15 @@ jobs:
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
+      - name: Echo CCACHE_DIR
+        shell: bash -l {0}
+        env: ${{ matrix.env }}
+        run: |
+          echo CCACHE_DIR=${CCACHE_DIR}
+      - name: Echo CCACHE_DIR
+        shell: bash -l {0}
+        run: |
+          echo CCACHE_DIR=${CCACHE_DIR}
       # Run industrial_ci
       - uses: 'ros-industrial/industrial_ci@master'
         env: ${{ matrix.env }}
