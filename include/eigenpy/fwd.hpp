@@ -13,6 +13,18 @@
 #define EIGENPY_MSVC_COMPILER
 #endif
 
+#if (__cplusplus >= 201703L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201703))
+#define EIGENPY_WITH_CXX17_SUPPORT
+#endif
+
+#if (__cplusplus >= 201402L || (defined(_MSVC_LANG) && _MSVC_LANG >= 201403))
+#define EIGENPY_WITH_CXX14_SUPPORT
+#endif
+
+#if (__cplusplus >= 201103L || (defined(_MSC_VER) && _MSC_VER >= 1600))
+#define EIGENPY_WITH_CXX11_SUPPORT
+#endif
+
 #define EIGENPY_STRING_LITERAL(string) #string
 #define EIGENPY_STRINGIZE(string) EIGENPY_STRING_LITERAL(string)
 #define _EIGENPY_PPCAT(A, B) A##B
@@ -80,6 +92,14 @@
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
 
 #include "eigenpy/expose.hpp"
+
+#ifdef EIGENPY_WITH_CXX11_SUPPORT
+#include <memory>
+#define EIGENPY_SHARED_PTR_HOLDER_TYPE(T) ::std::shared_ptr<T>
+#else
+#include <boost/shared_ptr.hpp>
+#define EIGENPY_SHARED_PTR_HOLDER_TYPE(T) ::boost::shared_ptr<T>
+#endif
 
 namespace eigenpy {
 template <typename MatType,
