@@ -218,7 +218,6 @@ class QuaternionVisitor
         .def("__ne__", &QuaternionVisitor::__ne__)
         .def("__abs__", &Quaternion::norm)
         .def("__len__", &QuaternionVisitor::__len__)
-        .staticmethod("__len__")
         .def("__setitem__", &QuaternionVisitor::__setitem__)
         .def("__getitem__", &QuaternionVisitor::__getitem__)
         .def("assign", &assign<Quaternion>, bp::args("self", "quat"),
