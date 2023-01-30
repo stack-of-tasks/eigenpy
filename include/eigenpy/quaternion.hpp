@@ -350,15 +350,22 @@ class QuaternionVisitor
 
  public:
   static void expose() {
-    bp::class_<Quaternion>("Quaternion",
-                           "Quaternion representing rotation.\n\n"
-                           "Supported operations "
-                           "('q is a Quaternion, 'v' is a Vector3): "
-                           "'q*q' (rotation composition), "
-                           "'q*=q', "
-                           "'q*v' (rotating 'v' by 'q'), "
-                           "'q==q', 'q!=q', 'q[0..3]'.",
-                           bp::no_init)
+#if BOOST_VERSION / 100 % 1000 < 71
+    typedef EIGENPY_CLASS_HOLDER_TYPE(Quaternion) HolderType;
+#else
+    typedef ::boost::python::detail::not_specified HolderType;
+#endif
+
+    bp::class_<Quaternion, HolderType>(
+        "Quaternion",
+        "Quaternion representing rotation.\n\n"
+        "Supported operations "
+        "('q is a Quaternion, 'v' is a Vector3): "
+        "'q*q' (rotation composition), "
+        "'q*=q', "
+        "'q*v' (rotating 'v' by 'q'), "
+        "'q==q', 'q!=q', 'q[0..3]'.",
+        bp::no_init)
         .def(QuaternionVisitor<Quaternion>());
 
     // Cast to Eigen::QuaternionBase and vice-versa
