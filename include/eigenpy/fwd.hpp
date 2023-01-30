@@ -95,10 +95,10 @@
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
-#define EIGENPY_CLASS_HOLDER_TYPE(T) ::std::shared_ptr<T>
+#define EIGENPY_SHARED_PTR_HOLDER_TYPE(T) ::std::shared_ptr<T>
 #else
 #include <boost/shared_ptr.hpp>
-#define EIGENPY_CLASS_HOLDER_TYPE(T) ::boost::shared_ptr<T>
+#define EIGENPY_SHARED_PTR_HOLDER_TYPE(T) ::boost::shared_ptr<T>
 #endif
 
 namespace eigenpy {
