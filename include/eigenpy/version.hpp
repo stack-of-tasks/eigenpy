@@ -19,6 +19,14 @@ namespace eigenpy {
 std::string EIGENPY_DLLAPI printVersion(const std::string& delimiter = ".");
 
 ///
+/// \brief Returns the current version of Eigen3 as a string using
+///        the following standard:
+///        EIGEN_MINOR_VERSION.EIGEN_MINOR_VERSION.EIGEN_PATCH_VERSION
+///
+std::string EIGENPY_DLLAPI
+printEigenVersion(const std::string& delimiter = ".");
+
+///
 /// \brief Checks if the current version of EigenPy is at least the version
 /// provided
 ///        by the input arguments.
