@@ -9,6 +9,7 @@
 #include <boost/python/converter/arg_from_python.hpp>
 #include <boost/python/converter/rvalue_from_python_data.hpp>
 #include <boost/type_traits/aligned_storage.hpp>
+#include <eigenpy/utils/is-aligned.hpp>
 
 namespace eigenpy {
 
@@ -33,6 +34,7 @@ inline void *aligned_malloc(
     std::size_t size, std::size_t alignment = EIGENPY_DEFAULT_ALIGN_BYTES) {
   void *original = std::malloc(size + alignment);
   if (original == 0) return 0;
+  if (is_aligned(original, alignment)) return original;
   void *aligned =
       reinterpret_cast<void *>((reinterpret_cast<std::size_t>(original) &
                                 ~(std::size_t(alignment - 1))) +
