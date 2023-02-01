@@ -350,7 +350,7 @@ class QuaternionVisitor
 
  public:
   static void expose() {
-#if BOOST_VERSION / 100 % 1000 < 71
+#if PY_MAJOR_VERSION == 3 && PY_MINOR_VERSION == 6
     typedef EIGENPY_SHARED_PTR_HOLDER_TYPE(Quaternion) HolderType;
 #else
     typedef ::boost::python::detail::not_specified HolderType;
