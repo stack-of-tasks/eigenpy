@@ -15,7 +15,6 @@ from eigen_ref import (
 
 
 def test_fill_print(mat):
-
     print("print matrix:")
     printMatrix(mat)
     print("calling fill():")
