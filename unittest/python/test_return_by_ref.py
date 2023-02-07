@@ -4,7 +4,6 @@ import numpy as np
 
 
 def test_shared(mat):
-
     m_ref = mat.ref()
     m_ref.fill(0)
     m_copy = mat.copy()
@@ -26,7 +25,6 @@ def test_shared(mat):
 
 
 def test_not_shared(mat):
-
     m_ref = mat.ref()
     m_ref.fill(100.0)
     m_copy = mat.copy()
