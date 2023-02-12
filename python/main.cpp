@@ -18,7 +18,6 @@
 using namespace eigenpy;
 
 BOOST_PYTHON_MODULE(eigenpy_pywrap) {
-  namespace bp = boost::python;
   enableEigenPy();
 
   bp::scope().attr("__version__") = eigenpy::printVersion();

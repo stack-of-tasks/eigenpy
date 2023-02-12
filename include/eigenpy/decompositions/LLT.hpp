@@ -28,7 +28,6 @@ struct LLTSolverVisitor
 
   template <class PyClass>
   void visit(PyClass &cl) const {
-    namespace bp = boost::python;
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
             bp::args("self", "size"),
@@ -99,7 +98,6 @@ struct LLTSolverVisitor
   }
 
   static void expose(const std::string &name) {
-    namespace bp = boost::python;
     bp::class_<Solver>(
         name.c_str(),
         "Standard Cholesky decomposition (LL^T) of a matrix and associated "

@@ -14,7 +14,6 @@
 namespace eigenpy {
 void exposeDecompositions() {
   using namespace Eigen;
-  namespace bp = boost::python;
 
   EigenSolverVisitor<MatrixXd>::expose("EigenSolver");
   SelfAdjointEigenSolverVisitor<MatrixXd>::expose("SelfAdjointEigenSolver");

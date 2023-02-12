@@ -9,8 +9,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 ///
 /// \brief Add the Python method copy to allow a copy of this by calling the
 /// copy constructor.

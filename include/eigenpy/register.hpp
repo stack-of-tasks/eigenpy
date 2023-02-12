@@ -31,7 +31,6 @@ struct EIGENPY_DLLAPI Register {
 
   template <typename Scalar>
   static PyTypeObject *getPyType() {
-    namespace bp = boost::python;
     if (!isNumpyNativeType<Scalar>()) {
       const PyTypeObject *const_py_type_ptr =
           bp::converter::registered_pytype<Scalar>::get_pytype();
@@ -53,7 +52,6 @@ struct EIGENPY_DLLAPI Register {
 
   template <typename Scalar>
   static PyArray_Descr *getPyArrayDescr() {
-    namespace bp = boost::python;
     if (!isNumpyNativeType<Scalar>()) {
       return getPyArrayDescr(getPyType<Scalar>());
     } else {

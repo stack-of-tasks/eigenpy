@@ -22,8 +22,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename IterativeSolver>
 struct IterativeSolverVisitor : public boost::python::def_visitor<
                                     IterativeSolverVisitor<IterativeSolver> > {

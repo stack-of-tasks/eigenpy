@@ -28,7 +28,6 @@ struct IterativeSolverBaseVisitor
 
   template <class PyClass>
   void visit(PyClass& cl) const {
-    namespace bp = boost::python;
     cl.def("analyzePattern",
            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                Solver::analyzePattern,
@@ -137,7 +136,6 @@ struct MINRESSolverVisitor
 
   template <class PyClass>
   void visit(PyClass& cl) const {
-    namespace bp = boost::python;
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<MatrixType>(
             bp::args("self", "matrix"),
@@ -155,7 +153,6 @@ struct MINRESSolverVisitor
   }
 
   static void expose(const std::string& name) {
-    namespace bp = boost::python;
     bp::class_<Solver, boost::noncopyable>(
         name.c_str(),
         "A minimal residual solver for sparse symmetric problems.\n"

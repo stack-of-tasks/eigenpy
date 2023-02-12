@@ -70,6 +70,12 @@
 #include <boost/python.hpp>
 #include <boost/python/scope.hpp>
 
+namespace eigenpy {
+
+namespace bp = boost::python;
+
+}
+
 #define NO_IMPORT_ARRAY
 #include "eigenpy/numpy.hpp"
 #undef NO_IMPORT_ARRAY
@@ -91,8 +97,6 @@
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
 
-#include "eigenpy/expose.hpp"
-
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
 #define EIGENPY_SHARED_PTR_HOLDER_TYPE(T) ::std::shared_ptr<T>
@@ -113,5 +117,6 @@ struct EigenFromPy;
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
+#include "eigenpy/expose.hpp"
 
 #endif  // ifndef __eigenpy_fwd_hpp__

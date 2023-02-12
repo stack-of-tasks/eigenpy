@@ -24,8 +24,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename LeastSquaresConjugateGradient>
 struct LeastSquaresConjugateGradientVisitor
     : public boost::python::def_visitor<LeastSquaresConjugateGradientVisitor<

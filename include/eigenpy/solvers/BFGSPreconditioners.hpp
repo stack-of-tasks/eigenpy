@@ -24,8 +24,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename Preconditioner>
 struct BFGSPreconditionerBaseVisitor
     : public bp::def_visitor<BFGSPreconditionerBaseVisitor<Preconditioner> > {

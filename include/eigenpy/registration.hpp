@@ -3,12 +3,13 @@
  * Copyright 2018-2019, INRIA
  */
 
-#include "eigenpy/fwd.hpp"
-
 #ifndef __eigenpy_registration_hpp__
 #define __eigenpy_registration_hpp__
 
+#include "eigenpy/fwd.hpp"
+
 namespace eigenpy {
+
 ///
 /// \brief Check at runtime the registration of the type T inside the boost
 /// python registry.
@@ -19,8 +20,6 @@ namespace eigenpy {
 ///
 template <typename T>
 inline bool check_registration() {
-  namespace bp = boost::python;
-
   const bp::type_info info = bp::type_id<T>();
   const bp::converter::registration* reg = bp::converter::registry::query(info);
   if (reg == NULL)
@@ -40,8 +39,6 @@ inline bool check_registration() {
 ///
 template <typename T>
 inline bool register_symbolic_link_to_registered_type() {
-  namespace bp = boost::python;
-
   if (eigenpy::check_registration<T>()) {
     const bp::type_info info = bp::type_id<T>();
     const bp::converter::registration* reg =
