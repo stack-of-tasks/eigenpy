@@ -10,8 +10,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename Scalar, int Options = 0>
 struct EulerAnglesConvertor {
   typedef typename Eigen::Matrix<Scalar, 3, 1, Options> Vector3;

@@ -59,7 +59,6 @@ struct to_python_indirect<
 }  // namespace boost
 
 namespace eigenpy {
-namespace bp = boost::python;
 
 template <typename MatType, typename _Scalar>
 struct EigenToPy {

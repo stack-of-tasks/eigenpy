@@ -24,8 +24,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename ConjugateGradient>
 struct ConjugateGradientVisitor
     : public boost::python::def_visitor<

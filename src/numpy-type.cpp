@@ -7,7 +7,6 @@
 #include <patchlevel.h>  // For PY_MAJOR_VERSION
 
 namespace eigenpy {
-namespace bp = boost::python;
 
 NumpyType& NumpyType::getInstance() {
   static NumpyType instance;

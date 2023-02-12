@@ -9,8 +9,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename AngleAxis>
 class AngleAxisVisitor;
 

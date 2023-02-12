@@ -31,8 +31,6 @@ namespace details {
 /// \brief Check if a PyObject can be converted to an std::vector<T>.
 template <typename T>
 bool from_python_list(PyObject *obj_ptr, T *) {
-  namespace bp = ::boost::python;
-
   // Check if it is a list
   if (!PyList_Check(obj_ptr)) return false;
 
@@ -53,8 +51,6 @@ bool from_python_list(PyObject *obj_ptr, T *) {
 template <typename vector_type, bool NoProxy>
 struct build_list {
   static ::boost::python::list run(vector_type &vec) {
-    namespace bp = ::boost::python;
-
     bp::list bp_list;
     for (size_t k = 0; k < vec.size(); ++k) {
       bp_list.append(boost::ref(vec[k]));
@@ -66,8 +62,6 @@ struct build_list {
 template <typename vector_type>
 struct build_list<vector_type, true> {
   static ::boost::python::list run(vector_type &vec) {
-    namespace bp = ::boost::python;
-
     typedef bp::iterator<vector_type> iterator;
     return bp::list(iterator()(vec));
   }
@@ -92,8 +86,6 @@ struct overload_base_get_item_for_std_vector
  private:
   static boost::python::object base_get_item(
       boost::python::back_reference<Container &> container, PyObject *i_) {
-    namespace bp = ::boost::python;
-
     index_type idx = convert_index(container.get(), i_);
     typename Container::iterator i = container.get().begin();
     std::advance(i, idx);
@@ -109,7 +101,6 @@ struct overload_base_get_item_for_std_vector
   }
 
   static index_type convert_index(Container &container, PyObject *i_) {
-    namespace bp = boost::python;
     bp::extract<long> i(i_);
     if (i.check()) {
       long index = i();
@@ -279,8 +270,6 @@ struct StdContainerFromPythonList {
   static void construct(
       PyObject *obj_ptr,
       boost::python::converter::rvalue_from_python_stage1_data *memory) {
-    namespace bp = boost::python;
-
     // Extract the list
     bp::object bp_obj(bp::handle<>(bp::borrowed(obj_ptr)));
     bp::list bp_list(bp_obj);
@@ -410,8 +399,6 @@ struct StdVectorPythonVisitor
   static void expose(
       const std::string &class_name, const std::string &doc_string,
       const boost::python::def_visitor<VisitorDerived> &visitor) {
-    namespace bp = boost::python;
-
     if (!register_symbolic_link_to_registered_type<vector_type>()) {
       bp::class_<vector_type> cl(class_name.c_str(), doc_string.c_str());
       cl.def(StdVectorPythonVisitor())

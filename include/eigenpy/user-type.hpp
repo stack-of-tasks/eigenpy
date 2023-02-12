@@ -286,7 +286,6 @@ bool registerCast(const bool safe) {
 template <typename T>
 boost::python::object getInstanceClass() {
   // Query into the registry for type T.
-  namespace bp = boost::python;
   bp::type_info type = bp::type_id<T>();
   const bp::converter::registration* registration =
       bp::converter::registry::query(type);

@@ -70,6 +70,12 @@
 #include <boost/python.hpp>
 #include <boost/python/scope.hpp>
 
+namespace eigenpy {
+
+namespace bp = boost::python;
+
+}
+
 #define NO_IMPORT_ARRAY
 #include "eigenpy/numpy.hpp"
 #undef NO_IMPORT_ARRAY
@@ -90,8 +96,6 @@
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
-
-#include "eigenpy/expose.hpp"
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>

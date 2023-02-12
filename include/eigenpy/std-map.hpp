@@ -27,8 +27,6 @@ struct overload_base_get_item_for_std_map
  private:
   static boost::python::object base_get_item(
       boost::python::back_reference<Container&> container, PyObject* i_) {
-    namespace bp = ::boost::python;
-
     index_type idx = convert_index(container.get(), i_);
     typename Container::iterator i = container.get().find(idx);
     if (i == container.get().end()) {
@@ -43,7 +41,6 @@ struct overload_base_get_item_for_std_map
   }
 
   static index_type convert_index(Container& /*container*/, PyObject* i_) {
-    namespace bp = ::boost::python;
     bp::extract<key_type const&> i(i_);
     if (i.check()) {
       return i();

@@ -23,8 +23,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename Preconditioner>
 struct PreconditionerBaseVisitor
     : public bp::def_visitor<PreconditionerBaseVisitor<Preconditioner> > {

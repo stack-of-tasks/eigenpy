@@ -65,8 +65,6 @@ class ExceptionIndex : public Exception {
   }
 };
 
-namespace bp = boost::python;
-
 template <typename QuaternionDerived>
 class QuaternionVisitor;
 

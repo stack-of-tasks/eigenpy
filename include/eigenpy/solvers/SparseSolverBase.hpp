@@ -21,8 +21,6 @@
 
 namespace eigenpy {
 
-namespace bp = boost::python;
-
 template <typename SparseSolver>
 struct SparseSolverVisitor
     : public bp::def_visitor<SparseSolverVisitor<SparseSolver> > {

@@ -14,7 +14,6 @@
 #include "eigenpy/scalar-conversion.hpp"
 
 namespace eigenpy {
-namespace bp = boost::python;
 
 template <typename Scalar>
 bool np_type_is_convertible_into_scalar(const int np_type) {

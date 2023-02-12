@@ -23,7 +23,6 @@ struct EigenSolverVisitor
 
   template <class PyClass>
   void visit(PyClass& cl) const {
-    namespace bp = boost::python;
     cl.def(bp::init<>("Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
             bp::arg("size"), "Default constructor with memory preallocation"))
@@ -76,7 +75,6 @@ struct EigenSolverVisitor
   }
 
   static void expose(const std::string& name) {
-    namespace bp = boost::python;
     bp::class_<Solver>(name.c_str(), bp::no_init).def(EigenSolverVisitor());
   }
 

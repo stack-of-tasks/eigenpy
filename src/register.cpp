@@ -36,8 +36,6 @@ int Register::registerNewType(
     PyArray_CopySwapFunc* copyswap, PyArray_CopySwapNFunc* copyswapn,
     PyArray_DotFunc* dotfunc, PyArray_FillFunc* fill,
     PyArray_FillWithScalarFunc* fillwithscalar) {
-  namespace bp = boost::python;
-
   bp::tuple tp_bases_extended(
       bp::make_tuple(bp::handle<>(bp::borrowed(&PyGenericArrType_Type))));
   tp_bases_extended +=
