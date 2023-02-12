@@ -117,6 +117,5 @@ struct EigenFromPy;
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
-#include "eigenpy/expose.hpp"
 
 #endif  // ifndef __eigenpy_fwd_hpp__

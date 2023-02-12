@@ -9,6 +9,7 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/deprecated.hpp"
 #include "eigenpy/eigen-typedef.hpp"
+#include "eigenpy/expose.hpp"
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
   ::eigenpy::enableEigenPySpecific<TYPE>();
