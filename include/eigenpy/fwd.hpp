@@ -88,6 +88,10 @@ namespace bp = boost::python;
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#ifdef EIGENPY_WITH_CXX11_SUPPORT
+#include <unsupported/Eigen/CXX11/Tensor>
+#endif
+
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90)
 #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
 #else
