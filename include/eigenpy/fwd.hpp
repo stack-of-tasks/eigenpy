@@ -90,6 +90,7 @@ namespace bp = boost::python;
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <unsupported/Eigen/CXX11/Tensor>
+#define EIGENPY_WITH_TENSOR_SUPPORT
 #endif
 
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90)
