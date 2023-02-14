@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014-2020 CNRS INRIA
+// Copyright (c) 2014-2023 CNRS INRIA
 //
 
 #ifndef __eigenpy_eigen_to_python_hpp__
@@ -60,8 +60,10 @@ struct to_python_indirect<
 
 namespace eigenpy {
 
-template <typename MatType, typename _Scalar>
-struct EigenToPy {
+EIGENPY_DOCUMENTATION_START_IGNORE
+
+template <typename MatType, typename Scalar>
+struct eigen_to_py_impl {
   static PyObject* convert(
       typename boost::add_reference<
           typename boost::add_const<MatType>::type>::type mat) {
@@ -91,12 +93,10 @@ struct EigenToPy {
     // Create an instance (either np.array or np.matrix)
     return NumpyType::make(pyArray).ptr();
   }
-
-  static PyTypeObject const* get_pytype() { return getPyArrayType(); }
 };
 
-template <typename MatType, int Options, typename Stride, typename _Scalar>
-struct EigenToPy<Eigen::Ref<MatType, Options, Stride>, _Scalar> {
+template <typename MatType, int Options, typename Stride, typename Scalar>
+struct eigen_to_py_impl<Eigen::Ref<MatType, Options, Stride>, Scalar> {
   static PyObject* convert(const Eigen::Ref<MatType, Options, Stride>& mat) {
     typedef Eigen::Ref<MatType, Options, Stride> EigenRef;
 
@@ -123,7 +123,12 @@ struct EigenToPy<Eigen::Ref<MatType, Options, Stride>, _Scalar> {
     // Create an instance (either np.array or np.matrix)
     return NumpyType::make(pyArray).ptr();
   }
+};
 
+EIGENPY_DOCUMENTATION_END_IGNORE
+
+template <typename MatType, typename Scalar>
+struct EigenToPy : eigen_to_py_impl<MatType, Scalar> {
   static PyTypeObject const* get_pytype() { return getPyArrayType(); }
 };
 
