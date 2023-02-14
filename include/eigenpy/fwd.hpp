@@ -61,6 +61,9 @@
   EIGENPY_PRAGMA_WARNING(                    \
       EIGENPY_STRINGCAT("this file is deprecated: ", the_message))
 
+#define EIGENPY_DOCUMENTATION_START_IGNORE  /// \cond
+#define EIGENPY_DOCUMENTATION_END_IGNORE    /// \endcond
+
 #include "eigenpy/config.hpp"
 
 // Silence a warning about a deprecated use of boost bind by boost python
