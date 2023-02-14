@@ -1,13 +1,12 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2020, INRIA
+ * Copyright 2018-2023, INRIA
  */
 
 #ifndef __eigenpy_eigenpy_hpp__
 #define __eigenpy_eigenpy_hpp__
 
 #include "eigenpy/fwd.hpp"
-#include "eigenpy/deprecated.hpp"
 #include "eigenpy/eigen-typedef.hpp"
 #include "eigenpy/expose.hpp"
 
@@ -20,17 +19,9 @@ namespace eigenpy {
  */
 void EIGENPY_DLLAPI enableEigenPy();
 
-/* Enable the Eigen--Numpy serialization for the templated MatrixBase class.
- * The second template argument is used for inheritance of Eigen classes. If
- * using a native Eigen::MatrixBase, simply repeat the same arg twice. */
+/* Enable the Eigen--Numpy serialization for the templated MatType class.*/
 template <typename MatType>
 void enableEigenPySpecific();
-
-/* Enable the Eigen--Numpy serialization for the templated MatrixBase class.
- * The second template argument is used for inheritance of Eigen classes. If
- * using a native Eigen::MatrixBase, simply repeat the same arg twice. */
-template <typename MatType, typename EigenEquivalentType>
-EIGENPY_DEPRECATED void enableEigenPySpecific();
 
 template <typename Scalar, int Options>
 EIGEN_DONT_INLINE void exposeType() {
