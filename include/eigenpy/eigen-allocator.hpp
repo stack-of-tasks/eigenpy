@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014-2020 CNRS INRIA
+// Copyright (c) 2014-2023 CNRS INRIA
 //
 
 #ifndef __eigenpy_eigen_allocator_hpp__
@@ -115,8 +115,11 @@ struct cast_matrix_or_array<Scalar, NewScalar, false> {
       mat, NumpyMap<MatType, NewScalar>::map(                                 \
                pyArray, details::check_swap(pyArray, mat)))
 
+template <typename EigenType>
+struct EigenAllocator;
+
 template <typename MatType>
-struct EigenAllocator {
+struct eigen_allocator_impl {
   typedef MatType Type;
   typedef typename MatType::Scalar Scalar;
 
@@ -130,8 +133,17 @@ struct EigenAllocator {
     Type *mat_ptr = details::init_matrix_or_array<Type>::run(pyArray, raw_ptr);
     Type &mat = *mat_ptr;
 
+    copy(pyArray, mat);
+  }
+
+  /// \brief Copy Python array into the input matrix mat.
+  template <typename MatrixDerived>
+  static void copy(PyArrayObject *pyArray,
+                   const Eigen::MatrixBase<MatrixDerived> &mat_) {
+    MatrixDerived &mat = mat_.const_cast_derived();
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
+
     if (pyArray_type_code == Scalar_type_code) {
       mat = NumpyMap<MatType, Scalar>::map(
           pyArray, details::check_swap(pyArray, mat));  // avoid useless cast
@@ -185,13 +197,10 @@ struct EigenAllocator {
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
-    typedef typename NumpyMap<MatType, Scalar>::EigenMap MapType;
-
     if (pyArray_type_code == Scalar_type_code)  // no cast needed
     {
-      MapType map_pyArray = NumpyMap<MatType, Scalar>::map(
-          pyArray, details::check_swap(pyArray, mat));
-      map_pyArray = mat;
+      NumpyMap<MatType, Scalar>::map(pyArray,
+                                     details::check_swap(pyArray, mat)) = mat;
       return;
     }
 
@@ -253,7 +262,7 @@ inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
 }
 
 template <typename MatType, int Options, typename Stride>
-struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
+struct eigen_allocator_impl<Eigen::Ref<MatType, Options, Stride> > {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -296,49 +305,7 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
       new (raw_ptr) StorageType(mat_ref, pyArray, mat_ptr);
 
       RefType &mat = *reinterpret_cast<RefType *>(raw_ptr);
-      if (pyArray_type_code == Scalar_type_code) {
-        mat = NumpyMap<MatType, Scalar>::map(
-            pyArray, details::check_swap(pyArray, mat));  // avoid useless cast
-        return;
-      }
-
-      switch (pyArray_type_code) {
-        case NPY_INT:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, int, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_LONG:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, long, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_FLOAT:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, float, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_CFLOAT:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-              MatType, std::complex<float>, Scalar, pyArray, mat);
-          break;
-        case NPY_DOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, double, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_CDOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-              MatType, std::complex<double>, Scalar, pyArray, mat);
-          break;
-        case NPY_LONGDOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, long double,
-                                                    Scalar, pyArray, mat);
-          break;
-        case NPY_CLONGDOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-              MatType, std::complex<long double>, Scalar, pyArray, mat);
-          break;
-        default:
-          throw Exception(
-              "You asked for a conversion which is not implemented.");
-      }
+      EigenAllocator<MatType>::copy(pyArray, mat);
     } else {
       assert(pyArray_type_code == Scalar_type_code);
       typename NumpyMap<MatType, Scalar, Options, NumpyMapStride>::EigenMap
@@ -355,7 +322,7 @@ struct EigenAllocator<Eigen::Ref<MatType, Options, Stride> > {
 };
 
 template <typename MatType, int Options, typename Stride>
-struct EigenAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
+struct eigen_allocator_impl<const Eigen::Ref<const MatType, Options, Stride> > {
   typedef const Eigen::Ref<const MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -399,49 +366,7 @@ struct EigenAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
       new (raw_ptr) StorageType(mat_ref, pyArray, mat_ptr);
 
       MatType &mat = *mat_ptr;
-      if (pyArray_type_code == Scalar_type_code) {
-        mat = NumpyMap<MatType, Scalar>::map(
-            pyArray, details::check_swap(pyArray, mat));  // avoid useless cast
-        return;
-      }
-
-      switch (pyArray_type_code) {
-        case NPY_INT:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, int, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_LONG:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, long, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_FLOAT:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, float, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_CFLOAT:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-              MatType, std::complex<float>, Scalar, pyArray, mat);
-          break;
-        case NPY_DOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, double, Scalar,
-                                                    pyArray, mat);
-          break;
-        case NPY_CDOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-              MatType, std::complex<double>, Scalar, pyArray, mat);
-          break;
-        case NPY_LONGDOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, long double,
-                                                    Scalar, pyArray, mat);
-          break;
-        case NPY_CLONGDOUBLE:
-          EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-              MatType, std::complex<long double>, Scalar, pyArray, mat);
-          break;
-        default:
-          throw Exception(
-              "You asked for a conversion which is not implemented.");
-      }
+      EigenAllocator<MatType>::copy(pyArray, mat);
     } else {
       assert(pyArray_type_code == Scalar_type_code);
       typename NumpyMap<MatType, Scalar, Options, NumpyMapStride>::EigenMap
@@ -457,6 +382,10 @@ struct EigenAllocator<const Eigen::Ref<const MatType, Options, Stride> > {
   }
 };
 #endif
+
+template <typename EigenType>
+struct EigenAllocator : eigen_allocator_impl<EigenType> {};
+
 }  // namespace eigenpy
 
 #endif  // __eigenpy_eigen_allocator_hpp__
