@@ -122,6 +122,24 @@ template <typename MatType,
           typename Scalar =
               typename boost::remove_reference<MatType>::type::Scalar>
 struct EigenFromPy;
+
+template <typename EigenType>
+struct get_eigen_base_type {
+  typedef typename boost::remove_const<EigenType>::type EigenType_;
+  typedef typename boost::mpl::if_<
+      boost::is_base_of<Eigen::MatrixBase<EigenType_>, EigenType_>,
+      Eigen::MatrixBase<EigenType>
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+      ,
+      typename boost::mpl::if_<
+          boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
+          Eigen::TensorBase<EigenType>, void>::type
+#else
+      ,
+      void
+#endif
+      >::type type;
+};
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
