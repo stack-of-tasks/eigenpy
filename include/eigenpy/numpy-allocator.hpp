@@ -1,12 +1,12 @@
 /*
- * Copyright 2020-2022 INRIA
+ * Copyright 2020-2023 INRIA
  */
 
 #ifndef __eigenpy_numpy_allocator_hpp__
 #define __eigenpy_numpy_allocator_hpp__
 
-#include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/register.hpp"
 
@@ -29,6 +29,23 @@ struct NumpyAllocator {
 
     return pyArray;
   }
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+  template <typename Scalar, int Rank, int Options, typename IndexType>
+  static PyArrayObject *allocate(
+      const Eigen::Tensor<Scalar, Rank, Options, IndexType> &tensor,
+      npy_intp nd, npy_intp *shape) {
+    typedef Eigen::Tensor<Scalar, Rank, Options, IndexType> Tensor;
+    const int code = Register::getTypeCode<Scalar>();
+    PyArrayObject *pyArray = (PyArrayObject *)call_PyArray_SimpleNew(
+        static_cast<int>(nd), shape, code);
+
+    // Copy data
+    EigenAllocator<Tensor>::copy(tensor, pyArray);
+
+    return pyArray;
+  }
+#endif
 };
 
 template <typename MatType>
