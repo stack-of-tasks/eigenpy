@@ -70,6 +70,24 @@ struct init_matrix_or_array<MatType, true> {
   }
 };
 
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename Tensor>
+struct init_tensor {
+  static Tensor *run(PyArrayObject *pyArray, void *storage = NULL) {
+    enum { Rank = Tensor::NumDimensions };
+    assert(PyArray_NDIM(pyArray) == Rank);
+    typedef typename Tensor::Index Index;
+
+    Eigen::array<Index, Rank> dimensions = PyArray_DIMS(pyArray);
+
+    if (storage)
+      return new (storage) Tensor(dimensions);
+    else
+      return new Tensor(dimensions);
+  }
+};
+#endif
+
 template <typename MatType>
 bool check_swap(PyArrayObject *pyArray, const Eigen::MatrixBase<MatType> &mat) {
   if (PyArray_NDIM(pyArray) == 0) return false;
@@ -79,47 +97,83 @@ bool check_swap(PyArrayObject *pyArray, const Eigen::MatrixBase<MatType> &mat) {
     return true;
 }
 
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename TensorType>
+bool check_swap(PyArrayObject * /*pyArray*/,
+                const Eigen::TensorBase<TensorType> & /*tensor*/) {
+  return false;
+}
+#endif
+
 template <typename Scalar, typename NewScalar,
           bool cast_is_valid = FromTypeToType<Scalar, NewScalar>::value>
-struct cast_matrix_or_array {
+struct cast {
   template <typename MatrixIn, typename MatrixOut>
   static void run(const Eigen::MatrixBase<MatrixIn> &input,
                   const Eigen::MatrixBase<MatrixOut> &dest) {
-    MatrixOut &dest_ = const_cast<MatrixOut &>(dest.derived());
-    dest_ = input.template cast<NewScalar>();
+    dest.const_cast_derived() = input.template cast<NewScalar>();
   }
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+  template <typename TensorIn, typename TensorOut>
+  static void run(const Eigen::TensorBase<TensorIn> &input,
+                  const Eigen::TensorBase<TensorOut> &dest) {
+    const_cast<TensorOut &>(static_cast<const TensorOut &>(dest)) =
+        input.template cast<NewScalar>();
+  }
+#endif
 };
 
 template <typename Scalar, typename NewScalar>
-struct cast_matrix_or_array<Scalar, NewScalar, false> {
+struct cast<Scalar, NewScalar, false> {
   template <typename MatrixIn, typename MatrixOut>
   static void run(const Eigen::MatrixBase<MatrixIn> & /*input*/,
                   const Eigen::MatrixBase<MatrixOut> & /*dest*/) {
     // do nothing
     assert(false && "Must never happened");
   }
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+  template <typename TensorIn, typename TensorOut>
+  static void run(const Eigen::TensorBase<TensorIn> & /*input*/,
+                  const Eigen::TensorBase<TensorOut> & /*dest*/) {
+    // do nothing
+    assert(false && "Must never happened");
+  }
+#endif
 };
 
 }  // namespace details
 
 #define EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, Scalar, NewScalar, \
                                                   pyArray, mat)               \
-  details::cast_matrix_or_array<Scalar, NewScalar>::run(                      \
+  details::cast<Scalar, NewScalar>::run(                                      \
       NumpyMap<MatType, Scalar>::map(pyArray,                                 \
                                      details::check_swap(pyArray, mat)),      \
       mat)
 
 #define EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType, Scalar, NewScalar, \
                                                   mat, pyArray)               \
-  details::cast_matrix_or_array<Scalar, NewScalar>::run(                      \
+  details::cast<Scalar, NewScalar>::run(                                      \
       mat, NumpyMap<MatType, NewScalar>::map(                                 \
                pyArray, details::check_swap(pyArray, mat)))
 
 template <typename EigenType>
 struct EigenAllocator;
 
+template <typename EigenType,
+          typename BaseType = typename get_eigen_base_type<EigenType>::type>
+struct eigen_allocator_impl;
+
 template <typename MatType>
-struct eigen_allocator_impl {
+struct eigen_allocator_impl_matrix;
+
+template <typename MatType>
+struct eigen_allocator_impl<MatType, Eigen::MatrixBase<MatType> >
+    : eigen_allocator_impl_matrix<MatType> {};
+
+template <typename MatType>
+struct eigen_allocator_impl_matrix {
   typedef MatType Type;
   typedef typename MatType::Scalar Scalar;
 
@@ -243,6 +297,140 @@ struct eigen_allocator_impl {
   }
 };
 
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename TensorType>
+struct eigen_allocator_impl<TensorType, Eigen::TensorBase<TensorType> > {
+  typedef typename TensorType::Scalar Scalar;
+  static void allocate(
+      PyArrayObject *pyArray,
+      boost::python::converter::rvalue_from_python_storage<TensorType>
+          *storage) {
+    void *raw_ptr = storage->storage.bytes;
+    assert(is_aligned(raw_ptr, EIGENPY_DEFAULT_ALIGN_BYTES) &&
+           "The pointer is not aligned.");
+
+    TensorType *tensor_ptr =
+        details::init_tensor<TensorType>::run(pyArray, raw_ptr);
+    TensorType &tensor = *tensor_ptr;
+
+    copy(pyArray, tensor);
+  }
+
+#define EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, Scalar,          \
+                                                  NewScalar, pyArray, tensor)  \
+  details::cast<Scalar, NewScalar>::run(                                       \
+      NumpyMap<TensorType, Scalar>::map(pyArray,                               \
+                                        details::check_swap(pyArray, tensor)), \
+      tensor)
+
+  /// \brief Copy Python array into the input matrix mat.
+  template <typename MatrixDerived>
+  static void copy(PyArrayObject *pyArray, const TensorType &tensor) {
+    const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
+    const int Scalar_type_code = Register::getTypeCode<Scalar>();
+
+    if (pyArray_type_code == Scalar_type_code) {
+      tensor = NumpyMap<TensorType, Scalar>::map(
+          pyArray, details::check_swap(pyArray, tensor));  // avoid useless cast
+      return;
+    }
+
+    switch (pyArray_type_code) {
+      case NPY_INT:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, int, Scalar,
+                                                  pyArray, tensor);
+        break;
+      case NPY_LONG:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, long, Scalar,
+                                                  pyArray, tensor);
+        break;
+      case NPY_FLOAT:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, float, Scalar,
+                                                  pyArray, tensor);
+        break;
+      case NPY_CFLOAT:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(
+            TensorType, std::complex<float>, Scalar, pyArray, tensor);
+        break;
+      case NPY_DOUBLE:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, double, Scalar,
+                                                  pyArray, tensor);
+        break;
+      case NPY_CDOUBLE:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(
+            TensorType, std::complex<double>, Scalar, pyArray, tensor);
+        break;
+      case NPY_LONGDOUBLE:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, long double,
+                                                  Scalar, pyArray, tensor);
+        break;
+      case NPY_CLONGDOUBLE:
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(
+            TensorType, std::complex<long double>, Scalar, pyArray, tensor);
+        break;
+      default:
+        throw Exception("You asked for a conversion which is not implemented.");
+    }
+  }
+
+#define EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar,         \
+                                                  NewScalar, tensor, pyArray) \
+  details::cast<Scalar, NewScalar>::run(                                      \
+      tensor, NumpyMap<TensorType, NewScalar>::map(                           \
+                  pyArray, details::check_swap(pyArray, tensor)))
+
+  /// \brief Copy mat into the Python array using Eigen::Map
+  static void copy(const TensorType &tensor, PyArrayObject *pyArray) {
+    const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
+    const int Scalar_type_code = Register::getTypeCode<Scalar>();
+
+    if (pyArray_type_code == Scalar_type_code)  // no cast needed
+    {
+      NumpyMap<TensorType, Scalar>::map(
+          pyArray, details::check_swap(pyArray, tensor)) = tensor;
+      return;
+    }
+
+    switch (pyArray_type_code) {
+      case NPY_INT:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, int,
+                                                  tensor, pyArray);
+        break;
+      case NPY_LONG:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, long,
+                                                  tensor, pyArray);
+        break;
+      case NPY_FLOAT:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, float,
+                                                  tensor, pyArray);
+        break;
+      case NPY_CFLOAT:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(
+            TensorType, Scalar, std::complex<float>, tensor, pyArray);
+        break;
+      case NPY_DOUBLE:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, double,
+                                                  tensor, pyArray);
+        break;
+      case NPY_CDOUBLE:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(
+            TensorType, Scalar, std::complex<double>, tensor, pyArray);
+        break;
+      case NPY_LONGDOUBLE:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar,
+                                                  long double, tensor, pyArray);
+        break;
+      case NPY_CLONGDOUBLE:
+        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(
+            TensorType, Scalar, std::complex<long double>, tensor, pyArray);
+        break;
+      default:
+        throw Exception("You asked for a conversion which is not implemented.");
+    }
+  }
+};
+#endif
+
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
 /// @brief Check if we need to allocate @tparam MatType to convert @param
 /// pyArray.
@@ -262,7 +450,7 @@ inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
 }
 
 template <typename MatType, int Options, typename Stride>
-struct eigen_allocator_impl<Eigen::Ref<MatType, Options, Stride> > {
+struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -322,7 +510,8 @@ struct eigen_allocator_impl<Eigen::Ref<MatType, Options, Stride> > {
 };
 
 template <typename MatType, int Options, typename Stride>
-struct eigen_allocator_impl<const Eigen::Ref<const MatType, Options, Stride> > {
+struct eigen_allocator_impl_matrix<
+    const Eigen::Ref<const MatType, Options, Stride> > {
   typedef const Eigen::Ref<const MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
