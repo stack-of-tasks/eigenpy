@@ -16,6 +16,10 @@ v = eigenpy.emptyVector()
 assert v.shape == (0,)
 
 if verbose:
+    print("===> From Py to Matrix1")
+eigenpy.matrix1x1(np.array([1]))
+
+if verbose:
     print("===> From MatrixXd to Py")
 M = eigenpy.naturals(3, 3, verbose)
 Mcheck = np.reshape(np.array(range(9), np.double), [3, 3])
