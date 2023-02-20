@@ -342,9 +342,10 @@ struct eigen_allocator_impl_tensor {
       tensor)
 
   /// \brief Copy Python array into the input matrix mat.
-  template <typename TensorDerived>
-  static void copy(PyArrayObject *pyArray,
-                   const Eigen::TensorBase<TensorDerived> &tensor_) {
+  template <typename TensorDerived, int AccessLevel>
+  static void copy(
+      PyArrayObject *pyArray,
+      const Eigen::TensorBase<TensorDerived, AccessLevel> &tensor_) {
     TensorDerived &tensor = const_cast<TensorDerived &>(
         static_cast<const TensorDerived &>(tensor_));
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
