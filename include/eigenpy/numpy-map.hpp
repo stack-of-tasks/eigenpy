@@ -210,7 +210,7 @@ struct numpy_map_impl_tensor {
     EIGENPY_UNUSED_VARIABLE(swap_dimensions);
     assert(PyArray_NDIM(pyArray) == NumIndices || NumIndices == Eigen::Dynamic);
 
-    Eigen::DSizes<Index, NumIndices> dimensions(PyArray_NDIM(pyArray));
+    Eigen::DSizes<Index, NumIndices> dimensions;
     for (int k = 0; k < PyArray_NDIM(pyArray); ++k)
       dimensions[k] = PyArray_DIMS(pyArray)[k];
 
