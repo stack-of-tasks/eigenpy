@@ -1,5 +1,5 @@
 /*
- * Copyright 2023, INRIA
+ * Copyright 2023 INRIA
  */
 
 #ifndef __eigenpy_alignment_hpp__
@@ -66,6 +66,23 @@ struct referent_storage<
   typedef
       typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
 };
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename Scalar, int Rank, int Options, typename IndexType>
+struct referent_storage<Eigen::Tensor<Scalar, Rank, Options, IndexType> &> {
+  typedef Eigen::Tensor<Scalar, Rank, Options, IndexType> T;
+  typedef
+      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+};
+
+template <typename Scalar, int Rank, int Options, typename IndexType>
+struct referent_storage<
+    const Eigen::Tensor<Scalar, Rank, Options, IndexType> &> {
+  typedef Eigen::Tensor<Scalar, Rank, Options, IndexType> T;
+  typedef
+      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+};
+#endif
 
 template <typename Scalar, int Options>
 struct referent_storage<Eigen::Quaternion<Scalar, Options> &> {
