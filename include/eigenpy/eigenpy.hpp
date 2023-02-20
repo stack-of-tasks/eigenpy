@@ -57,6 +57,10 @@ EIGEN_DONT_INLINE void exposeType() {
 template <typename Scalar>
 EIGEN_DONT_INLINE void exposeType() {
   exposeType<Scalar, 0>();
+
+  enableEigenPySpecific<Eigen::Tensor<Scalar, 1> >();
+  enableEigenPySpecific<Eigen::Tensor<Scalar, 2> >();
+  enableEigenPySpecific<Eigen::Tensor<Scalar, 3> >();
 }
 
 }  // namespace eigenpy
