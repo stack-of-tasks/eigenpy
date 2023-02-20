@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020 INRIA
+// Copyright (c) 2020-2023 INRIA
 //
 
 #ifndef __eigenpy_eigen_typedef_hpp__
@@ -31,6 +31,7 @@
   EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, Eigen::Dynamic, X) \
   EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 2)           \
   EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 3)           \
-  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 4)
+  EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 4)           \
+  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, 1, 1)
 
 #endif  // ifndef __eigenpy_eigen_typedef_hpp__
