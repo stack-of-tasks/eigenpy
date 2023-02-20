@@ -27,6 +27,10 @@ template <typename Scalar, int Options>
 EIGEN_DONT_INLINE void exposeType() {
   EIGENPY_MAKE_TYPEDEFS_ALL_SIZES(Scalar, Options, s);
 
+  EIGENPY_UNUSED_TYPE(Vector1s);
+  EIGENPY_UNUSED_TYPE(RowVector1s);
+  ENABLE_SPECIFIC_MATRIX_TYPE(Matrix1s);
+
   ENABLE_SPECIFIC_MATRIX_TYPE(Vector2s);
   ENABLE_SPECIFIC_MATRIX_TYPE(RowVector2s);
   ENABLE_SPECIFIC_MATRIX_TYPE(Matrix2s);
