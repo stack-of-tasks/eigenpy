@@ -164,6 +164,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/std-vector.hpp
     include/eigenpy/pickle-vector.hpp
     include/eigenpy/stride.hpp
+    include/eigenpy/tensor/eigen-from-python.hpp
     include/eigenpy/swig.hpp
     include/eigenpy/version.hpp)
 

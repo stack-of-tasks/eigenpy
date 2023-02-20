@@ -24,16 +24,6 @@ struct expected_pytype_for_arg<MatType, Eigen::MatrixBase<MatType> > {
   }
 };
 
-#ifdef EIGENPY_WITH_TENSOR_SUPPORT
-template <typename TensorType>
-struct expected_pytype_for_arg<TensorType, Eigen::TensorBase<TensorType> > {
-  static PyTypeObject const *get_pytype() {
-    PyTypeObject const *py_type = eigenpy::getPyArrayType();
-    return py_type;
-  }
-};
-#endif
-
 }  // namespace eigenpy
 
 namespace boost {
@@ -46,13 +36,6 @@ struct expected_pytype_for_arg<
     Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> >
     : eigenpy::expected_pytype_for_arg<
           Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> > {};
-
-#ifdef EIGENPY_WITH_TENSOR_SUPPORT
-template <typename Scalar, int Rank, int Options, typename IndexType>
-struct expected_pytype_for_arg<Eigen::Tensor<Scalar, Rank, Options, IndexType> >
-    : eigenpy::expected_pytype_for_arg<
-          Eigen::Tensor<Scalar, Rank, Options, IndexType> > {};
-#endif
 
 }  // namespace converter
 }  // namespace python
@@ -75,44 +58,43 @@ struct copy_if_non_const<const MatType, true> {
 };
 
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
-template <typename MatType, int Options, typename Stride>
-struct referent_storage_eigen_ref;
 
-template <typename MatType, int Options, typename Stride>
+template <typename _RefType>
 struct referent_storage_eigen_ref {
-  typedef Eigen::Ref<MatType, Options, Stride> RefType;
+  typedef _RefType RefType;
+  typedef typename get_eigen_ref_plain_type<RefType>::type PlainObjectType;
   typedef typename ::eigenpy::aligned_storage<
       ::boost::python::detail::referent_size<RefType &>::value>::type
       AlignedStorage;
 
   referent_storage_eigen_ref()
       : pyArray(NULL),
-        mat_ptr(NULL),
+        plain_ptr(NULL),
         ref_ptr(reinterpret_cast<RefType *>(ref_storage.bytes)) {}
 
   referent_storage_eigen_ref(const RefType &ref, PyArrayObject *pyArray,
-                             MatType *mat_ptr = NULL)
+                             PlainObjectType *plain_ptr = NULL)
       : pyArray(pyArray),
-        mat_ptr(mat_ptr),
+        plain_ptr(plain_ptr),
         ref_ptr(reinterpret_cast<RefType *>(ref_storage.bytes)) {
     Py_INCREF(pyArray);
     new (ref_storage.bytes) RefType(ref);
   }
 
   ~referent_storage_eigen_ref() {
-    if (mat_ptr != NULL && PyArray_ISWRITEABLE(pyArray))
-      copy_if_non_const<MatType>::run(*mat_ptr, pyArray);
+    if (plain_ptr != NULL && PyArray_ISWRITEABLE(pyArray))
+      copy_if_non_const<PlainObjectType>::run(*plain_ptr, pyArray);
 
     Py_DECREF(pyArray);
 
-    if (mat_ptr != NULL) mat_ptr->~MatType();
+    if (plain_ptr != NULL) plain_ptr->~PlainObjectType();
 
     ref_ptr->~RefType();
   }
 
   AlignedStorage ref_storage;
   PyArrayObject *pyArray;
-  MatType *mat_ptr;
+  PlainObjectType *plain_ptr;
   RefType *ref_ptr;
 };
 #endif
@@ -126,18 +108,16 @@ namespace detail {
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
 template <typename MatType, int Options, typename Stride>
 struct referent_storage<Eigen::Ref<MatType, Options, Stride> &> {
-  typedef ::eigenpy::details::referent_storage_eigen_ref<MatType, Options,
-                                                         Stride>
-      StorageType;
+  typedef Eigen::Ref<MatType, Options, Stride> RefType;
+  typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
   typedef typename ::eigenpy::aligned_storage<
       referent_size<StorageType &>::value>::type type;
 };
 
 template <typename MatType, int Options, typename Stride>
 struct referent_storage<const Eigen::Ref<const MatType, Options, Stride> &> {
-  typedef ::eigenpy::details::referent_storage_eigen_ref<const MatType, Options,
-                                                         Stride>
-      StorageType;
+  typedef Eigen::Ref<const MatType, Options, Stride> RefType;
+  typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
   typedef typename ::eigenpy::aligned_storage<
       referent_size<StorageType &>::value>::type type;
 };
@@ -189,7 +169,7 @@ struct rvalue_from_python_data<Eigen::PlainObjectBase<Derived> const &>
 template <typename MatType, int Options, typename Stride>
 struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride> &>
     : rvalue_from_python_storage<Eigen::Ref<MatType, Options, Stride> &> {
-  typedef Eigen::Ref<MatType, Options, Stride> T;
+  typedef Eigen::Ref<MatType, Options, Stride> RefType;
 
 #if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) &&                        \
     (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) &&                 \
@@ -197,7 +177,7 @@ struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride> &>
     !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing \
                                        this */
   // This must always be a POD struct with m_data its first member.
-  BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,
+  BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<RefType>,
                                             stage1) == 0);
 #endif
 
@@ -215,9 +195,7 @@ struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride> &>
 
   // Destroys any object constructed in the storage.
   ~rvalue_from_python_data() {
-    typedef ::eigenpy::details::referent_storage_eigen_ref<MatType, Options,
-                                                           Stride>
-        StorageType;
+    typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
     if (this->stage1.convertible == this->storage.bytes)
       static_cast<StorageType *>((void *)this->storage.bytes)->~StorageType();
   }
@@ -228,7 +206,7 @@ struct rvalue_from_python_data<
     const Eigen::Ref<const MatType, Options, Stride> &>
     : rvalue_from_python_storage<
           const Eigen::Ref<const MatType, Options, Stride> &> {
-  typedef const Eigen::Ref<const MatType, Options, Stride> T;
+  typedef Eigen::Ref<const MatType, Options, Stride> RefType;
 
 #if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) &&                        \
     (!defined(__EDG_VERSION__) || __EDG_VERSION__ >= 245) &&                 \
@@ -236,7 +214,7 @@ struct rvalue_from_python_data<
     !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing \
                                        this */
   // This must always be a POD struct with m_data its first member.
-  BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,
+  BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<RefType>,
                                             stage1) == 0);
 #endif
 
@@ -254,9 +232,7 @@ struct rvalue_from_python_data<
 
   // Destroys any object constructed in the storage.
   ~rvalue_from_python_data() {
-    typedef ::eigenpy::details::referent_storage_eigen_ref<const MatType,
-                                                           Options, Stride>
-        StorageType;
+    typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
     if (this->stage1.convertible == this->storage.bytes)
       static_cast<StorageType *>((void *)this->storage.bytes)->~StorageType();
   }
@@ -576,5 +552,9 @@ struct EigenFromPy<const Eigen::Ref<const MatType, Options, Stride> > {
 #endif
 
 }  // namespace eigenpy
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+#include "eigenpy/tensor/eigen-from-python.hpp"
+#endif
 
 #endif  // __eigenpy_eigen_from_python_hpp__

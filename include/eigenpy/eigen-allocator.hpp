@@ -78,7 +78,9 @@ struct init_tensor {
     assert(PyArray_NDIM(pyArray) == Rank);
     typedef typename Tensor::Index Index;
 
-    Eigen::array<Index, Rank> dimensions = PyArray_DIMS(pyArray);
+    Eigen::array<Index, Rank> dimensions;
+    for (int k = 0; k < PyArray_NDIM(pyArray); ++k)
+      dimensions[k] = PyArray_DIMS(pyArray)[k];
 
     if (storage)
       return new (storage) Tensor(dimensions);
@@ -169,8 +171,12 @@ template <typename MatType>
 struct eigen_allocator_impl_matrix;
 
 template <typename MatType>
-struct eigen_allocator_impl<MatType, Eigen::MatrixBase<MatType> >
+struct eigen_allocator_impl<MatType, Eigen::MatrixBase<MatType>>
     : eigen_allocator_impl_matrix<MatType> {};
+
+template <typename MatType>
+struct eigen_allocator_impl<const MatType, const Eigen::MatrixBase<MatType>>
+    : eigen_allocator_impl_matrix<const MatType> {};
 
 template <typename MatType>
 struct eigen_allocator_impl_matrix {
@@ -299,7 +305,19 @@ struct eigen_allocator_impl_matrix {
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-struct eigen_allocator_impl<TensorType, Eigen::TensorBase<TensorType> > {
+struct eigen_allocator_impl_tensor;
+
+template <typename TensorType>
+struct eigen_allocator_impl<TensorType, Eigen::TensorBase<TensorType>>
+    : eigen_allocator_impl_tensor<TensorType> {};
+
+template <typename TensorType>
+struct eigen_allocator_impl<const TensorType,
+                            const Eigen::TensorBase<TensorType>>
+    : eigen_allocator_impl_tensor<const TensorType> {};
+
+template <typename TensorType>
+struct eigen_allocator_impl_tensor {
   typedef typename TensorType::Scalar Scalar;
   static void allocate(
       PyArrayObject *pyArray,
@@ -324,8 +342,11 @@ struct eigen_allocator_impl<TensorType, Eigen::TensorBase<TensorType> > {
       tensor)
 
   /// \brief Copy Python array into the input matrix mat.
-  template <typename MatrixDerived>
-  static void copy(PyArrayObject *pyArray, const TensorType &tensor) {
+  template <typename TensorDerived>
+  static void copy(PyArrayObject *pyArray,
+                   const Eigen::TensorBase<TensorDerived> &tensor_) {
+    TensorDerived &tensor = const_cast<TensorDerived &>(
+        static_cast<const TensorDerived &>(tensor_));
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
@@ -450,7 +471,7 @@ inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
 }
 
 template <typename MatType, int Options, typename Stride>
-struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
+struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -511,7 +532,7 @@ struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
 
 template <typename MatType, int Options, typename Stride>
 struct eigen_allocator_impl_matrix<
-    const Eigen::Ref<const MatType, Options, Stride> > {
+    const Eigen::Ref<const MatType, Options, Stride>> {
   typedef const Eigen::Ref<const MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -570,6 +591,85 @@ struct eigen_allocator_impl_matrix<
     EigenAllocator<MatType>::copy(ref, pyArray);
   }
 };
+#endif
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+
+template <typename TensorType, typename TensorRef>
+struct eigen_allocator_impl_tensor_ref;
+
+template <typename TensorType>
+struct eigen_allocator_impl_tensor<Eigen::TensorRef<TensorType>>
+    : eigen_allocator_impl_tensor_ref<TensorType,
+                                      Eigen::TensorRef<TensorType>> {};
+
+template <typename TensorType>
+struct eigen_allocator_impl_tensor<const Eigen::TensorRef<const TensorType>>
+    : eigen_allocator_impl_tensor_ref<
+          const TensorType, const Eigen::TensorRef<const TensorType>> {};
+
+template <typename TensorType, typename RefType>
+struct eigen_allocator_impl_tensor_ref {
+  typedef typename TensorType::Scalar Scalar;
+
+  typedef
+      typename ::boost::python::detail::referent_storage<RefType &>::StorageType
+          StorageType;
+
+  static void allocate(
+      PyArrayObject *pyArray,
+      ::boost::python::converter::rvalue_from_python_storage<RefType>
+          *storage) {
+    //    typedef typename StrideType<
+    //        MatType,
+    //        Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime,
+    //        Eigen::internal::traits<RefType>::StrideType::
+    //            OuterStrideAtCompileTime>::type NumpyMapStride;
+
+    static const int Options = Eigen::internal::traits<TensorType>::Options;
+
+    bool need_to_allocate = false;
+    const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
+    const int Scalar_type_code = Register::getTypeCode<Scalar>();
+    if (pyArray_type_code != Scalar_type_code) need_to_allocate |= true;
+    //    bool incompatible_layout =
+    //        !is_arr_layout_compatible_with_mat_type<MatType>(pyArray);
+    //    need_to_allocate |= incompatible_layout;
+    //    if (Options !=
+    //        Eigen::Unaligned)  // we need to check whether the memory is
+    //        correctly
+    //                           // aligned and composed of a continuous segment
+    //    {
+    //      void *data_ptr = PyArray_DATA(pyArray);
+    //      if (!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr,
+    //      Options))
+    //        need_to_allocate |= true;
+    //    }
+
+    void *raw_ptr = storage->storage.bytes;
+    if (need_to_allocate) {
+      TensorType *tensor_ptr;
+      tensor_ptr = details::init_tensor<TensorType>::run(pyArray);
+      RefType tensor_ref(*tensor_ptr);
+
+      new (raw_ptr) StorageType(tensor_ref, pyArray, tensor_ptr);
+
+      RefType &tensor = *reinterpret_cast<RefType *>(raw_ptr);
+      EigenAllocator<TensorType>::copy(pyArray, tensor);
+    } else {
+      assert(pyArray_type_code == Scalar_type_code);
+      typename NumpyMap<TensorType, Scalar, Options>::EigenMap numpyMap =
+          NumpyMap<TensorType, Scalar, Options>::map(pyArray);
+      RefType tensor_ref(numpyMap);
+      new (raw_ptr) StorageType(tensor_ref, pyArray);
+    }
+  }
+
+  static void copy(RefType const &ref, PyArrayObject *pyArray) {
+    EigenAllocator<TensorType>::copy(ref, pyArray);
+  }
+};
+
 #endif
 
 template <typename EigenType>

@@ -124,23 +124,49 @@ template <typename MatType,
               typename boost::remove_reference<MatType>::type::Scalar>
 struct EigenFromPy;
 
+template <typename T>
+struct remove_const_reference {
+  typedef typename boost::remove_const<
+      typename boost::remove_reference<T>::type>::type type;
+};
+
 template <typename EigenType>
 struct get_eigen_base_type {
-  typedef typename boost::remove_const<EigenType>::type EigenType_;
+  typedef typename remove_const_reference<EigenType>::type EigenType_;
   typedef typename boost::mpl::if_<
       boost::is_base_of<Eigen::MatrixBase<EigenType_>, EigenType_>,
-      Eigen::MatrixBase<EigenType>
+      Eigen::MatrixBase<EigenType_>
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
       ,
       typename boost::mpl::if_<
           boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
-          Eigen::TensorBase<EigenType>, void>::type
+          Eigen::TensorBase<EigenType_>, void>::type
 #else
       ,
       void
 #endif
-      >::type type;
+      >::type _type;
+
+  typedef typename boost::mpl::if_<
+      boost::is_const<typename boost::remove_reference<EigenType>::type>,
+      const _type, _type>::type type;
 };
+
+template <typename EigenType>
+struct get_eigen_ref_plain_type;
+
+template <typename MatType, int Options, typename Stride>
+struct get_eigen_ref_plain_type<Eigen::Ref<MatType, Options, Stride> > {
+  typedef typename Eigen::internal::traits<
+      Eigen::Ref<MatType, Options, Stride> >::PlainObjectType type;
+};
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename TensorType>
+struct get_eigen_ref_plain_type<Eigen::TensorRef<TensorType> > {
+  typedef TensorType type;
+};
+#endif
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"

@@ -24,15 +24,15 @@ struct numpy_map_impl;
 template <typename MatType, typename InputScalar, int AlignmentValue,
           typename Stride>
 struct numpy_map_impl<MatType, InputScalar, AlignmentValue, Stride,
-                      Eigen::MatrixBase<MatType> >
+                      Eigen::MatrixBase<MatType>>
     : numpy_map_impl_matrix<MatType, InputScalar, AlignmentValue, Stride> {};
 
-#ifdef EIGENPY_WITH_TENSOR_SUPPORT
-template <typename TensorType, typename InputScalar, int AlignmentValue,
+template <typename MatType, typename InputScalar, int AlignmentValue,
           typename Stride>
-struct numpy_map_impl_tensor;
-
-#endif
+struct numpy_map_impl<const MatType, InputScalar, AlignmentValue, Stride,
+                      const Eigen::MatrixBase<MatType>>
+    : numpy_map_impl_matrix<const MatType, InputScalar, AlignmentValue,
+                            Stride> {};
 
 template <typename MatType, typename InputScalar, int AlignmentValue,
           typename Stride>
@@ -175,20 +175,39 @@ struct numpy_map_impl_matrix<MatType, InputScalar, AlignmentValue, Stride,
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
+
+template <typename TensorType, typename InputScalar, int AlignmentValue,
+          typename Stride>
+struct numpy_map_impl_tensor;
+
 template <typename TensorType, typename InputScalar, int AlignmentValue,
           typename Stride>
 struct numpy_map_impl<TensorType, InputScalar, AlignmentValue, Stride,
-                      Eigen::TensorBase<TensorType> > {
+                      Eigen::TensorBase<TensorType>>
+    : numpy_map_impl_tensor<TensorType, InputScalar, AlignmentValue, Stride> {};
+
+template <typename TensorType, typename InputScalar, int AlignmentValue,
+          typename Stride>
+struct numpy_map_impl<const TensorType, InputScalar, AlignmentValue, Stride,
+                      const Eigen::TensorBase<TensorType>>
+    : numpy_map_impl_tensor<const TensorType, InputScalar, AlignmentValue,
+                            Stride> {};
+
+template <typename TensorType, typename InputScalar, int AlignmentValue,
+          typename Stride>
+struct numpy_map_impl_tensor {
   typedef TensorType Tensor;
   typedef typename Eigen::internal::traits<TensorType>::Index Index;
-  static const Index NumIndices = TensorType::NumIndices;
+  static const int Options = Eigen::internal::traits<TensorType>::Options;
+  static const int NumIndices = TensorType::NumIndices;
 
-  typedef Eigen::Tensor<InputScalar, NumIndices, Tensor::Options, Index>
+  typedef Eigen::Tensor<InputScalar, NumIndices, Options, Index>
       EquivalentInputTensorType;
   typedef typename EquivalentInputTensorType::Dimensions Dimensions;
-  typedef Eigen::TensorMap<EquivalentInputTensorType, Tensor::Options> EigenMap;
+  typedef Eigen::TensorMap<EquivalentInputTensorType, Options> EigenMap;
 
   static EigenMap map(PyArrayObject* pyArray, bool swap_dimensions = false) {
+    EIGENPY_UNUSED_VARIABLE(swap_dimensions);
     assert(PyArray_NDIM(pyArray) == NumIndices || NumIndices == Eigen::Dynamic);
 
     Eigen::DSizes<Index, NumIndices> dimensions(PyArray_NDIM(pyArray));
