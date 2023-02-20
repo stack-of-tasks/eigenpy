@@ -104,6 +104,7 @@ namespace bp = boost::python;
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
+#define EIGENPY_UNUSED_TYPE(type) (type *)(NULL)
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
