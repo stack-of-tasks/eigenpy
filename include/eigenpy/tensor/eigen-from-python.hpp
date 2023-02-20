@@ -31,6 +31,15 @@ struct expected_pytype_for_arg<Eigen::Tensor<Scalar, Rank, Options, IndexType> >
     : eigenpy::expected_pytype_for_arg<
           Eigen::Tensor<Scalar, Rank, Options, IndexType> > {};
 
+template <typename Scalar, int Rank, int Options, typename IndexType>
+struct rvalue_from_python_data<
+    Eigen::Tensor<Scalar, Rank, Options, IndexType> const &>
+    : ::eigenpy::rvalue_from_python_data<
+          Eigen::Tensor<Scalar, Rank, Options, IndexType> const &> {
+  typedef Eigen::Tensor<Scalar, Rank, Options, IndexType> T;
+  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(T const &)
+};
+
 template <typename Derived>
 struct rvalue_from_python_data<Eigen::TensorBase<Derived> const &>
     : ::eigenpy::rvalue_from_python_data<Derived const &> {
