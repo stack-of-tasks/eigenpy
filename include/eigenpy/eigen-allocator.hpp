@@ -171,11 +171,11 @@ template <typename MatType>
 struct eigen_allocator_impl_matrix;
 
 template <typename MatType>
-struct eigen_allocator_impl<MatType, Eigen::MatrixBase<MatType>>
+struct eigen_allocator_impl<MatType, Eigen::MatrixBase<MatType> >
     : eigen_allocator_impl_matrix<MatType> {};
 
 template <typename MatType>
-struct eigen_allocator_impl<const MatType, const Eigen::MatrixBase<MatType>>
+struct eigen_allocator_impl<const MatType, const Eigen::MatrixBase<MatType> >
     : eigen_allocator_impl_matrix<const MatType> {};
 
 template <typename MatType>
@@ -308,12 +308,12 @@ template <typename TensorType>
 struct eigen_allocator_impl_tensor;
 
 template <typename TensorType>
-struct eigen_allocator_impl<TensorType, Eigen::TensorBase<TensorType>>
+struct eigen_allocator_impl<TensorType, Eigen::TensorBase<TensorType> >
     : eigen_allocator_impl_tensor<TensorType> {};
 
 template <typename TensorType>
 struct eigen_allocator_impl<const TensorType,
-                            const Eigen::TensorBase<TensorType>>
+                            const Eigen::TensorBase<TensorType> >
     : eigen_allocator_impl_tensor<const TensorType> {};
 
 template <typename TensorType>
@@ -471,7 +471,7 @@ inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
 }
 
 template <typename MatType, int Options, typename Stride>
-struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
+struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -532,7 +532,7 @@ struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
 
 template <typename MatType, int Options, typename Stride>
 struct eigen_allocator_impl_matrix<
-    const Eigen::Ref<const MatType, Options, Stride>> {
+    const Eigen::Ref<const MatType, Options, Stride> > {
   typedef const Eigen::Ref<const MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -599,14 +599,14 @@ template <typename TensorType, typename TensorRef>
 struct eigen_allocator_impl_tensor_ref;
 
 template <typename TensorType>
-struct eigen_allocator_impl_tensor<Eigen::TensorRef<TensorType>>
+struct eigen_allocator_impl_tensor<Eigen::TensorRef<TensorType> >
     : eigen_allocator_impl_tensor_ref<TensorType,
-                                      Eigen::TensorRef<TensorType>> {};
+                                      Eigen::TensorRef<TensorType> > {};
 
 template <typename TensorType>
-struct eigen_allocator_impl_tensor<const Eigen::TensorRef<const TensorType>>
+struct eigen_allocator_impl_tensor<const Eigen::TensorRef<const TensorType> >
     : eigen_allocator_impl_tensor_ref<
-          const TensorType, const Eigen::TensorRef<const TensorType>> {};
+          const TensorType, const Eigen::TensorRef<const TensorType> > {};
 
 template <typename TensorType, typename RefType>
 struct eigen_allocator_impl_tensor_ref {
