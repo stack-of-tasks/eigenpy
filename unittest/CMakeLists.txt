@@ -1,6 +1,10 @@
 #
-# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2021 INRIA
+# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2023 INRIA
 #
+
+if("${CMAKE_CXX_COMPILE_FEATURES}" MATCHES "cxx_std_11")
+  set(EIGENPY_WITH_TENSOR_SUPPORT TRUE)
+endif()
 
 macro(ADD_LIB_UNIT_TEST test)
   create_ctest_build_tests_target()
@@ -25,6 +29,9 @@ macro(ADD_LIB_UNIT_TEST test)
 endmacro(ADD_LIB_UNIT_TEST)
 
 add_lib_unit_test(matrix)
+if(EIGENPY_WITH_TENSOR_SUPPORT)
+  add_lib_unit_test(tensor)
+endif()
 add_lib_unit_test(geometry)
 add_lib_unit_test(complex)
 add_lib_unit_test(return_by_ref)
@@ -39,6 +46,10 @@ endif()
 add_lib_unit_test(std_vector)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
+
+if(EIGENPY_WITH_TENSOR_SUPPORT)
+  add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
+endif()
 add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"
                      "unittest")
 add_python_unit_test("py-complex" "unittest/python/test_complex.py" "unittest")
