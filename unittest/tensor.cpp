@@ -21,14 +21,8 @@ Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> matrix1x1(
 }
 
 template <typename Tensor>
-Eigen::TensorRef<Tensor> make_ref(Eigen::TensorBase<Tensor>& tensor) {
-  return Eigen::TensorRef<Tensor>(static_cast<Tensor&>(tensor));
-}
-
-template <typename Tensor>
-const Eigen::TensorRef<const Tensor> make_const_ref(
-    const Eigen::TensorBase<const Tensor>& tensor) {
-  return Eigen::TensorRef<const Tensor>(static_cast<const Tensor&>(tensor));
+Eigen::TensorRef<Tensor> make_ref(Tensor& tensor) {
+  return Eigen::TensorRef<Tensor>(tensor);
 }
 
 template <typename Tensor>
