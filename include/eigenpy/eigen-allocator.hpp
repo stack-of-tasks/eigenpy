@@ -344,7 +344,6 @@ struct eigen_allocator_impl_tensor {
   /// \brief Copy Python array into the input matrix mat.
   template <typename TensorDerived, int AccessLevel>
   static void copy(
-      PyArrayObject *pyArray,
       const Eigen::TensorBase<TensorDerived, AccessLevel> &tensor_) {
     TensorDerived &tensor = const_cast<TensorDerived &>(
         static_cast<const TensorDerived &>(tensor_));
@@ -649,14 +648,15 @@ struct eigen_allocator_impl_tensor_ref {
 
     void *raw_ptr = storage->storage.bytes;
     if (need_to_allocate) {
-      TensorType *tensor_ptr;
-      tensor_ptr = details::init_tensor<TensorType>::run(pyArray);
+      typedef typename boost::remove_const<TensorType>::type TensorTypeNonConst;
+      TensorTypeNonConst *tensor_ptr;
+      tensor_ptr = details::init_tensor<TensorTypeNonConst>::run(pyArray);
       RefType tensor_ref(*tensor_ptr);
 
       new (raw_ptr) StorageType(tensor_ref, pyArray, tensor_ptr);
 
-      RefType &tensor = *reinterpret_cast<RefType *>(raw_ptr);
-      EigenAllocator<TensorType>::copy(pyArray, tensor);
+      TensorTypeNonConst &tensor = *tensor_ptr;
+      EigenAllocator<TensorTypeNonConst>::copy(pyArray, tensor);
     } else {
       assert(pyArray_type_code == Scalar_type_code);
       typename NumpyMap<TensorType, Scalar, Options>::EigenMap numpyMap =
