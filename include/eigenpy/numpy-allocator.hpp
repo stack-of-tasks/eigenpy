@@ -78,8 +78,8 @@ struct numpy_allocator_impl<const TensorType,
 template <typename TensorType>
 struct numpy_allocator_impl_tensor {
   template <typename TensorDerived>
-  static PyArrayObject *allocate(const Eigen::TensorBase<TensorDerived> &tensor,
-                                 npy_intp nd, npy_intp *shape) {
+  static PyArrayObject *allocate(const TensorDerived &tensor, npy_intp nd,
+                                 npy_intp *shape) {
     const int code = Register::getTypeCode<typename TensorDerived::Scalar>();
     PyArrayObject *pyArray = (PyArrayObject *)call_PyArray_SimpleNew(
         static_cast<int>(nd), shape, code);
@@ -250,10 +250,7 @@ struct numpy_allocator_impl_tensor<Eigen::TensorRef<TensorType> > {
 
       return pyArray;
     } else {
-      return NumpyAllocator<TensorType>::allocate(
-          static_cast<Eigen::TensorBase<Eigen::TensorRef<TensorType> > &>(
-              tensor),
-          nd, shape);
+      return NumpyAllocator<TensorType>::allocate(tensor, nd, shape);
     }
   }
 };
@@ -281,11 +278,7 @@ struct numpy_allocator_impl_tensor<const Eigen::TensorRef<const TensorType> > {
 
       return pyArray;
     } else {
-      return NumpyAllocator<TensorType>::allocate(
-          static_cast<
-              const Eigen::TensorBase<Eigen::TensorRef<const TensorType> > &>(
-              tensor),
-          nd, shape);
+      return NumpyAllocator<TensorType>::allocate(tensor, nd, shape);
     }
   }
 };
