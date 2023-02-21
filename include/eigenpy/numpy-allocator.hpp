@@ -250,7 +250,10 @@ struct numpy_allocator_impl_tensor<Eigen::TensorRef<TensorType> > {
 
       return pyArray;
     } else {
-      return NumpyAllocator<TensorType>::allocate(tensor, nd, shape);
+      return NumpyAllocator<TensorType>::allocate(
+          static_cast<Eigen::TensorBase<Eigen::TensorRef<TensorType> > &>(
+              tensor),
+          nd, shape);
     }
   }
 };
@@ -278,7 +281,11 @@ struct numpy_allocator_impl_tensor<const Eigen::TensorRef<const TensorType> > {
 
       return pyArray;
     } else {
-      return NumpyAllocator<TensorType>::allocate(tensor, nd, shape);
+      return NumpyAllocator<TensorType>::allocate(
+          static_cast<
+              const Eigen::TensorBase<Eigen::TensorRef<const TensorType> > &>(
+              tensor),
+          nd, shape);
     }
   }
 };
