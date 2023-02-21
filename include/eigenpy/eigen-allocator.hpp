@@ -91,20 +91,44 @@ struct init_tensor {
 #endif
 
 template <typename MatType>
-bool check_swap(PyArrayObject *pyArray, const Eigen::MatrixBase<MatType> &mat) {
-  if (PyArray_NDIM(pyArray) == 0) return false;
-  if (mat.rows() == PyArray_DIMS(pyArray)[0])
-    return false;
-  else
-    return true;
+struct check_swap_impl_matrix;
+
+template <typename EigenType,
+          typename BaseType = typename get_eigen_base_type<EigenType>::type>
+struct check_swap_impl;
+
+template <typename MatType>
+struct check_swap_impl<MatType, Eigen::MatrixBase<MatType> >
+    : check_swap_impl_matrix<MatType> {};
+
+template <typename MatType>
+struct check_swap_impl_matrix {
+  static bool run(PyArrayObject *pyArray,
+                  const Eigen::MatrixBase<MatType> &mat) {
+    if (PyArray_NDIM(pyArray) == 0) return false;
+    if (mat.rows() == PyArray_DIMS(pyArray)[0])
+      return false;
+    else
+      return true;
+  }
+};
+
+template <typename EigenType>
+bool check_swap(PyArrayObject *pyArray, const EigenType &mat) {
+  return check_swap_impl<EigenType>::run(pyArray, mat);
 }
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-bool check_swap(PyArrayObject * /*pyArray*/,
-                const Eigen::TensorBase<TensorType> & /*tensor*/) {
-  return false;
-}
+struct check_swap_impl_tensor {
+  static bool run(PyArrayObject * /*pyArray*/, const TensorType & /*tensor*/) {
+    return false;
+  }
+};
+
+template <typename TensorType>
+struct check_swap_impl<TensorType, Eigen::TensorBase<TensorType> >
+    : check_swap_impl_tensor<TensorType> {};
 #endif
 
 template <typename Scalar, typename NewScalar,
