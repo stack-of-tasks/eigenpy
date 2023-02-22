@@ -290,8 +290,10 @@ struct eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> > {
   static void registration();
 };
 
-template <typename EigenType, typename _Scalar>
-struct EigenFromPy : eigen_from_py_impl<EigenType> {};
+template <typename EigenType>
+struct EigenFromPy<EigenType,
+                   typename boost::remove_reference<EigenType>::type::Scalar>
+    : eigen_from_py_impl<EigenType> {};
 
 template <typename MatType>
 void *eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> >::convertible(

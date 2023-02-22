@@ -155,8 +155,10 @@ struct eigen_to_py_impl_tensor {
 
 EIGENPY_DOCUMENTATION_END_IGNORE
 
-template <typename EigenType, typename Scalar>
-struct EigenToPy : eigen_to_py_impl<EigenType> {
+template <typename EigenType>
+struct EigenToPy<EigenType,
+                 typename boost::remove_reference<EigenType>::type::Scalar>
+    : eigen_to_py_impl<EigenType> {
   static PyTypeObject const* get_pytype() { return getPyArrayType(); }
 };
 
