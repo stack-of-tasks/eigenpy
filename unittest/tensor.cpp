@@ -122,7 +122,7 @@ template <typename Scalar, int Rank>
 struct TensorContainer {
   typedef Eigen::Tensor<Scalar, Rank> Tensor;
   typedef Eigen::TensorRef<Tensor> TensorRef;
-  typedef Eigen::Matrix<int, Rank, 1> Dimensions;
+  typedef Eigen::Matrix<Scalar, Rank, 1> Dimensions;
 
   Tensor m_tensor;
   TensorContainer(const Dimensions& dims) {
