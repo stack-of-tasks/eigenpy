@@ -126,7 +126,7 @@ struct TensorContainer {
 
   Tensor m_tensor;
   TensorContainer(const Dimensions& dims) {
-    typedef Eigen::array<long, Rank> InternalDimension;
+    typedef Eigen::array<typename Tensor::Index, Rank> InternalDimension;
     InternalDimension _dims;
     for (size_t k = 0; k < Rank; ++k) _dims[k] = dims[Eigen::DenseIndex(k)];
 
