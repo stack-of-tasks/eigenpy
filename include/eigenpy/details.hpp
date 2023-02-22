@@ -17,24 +17,49 @@
 #include "eigenpy/scalar-conversion.hpp"
 
 namespace eigenpy {
-template <typename MatType, typename EigenEquivalentType>
-EIGENPY_DEPRECATED void enableEigenPySpecific() {
-  enableEigenPySpecific<MatType>();
-}
+
+template <typename EigenType,
+          typename BaseType = typename get_eigen_base_type<EigenType>::type>
+struct expose_eigen_type_impl;
+
+template <typename MatType>
+struct expose_eigen_type_impl<MatType, Eigen::MatrixBase<MatType> > {
+  static void run() {
+    if (check_registration<MatType>()) return;
+
+    // to-python
+    EigenToPyConverter<MatType>::registration();
+#if EIGEN_VERSION_AT_LEAST(3, 2, 0)
+    EigenToPyConverter<Eigen::Ref<MatType> >::registration();
+    EigenToPyConverter<const Eigen::Ref<const MatType> >::registration();
+#endif
+
+    // from-python
+    EigenFromPyConverter<MatType>::registration();
+  }
+};
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename TensorType>
+struct expose_eigen_type_impl<TensorType, Eigen::TensorBase<TensorType> > {
+  static void run() {
+    if (check_registration<TensorType>()) return;
+
+    // to-python
+    EigenToPyConverter<TensorType>::registration();
+    EigenToPyConverter<Eigen::TensorRef<TensorType> >::registration();
+    EigenToPyConverter<
+        const Eigen::TensorRef<const TensorType> >::registration();
+
+    // from-python
+    EigenFromPyConverter<TensorType>::registration();
+  }
+};
+#endif
 
 template <typename MatType>
 void enableEigenPySpecific() {
-  if (check_registration<MatType>()) return;
-
-  // to-python
-  EigenToPyConverter<MatType>::registration();
-#if EIGEN_VERSION_AT_LEAST(3, 2, 0)
-  EigenToPyConverter<Eigen::Ref<MatType> >::registration();
-  EigenToPyConverter<const Eigen::Ref<const MatType> >::registration();
-#endif
-
-  // from-python
-  EigenFromPyConverter<MatType>::registration();
+  expose_eigen_type_impl<MatType>::run();
 }
 
 }  // namespace eigenpy

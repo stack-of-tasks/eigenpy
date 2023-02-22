@@ -61,6 +61,9 @@
   EIGENPY_PRAGMA_WARNING(                    \
       EIGENPY_STRINGCAT("this file is deprecated: ", the_message))
 
+#define EIGENPY_DOCUMENTATION_START_IGNORE  /// \cond
+#define EIGENPY_DOCUMENTATION_END_IGNORE    /// \endcond
+
 #include "eigenpy/config.hpp"
 
 // Silence a warning about a deprecated use of boost bind by boost python
@@ -85,6 +88,11 @@ namespace bp = boost::python;
 #include <Eigen/Core>
 #include <Eigen/Geometry>
 
+#ifdef EIGENPY_WITH_CXX11_SUPPORT
+#include <unsupported/Eigen/CXX11/Tensor>
+#define EIGENPY_WITH_TENSOR_SUPPORT
+#endif
+
 #if EIGEN_VERSION_AT_LEAST(3, 2, 90)
 #define EIGENPY_DEFAULT_ALIGNMENT_VALUE Eigen::Aligned16
 #else
@@ -96,6 +104,7 @@ namespace bp = boost::python;
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
+#define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type *)(NULL))
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
@@ -114,6 +123,50 @@ template <typename MatType,
           typename Scalar =
               typename boost::remove_reference<MatType>::type::Scalar>
 struct EigenFromPy;
+
+template <typename T>
+struct remove_const_reference {
+  typedef typename boost::remove_const<
+      typename boost::remove_reference<T>::type>::type type;
+};
+
+template <typename EigenType>
+struct get_eigen_base_type {
+  typedef typename remove_const_reference<EigenType>::type EigenType_;
+  typedef typename boost::mpl::if_<
+      boost::is_base_of<Eigen::MatrixBase<EigenType_>, EigenType_>,
+      Eigen::MatrixBase<EigenType_>
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+      ,
+      typename boost::mpl::if_<
+          boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
+          Eigen::TensorBase<EigenType_>, void>::type
+#else
+      ,
+      void
+#endif
+      >::type _type;
+
+  typedef typename boost::mpl::if_<
+      boost::is_const<typename boost::remove_reference<EigenType>::type>,
+      const _type, _type>::type type;
+};
+
+template <typename EigenType>
+struct get_eigen_ref_plain_type;
+
+template <typename MatType, int Options, typename Stride>
+struct get_eigen_ref_plain_type<Eigen::Ref<MatType, Options, Stride> > {
+  typedef typename Eigen::internal::traits<
+      Eigen::Ref<MatType, Options, Stride> >::PlainObjectType type;
+};
+
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+template <typename TensorType>
+struct get_eigen_ref_plain_type<Eigen::TensorRef<TensorType> > {
+  typedef TensorType type;
+};
+#endif
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"

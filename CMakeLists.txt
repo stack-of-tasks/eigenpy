@@ -67,6 +67,7 @@ string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # If needed, fix CMake policy for APPLE systems
 apply_default_apple_configuration()
+check_minimal_cxx_standard(11 ENFORCE)
 
 if(WIN32)
   set(LINK copy_if_different)
@@ -164,6 +165,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/std-vector.hpp
     include/eigenpy/pickle-vector.hpp
     include/eigenpy/stride.hpp
+    include/eigenpy/tensor/eigen-from-python.hpp
     include/eigenpy/swig.hpp
     include/eigenpy/version.hpp)
 

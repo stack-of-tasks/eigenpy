@@ -19,6 +19,11 @@ Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> matrix1x1(
   return ReturnType::Constant(1, 1, value);
 }
 
+template <typename Scalar>
+void matrix1x1_input(const Eigen::Matrix<Scalar, 1, 1>& mat) {
+  std::cout << mat << std::endl;
+}
+
 Eigen::VectorXd emptyVector() {
   Eigen::VectorXd vec;
   vec.resize(0);
@@ -146,6 +151,8 @@ BOOST_PYTHON_MODULE(matrix) {
 
   bp::def("vector1x1", vector1x1<double>);
   bp::def("matrix1x1", matrix1x1<double>);
+  bp::def("matrix1x1", matrix1x1_input<double>);
+  bp::def("matrix1x1_int", matrix1x1_input<int>);
 
   bp::def("naturals", naturalsXX);
   bp::def("naturalsX", naturalsX);
