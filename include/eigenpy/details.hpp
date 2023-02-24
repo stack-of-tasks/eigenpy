@@ -19,11 +19,12 @@
 namespace eigenpy {
 
 template <typename EigenType,
-          typename BaseType = typename get_eigen_base_type<EigenType>::type>
+          typename BaseType = typename get_eigen_base_type<EigenType>::type,
+          typename Scalar = typename EigenType::Scalar>
 struct expose_eigen_type_impl;
 
-template <typename MatType>
-struct expose_eigen_type_impl<MatType, Eigen::MatrixBase<MatType> > {
+template <typename MatType, typename Scalar>
+struct expose_eigen_type_impl<MatType, Eigen::MatrixBase<MatType>, Scalar> {
   static void run() {
     if (check_registration<MatType>()) return;
 
@@ -40,8 +41,9 @@ struct expose_eigen_type_impl<MatType, Eigen::MatrixBase<MatType> > {
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
-template <typename TensorType>
-struct expose_eigen_type_impl<TensorType, Eigen::TensorBase<TensorType> > {
+template <typename TensorType, typename Scalar>
+struct expose_eigen_type_impl<TensorType, Eigen::TensorBase<TensorType>,
+                              Scalar> {
   static void run() {
     if (check_registration<TensorType>()) return;
 
