@@ -54,7 +54,7 @@ if(GENERATE_PYTHON_STUBS)
   load_stubgen()
 
   generate_stubs(${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_NAME}
-                 ${ABSOLUTE_PYTHON_SITELIB})
+                 ${ABSOLUTE_PYTHON_SITELIB} ${PYWRAP})
 endif(GENERATE_PYTHON_STUBS)
 
 # --- INSTALL SCRIPTS
