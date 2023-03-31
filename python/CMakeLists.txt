@@ -43,8 +43,10 @@ set_target_properties(
              RUNTIME_OUTPUT_DIRECTORY_<CONFIG>
              "${CMAKE_BINARY_DIR}/python/${PROJECT_NAME}")
 
-if(UNIX AND NOT APPLE)
-  set_target_properties(${PYWRAP} PROPERTIES INSTALL_RPATH "\$ORIGIN/../../..")
+if(UNIX)
+  get_relative_rpath(${${PYWRAP}_INSTALL_DIR} ${PYWRAP}_INSTALL_RPATH)
+  set_target_properties(${PYWRAP} PROPERTIES INSTALL_RPATH
+                                             "${${PYWRAP}_INSTALL_RPATH}")
 endif()
 
 install(TARGETS ${PYWRAP} DESTINATION ${${PYWRAP}_INSTALL_DIR})
