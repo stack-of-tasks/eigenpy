@@ -39,6 +39,7 @@ if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
 endif()
 add_lib_unit_test(std_vector)
 add_lib_unit_test(user_struct)
+add_lib_unit_test(bind_optional)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
 
@@ -97,3 +98,6 @@ set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
                      "python;unittest")
 set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
+
+add_python_unit_test("py-optional" "unittest/python/test_optional.py"
+                     "unittest")
