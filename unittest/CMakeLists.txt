@@ -40,6 +40,28 @@ endif()
 add_lib_unit_test(std_vector)
 add_lib_unit_test(user_struct)
 
+function(config_bind_optional tagname opttype)
+  set(MODNAME bind_optional_${tagname})
+  set(OPTIONAL ${opttype})
+  configure_file(bind_optional.cpp.in ${MODNAME}.cpp)
+
+  set(py_file test_optional_${tagname}.py)
+  configure_file(python/test_optional.py.in
+                 ${CMAKE_CURRENT_SOURCE_DIR}/python/${py_file})
+  add_lib_unit_test(${MODNAME})
+  message(
+    STATUS
+      "Adding unit test py-optional-${tagname} with file ${py_file} and module ${MODNAME}"
+  )
+  add_python_unit_test("py-optional-${tagname}" "unittest/python/${py_file}"
+                       "unittest")
+endfunction()
+
+config_bind_optional(boost "boost::optional")
+if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
+  config_bind_optional(std "std::optional")
+endif()
+
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
 
 add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
