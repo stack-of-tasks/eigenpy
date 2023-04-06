@@ -8,16 +8,27 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/eigen-from-python.hpp"
 #include <boost/optional.hpp>
+#ifdef EIGENPY_WITH_CXX17_SUPPORT
+#include <optional>
+#endif
 
+#ifndef EIGENPY_DEFAULT_OPTIONAL
 #define EIGENPY_DEFAULT_OPTIONAL boost::optional
+#endif
 
 namespace boost {
 namespace python {
 namespace converter {
 
 template <typename T>
-struct expected_pytype_for_arg<EIGENPY_DEFAULT_OPTIONAL<T> >
+struct expected_pytype_for_arg<boost::optional<T> >
     : expected_pytype_for_arg<T> {};
+
+#ifdef EIGENPY_WITH_CXX17_SUPPORT
+template <typename T>
+struct expected_pytype_for_arg<std::optional<T> >
+    : expected_pytype_for_arg<T> {};
+#endif
 
 }  // namespace converter
 }  // namespace python
@@ -25,6 +36,24 @@ struct expected_pytype_for_arg<EIGENPY_DEFAULT_OPTIONAL<T> >
 
 namespace eigenpy {
 namespace detail {
+
+/// Helper struct to decide which type is the "none" type for a specific optional<T> implementation.
+template<template <typename> class OptionalTpl>
+struct nullopt_helper {};
+
+template<>
+struct nullopt_helper<boost::optional> {
+  typedef boost::none_t type;
+  static type value() { return boost::none; }
+};
+
+#ifdef EIGENPY_WITH_CXX17_SUPPORT
+template<>
+struct nullopt_helper<std::optional> {
+  typedef std::nullopt_t type;
+  static type value() { return std::nullopt; }
+};
+#endif
 
 template <typename T,
           template <typename> class OptionalTpl = EIGENPY_DEFAULT_OPTIONAL>
@@ -80,7 +109,7 @@ void OptionalFromPython<T, OptionalTpl>::construct(
           ->storage.bytes;
 
   if (obj_ptr == Py_None) {
-    new (storage) OptionalTpl<T>(boost::none);
+    new (storage) OptionalTpl<T>(nullopt_helper<OptionalTpl>::value());
   } else {
     const T value = bp::extract<T>(obj_ptr);
     new (storage) OptionalTpl<T>(value);
