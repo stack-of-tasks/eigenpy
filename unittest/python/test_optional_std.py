@@ -1,4 +1,6 @@
-import bind_optional
+import importlib
+
+bind_optional = importlib.import_module("bind_optional_std")
 
 
 def test_none_if_zero():
@@ -58,8 +60,8 @@ def test_random_mat():
     assert M.shape == (4, 4)
 
 
-if __name__ == "__main__":
-    import pytest
-    import sys
-
-    sys.exit(pytest.main(sys.argv))
+test_none_if_zero()
+test_struct_ctors()
+test_struct_setters()
+test_factory()
+test_random_mat()

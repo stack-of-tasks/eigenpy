@@ -1,16 +1,20 @@
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/optional.hpp"
+#ifdef EIGENPY_WITH_CXX17_SUPPORT
+#include <optional>
+#endif
 
-#define OPTIONAL boost::optional
-#define OPT_NONE boost::none
+#cmakedefine OPTIONAL @OPTIONAL@
 
-using opt_dbl = OPTIONAL<double>;
+typedef eigenpy::detail::nullopt_helper<OPTIONAL> none_helper;
+static auto OPT_NONE = none_helper::value();
+typedef OPTIONAL<double> opt_dbl;
 
 struct mystruct {
   OPTIONAL<int> a;
   opt_dbl b;
   OPTIONAL<std::string> msg{"i am struct"};
-  mystruct() : a(OPT_NONE), b(boost::none) {}
+  mystruct() : a(OPT_NONE), b(OPT_NONE) {}
   mystruct(int a, const opt_dbl &b = OPT_NONE) : a(a), b(b) {}
 };
 
@@ -36,13 +40,13 @@ OPTIONAL<Eigen::MatrixXd> random_mat_if_true(bool flag) {
     return OPT_NONE;
 }
 
-BOOST_PYTHON_MODULE(bind_optional) {
+BOOST_PYTHON_MODULE(@MODNAME@) {
   using namespace eigenpy;
-  OptionalConverter<int>::registration();
-  OptionalConverter<double>::registration();
-  OptionalConverter<std::string>::registration();
-  OptionalConverter<mystruct>::registration();
-  OptionalConverter<Eigen::MatrixXd>::registration();
+  OptionalConverter<int, OPTIONAL>::registration();
+  OptionalConverter<double, OPTIONAL>::registration();
+  OptionalConverter<std::string, OPTIONAL>::registration();
+  OptionalConverter<mystruct, OPTIONAL>::registration();
+  OptionalConverter<Eigen::MatrixXd, OPTIONAL>::registration();
   enableEigenPy();
 
   bp::class_<mystruct>("mystruct", bp::no_init)
