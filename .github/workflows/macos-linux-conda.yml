@@ -7,7 +7,7 @@ jobs:
     name: ${{ matrix.os }} - ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_DIR: /github/home/.ccache # Enable ccache
+      CCACHE_DIR: .ccache # Enable ccache
 
     strategy:
       fail-fast: false
@@ -46,7 +46,7 @@ jobs:
       shell: bash -l {0}
       run: |
         conda activate eigenpy
-        conda install cmake -c conda-forge
+        conda install cmake ccache -c conda-forge
         conda list
 
     - name: Build EigenPy
@@ -58,7 +58,7 @@ jobs:
         mkdir build
         cd build
 
-        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3) -DGENERATE_PYTHON_STUBS=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
+        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPYTHON_EXECUTABLE=$(which python3) -DGENERATE_PYTHON_STUBS=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         make
         make build_tests
         export CTEST_OUTPUT_ON_FAILURE=1
