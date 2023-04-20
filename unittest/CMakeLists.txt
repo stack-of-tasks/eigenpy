@@ -62,6 +62,8 @@ if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
   config_bind_optional(std "std::optional")
 endif()
 
+add_lib_unit_test(bind_virtual_factory)
+
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
 
 add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
@@ -118,4 +120,8 @@ set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
                      "python;unittest")
-set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
+set_tests_properties("py-user-struct" PROPERTIES DEPENDS ${PYWRAP})
+
+add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
+                     "python;unittest")
+set_tests_properties("py-bind-virtual" PROPERTIES DEPENDS ${PYWRAP})
