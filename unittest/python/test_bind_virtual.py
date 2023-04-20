@@ -4,7 +4,7 @@ import bind_virtual_factory as bvf
 class ImplClass(bvf.MyVirtualClass):
     def __init__(self):
         self.val = 42
-        super().__init__()
+        bvf.MyVirtualClass.__init__(self)
 
     def createData(self):
         return ImplData(self)
@@ -27,7 +27,8 @@ class ImplClass(bvf.MyVirtualClass):
 
 class ImplData(bvf.MyVirtualData):
     def __init__(self, c):
-        super().__init__(c)  # parent virtual class requires arg
+        # parent virtual class requires arg
+        bvf.MyVirtualData.__init__(self, c)
         self.value = c.val
 
 

@@ -24,7 +24,7 @@ struct MyVirtualClass {
 };
 
 struct MyVirtualData {
-  MyVirtualData(MyVirtualClass const&) {}
+  MyVirtualData(MyVirtualClass const &) {}
   virtual ~MyVirtualData() {}  // virtual dtor to mark class as polymorphic
 };
 
@@ -84,8 +84,9 @@ struct VirtualClassWrapper : MyVirtualClass, bp::wrapper<MyVirtualClass> {
 /// This "trampoline class" does nothing but is ABSOLUTELY required to ensure
 /// downcasting works properly with non-smart ptr signatures. Otherwise,
 /// there is no handle to the original Python object ( @c PyObject *).
-/// Every single polymorphic type exposed to Python should be exposed through such a trampoline.
-/// Users can also create their own wrapper classes by taking inspiration from boost::python::wrapper<T>.
+/// Every single polymorphic type exposed to Python should be exposed through
+/// such a trampoline. Users can also create their own wrapper classes by taking
+/// inspiration from boost::python::wrapper<T>.
 struct DataWrapper : MyVirtualData, bp::wrapper<MyVirtualData> {
   /// we have to use-declare non-defaulted constructors
   /// (see https://en.cppreference.com/w/cpp/language/default_constructor)
@@ -99,7 +100,8 @@ const MyVirtualData &iden_ref(const MyVirtualData &d) {
   return d;
 }
 
-/// Take a shared_ptr (by const reference or value, doesn't matter), return by const reference
+/// Take a shared_ptr (by const reference or value, doesn't matter), return by
+/// const reference
 const MyVirtualData &iden_shared(const shared_ptr<MyVirtualData> &d) {
   // get boost.python's custom deleter
   // boost.python hides the handle to the original object in there
@@ -136,7 +138,7 @@ BOOST_PYTHON_MODULE(bind_virtual_factory) {
   /// otherwise if passed as "HeldType", we need to define
   /// the constructor and call initializer manually.
   bp::class_<DataWrapper, boost::noncopyable>("MyVirtualData", bp::no_init)
-      .def(bp::init<MyVirtualClass const&>(bp::args("self", "model")));
+      .def(bp::init<MyVirtualClass const &>(bp::args("self", "model")));
 
   bp::def("callDoSomethingPtr", callDoSomethingPtr, bp::args("obj"));
   bp::def("callDoSomethingRef", callDoSomethingRef, bp::args("obj"));
