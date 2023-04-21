@@ -80,10 +80,6 @@ if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
                        "unittest")
 endif()
 
-add_python_unit_test("py-switch" "unittest/python/test_switch.py"
-                     "python;unittest")
-set_tests_properties("py-switch" PROPERTIES DEPENDS ${PYWRAP})
-
 add_python_unit_test("py-dimensions" "unittest/python/test_dimensions.py"
                      "python;unittest")
 set_tests_properties("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})

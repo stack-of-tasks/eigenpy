@@ -1,8 +1,6 @@
 import numpy as np
 import eigenpy
 
-eigenpy.switchToNumpyArray()
-
 dim = 100
 A = np.random.rand(dim, dim)
 

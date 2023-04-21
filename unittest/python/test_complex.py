@@ -1,9 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
-from complex import switchToNumpyArray, real, imag, ascomplex
-
-switchToNumpyArray()
+from complex import real, imag, ascomplex
 
 rows = 10
 cols = 20
