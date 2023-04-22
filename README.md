@@ -21,6 +21,7 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
  - full support of SWIG objects
  - full support of runtime declaration of Numpy scalar types
  - extended API to expose std::vector types
+ - full support of vectorization instructions between C++ and Python
 
 ## Setup
 
