@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 INRIA
+ * Copyright 2018-2023 INRIA
  */
 
 #ifndef __eigenpy_numpy_type_hpp__
@@ -45,53 +45,29 @@ bool np_type_is_convertible_into_scalar(const int np_type) {
   }
 }
 
-enum NP_TYPE { MATRIX_TYPE, ARRAY_TYPE };
-
 struct EIGENPY_DLLAPI NumpyType {
   static NumpyType& getInstance();
-
-  operator bp::object() { return getInstance().CurrentNumpyType; }
 
   static bp::object make(PyArrayObject* pyArray, bool copy = false);
 
   static bp::object make(PyObject* pyObj, bool copy = false);
 
-  static void setNumpyType(bp::object& obj);
-
   static void sharedMemory(const bool value);
 
   static bool sharedMemory();
 
-  static void switchToNumpyArray();
-
-  static void switchToNumpyMatrix();
-
-  static NP_TYPE& getType();
-
   static bp::object getNumpyType();
 
-  static const PyTypeObject* getNumpyMatrixType();
-
   static const PyTypeObject* getNumpyArrayType();
-
-  static bool isMatrix();
-
-  static bool isArray();
 
  protected:
   NumpyType();
 
-  bp::object CurrentNumpyType;
   bp::object pyModule;
 
   // Numpy types
-  bp::object NumpyMatrixObject;
-  PyTypeObject* NumpyMatrixType;
-  // bp::object NumpyAsMatrixObject; PyTypeObject * NumpyAsMatrixType;
   bp::object NumpyArrayObject;
   PyTypeObject* NumpyArrayType;
-
-  NP_TYPE np_type;
 
   bool shared_memory;
 };

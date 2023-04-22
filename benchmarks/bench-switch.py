@@ -24,23 +24,6 @@ print(cmd2)
 ipython.magic(cmd2)
 print("\n")
 
-eigenpy.switchToNumpyMatrix()
-print("----------------------")
-print("switch to numpy matrix")
-print("----------------------")
-print("\n")
-
-cmd3 = "timeit quat.coeffs()"
-print(cmd3)
-ipython.magic(cmd3)
-print("\n")
-
-eigenpy.switchToNumpyArray()
-print("---------------------")
-print("switch to numpy array")
-print("---------------------")
-print("\n")
-
 cmd4 = "timeit quat.coeffs()"
 print(cmd4)
 ipython.magic(cmd4)

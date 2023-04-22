@@ -10,14 +10,17 @@ EigenPy — Efficient Python bindings between Numpy/Eigen
   <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" alt="Code style: black"></a>
 </p>
 
-**EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python.
+**EigenPy** is an open source framework which allows to bind the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python via Boost.Python.
 
 **EigenPy** provides:
  - full memory sharing between Numpy and Eigen avoiding memory allocation
  - full support Eigen::Ref avoiding memory allocation
+ - full support of the Eigen::Tensor module
  - exposition of the Geometry module of Eigen for easy code prototyping
  - standard matrix decomposion routines of Eigen such as the Cholesky decomposition, SVD decomposition, QR decomposition, and etc.
  - full support of SWIG objects
+ - full support of runtime declaration of Numpy scalar types
+ - extended API to expose std::vector types
 
 ## Setup
 
@@ -26,9 +29,10 @@ The installation of **EigenPy** on your computer is made easy for Linux/BSD, Mac
 ### The Conda approach
 
 You simply need this simple line:
-```
+```bash
 conda install eigenpy -c conda-forge
 ```
+
 ### Ubuntu
 
 You can easily install **EigenPy** from binairies.
@@ -43,18 +47,14 @@ sudo sh -c "echo 'deb [arch=amd64] http://robotpkg.openrobots.org/packages/debia
 curl http://robotpkg.openrobots.org/packages/debian/robotpkg.key | sudo apt-key add -
 ```
 3. You need to run at least once apt update to fetch the package descriptions:
-```
+```bash
 sudo apt-get update
 ```
+
 #### Install EigenPy
 4. The installation of **EigenPy** and its dependencies is made through the line:
 
-For Python 2.7
-```
-sudo apt install robotpkg-py27-eigenpy
-```
-or for Python 3.{5,6,7}
-```
+```bash
 sudo apt install robotpkg-py35-eigenpy
 ```
 where 35 should be replaced by the python 3 you want to work this (e.g. `robotpkg-py36-eigenpy` to work with Python 3.6).
@@ -81,6 +81,7 @@ The following people have been involved in the development of **EigenPy**:
 - [Wolfgang Merkt](http://www.wolfgangmerkt.com/) (University of Edinburgh): ROS integration and support
 - [Sean Yen](https://www.linkedin.com/in/seanyentw) (Microsoft): Windows integration
 - [Loïc Estève](https://github.com/lesteve) (INRIA): Conda integration
+- [Wilson Jallet](https://manifoldfr.github.io/) (INRIA/LAAS-CNRS): core developer
 
 If you have taken part to the development of **EigenPy**, feel free to add your name and contribution here.
 

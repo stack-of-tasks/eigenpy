@@ -2,8 +2,6 @@ import eigenpy
 
 import numpy as np
 
-eigenpy.switchToNumpyArray()
-
 dim = 100
 A = np.random.rand(dim, dim)
 A = (A + A.T) * 0.5

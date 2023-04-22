@@ -101,9 +101,8 @@ struct eigen_to_py_impl_matrix {
     PyArrayObject* pyArray;
     // Allocate Python memory
     if ((((!(C == 1) != !(R == 1)) && !MatrixDerived::IsVectorAtCompileTime) ||
-         MatrixDerived::IsVectorAtCompileTime) &&
-        NumpyType::getType() ==
-            ARRAY_TYPE)  // Handle array with a single dimension
+         MatrixDerived::IsVectorAtCompileTime))  // Handle array with a single
+                                                 // dimension
     {
       npy_intp shape[1] = {C == 1 ? R : C};
       pyArray = NumpyAllocator<MatType>::allocate(
