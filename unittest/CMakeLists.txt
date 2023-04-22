@@ -47,7 +47,7 @@ function(config_bind_optional tagname opttype)
 
   set(py_file test_optional_${tagname}.py)
   configure_file(python/test_optional.py.in
-                 ${CMAKE_CURRENT_SOURCE_DIR}/python/${py_file})
+                 ${CMAKE_CURRENT_BINARY_DIR}/python/${py_file})
   add_lib_unit_test(${MODNAME})
   message(
     STATUS
