@@ -207,6 +207,7 @@ set(${PROJECT_NAME}_SOURCES
     src/quaternion.cpp
     src/geometry-conversion.cpp
     src/std-vector.cpp
+    src/optional.cpp
     src/version.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}

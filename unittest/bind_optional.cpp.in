@@ -74,6 +74,6 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
           bp::make_setter(&mystruct::msg));
 
   bp::def("none_if_zero", none_if_zero, bp::args("i"));
-  bp::def("create_if_true", create_if_true, bp::args("flag", "b"));
+  bp::def("create_if_true", create_if_true, (bp::arg("flag"), bp::arg("b") = OPT_NONE));
   bp::def("random_mat_if_true", random_mat_if_true, bp::args("flag"));
 }

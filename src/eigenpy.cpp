@@ -22,6 +22,8 @@ void exposeMatrixComplexFloat();
 void exposeMatrixComplexDouble();
 void exposeMatrixComplexLongDouble();
 
+void exposeNoneType();
+
 /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instances.
  */
 void enableEigenPy() {
@@ -54,6 +56,8 @@ void enableEigenPy() {
   exposeMatrixComplexFloat();
   exposeMatrixComplexDouble();
   exposeMatrixComplexLongDouble();
+
+  exposeNoneType();
 }
 
 }  // namespace eigenpy
