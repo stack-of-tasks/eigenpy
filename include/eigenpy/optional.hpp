@@ -56,11 +56,9 @@ struct nullopt_helper<std::optional> {
 };
 #endif
 
-template<typename NoneType>
+template <typename NoneType>
 struct NoneToPython {
-  static PyObject *convert(const NoneType&) {
-    Py_RETURN_NONE;
-  }
+  static PyObject *convert(const NoneType &) { Py_RETURN_NONE; }
 
   static void registration() {
     bp::to_python_converter<NoneType, NoneToPython, false>();

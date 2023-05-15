@@ -9,4 +9,4 @@ void exposeNoneType() {
   detail::NoneToPython<std::nullopt_t>::registration();
 #endif
 }
-} // namespace eigenpy
+}  // namespace eigenpy
