@@ -1,6 +1,7 @@
 /// Copyright 2023 CNRS, INRIA
 
 #include "eigenpy/optional.hpp"
+#include "eigenpy/registration.hpp"
 
 namespace eigenpy {
 void exposeNoneType() {

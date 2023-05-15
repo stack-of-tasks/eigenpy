@@ -35,6 +35,10 @@ struct expected_pytype_for_arg<std::optional<T> > : expected_pytype_for_arg<T> {
 }  // namespace boost
 
 namespace eigenpy {
+
+template <typename T>
+bool check_registration();
+
 namespace detail {
 
 /// Helper struct to decide which type is the "none" type for a specific
@@ -61,7 +65,9 @@ struct NoneToPython {
   static PyObject *convert(const NoneType &) { Py_RETURN_NONE; }
 
   static void registration() {
-    bp::to_python_converter<NoneType, NoneToPython, false>();
+    if (!check_registration<NoneType>()) {
+      bp::to_python_converter<NoneType, NoneToPython, false>();
+    }
   }
 };
 
@@ -81,7 +87,9 @@ struct OptionalToPython {
   }
 
   static void registration() {
-    bp::to_python_converter<OptionalTpl<T>, OptionalToPython, true>();
+    if (!check_registration<OptionalTpl<T> >()) {
+      bp::to_python_converter<OptionalTpl<T>, OptionalToPython, true>();
+    }
   }
 };
 
