@@ -56,6 +56,15 @@ struct nullopt_helper<std::optional> {
 };
 #endif
 
+template <typename NoneType>
+struct NoneToPython {
+  static PyObject *convert(const NoneType &) { Py_RETURN_NONE; }
+
+  static void registration() {
+    bp::to_python_converter<NoneType, NoneToPython, false>();
+  }
+};
+
 template <typename T,
           template <typename> class OptionalTpl = EIGENPY_DEFAULT_OPTIONAL>
 struct OptionalToPython {
