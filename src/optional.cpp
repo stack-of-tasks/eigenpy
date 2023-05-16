@@ -1,4 +1,6 @@
+///
 /// Copyright 2023 CNRS, INRIA
+///
 
 #include "eigenpy/optional.hpp"
 

@@ -1,4 +1,6 @@
+///
 /// Copyright (c) 2023 CNRS INRIA
+///
 /// Definitions for exposing boost::optional<T> types.
 /// Also works with std::optional.
 
@@ -7,6 +9,8 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/eigen-from-python.hpp"
+#include "eigenpy/registration.hpp"
+
 #include <boost/optional.hpp>
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 #include <optional>
@@ -35,6 +39,7 @@ struct expected_pytype_for_arg<std::optional<T> > : expected_pytype_for_arg<T> {
 }  // namespace boost
 
 namespace eigenpy {
+
 namespace detail {
 
 /// Helper struct to decide which type is the "none" type for a specific
@@ -61,7 +66,9 @@ struct NoneToPython {
   static PyObject *convert(const NoneType &) { Py_RETURN_NONE; }
 
   static void registration() {
-    bp::to_python_converter<NoneType, NoneToPython, false>();
+    if (!check_registration<NoneType>()) {
+      bp::to_python_converter<NoneType, NoneToPython, false>();
+    }
   }
 };
 
@@ -81,7 +88,9 @@ struct OptionalToPython {
   }
 
   static void registration() {
-    bp::to_python_converter<OptionalTpl<T>, OptionalToPython, true>();
+    if (!check_registration<OptionalTpl<T> >()) {
+      bp::to_python_converter<OptionalTpl<T>, OptionalToPython, true>();
+    }
   }
 };
 
