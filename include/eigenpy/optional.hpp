@@ -1,4 +1,6 @@
+///
 /// Copyright (c) 2023 CNRS INRIA
+///
 /// Definitions for exposing boost::optional<T> types.
 /// Also works with std::optional.
 
@@ -7,6 +9,8 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/eigen-from-python.hpp"
+#include "eigenpy/registration.hpp"
+
 #include <boost/optional.hpp>
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 #include <optional>
@@ -35,9 +39,6 @@ struct expected_pytype_for_arg<std::optional<T> > : expected_pytype_for_arg<T> {
 }  // namespace boost
 
 namespace eigenpy {
-
-template <typename T>
-bool check_registration();
 
 namespace detail {
 
