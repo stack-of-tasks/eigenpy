@@ -1,0 +1,3 @@
+include/eigenpy/example/custom/numeric/type/config.hpp
+include/eigenpy/example/custom/numeric/type/deprecated.hpp
+include/eigenpy/example/custom/numeric/type/warning.hpp
