@@ -7,7 +7,7 @@ jobs:
     name: ${{ matrix.os }} - ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_DIR: .ccache # Enable ccache
+      CCACHE_DIR: ~/.ccache # Enable ccache
 
     strategy:
       fail-fast: false
