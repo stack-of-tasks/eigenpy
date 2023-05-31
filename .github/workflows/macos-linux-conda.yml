@@ -7,7 +7,7 @@ jobs:
     name: ${{ matrix.os }} - ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_DIR: /home/runner/.ccache # Enable ccache
+      CCACHE_DIR: ${{ matrix.CCACHE_DIR }}
 
     strategy:
       fail-fast: false
@@ -16,6 +16,11 @@ jobs:
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
 
+        include:
+          - os: ubuntu-latest
+            CCACHE_DIR: /home/runner/.ccache
+          - os: macos-latest
+            CCACHE_DIR: /Users/runner/.ccache
 
         exclude:
           - build_type: Debug
