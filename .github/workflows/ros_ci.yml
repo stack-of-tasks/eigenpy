@@ -17,7 +17,7 @@ jobs:
           - {ROS_DISTRO: rolling}
           - {ROS_DISTRO: humble}
     env:
-      CCACHE_DIR: /github/home/.ccache # Enable ccache
+      CCACHE_DIR: /home/runner/.ccache # Enable ccache
       PRERELEASE: true
       BUILDER: colcon
     runs-on: ubuntu-latest
