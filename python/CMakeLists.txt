@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2021 CNRS INRIA
+# Copyright (c) 2014-2023 CNRS INRIA
 #
 
 # --- LIBRARY --- #
@@ -9,6 +9,7 @@ set(PYWRAP
     PARENT_SCOPE)
 
 make_directory("${${PROJECT_NAME}_BINARY_DIR}/python/${PROJECT_NAME}")
+include(${JRL_CMAKE_MODULES}/python-helpers.cmake)
 include("${JRL_CMAKE_MODULES}/stubs.cmake")
 
 add_custom_target(python)
