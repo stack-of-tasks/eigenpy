@@ -7,7 +7,7 @@ jobs:
     name: ${{ matrix.os }} - ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_DIR: .ccache # Enable ccache
+      CCACHE_DIR: ${{ matrix.CCACHE_DIR }}
 
     strategy:
       fail-fast: false
@@ -16,6 +16,11 @@ jobs:
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
 
+        include:
+          - os: ubuntu-latest
+            CCACHE_DIR: /home/runner/.ccache
+          - os: macos-latest
+            CCACHE_DIR: /Users/runner/.ccache
 
         exclude:
           - build_type: Debug
@@ -41,6 +46,9 @@ jobs:
       with:
         path: ${{ env.CCACHE_DIR }}
         key: ccache-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}
+
+    - name: Prepare cache dir
+      run: sudo mkdir -p ${CCACHE_DIR}/tmp && sudo chown -R $(id -un) ${CCACHE_DIR}
 
     - name: Install cmake and update conda
       shell: bash -l {0}

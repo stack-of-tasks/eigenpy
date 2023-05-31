@@ -49,10 +49,6 @@ function(config_bind_optional tagname opttype)
   configure_file(python/test_optional.py.in
                  ${CMAKE_CURRENT_BINARY_DIR}/python/${py_file})
   add_lib_unit_test(${MODNAME})
-  message(
-    STATUS
-      "Adding unit test py-optional-${tagname} with file ${py_file} and module ${MODNAME}"
-  )
   add_python_unit_test("py-optional-${tagname}" "unittest/python/${py_file}"
                        "unittest")
 endfunction()
