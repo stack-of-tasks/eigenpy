@@ -19,6 +19,8 @@ namespace eigenpy {
  */
 void EIGENPY_DLLAPI enableEigenPy();
 
+bool EIGENPY_DLLAPI withTensorSupport();
+
 /* Enable the Eigen--Numpy serialization for the templated MatType class.*/
 template <typename MatType>
 void enableEigenPySpecific();
