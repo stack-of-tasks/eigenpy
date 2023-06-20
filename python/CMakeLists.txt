@@ -18,6 +18,10 @@ set_target_properties(python PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True)
 add_library(${PYWRAP} SHARED main.cpp)
 add_dependencies(python ${PYWRAP})
 target_link_libraries(${PYWRAP} PUBLIC ${PROJECT_NAME})
+
+python_build_get_target(python_build_target)
+add_dependencies(${PYWRAP} ${python_build_target})
+
 # BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS spews conversion warnings from int to
 # long unsigned int. Unfortunately, using literals does not work in a macro. As
 # such, this turns them off for the entire wrapper:
