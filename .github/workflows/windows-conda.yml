@@ -19,7 +19,7 @@ jobs:
       with:
         activate-environment: eigenpy
         environment-file: .github/workflows/conda/environment.yml
-        python-version: 3.7
+        python-version: "3.10"
     - name: Build Eigenpy
       shell: cmd /C CALL {0}
       env:
@@ -86,6 +86,8 @@ jobs:
           ..
         cd ..
         if errorlevel 1 exit 1
+
+
 
         :: Uninstall
         cmake --build . --config Release --target uninstall
