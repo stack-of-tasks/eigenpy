@@ -14,6 +14,7 @@ jobs:
           - {ROS_DISTRO: melodic, PRERELEASE: false}
           - {ROS_DISTRO: noetic}
           - {ROS_DISTRO: rolling}
+          - {ROS_DISTRO: iron}
     env:
       CCACHE_DIR: /home/runner/.ccache # Enable ccache
       PRERELEASE: true
