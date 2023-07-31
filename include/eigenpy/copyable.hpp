@@ -1,5 +1,6 @@
 //
-// Copyright (c) 2016-2023 CNRS INRIA Heriot-Watt University
+// Copyright (c) 2016-2023 CNRS INRIA
+// Copyright (c) 2023 Heriot-Watt University
 //
 
 #ifndef __eigenpy_utils_copyable_hpp__
