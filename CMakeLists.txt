@@ -2,7 +2,7 @@
 # Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2023 INRIA
 #
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME eigenpy)
 set(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
