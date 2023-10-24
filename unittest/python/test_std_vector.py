@@ -14,6 +14,7 @@ l3.append(np.asfortranarray(np.eye(2)))
 l3.append(np.eye(2))
 l4 = [np.random.randn(3, 3).T for _ in range(3)]
 l4[-1] = l4[-1].T
+l5 = [np.random.randn(2, 2).T for _ in range(3)]
 
 
 def checkAllValues(li1, li2):
@@ -83,3 +84,12 @@ print("-----------------")
 # vector.setZero(l4)
 # pprint.pprint(list(l4))
 # checkZero(l4)
+
+# TODO fail
+l5_copy = std_vector.StdVec_Mat2d(l5)
+
+# test l5 == l5_copy == l5_py
+l5_py = l5_copy.tolist()
+# Test l5[0] is zero
+l5[0].setZero()
+# TODO test

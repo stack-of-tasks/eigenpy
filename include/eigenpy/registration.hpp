@@ -7,6 +7,7 @@
 #define __eigenpy_registration_hpp__
 
 #include "eigenpy/fwd.hpp"
+#include "eigenpy/registration_class.hpp"
 
 namespace eigenpy {
 
@@ -45,6 +46,25 @@ inline bool register_symbolic_link_to_registered_type() {
         bp::converter::registry::query(info);
     bp::handle<> class_obj(reg->get_class_object());
     bp::scope().attr(reg->get_class_object()->tp_name) = bp::object(class_obj);
+    return true;
+  }
+
+  return false;
+}
+
+/// Same as \see register_symbolic_link_to_registered_type() but apply \p
+/// visitor on \tparam T if it already exists
+template <typename T, typename Visitor>
+inline bool register_symbolic_link_to_registered_type(const Visitor& visitor) {
+  if (eigenpy::check_registration<T>()) {
+    const bp::type_info info = bp::type_id<T>();
+    const bp::converter::registration* reg =
+        bp::converter::registry::query(info);
+    bp::handle<> class_obj(reg->get_class_object());
+    bp::object object(class_obj);
+    bp::scope().attr(reg->get_class_object()->tp_name) = object;
+    registration_class<T> cl(object);
+    cl.def(visitor);
     return true;
   }
 

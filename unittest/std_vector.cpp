@@ -49,4 +49,12 @@ BOOST_PYTHON_MODULE(std_vector) {
   typedef Eigen::Ref<Eigen::MatrixXd> RefXd;
   StdVectorPythonVisitor<std::vector<RefXd>, true>::expose("StdVec_MatRef");
   bp::def("setZero", setZero<Eigen::MatrixXd>, "Sets the coeffs to 0.");
+
+  // Test matrix modification
+  // Mat2d don't have tolist, reserve, mutable __getitem__ and from list
+  // conversion exposeStdVectorEigenSpecificType must add those methods to Mat2d
+  bp::class_<std::vector<Eigen::Matrix2d> >("StdVec_Mat2d")
+      .def(boost::python::vector_indexing_suite<
+           std::vector<Eigen::Matrix2d> >());
+  exposeStdVectorEigenSpecificType<Eigen::Matrix3d>("Mat2d");
 }

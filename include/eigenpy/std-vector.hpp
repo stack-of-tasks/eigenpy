@@ -360,14 +360,40 @@ struct EmptyPythonVisitor
   void visit(classT &) const {}
 };
 
+/// \brief Add standard method to a std::vector.
+template <typename Container, bool NoProxy = false>
+struct add_std_method_to_std_vector
+    : public boost::python::def_visitor<
+          add_std_method_to_std_vector<Container> > {
+  typedef typename Container::value_type value_type;
+  typedef typename Container::value_type data_type;
+  typedef size_t index_type;
+
+  typedef StdContainerFromPythonList<Container, NoProxy>
+      FromPythonListConverter;
+
+  template <class Class>
+  void visit(Class &cl) const {
+    details::overload_base_get_item_for_std_vector<Container> get_item_visitor;
+    cl.def("tolist", &FromPythonListConverter::tolist, bp::arg("self"),
+           "Returns the std::vector as a Python list.")
+        .def(get_item_visitor)
+        .def("reserve", &Container::reserve,
+             (bp::arg("self"), bp::arg("new_cap")),
+             "Increase the capacity of the vector to a value that's greater "
+             "or equal to new_cap.")
+        .def(CopyableVisitor<Container>());
+  }
+};
+
 ///
 /// \brief Expose an std::vector from a type given as template argument.
 ///
 /// \tparam T Type to expose as std::vector<T>.
 /// \tparam Allocator Type for the Allocator in std::vector<T,Allocator>.
-/// \tparam NoProxy When set to false, the elements will be copied when returned
-/// to Python. \tparam EnableFromPythonListConverter Enables the conversion from
-/// a Python list to a std::vector<T,Allocator>
+/// \tparam NoProxy When set to false, the elements will be copied when
+/// returned to Python. \tparam EnableFromPythonListConverter Enables the
+/// conversion from a Python list to a std::vector<T,Allocator>
 ///
 /// \sa StdAlignedVectorPythonVisitor
 ///
@@ -388,18 +414,15 @@ struct StdVectorPythonVisitor
     expose(class_name, doc_string, EmptyPythonVisitor());
   }
 
-  template <typename VisitorDerived>
-  static void expose(
-      const std::string &class_name,
-      const boost::python::def_visitor<VisitorDerived> &visitor) {
+  template <typename Visitor>
+  static void expose(const std::string &class_name, const Visitor &visitor) {
     expose(class_name, "", visitor);
   }
 
-  template <typename VisitorDerived>
-  static void expose(
-      const std::string &class_name, const std::string &doc_string,
-      const boost::python::def_visitor<VisitorDerived> &visitor) {
-    if (!register_symbolic_link_to_registered_type<vector_type>()) {
+  template <typename Visitor>
+  static void expose(const std::string &class_name,
+                     const std::string &doc_string, const Visitor &visitor) {
+    if (!register_symbolic_link_to_registered_type<vector_type>(visitor)) {
       bp::class_<vector_type> cl(class_name.c_str(), doc_string.c_str());
       cl.def(StdVectorPythonVisitor())
 
@@ -409,20 +432,11 @@ struct StdVectorPythonVisitor
           .def(bp::init<const vector_type &>(bp::args("self", "other"),
                                              "Copy constructor"))
 
-          .def("tolist", &FromPythonListConverter::tolist, bp::arg("self"),
-               "Returns the std::vector as a Python list.")
           .def(visitor)
-          .def("reserve", &vector_type::reserve,
-               (bp::arg("self"), bp::arg("new_cap")),
-               "Increase the capacity of the vector to a value that's greater "
-               "or equal to new_cap.")
-          .def_pickle(PickleVector<vector_type>())
-          .def(CopyableVisitor<vector_type>());
-
-      // Register conversion
-      if (EnableFromPythonListConverter)
-        FromPythonListConverter::register_converter();
+          .def_pickle(PickleVector<vector_type>());
     }
+    // Register conversion
+    FromPythonListConverter::register_converter();
   }
 };
 
@@ -437,8 +451,7 @@ void exposeStdVectorEigenSpecificType(const char *name) {
   std::string full_name = "StdVec_";
   full_name += name;
   StdVectorPythonVisitor<VecMatType, false>::expose(
-      full_name.c_str(),
-      details::overload_base_get_item_for_std_vector<VecMatType>());
+      full_name.c_str(), add_std_method_to_std_vector<VecMatType, false>());
 }
 
 }  // namespace eigenpy
