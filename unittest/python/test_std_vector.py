@@ -85,11 +85,15 @@ print("-----------------")
 # pprint.pprint(list(l4))
 # checkZero(l4)
 
-# TODO fail
-l5_copy = std_vector.StdVec_Mat2d(l5)
+# Test StdVec_Mat2d that had been registered
+# before calling exposeStdVectorEigenSpecificType
 
-# test l5 == l5_copy == l5_py
+# Test conversion and tolistl5 == l5_copy == l5_py
+l5_copy = std_vector.StdVec_Mat2d(l5)
 l5_py = l5_copy.tolist()
-# Test l5[0] is zero
-l5[0].setZero()
-# TODO test
+checkAllValues(l5, l5_copy)
+checkAllValues(l5, l5_py)
+
+# Test mutable __getitem__
+l5[0][:] = 0.0
+assert np.allclose(l5[0], 0.0)
