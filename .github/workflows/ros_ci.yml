@@ -19,6 +19,7 @@ jobs:
       # CCACHE_DIR: /home/runner/.ccache # Enable ccache
       PRERELEASE: true
       BUILDER: colcon
+      VERBOSE_OUTPUT: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,3 +33,18 @@ jobs:
       # Run industrial_ci
       - uses: 'ros-industrial/industrial_ci@9f963f67ebb889792175776c5ee00134d7bb569b'
         env: ${{ matrix.env }}
+
+  check:
+    if: always()
+    name: check-ros-ci
+
+    needs:
+    - CI
+
+    runs-on: Ubuntu-latest
+
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
