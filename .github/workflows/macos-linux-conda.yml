@@ -4,7 +4,7 @@ on: [push,pull_request]
 
 jobs:
   eigenpy-conda:
-    name: ${{ matrix.os }} - ${{ matrix.build_type }} ${{ matrix.cxx_options }}
+    name: ${{ matrix.os }} - ${{ matrix.python-version }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
       CCACHE_DIR: ${{ matrix.CCACHE_DIR }}
