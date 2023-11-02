@@ -22,3 +22,18 @@ jobs:
       - run: cmake -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) .
       - run: make -j2
       - run: make test
+
+  check:
+    if: always()
+    name: check-linux
+
+    needs:
+    - test
+
+    runs-on: Ubuntu-latest
+
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}

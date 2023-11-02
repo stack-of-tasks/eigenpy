@@ -90,3 +90,18 @@ jobs:
         :: Uninstall
         cmake --build . --config Release --target uninstall
         if errorlevel 1 exit 1
+
+  check:
+    if: always()
+    name: check-windows-conda
+
+    needs:
+    - build
+
+    runs-on: Ubuntu-latest
+
+    steps:
+    - name: Decide whether the needed jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}
