@@ -19,7 +19,6 @@ jobs:
       # CCACHE_DIR: /home/runner/.ccache # Enable ccache
       PRERELEASE: true
       BUILDER: colcon
-      VERBOSE_OUTPUT: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
