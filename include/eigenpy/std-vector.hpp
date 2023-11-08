@@ -359,13 +359,13 @@ struct contains_vector_derived_policies
 /// returned to Python.
 ///
 template <typename Container, bool NoProxy, typename CoVisitor>
-struct AddStdMethodToStdVector
+struct ExposeStdMethodToStdVector
     : public boost::python::def_visitor<
-          AddStdMethodToStdVector<Container, NoProxy, CoVisitor> > {
+          ExposeStdMethodToStdVector<Container, NoProxy, CoVisitor> > {
   typedef StdContainerFromPythonList<Container, NoProxy>
       FromPythonListConverter;
 
-  AddStdMethodToStdVector(const CoVisitor &co_visitor)
+  ExposeStdMethodToStdVector(const CoVisitor &co_visitor)
       : m_co_visitor(co_visitor) {}
 
   template <class Class>
@@ -383,11 +383,11 @@ struct AddStdMethodToStdVector
   const CoVisitor &m_co_visitor;
 };
 
-/// Helper to ease AddStdMethodToStdVector construction
+/// Helper to ease ExposeStdMethodToStdVector construction
 template <typename Container, bool NoProxy, typename CoVisitor>
-static AddStdMethodToStdVector<Container, NoProxy, CoVisitor>
-createAddStdMethodToStdVector(const CoVisitor &co_visitor) {
-  return AddStdMethodToStdVector<Container, NoProxy, CoVisitor>(co_visitor);
+static ExposeStdMethodToStdVector<Container, NoProxy, CoVisitor>
+createExposeStdMethodToStdVector(const CoVisitor &co_visitor) {
+  return ExposeStdMethodToStdVector<Container, NoProxy, CoVisitor>(co_visitor);
 }
 
 }  // namespace internal
@@ -429,7 +429,8 @@ struct StdVectorPythonVisitor {
     // Apply visitor on already registered type or if type is not already
     // registered, we define and apply the visitor on it
     auto add_std_visitor =
-        internal::createAddStdMethodToStdVector<vector_type, NoProxy>(visitor);
+        internal::createExposeStdMethodToStdVector<vector_type, NoProxy>(
+            visitor);
     if (!register_symbolic_link_to_registered_type<vector_type>(
             add_std_visitor)) {
       bp::class_<vector_type> cl(class_name.c_str(), doc_string.c_str());
