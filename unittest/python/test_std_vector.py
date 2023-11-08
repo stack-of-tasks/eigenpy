@@ -14,6 +14,7 @@ l3.append(np.asfortranarray(np.eye(2)))
 l3.append(np.eye(2))
 l4 = [np.random.randn(3, 3).T for _ in range(3)]
 l4[-1] = l4[-1].T
+l5 = [np.random.randn(2, 2).T for _ in range(3)]
 
 
 def checkAllValues(li1, li2):
@@ -83,3 +84,16 @@ print("-----------------")
 # vector.setZero(l4)
 # pprint.pprint(list(l4))
 # checkZero(l4)
+
+# Test StdVec_Mat2d that had been registered
+# before calling exposeStdVectorEigenSpecificType
+
+# Test conversion and tolistl5 == l5_copy == l5_py
+l5_copy = std_vector.StdVec_Mat2d(l5)
+l5_py = l5_copy.tolist()
+checkAllValues(l5, l5_copy)
+checkAllValues(l5, l5_py)
+
+# Test mutable __getitem__
+l5[0][:] = 0.0
+assert np.allclose(l5[0], 0.0)
