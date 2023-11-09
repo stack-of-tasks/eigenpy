@@ -22,33 +22,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 - CMake minimal version is now 3.10 ([#388](https://github.com/stack-of-tasks/eigenpy/pull/388))
 
-## [3.1.3] - 2023-11-09
-
-### What's Changed
-
-### Fixed
-- Install `include/eigenpy/registration_class.hpp`
-
-
-
-## [3.1.2] - 2023-11-09
-
-### What's Changed
-
-### Added
-
-- Support Python 3.12 ([#391](https://github.com/stack-of-tasks/eigenpy/pull/391))
-
-### Fixed
-
-- Add method to `std::vector<MatrixXX>` binding even if another library had registered it ([#393](https://github.com/stack-of-tasks/eigenpy/pull/393))
-
-### Changed
-
-- CMake minimal version is now 3.10 ([#388](https://github.com/stack-of-tasks/eigenpy/pull/388))
-
-
-
 ## [3.1.1] - 2023-07-31
 
 ### What's Changed
@@ -56,8 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix ROS CI by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/384
 * Extended copyable visitor by @cmastalli in https://github.com/stack-of-tasks/eigenpy/pull/383
 * [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci in https://github.com/stack-of-tasks/eigenpy/pull/382
-
-
 
 ## [3.1.0] - 2023-06-01
 
@@ -69,8 +40,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * optional: check registration of none type and optional type before exposing converter by @ManifoldFR in https://github.com/stack-of-tasks/eigenpy/pull/368
 * [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci in https://github.com/stack-of-tasks/eigenpy/pull/371
 * Sync submodule CMake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/373
-
-
 
 ## [3.0.0] - 2023-04-22
 
@@ -91,14 +60,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Add example showing how to bind virtual classes, passing to overrides… by @ManifoldFR in https://github.com/stack-of-tasks/eigenpy/pull/360
 * Remove support of numpy.matrix class by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/361
 
-
-
 ## [2.9.2] - 2023-02-01
 
 ### What's Changed
 * Fix for Python 3.6 by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/344
-
-
 
 ## [2.9.1] - 2023-01-31
 
@@ -107,8 +72,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * test python 2/3 ubuntu 18/20/22 by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/341
 * Add and expose printEigenVersion by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/342
 * Fix issue with Boost.Python < 1.71 by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/343
-
-
 
 ## [2.9.0] - 2023-01-09
 
@@ -121,14 +84,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Simplify alignment procedure by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/337
 * Remove deprecated EIGENPY_DEFINE_STRUCT_ALLOCATOR_SPECIALIZATION by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/339
 
-
-
 ## [2.8.1] - 2022-12-07
 
 ### What's Changed
 * Fix handling of Numpy blocks on vector types by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/332
-
-
 
 ## [2.8.0] - 2022-12-05
 
@@ -144,13 +103,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### New Contributors
 * @acmiyaguchi made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/321
 
-
 ## [2.7.14] - 2022-09-11
 
 ### What's Changed
 * Fix Boost.Python export by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/319
-
-
 
 ## [2.7.13] - 2022-09-08
 
@@ -163,16 +119,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Sync submodule cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/317
 * Fix flake8 errors by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/318
 
-
-
 ## [2.7.12] - 2022-08-24
 
 ### What's Changed
 * Sync submodule CMake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/306
 * define HAVE_SNPRINTF for windows, fix #309 by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/310
 * export SEARCH_FOR_BOOST_PYTHON by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/308
-
-
 
 ## [2.7.11] - 2022-08-11
 
@@ -181,15 +133,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * FIx issue related to Python 3.11 by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/304
 * Sync submodule Cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/305
 
-
-
 ## [2.7.10] - 2022-07-27
 
 ### What's Changed
 * pre-commit / cmake-format by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/300
 * ci: test packaging by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/298
-
-
 
 ## [2.7.9] - 2022-07-27
 
@@ -197,15 +145,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Enhance CI by testing hpp-fcl by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/296
 * Sync submodule cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/297
 
-
-
 ## [2.7.8] - 2022-07-24
 
 ### What's Changed
 * Fix cross compilation by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/293
 * Fix python numpy linking error by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/295
-
-
 
 ## [2.7.7] - 2022-07-19
 
@@ -217,22 +161,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * cmake: relocatable package for recent CMake versions by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/291
 * ROS2/Colcon integration for AMENT_PREFIX_PATH and PYTHONPATH by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/292
 
-
-
 ## [2.7.6] - 2022-05-22
 
 ### What's Changed
 * Allow template specialization of getitem by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/286
-
-
 
 ## [2.7.5] - 2022-05-20
 
 ### What's Changed
 * Fix for Refs to dynamic (1, N) blocks by @ManifoldFR in https://github.com/stack-of-tasks/eigenpy/pull/284
 * [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci in https://github.com/stack-of-tasks/eigenpy/pull/285
-
-
 
 ## [2.7.4] - 2022-05-06
 
@@ -243,14 +181,10 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * test/eigen_ref: test using Eigen::Ref as data member by @ManifoldFR in https://github.com/stack-of-tasks/eigenpy/pull/282
 * Fix RowMajor case for Eigen::Ref by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/283
 
-
-
 ## [2.7.3] - 2022-05-02
 
 ### What's Changed
 * numpy: avoid deprecated header by @ManifoldFR in https://github.com/stack-of-tasks/eigenpy/pull/280
-
-
 
 ## [2.7.2] - 2022-04-22
 
@@ -264,21 +198,16 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * @pre-commit-ci made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/276
 * @ManifoldFR made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/279
 
-
 ## [2.7.1] - 2022-04-09
 
 ### What's Changed
 * Expose const Eigen::Ref<const ... + update pre-commit + correctly export the project version by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/275
-
-
 
 ## [2.7.0] - 2022-04-02
 
 ### What's Changed
 * Export name types by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/273
 * Apply pre-commit on all the project by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/274
-
-
 
 ## [2.6.11] - 2022-02-25
 
@@ -288,8 +217,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * Fix memory issue with Quaternion::normalized by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/271
 * Remove useless std::cout by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/272
 
-
-
 ## [2.6.10] - 2022-02-02
 
 This new release enhances portability for ROS2 and fixes issues with Eigen::RowMajor matrix types.
@@ -297,8 +224,6 @@ This new release enhances portability for ROS2 and fixes issues with Eigen::RowM
 ### What's Changed
 * Prepare ROS2 release by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/264
 * Fix RowMajor issues by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/266
-
-
 
 ## [2.6.9] - 2021-10-29
 
@@ -310,8 +235,6 @@ Mostly a maintenance release that enhances packaging support and provides fixes 
 * FetchContent on missing submodule by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/262
 * Sync submodule cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/263
 
-
-
 ## [2.6.8] - 2021-09-05
 
 This new release:
@@ -322,7 +245,6 @@ This new release:
 ## [2.6.7] - 2021-08-19
 
 This new release provides additional support in user-type for extracting class objects exposed through boost python.
-
 
 ## [2.6.6] - 2021-08-13
 
@@ -359,7 +281,6 @@ This new release provides extended support for arbitrary scalar types.
 ## [2.5.0] - 2020-08-25
 
 This new release provides a support of Eigen::Ref to Python with shared memory.
-
 
 ## [2.4.4] - 2020-08-18
 
@@ -584,7 +505,6 @@ Fix compatibility with Eigen 3.3.5
 This is a minor release.
 It allows to register Eigen::MatrixBase\<MatType\> from Python to Eigen converters.
 
-
 ## [1.4.3] - 2018-05-12
 
 This release fixes several compatibility issues at the Cmake level for both Python 3 and recent versions of Boost >= 1.67.0.
@@ -622,7 +542,6 @@ This release also improves the exposed API of Quaternions and AngleAxis Eigen cl
 
 The source of the release are available in the file **eigenpy-1.3.2.tar.gz** just below.
 
-
 ## [1.3.1] - 2016-09-23
 
 ### Summary
@@ -636,7 +555,6 @@ This new release fixes several bugs encounter in the linkage of EigenPy with oth
 ### Packages
 
 The source of the release are available in the file **eigenpy-1.3.1.tar.gz** just below.
-
 
 ## [1.3.0] - 2016-02-03
 
