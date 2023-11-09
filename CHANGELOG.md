@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.1.3] - 2023-11-09
+
 ### Fixed
 - Install `include/eigenpy/registration_class.hpp`
 
