@@ -156,6 +156,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/numpy-allocator.hpp
     include/eigenpy/numpy-type.hpp
     include/eigenpy/registration.hpp
+    include/eigenpy/registration_class.hpp
     include/eigenpy/angle-axis.hpp
     include/eigenpy/quaternion.hpp
     include/eigenpy/user-type.hpp
