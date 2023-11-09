@@ -29,7 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Install `include/eigenpy/registration_class.hpp`
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/blob/v3.1.3/CHANGELOG.md
 
 
 ## [3.1.2] - 2023-11-09
@@ -48,7 +47,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - CMake minimal version is now 3.10 ([#388](https://github.com/stack-of-tasks/eigenpy/pull/388))
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/blob/v3.1.2/CHANGELOG.md
 
 
 ## [3.1.1] - 2023-07-31
@@ -60,7 +58,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci in https://github.com/stack-of-tasks/eigenpy/pull/382
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.0...v3.1.1
 
 ## [3.1.0] - 2023-06-01
 
@@ -74,7 +71,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Sync submodule CMake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/373
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v3.0.0...v3.1.0
 
 ## [3.0.0] - 2023-04-22
 
@@ -96,7 +92,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Remove support of numpy.matrix class by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/361
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.9.2...v3.0.0
 
 ## [2.9.2] - 2023-02-01
 
@@ -104,7 +99,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix for Python 3.6 by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/344
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.9.1...v2.9.2
 
 ## [2.9.1] - 2023-01-31
 
@@ -115,7 +109,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix issue with Boost.Python < 1.71 by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/343
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.9.0...v2.9.1
 
 ## [2.9.0] - 2023-01-09
 
@@ -129,7 +122,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Remove deprecated EIGENPY_DEFINE_STRUCT_ALLOCATOR_SPECIALIZATION by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/339
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.8.1...v2.9.0
 
 ## [2.8.1] - 2022-12-07
 
@@ -137,7 +129,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix handling of Numpy blocks on vector types by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/332
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.8.0...v2.8.1
 
 ## [2.8.0] - 2022-12-05
 
@@ -153,7 +144,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### New Contributors
 * @acmiyaguchi made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/321
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.14...v2.8.0
 
 ## [2.7.14] - 2022-09-11
 
@@ -161,7 +151,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix Boost.Python export by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/319
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.13...v2.7.14
 
 ## [2.7.13] - 2022-09-08
 
@@ -175,7 +164,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix flake8 errors by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/318
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.12...v2.7.13
 
 ## [2.7.12] - 2022-08-24
 
@@ -185,7 +173,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * export SEARCH_FOR_BOOST_PYTHON by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/308
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.11...v2.7.12
 
 ## [2.7.11] - 2022-08-11
 
@@ -195,7 +182,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Sync submodule Cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/305
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.10...v2.7.11
 
 ## [2.7.10] - 2022-07-27
 
@@ -204,7 +190,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * ci: test packaging by @nim65s in https://github.com/stack-of-tasks/eigenpy/pull/298
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.9...v2.7.10
 
 ## [2.7.9] - 2022-07-27
 
@@ -213,7 +198,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Sync submodule cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/297
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.8...v2.7.9
 
 ## [2.7.8] - 2022-07-24
 
@@ -222,7 +206,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fix python numpy linking error by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/295
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.7...v2.7.8
 
 ## [2.7.7] - 2022-07-19
 
@@ -235,7 +218,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * ROS2/Colcon integration for AMENT_PREFIX_PATH and PYTHONPATH by @wxmerkt in https://github.com/stack-of-tasks/eigenpy/pull/292
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.6...v2.7.7
 
 ## [2.7.6] - 2022-05-22
 
@@ -243,7 +225,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Allow template specialization of getitem by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/286
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.5...v2.7.6
 
 ## [2.7.5] - 2022-05-20
 
@@ -252,7 +233,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * [pre-commit.ci] pre-commit autoupdate by @pre-commit-ci in https://github.com/stack-of-tasks/eigenpy/pull/285
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.4...v2.7.5
 
 ## [2.7.4] - 2022-05-06
 
@@ -264,7 +244,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * Fix RowMajor case for Eigen::Ref by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/283
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.3...v2.7.4
 
 ## [2.7.3] - 2022-05-02
 
@@ -272,7 +251,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * numpy: avoid deprecated header by @ManifoldFR in https://github.com/stack-of-tasks/eigenpy/pull/280
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.2...v2.7.3
 
 ## [2.7.2] - 2022-04-22
 
@@ -286,7 +264,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * @pre-commit-ci made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/276
 * @ManifoldFR made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/279
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.1...v2.7.2
 
 ## [2.7.1] - 2022-04-09
 
@@ -294,7 +271,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * Expose const Eigen::Ref<const ... + update pre-commit + correctly export the project version by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/275
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.0...v2.7.1
 
 ## [2.7.0] - 2022-04-02
 
@@ -303,7 +279,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * Apply pre-commit on all the project by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/274
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.11...v2.7.0
 
 ## [2.6.11] - 2022-02-25
 
@@ -314,7 +289,6 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * Remove useless std::cout by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/272
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.10...v2.6.11
 
 ## [2.6.10] - 2022-02-02
 
@@ -325,7 +299,6 @@ This new release enhances portability for ROS2 and fixes issues with Eigen::RowM
 * Fix RowMajor issues by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/266
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.9...v2.6.10
 
 ## [2.6.9] - 2021-10-29
 
@@ -338,7 +311,6 @@ Mostly a maintenance release that enhances packaging support and provides fixes 
 * Sync submodule cmake by @jcarpent in https://github.com/stack-of-tasks/eigenpy/pull/263
 
 
-**Full Changelog**: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.8...v2.6.9
 
 ## [2.6.8] - 2021-09-05
 
@@ -680,3 +652,33 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 ### Packages
 
 The source of the release are available in the file **eigenpy-1.3.0.tar.gz** just below along with a binary version for 64-bits Debian architecture **eigenpy_1.3.0_amd64.deb**.
+
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.3...HEAD
+[v3.1.3]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.2...v3.1.3
+[v3.1.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.1...v3.1.2
+[v3.1.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.0...v3.1.1
+[v3.1.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.0.0...v3.1.0
+[v3.0.0]: https://github.com/stack-of-tasks/eigenpy/compare/v2.9.2...v3.0.0
+[v2.9.2]: https://github.com/stack-of-tasks/eigenpy/compare/v2.9.1...v2.9.2
+[v2.9.1]: https://github.com/stack-of-tasks/eigenpy/compare/v2.9.0...v2.9.1
+[v2.9.0]: https://github.com/stack-of-tasks/eigenpy/compare/v2.8.1...v2.9.0
+[v2.8.1]: https://github.com/stack-of-tasks/eigenpy/compare/v2.8.0...v2.8.1
+[v2.8.0]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.14...v2.8.0
+[v2.7.14]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.13...v2.7.14
+[v2.7.13]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.12...v2.7.13
+[v2.7.12]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.11...v2.7.12
+[v2.7.11]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.10...v2.7.11
+[v2.7.10]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.9...v2.7.10
+[v2.7.9]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.8...v2.7.9
+[v2.7.8]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.7...v2.7.8
+[v2.7.7]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.6...v2.7.7
+[v2.7.6]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.5...v2.7.6
+[v2.7.5]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.4...v2.7.5
+[v2.7.4]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.3...v2.7.4
+[v2.7.3]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.2...v2.7.3
+[v2.7.2]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.1...v2.7.2
+[v2.7.1]: https://github.com/stack-of-tasks/eigenpy/compare/v2.7.0...v2.7.1
+[v2.7.0]: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.11...v2.7.0
+[v2.6.11]: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.10...v2.6.11
+[v2.6.10]: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.9...v2.6.10
+[v2.6.9]: https://github.com/stack-of-tasks/eigenpy/compare/v2.6.8...v2.6.9
