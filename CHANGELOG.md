@@ -538,10 +538,6 @@ This release also improves the exposed API of Quaternions and AngleAxis Eigen cl
 ### Bug Fix
 - the Python function _import_array() must be called first before any class to PyArray functions.
 
-### Packages
-
-The source of the release are available in the file **eigenpy-1.3.2.tar.gz** just below.
-
 ## [1.3.1] - 2016-09-23
 
 ### Summary
@@ -551,10 +547,6 @@ This new release fixes several bugs encounter in the linkage of EigenPy with oth
 ### Bug Fix
 - UnalignedEquivalent struct take now an optional Scalar template
 - PyMatrixType is now a singleton, avoiding bad initialisation during dynamic loading of shared lib.
-
-### Packages
-
-The source of the release are available in the file **eigenpy-1.3.1.tar.gz** just below.
 
 ## [1.3.0] - 2016-02-03
 
@@ -566,10 +558,6 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 ### Bug Fix
 - Fix issue in the creation of row and column vectors.
 - The library has to be static under OS X to properly expose symbols.
-
-### Packages
-
-The source of the release are available in the file **eigenpy-1.3.0.tar.gz** just below along with a binary version for 64-bits Debian architecture **eigenpy_1.3.0_amd64.deb**.
 
 ## [1.2.0] - 2014-11-13
 
