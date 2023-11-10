@@ -101,7 +101,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Copy std-vector and std-map from Pinocchio by [@ManifoldFR](https://github.com/ManifoldFR) in https://github.com/stack-of-tasks/eigenpy/pull/325
 
 ### New Contributors
-* [@acmiyaguchi](https://github.com/acmiyaguchi] made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/321
+* [@acmiyaguchi](https://github.com/acmiyaguchi) made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/321
 
 ## [2.7.14] - 2022-09-11
 
@@ -195,8 +195,8 @@ This release fixes a major bug related to Eigen::Ref when using Row Major matric
 * Test: modify a matrix block through Python subclass by [@ManifoldFR](https://github.com/ManifoldFR) in https://github.com/stack-of-tasks/eigenpy/pull/279
 
 ### New Contributors
-* [@pre-commit-ci](https://github.com/pre-commit-ci] made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/276
-* [@ManifoldFR](https://github.com/ManifoldFR] made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/279
+* [@pre-commit-ci](https://github.com/pre-commit-ci) made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/276
+* [@ManifoldFR](https://github.com/ManifoldFR) made their first contribution in https://github.com/stack-of-tasks/eigenpy/pull/279
 
 ## [2.7.1] - 2022-04-09
 
