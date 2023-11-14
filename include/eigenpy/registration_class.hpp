@@ -30,6 +30,12 @@ class registration_class {
     return *this;
   }
 
+  template <class DerivedVisitor>
+  self& def(bp::def_visitor<DerivedVisitor> const& visitor) {
+    static_cast<DerivedVisitor const&>(visitor).visit(*this);
+    return *this;
+  }
+
   /// \see boost::python::class_::def(char const* name, F f)
   template <class F>
   self& def(char const* name, F f) {

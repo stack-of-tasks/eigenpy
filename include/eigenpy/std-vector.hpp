@@ -67,7 +67,7 @@ struct build_list<vector_type, true> {
   }
 };
 
-/// \brief Change the behaviour of indexing (method __getitem__ in Python).
+/// \brief Change the behavior of indexing (method __getitem__ in Python).
 /// This is suitable for container of Eigen matrix objects if you want to mutate
 /// them.
 template <typename Container>
@@ -418,14 +418,16 @@ struct StdVectorPythonVisitor {
     expose(class_name, doc_string, EmptyPythonVisitor());
   }
 
-  template <typename Visitor>
-  static void expose(const std::string &class_name, const Visitor &visitor) {
+  template <typename DerivedVisitor>
+  static void expose(const std::string &class_name,
+                     const bp::def_visitor<DerivedVisitor> &visitor) {
     expose(class_name, "", visitor);
   }
 
-  template <typename Visitor>
+  template <typename DerivedVisitor>
   static void expose(const std::string &class_name,
-                     const std::string &doc_string, const Visitor &visitor) {
+                     const std::string &doc_string,
+                     const bp::def_visitor<DerivedVisitor> &visitor) {
     // Apply visitor on already registered type or if type is not already
     // registered, we define and apply the visitor on it
     auto add_std_visitor =
