@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [assigned, opened, synchronize, reopened, labeled, unlabeled]
     branches:
-      - master
+      - devel
 jobs:
   check-changelog:
     name: Check changelog action
