@@ -1,7 +1,6 @@
 name: Check-changelog
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened, labeled, unlabeled]
     branches:
       - devel
 jobs:
