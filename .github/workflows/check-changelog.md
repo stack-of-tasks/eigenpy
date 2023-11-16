@@ -6,7 +6,7 @@ on:
 jobs:
   check-changelog:
     name: Check changelog action
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
       - uses: tarides/changelog-check-action@v2
         with:
