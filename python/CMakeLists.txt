@@ -15,7 +15,7 @@ include("${JRL_CMAKE_MODULES}/stubs.cmake")
 add_custom_target(python)
 set_target_properties(python PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True)
 
-add_library(${PYWRAP} SHARED main.cpp)
+add_library(${PYWRAP} MODULE main.cpp)
 add_dependencies(python ${PYWRAP})
 target_link_libraries(${PYWRAP} PUBLIC ${PROJECT_NAME})
 
