@@ -84,7 +84,9 @@ foreach(py_target IN LISTS _optional_args)
     set(_path "$<${_is_lib}:${_target_dir}\\\;>${_path}")
   endif()
 endforeach()
-set(ENV_PATH "LPATH=${_path}$ENV{PATH}")
+
+string(REPLACE ";" "\;" PATH_STR "$ENV{PATH}")
+set(ENV_PATH "LPATH=${_path}${PATH_STR}")
 add_custom_target(
   toto ALL
   COMMAND ${CMAKE_COMMAND} -E env ${ENV_PATH} ECHO %LPATH%

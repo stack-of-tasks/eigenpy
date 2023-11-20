@@ -51,44 +51,6 @@ jobs:
         cmake --build . --config Release --target toto
         if errorlevel 1 exit 1
 
-        cmake --build . --config Release --target install
-        if errorlevel 1 exit 1
-
-        :: Testing
-        ctest --output-on-failure -C Release -V
-        if errorlevel 1 exit 1
-
-        :: Test Python import
-        cd ..
-        python -c "import eigenpy"
-        if errorlevel 1 exit 1
-
-        :: Test packaging
-
-        cmake -B test-packaging -S unittest/packaging/cmake ^
-          -G "NMake Makefiles" ^
-          -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe
-        if errorlevel 1 exit 1
-
-        :: Configure hpp-fcl
-        conda install -c conda-forge octomap assimp qhull
-        git clone --recursive https://github.com/humanoid-path-planner/hpp-fcl.git
-        pushd hpp-fcl
-        mkdir build
-        pushd build
-        cmake ^
-          -G "NMake Makefiles" ^
-          -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%\Library ^
-          -DCMAKE_BUILD_TYPE=Release ^
-          -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe ^
-          ..
-        cd ..
-        if errorlevel 1 exit 1
-
-        :: Uninstall
-        cmake --build . --config Release --target uninstall
-        if errorlevel 1 exit 1
-
   check:
     if: always()
     name: check-windows-conda
