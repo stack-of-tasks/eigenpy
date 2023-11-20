@@ -47,18 +47,8 @@ jobs:
           ..
         if errorlevel 1 exit 1
 
-        :: Change path to find eigenpy DLL when creating stub
-        set OLD_PATH=%PATH%
-        set PATH=%PATH%;%CD%
         :: Build and Install
         cmake --build . --config Release --target install
-        if errorlevel 1 exit 1
-        :: Set old path
-        set PATH=%OLD_PATH%
-
-        :: Build stubs
-        git clone https://github.com/jcarpent/pybind11-stubgen.git
-        python "%CD%\pybind11-stubgen\pybind11_stubgen\__init__.py" -o %CONDA_PREFIX%\Lib\site-packages\eigenpy eigenpy --boost-python --ignore-invalid signature --no-setup-py --root-module-suffix ""
         if errorlevel 1 exit 1
 
         :: Testing
