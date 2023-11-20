@@ -75,11 +75,11 @@ foreach(python ${PYTHON_FILES})
           DESTINATION ${${PYWRAP}_INSTALL_DIR})
 endforeach(python)
 
-
 set(_optional_args ${PYWRAP} ${PROJECT_NAME})
 foreach(py_target IN LISTS _optional_args)
   if(TARGET ${py_target})
-    set(_is_lib "$<STREQUAL:$<TARGET_PROPERTY:${py_target},TYPE>,SHARED_LIBRARY>")
+    set(_is_lib
+        "$<STREQUAL:$<TARGET_PROPERTY:${py_target},TYPE>,SHARED_LIBRARY>")
     set(_target_dir "$<TARGET_FILE_DIR:${py_target}>")
     set(_path "$<${_is_lib}:${_target_dir}\\\;>${_path}")
   endif()
@@ -87,7 +87,5 @@ endforeach()
 set(ENV_PATH "LPATH=${_path}$ENV{PATH}")
 add_custom_target(
   toto ALL
-  COMMAND
-    ${CMAKE_COMMAND} -E env ${ENV_PATH}
-    ECHO %LPATH%
+  COMMAND ${CMAKE_COMMAND} -E env ${ENV_PATH} ECHO %LPATH%
   VERBATIM)
