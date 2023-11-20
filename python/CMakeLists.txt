@@ -60,8 +60,11 @@ install(TARGETS ${PYWRAP} DESTINATION ${${PYWRAP}_INSTALL_DIR})
 if(GENERATE_PYTHON_STUBS)
   load_stubgen()
 
+  # Set PYWRAP and PROJECT_NAME as stubs dependencies
+  # PROJECT_NAME is mandatory (even if it's a PYWRAP dependency)
+  # to find PROJECT_NAME name DLL on windows
   generate_stubs(${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_NAME}
-                 ${ABSOLUTE_PYTHON_SITELIB} ${PYWRAP})
+                 ${ABSOLUTE_PYTHON_SITELIB} ${PYWRAP} ${PROJECT_NAME})
 endif(GENERATE_PYTHON_STUBS)
 
 # --- INSTALL SCRIPTS
