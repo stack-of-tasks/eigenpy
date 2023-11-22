@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         env:
-          - {ROS_DISTRO: melodic, PRERELEASE: false}
           - {ROS_DISTRO: noetic}
           - {ROS_DISTRO: rolling}
           - {ROS_DISTRO: iron}
