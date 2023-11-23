@@ -49,13 +49,16 @@ function(config_bind_optional tagname opttype)
   configure_file(python/test_optional.py.in
                  ${CMAKE_CURRENT_BINARY_DIR}/python/${py_file})
   add_lib_unit_test(${MODNAME})
+  message(STATUS "Adding test for ${opttype}")
   add_python_unit_test("py-optional-${tagname}" "unittest/python/${py_file}"
                        "unittest")
 endfunction()
 
 config_bind_optional(boost "boost::optional")
-if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
+if(cxx_std_17 IN_LIST CMAKE_CXX_COMPILE_FEATURES)
   config_bind_optional(std "std::optional")
+  # request C++17 compiler
+  target_compile_features(bind_optional_std PRIVATE cxx_std_17)
 endif()
 
 add_lib_unit_test(bind_virtual_factory)
