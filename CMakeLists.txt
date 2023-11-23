@@ -243,11 +243,11 @@ endif(SUFFIX_SO_VERSION)
 
 if(NOT WIN32)
   target_compile_options(
-    ${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj>
+    ${PROJECT_NAME} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj -MP>
                             "-Wno-conversion")
 else()
   target_compile_options(${PROJECT_NAME}
-                         PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj>)
+                         PRIVATE $<$<CXX_COMPILER_ID:MSVC>:-bigobj -MP>)
   target_compile_definitions(${PROJECT_NAME} PUBLIC "HAVE_SNPRINTF")
 endif()
 

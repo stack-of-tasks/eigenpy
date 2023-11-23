@@ -15,9 +15,13 @@ include("${JRL_CMAKE_MODULES}/stubs.cmake")
 add_custom_target(python)
 set_target_properties(python PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD True)
 
-add_library(${PYWRAP} SHARED main.cpp)
+add_library(${PYWRAP} MODULE main.cpp)
 add_dependencies(python ${PYWRAP})
 target_link_libraries(${PYWRAP} PUBLIC ${PROJECT_NAME})
+
+python_build_get_target(python_build_target)
+add_dependencies(${PYWRAP} ${python_build_target})
+
 # BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS spews conversion warnings from int to
 # long unsigned int. Unfortunately, using literals does not work in a macro. As
 # such, this turns them off for the entire wrapper:
@@ -56,8 +60,10 @@ install(TARGETS ${PYWRAP} DESTINATION ${${PYWRAP}_INSTALL_DIR})
 if(GENERATE_PYTHON_STUBS)
   load_stubgen()
 
+  # Set PYWRAP and PROJECT_NAME as stubs dependencies PROJECT_NAME is mandatory
+  # (even if it's a PYWRAP dependency) to find PROJECT_NAME name DLL on windows
   generate_stubs(${CMAKE_CURRENT_BINARY_DIR} ${PROJECT_NAME}
-                 ${ABSOLUTE_PYTHON_SITELIB} ${PYWRAP})
+                 ${ABSOLUTE_PYTHON_SITELIB} ${PYWRAP} ${PROJECT_NAME})
 endif(GENERATE_PYTHON_STUBS)
 
 # --- INSTALL SCRIPTS

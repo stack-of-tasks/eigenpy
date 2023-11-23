@@ -60,4 +60,12 @@ void enableEigenPy() {
   exposeNoneType();
 }
 
+bool withTensorSupport() {
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+  return true;
+#else
+  return false;
+#endif
+}
+
 }  // namespace eigenpy
