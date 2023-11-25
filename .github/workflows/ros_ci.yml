@@ -12,8 +12,9 @@ jobs:
       matrix:
         env:
           - {ROS_DISTRO: noetic}
-          - {ROS_DISTRO: rolling}
           - {ROS_DISTRO: iron}
+          - {ROS_DISTRO: humble}
+          - {ROS_DISTRO: rolling}
     env:
       # CCACHE_DIR: /home/runner/.ccache # Enable ccache
       PRERELEASE: true
