@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.1.4] - 2023-11-27
+
 ### Added
 - Add new helper functions to check Tensor support
 
@@ -573,7 +575,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.3...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.4...HEAD
+[3.1.4]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.0...v3.1.1
