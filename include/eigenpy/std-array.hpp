@@ -32,6 +32,7 @@ class array_indexing_suite
   typedef typename Container::size_type index_type;
   typedef typename Container::size_type size_type;
   typedef typename Container::difference_type difference_type;
+  static constexpr std::size_t Size = std::tuple_size<Container>{};
 
   template <class Class>
   static void extension_def(Class &) {}
@@ -67,10 +68,12 @@ class array_indexing_suite
 
   static bp::object get_slice(Container &container, index_type from,
                               index_type to) {
-    if (from > to) return bp::object(Container());
-
-    Container out;
-    std::copy(container.begin() + from, container.begin() + to, out.begin());
+    if (from > to) return bp::object(std::array<data_type, 0>());
+    size_t size = to - from + 1;  // will be >= 0
+    std::vector<data_type> out;
+    for (size_t i = 0; i < size; i++) {
+      out.push_back(container[i]);
+    }
     return bp::object(std::move(out));
   }
 };
