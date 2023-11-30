@@ -22,7 +22,9 @@ BOOST_PYTHON_MODULE(std_array) {
 
   StdArrayPythonVisitor<std::array<int, 3> >::expose("StdArr3_int");
   StdVectorPythonVisitor<std::vector<int>, true>::expose("StdVec_int");
+
   exposeStdArrayEigenSpecificType<VectorXd, 3>("VectorXd");
+  exposeStdVectorEigenSpecificType<VectorXd>("VectorXd");
 
   bp::def("get_arr_3_ints", get_arr_3_ints);
   bp::def("get_arr_3_vecs", get_arr_3_vecs);
