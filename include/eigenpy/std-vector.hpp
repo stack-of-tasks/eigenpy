@@ -242,7 +242,6 @@ namespace eigenpy {
 template <typename vector_type, bool NoProxy>
 struct StdContainerFromPythonList {
   typedef typename vector_type::value_type T;
-  typedef typename vector_type::allocator_type Allocator;
 
   /// \brief Check if obj_ptr can be converted
   static void *convertible(PyObject *obj_ptr) {
