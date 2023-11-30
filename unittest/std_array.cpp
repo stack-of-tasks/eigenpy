@@ -15,6 +15,17 @@ std::array<VectorXd, 3> get_arr_3_vecs() {
   return out;
 }
 
+struct test_struct {
+  std::array<int, 3> integs;
+  std::array<VectorXd, 2> vecs;
+  test_struct() {
+    integs = {42, 3, -1};
+    vecs[0].setRandom(4);  // 4 randoms between [-1,1]
+    vecs[1].setZero(11);  // 11 zeroes
+  }
+};
+
+
 BOOST_PYTHON_MODULE(std_array) {
   using namespace eigenpy;
 
@@ -23,9 +34,14 @@ BOOST_PYTHON_MODULE(std_array) {
   StdArrayPythonVisitor<std::array<int, 3> >::expose("StdArr3_int");
   StdVectorPythonVisitor<std::vector<int>, true>::expose("StdVec_int");
 
+  exposeStdArrayEigenSpecificType<VectorXd, 2>("VectorXd");
   exposeStdArrayEigenSpecificType<VectorXd, 3>("VectorXd");
   exposeStdVectorEigenSpecificType<VectorXd>("VectorXd");
 
   bp::def("get_arr_3_ints", get_arr_3_ints);
   bp::def("get_arr_3_vecs", get_arr_3_vecs);
+
+  bp::class_<test_struct>("test_struct", bp::init<>(bp::args("self")))
+    .def_readwrite("integs", &test_struct::integs)
+    .def_readwrite("vecs", &test_struct::vecs);
 }
