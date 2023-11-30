@@ -10,20 +10,22 @@
 
 namespace eigenpy {
 
-template <typename Container, bool NoProxy, class DerivedPolicies>
+template <typename Container, bool NoProxy, class SliceAllocator,
+          class DerivedPolicies>
 class array_indexing_suite;
 namespace details {
 
-template <typename Container, bool NoProxy>
+template <typename Container, bool NoProxy, class SliceAllocator>
 class final_array_derived_policies
     : public array_indexing_suite<
-          Container, NoProxy,
-          final_array_derived_policies<Container, NoProxy> > {};
+          Container, NoProxy, SliceAllocator,
+          final_array_derived_policies<Container, NoProxy, SliceAllocator> > {};
 }  // namespace details
 
 template <typename Container, bool NoProxy = false,
-          class DerivedPolicies =
-              details::final_array_derived_policies<Container, NoProxy> >
+          class SliceAllocator = std::allocator<typename Container::value_type>,
+          class DerivedPolicies = details::final_array_derived_policies<
+              Container, NoProxy, SliceAllocator> >
 class array_indexing_suite
     : public bp::vector_indexing_suite<Container, NoProxy, DerivedPolicies> {
  public:
@@ -32,6 +34,7 @@ class array_indexing_suite
   typedef typename Container::size_type index_type;
   typedef typename Container::size_type size_type;
   typedef typename Container::difference_type difference_type;
+  typedef std::vector<data_type, SliceAllocator> slice_vector_type;
   static constexpr std::size_t Size = std::tuple_size<Container>{};
 
   template <class Class>
@@ -70,7 +73,7 @@ class array_indexing_suite
                               index_type to) {
     if (from > to) return bp::object(std::array<data_type, 0>());
     size_t size = to - from + 1;  // will be >= 0
-    std::vector<data_type> out;
+    slice_vector_type out;
     for (size_t i = 0; i < size; i++) {
       out.push_back(container[i]);
     }
