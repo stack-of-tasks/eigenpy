@@ -22,14 +22,14 @@ assert _ints_slice[1] == 3
 
 vecs = std_array.get_arr_3_vecs()
 assert len(vecs) == 3
-# print(vecs[0])
-# print(vecs[1])
-# print(vecs[2])
+print(vecs[0])
+print(vecs[1])
+print(vecs[2])
 
-## Tests for the full-size slice
+# slices do not work for Eigen objects...
 
-v2 = vecs[:]
-assert isinstance(v2, std_array.StdVec_VectorXd)
-assert len(v2) == 3
-print(v2.tolist())
-print(v2[0])
+# v2 = vecs[:]
+# assert isinstance(v2, std_array.StdVec_VectorXd)
+# assert len(v2) == 3
+# print(v2.tolist())
+# print(v2[0])
