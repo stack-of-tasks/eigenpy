@@ -72,9 +72,8 @@ class array_indexing_suite
   static bp::object get_slice(Container &container, index_type from,
                               index_type to) {
     if (from > to) return bp::object(std::array<data_type, 0>());
-    size_t size = to - from + 1;  // will be >= 0
     slice_vector_type out;
-    for (size_t i = 0; i < size; i++) {
+    for (size_t i = from; i < to; i++) {
       out.push_back(container[i]);
     }
     return bp::object(std::move(out));
