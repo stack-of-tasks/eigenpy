@@ -81,7 +81,9 @@ class array_indexing_suite
   }
 };
 
-template <typename array_type, bool NoProxy = false>
+template <typename array_type, bool NoProxy = false,
+          class SliceAllocator =
+              std::allocator<typename array_type::value_type> >
 struct StdArrayPythonVisitor {
   typedef typename array_type::value_type value_type;
   /// Fixed size of the array, known at compile time
@@ -107,7 +109,7 @@ struct StdArrayPythonVisitor {
       cl.def(bp::init<const array_type &>(bp::args("self", "other"),
                                           "Copy constructor"));
 
-      array_indexing_suite<array_type, NoProxy> indexing_suite;
+      array_indexing_suite<array_type, NoProxy, SliceAllocator> indexing_suite;
       cl.def(indexing_suite);
     }
   }
@@ -120,8 +122,10 @@ void exposeStdArrayEigenSpecificType(const char *name) {
   oss << "StdArr";
   oss << Size << "_" << name;
   typedef std::array<MatrixType, Size> array_type;
-  StdArrayPythonVisitor<array_type>::expose(
-      oss.str(), details::overload_base_get_item_for_std_vector<array_type>());
+  StdArrayPythonVisitor<array_type, false,
+                        Eigen::aligned_allocator<MatrixType> >::
+      expose(oss.str(),
+             details::overload_base_get_item_for_std_vector<array_type>());
 }
 
 }  // namespace eigenpy
