@@ -102,7 +102,7 @@ struct StdArrayPythonVisitor {
   template <typename DerivedVisitor>
   static void expose(const std::string &class_name,
                      const std::string &doc_string,
-                     const bp::def_visitor<DerivedVisitor> &) {
+                     const bp::def_visitor<DerivedVisitor> &visitor) {
     if (!register_symbolic_link_to_registered_type<array_type>()) {
       bp::class_<array_type> cl(class_name.c_str(), doc_string.c_str());
       cl.def(bp::init<const array_type &>(bp::args("self", "other"),
@@ -110,6 +110,7 @@ struct StdArrayPythonVisitor {
 
       array_indexing_suite<array_type, NoProxy, SliceAllocator> indexing_suite;
       cl.def(indexing_suite);
+      cl.def(visitor);
     }
   }
 };
