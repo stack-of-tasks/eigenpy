@@ -10,8 +10,7 @@
 
 namespace eigenpy {
 
-template <typename Container, bool NoProxy,
-          class DerivedPolicies>
+template <typename Container, bool NoProxy, class DerivedPolicies>
 class array_indexing_suite;
 namespace details {
 
@@ -45,8 +44,7 @@ class array_indexing_suite
   static void delete_item(Container &, index_type) {}
   // no-op
   // no-op
-  static void delete_slice(Container &, index_type,
-                           index_type) {}
+  static void delete_slice(Container &, index_type, index_type) {}
 
   static void set_slice(Container &container, index_type from, index_type to,
                         data_type const &v) {
@@ -61,11 +59,9 @@ class array_indexing_suite
   static void set_slice(Container &container, index_type from, index_type to,
                         Iter first, Iter last) {
     if (from > to) {
-      // container.insert(container.begin() + from, first, last);
       return;
     } else {
-      // container.erase(container.begin() + from, container.begin() + to);
-      // container.insert(container.begin() + from, first, last);
+      std::copy(first, last, container.begin() + from);
     }
   }
 
@@ -78,7 +74,6 @@ class array_indexing_suite
     return bp::object(std::move(out));
   }
 };
-
 
 template <typename array_type, bool NoProxy = false>
 struct StdArrayPythonVisitor {
