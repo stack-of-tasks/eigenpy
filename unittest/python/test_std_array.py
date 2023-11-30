@@ -41,7 +41,7 @@ print(ts.integs[:].tolist())
 print(ts.vecs[0])
 print(ts.vecs[1])
 
-ts.vecs[0][0] = 0.
+ts.vecs[0][0] = 0.0
 ts.vecs[1][0] = -243
 print(ts.vecs[0])
 print(ts.vecs[1])

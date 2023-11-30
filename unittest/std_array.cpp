@@ -21,10 +21,9 @@ struct test_struct {
   test_struct() {
     integs = {42, 3, -1};
     vecs[0].setRandom(4);  // 4 randoms between [-1,1]
-    vecs[1].setZero(11);  // 11 zeroes
+    vecs[1].setZero(11);   // 11 zeroes
   }
 };
-
 
 BOOST_PYTHON_MODULE(std_array) {
   using namespace eigenpy;
@@ -42,6 +41,6 @@ BOOST_PYTHON_MODULE(std_array) {
   bp::def("get_arr_3_vecs", get_arr_3_vecs);
 
   bp::class_<test_struct>("test_struct", bp::init<>(bp::args("self")))
-    .def_readwrite("integs", &test_struct::integs)
-    .def_readwrite("vecs", &test_struct::vecs);
+      .def_readwrite("integs", &test_struct::integs)
+      .def_readwrite("vecs", &test_struct::vecs);
 }
