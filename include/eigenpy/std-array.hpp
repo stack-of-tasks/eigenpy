@@ -80,6 +80,13 @@ class array_indexing_suite
   }
 };
 
+/// \brief Expose an std::array (a C++11 fixed-size array) from a given type
+/// \tparam array_type std::array type to expose
+/// \tparam NoProxy When set to false, the elements will be copied when
+/// returned to Python.
+/// \tparam SliceAllocator Allocator type to use for slices of std::array type
+/// accessed using e.g. __getitem__[0:4] in Python. These slices are returned as
+/// std::vector (dynamic size).
 template <typename array_type, bool NoProxy = false,
           class SliceAllocator =
               std::allocator<typename array_type::value_type> >
