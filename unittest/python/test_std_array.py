@@ -18,6 +18,95 @@ assert len(_ints_slice) == 2, "Slice size should be 1, got %d" % len(_ints_slice
 assert _ints_slice[0] == 2
 assert _ints_slice[1] == 3
 
+# Test that insert/delete is impossible with the slice operator
+
+# prepend
+try:
+    ints[0:0] = [0, 1]
+except NotImplementedError:
+    pass
+else:
+    assert False, "Insert value with slice operator should be impossible"
+
+# append
+try:
+    ints[10:12] = [0]
+except NotImplementedError:
+    pass
+else:
+    assert False, "Insert value with slice operator should be impossible"
+
+# append
+try:
+    ints[3:3] = [0]
+except NotImplementedError:
+    pass
+else:
+    assert False, "Insert value with slice operator should be impossible"
+
+# Erase two elements and replace by one
+try:
+    ints[1:3] = [0]
+except NotImplementedError:
+    pass
+else:
+    assert False, "Insert value with slice operator should be impossible"
+
+# Erase two elements and replace by three
+try:
+    ints[1:3] = [0, 1, 2]
+except NotImplementedError:
+    pass
+else:
+    assert False, "Insert value with slice operator should be impossible"
+
+# Test that delete operator is not implemented
+# Index delete
+try:
+    del ints[0]
+except NotImplementedError:
+    pass
+else:
+    assert False, "del is not implemented"
+
+# Slice delete
+try:
+    del ints[1:3]
+except NotImplementedError:
+    pass
+else:
+    assert False, "del is not implemented"
+
+# Slice delete
+try:
+    del ints[1:3]
+except NotImplementedError:
+    pass
+else:
+    assert False, "del is not implemented"
+
+# Test that append/extend are not implemented
+# append
+try:
+    ints.append(4)
+except AttributeError:
+    pass
+else:
+    assert False, "append is not implemented"
+
+# extend
+try:
+    ints.extend([4, 5])
+except AttributeError:
+    pass
+else:
+    assert False, "extend is not implemented"
+
+# Test set_slice nominal case
+ints[1:3] = [10, 20]
+assert ints[1] == 10
+assert ints[2] == 20
+
 # print(ints.tolist())
 
 vecs = std_array.get_arr_3_vecs()
