@@ -40,11 +40,19 @@ class array_indexing_suite
   template <class Class>
   static void extension_def(Class &) {}
 
-  // no-op
-  static void delete_item(Container &, index_type) {}
-  // no-op
-  // no-op
-  static void delete_slice(Container &, index_type, index_type) {}
+  // throws exception
+  static void delete_item(Container &, index_type) {
+    PyErr_SetString(PyExc_NotImplementedError,
+                    "Cannot delete item from std::array type.");
+    bp::throw_error_already_set();
+  }
+
+  // throws exception
+  static void delete_slice(Container &, index_type, index_type) {
+    PyErr_SetString(PyExc_NotImplementedError,
+                    "Cannot delete slice from std::array type.");
+    bp::throw_error_already_set();
+  }
 
   static void set_slice(Container &container, index_type from, index_type to,
                         data_type const &v) {
