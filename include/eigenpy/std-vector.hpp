@@ -234,6 +234,20 @@ struct reference_arg_from_python<std::vector<Type, Allocator> &>
 
 namespace eigenpy {
 
+namespace details {
+/// Defines traits for the container, used in \struct StdContainerFromPythonList
+template <class Container>
+struct container_traits {
+  // default behavior expects allocators
+  typedef typename Container::allocator_type Allocator;
+};
+
+template <typename _Tp, std::size_t Size>
+struct container_traits<std::array<_Tp, Size> > {
+  typedef void Allocator;
+};
+};  // namespace details
+
 ///
 /// \brief Register the conversion from a Python list to a std::vector
 ///
@@ -242,6 +256,7 @@ namespace eigenpy {
 template <typename vector_type, bool NoProxy>
 struct StdContainerFromPythonList {
   typedef typename vector_type::value_type T;
+  typedef typename details::container_traits<vector_type>::Allocator Allocator;
 
   /// \brief Check if obj_ptr can be converted
   static void *convertible(PyObject *obj_ptr) {
