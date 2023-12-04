@@ -5,6 +5,8 @@ ints = std_array.get_arr_3_ints()
 print(ints[0])
 print(ints[1])
 print(ints[2])
+print(ints.tolist())
+assert ints.tolist() == [1, 2, 3]
 
 _ints_slice = ints[1:3]
 print("Printing slice...")
