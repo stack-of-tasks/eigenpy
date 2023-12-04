@@ -109,8 +109,10 @@ template <typename array_type, bool NoProxy = false,
               std::allocator<typename array_type::value_type> >
 struct StdArrayPythonVisitor {
   typedef typename array_type::value_type value_type;
-  /// Fixed size of the array, known at compile time
-  static constexpr std::size_t Size = std::tuple_size<array_type>{};
+
+  static ::boost::python::list tolist(array_type &self) {
+    return details::build_list<array_type, NoProxy>::run(self);
+  }
 
   static void expose(const std::string &class_name,
                      const std::string &doc_string = "") {
@@ -133,8 +135,10 @@ struct StdArrayPythonVisitor {
                                           "Copy constructor"));
 
       array_indexing_suite<array_type, NoProxy, SliceAllocator> indexing_suite;
-      cl.def(indexing_suite);
-      cl.def(visitor);
+      cl.def(indexing_suite)
+          .def(visitor)
+          .def("tolist", tolist, bp::arg("self"),
+               "Returns the std::array as a Python list.");
     }
   }
 };

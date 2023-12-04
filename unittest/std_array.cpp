@@ -30,7 +30,7 @@ BOOST_PYTHON_MODULE(std_array) {
 
   enableEigenPy();
 
-  StdArrayPythonVisitor<std::array<int, 3> >::expose("StdArr3_int");
+  StdArrayPythonVisitor<std::array<int, 3>, true>::expose("StdArr3_int");
   StdVectorPythonVisitor<std::vector<int>, true>::expose("StdVec_int");
 
   exposeStdArrayEigenSpecificType<VectorXd, 2>("VectorXd");
