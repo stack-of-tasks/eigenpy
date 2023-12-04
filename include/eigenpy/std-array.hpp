@@ -56,8 +56,11 @@ class array_indexing_suite
 
   static void set_slice(Container &container, index_type from, index_type to,
                         data_type const &v) {
-    if (from > to) {
-      return;
+    if (from >= to) {
+      PyErr_SetString(PyExc_NotImplementedError,
+                      "Setting this slice would insert into an std::array, "
+                      "which is not supported.");
+      bp::throw_error_already_set();
     } else {
       std::fill(container.begin() + from, container.begin() + to, v);
     }
@@ -66,16 +69,26 @@ class array_indexing_suite
   template <class Iter>
   static void set_slice(Container &container, index_type from, index_type to,
                         Iter first, Iter last) {
-    if (from > to) {
-      return;
+    if (from >= to) {
+      PyErr_SetString(PyExc_NotImplementedError,
+                      "Setting this slice would insert into an std::array, "
+                      "which is not supported.");
+      bp::throw_error_already_set();
     } else {
-      std::copy(first, last, container.begin() + from);
+      if (long(to - from) == std::distance(first, last)) {
+        std::copy(first, last, container.begin() + from);
+      } else {
+        PyErr_SetString(PyExc_NotImplementedError,
+                        "Size of std::array slice and size of right-hand side "
+                        "iterator are incompatible.");
+        bp::throw_error_already_set();
+      }
     }
   }
 
   static bp::object get_slice(Container &container, index_type from,
                               index_type to) {
-    if (from > to) return bp::object(std::array<data_type, 0>());
+    if (from > to) return bp::object(slice_vector_type());
     slice_vector_type out;
     for (size_t i = from; i < to; i++) {
       out.push_back(container[i]);
