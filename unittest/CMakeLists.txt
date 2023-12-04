@@ -38,6 +38,7 @@ if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
   add_lib_unit_test(user_type)
 endif()
 add_lib_unit_test(std_vector)
+add_lib_unit_test(std_array)
 add_lib_unit_test(user_struct)
 
 function(config_bind_optional tagname opttype)
@@ -109,6 +110,10 @@ endif(NOT WIN32)
 add_python_unit_test("py-std-vector" "unittest/python/test_std_vector.py"
                      "python;unittest")
 set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
+
+add_python_unit_test("py-std-array" "unittest/python/test_std_array.py"
+                     "python;unittest")
+set_tests_properties("py-std-array" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
                      "python;unittest")
