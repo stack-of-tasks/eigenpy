@@ -40,10 +40,6 @@ class array_indexing_suite
   template <class Class>
   static void extension_def(Class &) {}
 
-  template <class Iter>
-  static void extend(Container &, Iter, Iter) {}
-
-  static void append(Container &, data_type const &) {}
   // no-op
   static void delete_item(Container &, index_type) {}
   // no-op
