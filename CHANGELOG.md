@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Support for C++11 `std::array` types ([#412](https://github.com/stack-of-tasks/pull/412))
+- Support for `std::pair` types ([#417](https://github.com/stack-of-tasks/pull/417))
 
 ## [3.1.4] - 2023-11-27
 
