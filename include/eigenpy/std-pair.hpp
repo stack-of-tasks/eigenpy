@@ -54,13 +54,13 @@ struct StdPairConverter {
 
   static void registration() {
     boost::python::converter::registry::push_back(
-        &convertible, &construct,
-        boost::python::type_id<pair_type>()
+        &convertible, &construct, boost::python::type_id<pair_type>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
-            ,
+                                      ,
         get_pytype
 #endif
     );
+    boost::python::to_python_converter<pair_type, StdPairConverter, true>();
   }
 };
 
