@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.2.0] - 2023-12-12
+
 ### Added
 - Support for C++11 `std::array` types ([#412](https://github.com/stack-of-tasks/pull/412))
 - Support for `std::pair` types ([#417](https://github.com/stack-of-tasks/pull/417))
@@ -579,7 +581,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.4...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.4...v3.2.0
 [3.1.4]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.3...v3.1.4
 [3.1.3]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.2...v3.1.3
 [3.1.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.1...v3.1.2
