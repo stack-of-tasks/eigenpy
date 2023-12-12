@@ -117,7 +117,7 @@ add_python_unit_test("py-std-array" "unittest/python/test_std_array.py"
 set_tests_properties("py-std-array" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-std-pair" "unittest/python/test_std_pair.py"
-                     "python;unittest")
+                     "unittest")
 set_tests_properties("py-std-pair" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
