@@ -64,7 +64,7 @@ jobs:
           -DGENERATE_PYTHON_STUBS=ON \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        cmake --build .
+        cmake --build . -j2
         ctest --output-on-failure
         cmake --install .
 
