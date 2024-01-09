@@ -7,7 +7,10 @@ jobs:
     name: ${{ matrix.os }} - Python ${{ matrix.python-version }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_DIR: ${{ matrix.CCACHE_DIR }}
+      CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
+      CCACHE_DIR: "${GITHUB_WORKSPACE}/.ccache"
+      CCACHE_COMPRESS: true
+      CCACHE_COMPRESSLEVEL: 6
 
     strategy:
       fail-fast: false
@@ -16,12 +19,6 @@ jobs:
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
         python-version: ["3.8", "3.12"]
-
-        include:
-          - os: ubuntu-latest
-            CCACHE_DIR: /home/runner/.ccache
-          - os: macos-latest
-            CCACHE_DIR: /Users/runner/.ccache
 
         exclude:
           - build_type: Debug
@@ -32,71 +29,72 @@ jobs:
             os: macos-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
-    - uses: conda-incubator/setup-miniconda@v2
+    - uses: actions/cache@v3
+      with:
+        path: .ccache
+        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-${{ github.sha }}
+        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.python-version }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-
+
+    - uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: eigenpy
         auto-update-conda: true
-        environment-file: .github/workflows/conda/environment.yml
+        environment-file: .github/workflows/conda/environment_macos_linux.yml
         python-version: ${{ matrix.python-version }}
-
-    - uses: actions/cache@v3
-      with:
-        path: ${{ env.CCACHE_DIR }}
-        key: ccache-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}
-
-    - name: Prepare cache dir
-      run: sudo mkdir -p ${CCACHE_DIR}/tmp && sudo chown -R $(id -un) ${CCACHE_DIR}
-
-    - name: Install cmake and update conda
-      shell: bash -l {0}
-      run: |
-        conda activate eigenpy
-        conda install cmake ccache -c conda-forge
-        conda list
+        auto-activate-base: false
 
     - name: Build EigenPy
-      shell: bash -l {0}
+      shell: bash -el {0}
       run: |
-        conda activate eigenpy
+        conda list
         echo $CONDA_PREFIX
 
         mkdir build
         cd build
 
-        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DPYTHON_EXECUTABLE=$(which python3) -DGENERATE_PYTHON_STUBS=ON -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        make
-        make build_tests
-        export CTEST_OUTPUT_ON_FAILURE=1
-        make test
-        make install
+        cmake .. \
+          -G "Ninja" \
+          -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+          -DPYTHON_EXECUTABLE=$(which python3) \
+          -DGENERATE_PYTHON_STUBS=ON \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
+        cmake --build . -j2
+        ctest --output-on-failure
+        cmake --install .
 
     - name: Test packaging
-      shell: bash -l {0}
+      shell: bash -el {0}
       run: |
-        conda activate eigenpy
-
-        cmake -B test-packaging -S unittest/packaging/cmake -DPYTHON_EXECUTABLE=$(which python3)
+        cmake -B test-packaging \
+          -S unittest/packaging/cmake \
+          -G "Ninja" \
+          -DPYTHON_EXECUTABLE=$(which python3)
 
     - name: Configure hpp-fcl
-      shell: bash -l {0}
+      shell: bash -el {0}
       run: |
-        conda activate eigenpy
         conda install -c conda-forge octomap assimp qhull
 
         git clone https://github.com/humanoid-path-planner/hpp-fcl.git --recursive
         cd hpp-fcl
         mkdir build && cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=$(which python3)
+        cmake .. \
+          -G "Ninja" \
+          -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DPYTHON_EXECUTABLE=$(which python3)
 
     - name: Uninstall EigenPy
-      shell: bash -l {0}
+      shell: bash -el {0}
       run: |
         cd build
-        make uninstall
+        cmake --build . --target uninstall
 
 
   check:
