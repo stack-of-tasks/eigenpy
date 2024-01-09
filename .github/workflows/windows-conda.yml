@@ -44,7 +44,7 @@ jobs:
         mkdir build
         pushd build
         cmake ^
-          -G "NMake Makefiles" ^
+          -G "Ninja" ^
           -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%\Library ^
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ^
           -DCMAKE_BUILD_TYPE=Release ^
@@ -70,7 +70,7 @@ jobs:
         :: Test packaging
 
         cmake -B test-packaging -S unittest/packaging/cmake ^
-          -G "NMake Makefiles" ^
+          -G "Ninja" ^
           -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe
         if errorlevel 1 exit 1
 
@@ -81,7 +81,7 @@ jobs:
         mkdir build
         pushd build
         cmake ^
-          -G "NMake Makefiles" ^
+          -G "Ninja" ^
           -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%\Library ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DPYTHON_EXECUTABLE=%CONDA_PREFIX%\python.exe ^
