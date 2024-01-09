@@ -5,10 +5,10 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     env:
-      ccache_basedir: "${github_workspace}"
-      ccache_dir: "${github_workspace}/.ccache"
-      ccache_compress: true
-      ccache_compresslevel: 6
+      CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
+      CCACHE_DIR: "${GITHUB_WORKSPACE}/.ccache"
+      CCACHE_COMPRESS: true
+      CCACHE_COMPRESSLEVEL: 6
 
     strategy:
       fail-fast: false

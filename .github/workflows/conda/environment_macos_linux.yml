@@ -7,6 +7,6 @@ dependencies:
   - numpy
   - pkg-config
   - boost
-  - cmake
   - ccache
   - cxx-compiler
+  - ninja

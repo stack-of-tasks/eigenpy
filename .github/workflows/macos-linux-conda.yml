@@ -7,10 +7,10 @@ jobs:
     name: ${{ matrix.os }} - Python ${{ matrix.python-version }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      ccache_basedir: "${github_workspace}"
-      ccache_dir: "${github_workspace}/.ccache"
-      ccache_compress: true
-      ccache_compresslevel: 6
+      CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
+      CCACHE_DIR: "${GITHUB_WORKSPACE}/.ccache"
+      CCACHE_COMPRESS: true
+      CCACHE_COMPRESSLEVEL: 6
 
     strategy:
       fail-fast: false
@@ -33,6 +33,12 @@ jobs:
       with:
         submodules: recursive
 
+    - uses: actions/cache@v3
+      with:
+        path: .ccache
+        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ github.sha }}
+        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-
+
     - uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: eigenpy
@@ -40,12 +46,6 @@ jobs:
         environment-file: .github/workflows/conda/environment_macos_linux.yml
         python-version: ${{ matrix.python-version }}
         auto-activate-base: false
-
-    - uses: actions/cache@v3
-      with:
-        path: .ccache
-        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ github.sha }}
-        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-
 
     - name: Build EigenPy
       shell: bash -el {0}
@@ -57,23 +57,23 @@ jobs:
         cd build
 
         cmake .. \
+          -G "Ninja" \
           -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
           -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
           -DPYTHON_EXECUTABLE=$(which python3) \
           -DGENERATE_PYTHON_STUBS=ON \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        make
-        make build_tests
-        export CTEST_OUTPUT_ON_FAILURE=1
-        make test
-        make install
+        cmake --build .
+        ctest --output-on-failure
+        cmake --install .
 
     - name: Test packaging
       shell: bash -el {0}
       run: |
         cmake -B test-packaging \
           -S unittest/packaging/cmake \
+          -G "Ninja" \
           -DPYTHON_EXECUTABLE=$(which python3)
 
     - name: Configure hpp-fcl
@@ -84,7 +84,9 @@ jobs:
         git clone https://github.com/humanoid-path-planner/hpp-fcl.git --recursive
         cd hpp-fcl
         mkdir build && cd build
-        cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+        cmake .. \
+          -G "Ninja" \
+          -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
           -DCMAKE_BUILD_TYPE=Release \
           -DPYTHON_EXECUTABLE=$(which python3)
 
@@ -92,7 +94,7 @@ jobs:
       shell: bash -el {0}
       run: |
         cd build
-        make uninstall
+        cmake --build . --target uninstall
 
 
   check:
