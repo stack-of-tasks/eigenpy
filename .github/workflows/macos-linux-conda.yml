@@ -36,8 +36,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: .ccache
-        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ github.sha }}
-        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-
+        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-${{ github.sha }}
+        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.python-version }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-
 
     - uses: conda-incubator/setup-miniconda@v3
       with:

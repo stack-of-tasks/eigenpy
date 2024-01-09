@@ -31,8 +31,8 @@ jobs:
     - uses: actions/cache@v3
       with:
         path: .ccache
-        key: ccache-windows-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ github.sha }}
-        restore-keys: ccache-windows-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-
+        key: ccache-windows-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-${{ github.sha }}
+        restore-keys: ccache-windows-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-
 
     - name: Build Eigenpy
       shell: cmd /C CALL {0}
