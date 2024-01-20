@@ -1,4 +1,6 @@
-/// Copyright (c) 2023 CNRS INRIA
+///
+/// Copyright (c) 2023-2024 CNRS INRIA
+///
 
 #ifndef __eigenpy_utils_std_array_hpp__
 #define __eigenpy_utils_std_array_hpp__
@@ -138,7 +140,8 @@ struct StdArrayPythonVisitor {
       cl.def(indexing_suite)
           .def(visitor)
           .def("tolist", tolist, bp::arg("self"),
-               "Returns the std::array as a Python list.");
+               "Returns the std::array as a Python list.",
+               bp::return_internal_reference<>());
     }
   }
 };

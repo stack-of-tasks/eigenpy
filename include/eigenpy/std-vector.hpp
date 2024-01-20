@@ -1,4 +1,5 @@
-/// Copyright (c) 2016-2022 CNRS INRIA
+///
+/// Copyright (c) 2016-2024 CNRS INRIA
 /// This file was taken from Pinocchio (header
 /// <pinocchio/bindings/python/utils/std-vector.hpp>)
 ///
@@ -386,7 +387,8 @@ struct ExposeStdMethodToStdVector
   void visit(Class &cl) const {
     cl.def(m_co_visitor)
         .def("tolist", &FromPythonListConverter::tolist, bp::arg("self"),
-             "Returns the std::vector as a Python list.")
+             "Returns the std::vector as a Python list.",
+             bp::return_internal_reference<>())
         .def("reserve", &Container::reserve,
              (bp::arg("self"), bp::arg("new_cap")),
              "Increase the capacity of the vector to a value that's greater "
