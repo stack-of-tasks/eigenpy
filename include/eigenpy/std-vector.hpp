@@ -417,6 +417,20 @@ struct EmptyPythonVisitor
   void visit(classT &) const {}
 };
 
+namespace internal {
+template <typename vector_type, bool T_picklable = false>
+struct def_pickle_std_vector {
+  static void run(bp::class_<vector_type> &) {}
+};
+
+template <typename vector_type>
+struct def_pickle_std_vector<vector_type, true> {
+  static void run(bp::class_<vector_type> &cl) {
+    cl.def_pickle(PickleVector<vector_type>());
+  }
+};
+}  // namespace internal
+
 ///
 /// \brief Expose an std::vector from a type given as template argument.
 /// \tparam vector_type std::vector type to expose
@@ -426,7 +440,7 @@ struct EmptyPythonVisitor
 /// conversion from a Python list to a std::vector<T,Allocator>
 ///
 template <class vector_type, bool NoProxy = false,
-          bool EnableFromPythonListConverter = true>
+          bool EnableFromPythonListConverter = true, bool pickable = true>
 struct StdVectorPythonVisitor {
   typedef typename vector_type::value_type value_type;
   typedef StdContainerFromPythonList<vector_type, NoProxy>
@@ -469,8 +483,9 @@ struct StdVectorPythonVisitor {
                                              "Copy constructor"))
 
           .def(vector_indexing)
-          .def(add_std_visitor)
-          .def_pickle(PickleVector<vector_type>());
+          .def(add_std_visitor);
+
+      internal::def_pickle_std_vector<vector_type, pickable>::run(cl);
     }
     if (EnableFromPythonListConverter) {
       // Register conversion
