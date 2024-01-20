@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Fix potential memory leak when returning a list from an `std::vector` or an `std::array` ([423](https://github.com/stack-of-tasks/eigenpy/pull/423))
+
 ## [3.2.0] - 2023-12-12
 
 ### Added
