@@ -51,7 +51,9 @@ bool from_python_list(PyObject *obj_ptr, T *) {
 
 template <typename vector_type, bool NoProxy>
 struct build_list {
-  static ::boost::python::list run(vector_type &vec) {
+  static ::boost::python::list run(vector_type &vec, const bool deep_copy) {
+    if (deep_copy) return build_list<vector_type, true>::run(vec, true);
+
     bp::list bp_list;
     for (size_t k = 0; k < vec.size(); ++k) {
       bp_list.append(boost::ref(vec[k]));
@@ -62,7 +64,7 @@ struct build_list {
 
 template <typename vector_type>
 struct build_list<vector_type, true> {
-  static ::boost::python::list run(vector_type &vec) {
+  static ::boost::python::list run(vector_type &vec, const bool) {
     typedef bp::iterator<vector_type> iterator;
     return bp::list(iterator()(vec));
   }
@@ -309,8 +311,9 @@ struct StdContainerFromPythonList {
         &convertible, &construct, ::boost::python::type_id<vector_type>());
   }
 
-  static ::boost::python::list tolist(vector_type &self) {
-    return details::build_list<vector_type, NoProxy>::run(self);
+  static ::boost::python::list tolist(vector_type &self,
+                                      const bool deep_copy = false) {
+    return details::build_list<vector_type, NoProxy>::run(self, deep_copy);
   }
 };
 
@@ -386,9 +389,9 @@ struct ExposeStdMethodToStdVector
   template <class Class>
   void visit(Class &cl) const {
     cl.def(m_co_visitor)
-        .def("tolist", &FromPythonListConverter::tolist, bp::arg("self"),
-             "Returns the std::vector as a Python list.",
-             bp::with_custodian_and_ward_postcall<0, 1>())
+        .def("tolist", &FromPythonListConverter::tolist,
+             (bp::arg("self"), bp::arg("deep_copy") = false),
+             "Returns the std::vector as a Python list.")
         .def("reserve", &Container::reserve,
              (bp::arg("self"), bp::arg("new_cap")),
              "Increase the capacity of the vector to a value that's greater "
