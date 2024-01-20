@@ -319,24 +319,9 @@ struct StdContainerFromPythonList {
 
 namespace internal {
 
-template <typename T>
-struct has_operator_equal
-    : boost::mpl::if_<typename boost::is_base_of<Eigen::EigenBase<T>, T>::type,
-                      has_operator_equal<Eigen::EigenBase<T> >,
-                      boost::true_type>::type {};
-
-template <typename T, class A>
-struct has_operator_equal<std::vector<T, A> > : has_operator_equal<T> {};
-
-template <>
-struct has_operator_equal<bool> : boost::true_type {};
-
-template <typename EigenObject>
-struct has_operator_equal<Eigen::EigenBase<EigenObject> >
-    : has_operator_equal<typename EigenObject::Scalar> {};
-
-template <typename T, bool has_operator_equal_value = boost::is_base_of<
-                          boost::true_type, has_operator_equal<T> >::value>
+template <typename T,
+          bool has_operator_equal_value =
+              std::is_base_of<std::true_type, has_operator_equal<T> >::value>
 struct contains_algo;
 
 template <typename T>

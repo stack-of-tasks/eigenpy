@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 CNRS INRIA
+ * Copyright 2014-2024 CNRS INRIA
  */
 
 #ifndef __eigenpy_fwd_hpp__
@@ -72,6 +72,9 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <boost/python/scope.hpp>
+
+#include <type_traits>
+#include <utility>
 
 namespace eigenpy {
 
@@ -167,6 +170,22 @@ struct get_eigen_ref_plain_type<Eigen::TensorRef<TensorType> > {
   typedef TensorType type;
 };
 #endif
+
+namespace internal {
+template <class T1, class T2>
+struct has_operator_equal_impl {
+  template <class U, class V>
+  static auto check(U *) -> decltype(std::declval<U>() == std::declval<V>());
+  template <typename, typename>
+  static auto check(...) -> std::false_type;
+
+  using type = typename std::is_same<bool, decltype(check<T1, T2>(0))>::type;
+};
+}  // namespace internal
+
+template <class T1, class T2 = T1>
+struct has_operator_equal : internal::has_operator_equal_impl<T1, T2>::type {};
+
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
