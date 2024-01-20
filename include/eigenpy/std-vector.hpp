@@ -342,7 +342,7 @@ struct contains_algo;
 template <typename T>
 struct contains_algo<T, true> {
   template <class Container, typename key_type>
-  static bool run(Container &container, key_type const &key) {
+  static bool run(const Container &container, key_type const &key) {
     return std::find(container.begin(), container.end(), key) !=
            container.end();
   }
@@ -351,7 +351,7 @@ struct contains_algo<T, true> {
 template <typename T>
 struct contains_algo<T, false> {
   template <class Container, typename key_type>
-  static bool run(Container &container, key_type const &key) {
+  static bool run(const Container &container, key_type const &key) {
     for (size_t k = 0; k < container.size(); ++k) {
       if (&container[k] == &key) return true;
     }
