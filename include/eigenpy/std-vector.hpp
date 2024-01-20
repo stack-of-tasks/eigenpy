@@ -388,7 +388,7 @@ struct ExposeStdMethodToStdVector
     cl.def(m_co_visitor)
         .def("tolist", &FromPythonListConverter::tolist, bp::arg("self"),
              "Returns the std::vector as a Python list.",
-             bp::return_internal_reference<>())
+             bp::with_custodian_and_ward_postcall<0, 1>())
         .def("reserve", &Container::reserve,
              (bp::arg("self"), bp::arg("new_cap")),
              "Increase the capacity of the vector to a value that's greater "

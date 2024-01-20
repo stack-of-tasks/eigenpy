@@ -141,7 +141,7 @@ struct StdArrayPythonVisitor {
           .def(visitor)
           .def("tolist", tolist, bp::arg("self"),
                "Returns the std::array as a Python list.",
-               bp::return_internal_reference<>());
+               bp::with_custodian_and_ward_postcall<0, 1>());
     }
   }
 };
