@@ -1,4 +1,5 @@
-/// Copyright (c) 2016-2022 CNRS INRIA
+///
+/// Copyright (c) 2016-2024 CNRS INRIA
 /// This file was taken from Pinocchio (header
 /// <pinocchio/bindings/python/utils/std-vector.hpp>)
 ///
@@ -50,7 +51,9 @@ bool from_python_list(PyObject *obj_ptr, T *) {
 
 template <typename vector_type, bool NoProxy>
 struct build_list {
-  static ::boost::python::list run(vector_type &vec) {
+  static ::boost::python::list run(vector_type &vec, const bool deep_copy) {
+    if (deep_copy) return build_list<vector_type, true>::run(vec, true);
+
     bp::list bp_list;
     for (size_t k = 0; k < vec.size(); ++k) {
       bp_list.append(boost::ref(vec[k]));
@@ -61,7 +64,7 @@ struct build_list {
 
 template <typename vector_type>
 struct build_list<vector_type, true> {
-  static ::boost::python::list run(vector_type &vec) {
+  static ::boost::python::list run(vector_type &vec, const bool) {
     typedef bp::iterator<vector_type> iterator;
     return bp::list(iterator()(vec));
   }
@@ -308,37 +311,23 @@ struct StdContainerFromPythonList {
         &convertible, &construct, ::boost::python::type_id<vector_type>());
   }
 
-  static ::boost::python::list tolist(vector_type &self) {
-    return details::build_list<vector_type, NoProxy>::run(self);
+  static ::boost::python::list tolist(vector_type &self,
+                                      const bool deep_copy = false) {
+    return details::build_list<vector_type, NoProxy>::run(self, deep_copy);
   }
 };
 
 namespace internal {
 
-template <typename T>
-struct has_operator_equal
-    : boost::mpl::if_<typename boost::is_base_of<Eigen::EigenBase<T>, T>::type,
-                      has_operator_equal<Eigen::EigenBase<T> >,
-                      boost::true_type>::type {};
-
-template <typename T, class A>
-struct has_operator_equal<std::vector<T, A> > : has_operator_equal<T> {};
-
-template <>
-struct has_operator_equal<bool> : boost::true_type {};
-
-template <typename EigenObject>
-struct has_operator_equal<Eigen::EigenBase<EigenObject> >
-    : has_operator_equal<typename EigenObject::Scalar> {};
-
-template <typename T, bool has_operator_equal_value = boost::is_base_of<
-                          boost::true_type, has_operator_equal<T> >::value>
+template <typename T,
+          bool has_operator_equal_value =
+              std::is_base_of<std::true_type, has_operator_equal<T> >::value>
 struct contains_algo;
 
 template <typename T>
 struct contains_algo<T, true> {
   template <class Container, typename key_type>
-  static bool run(Container &container, key_type const &key) {
+  static bool run(const Container &container, key_type const &key) {
     return std::find(container.begin(), container.end(), key) !=
            container.end();
   }
@@ -347,7 +336,7 @@ struct contains_algo<T, true> {
 template <typename T>
 struct contains_algo<T, false> {
   template <class Container, typename key_type>
-  static bool run(Container &container, key_type const &key) {
+  static bool run(const Container &container, key_type const &key) {
     for (size_t k = 0; k < container.size(); ++k) {
       if (&container[k] == &key) return true;
     }
@@ -385,7 +374,8 @@ struct ExposeStdMethodToStdVector
   template <class Class>
   void visit(Class &cl) const {
     cl.def(m_co_visitor)
-        .def("tolist", &FromPythonListConverter::tolist, bp::arg("self"),
+        .def("tolist", &FromPythonListConverter::tolist,
+             (bp::arg("self"), bp::arg("deep_copy") = false),
              "Returns the std::vector as a Python list.")
         .def("reserve", &Container::reserve,
              (bp::arg("self"), bp::arg("new_cap")),
@@ -412,6 +402,20 @@ struct EmptyPythonVisitor
   void visit(classT &) const {}
 };
 
+namespace internal {
+template <typename vector_type, bool T_picklable = false>
+struct def_pickle_std_vector {
+  static void run(bp::class_<vector_type> &) {}
+};
+
+template <typename vector_type>
+struct def_pickle_std_vector<vector_type, true> {
+  static void run(bp::class_<vector_type> &cl) {
+    cl.def_pickle(PickleVector<vector_type>());
+  }
+};
+}  // namespace internal
+
 ///
 /// \brief Expose an std::vector from a type given as template argument.
 /// \tparam vector_type std::vector type to expose
@@ -421,7 +425,7 @@ struct EmptyPythonVisitor
 /// conversion from a Python list to a std::vector<T,Allocator>
 ///
 template <class vector_type, bool NoProxy = false,
-          bool EnableFromPythonListConverter = true>
+          bool EnableFromPythonListConverter = true, bool pickable = true>
 struct StdVectorPythonVisitor {
   typedef typename vector_type::value_type value_type;
   typedef StdContainerFromPythonList<vector_type, NoProxy>
@@ -464,8 +468,9 @@ struct StdVectorPythonVisitor {
                                              "Copy constructor"))
 
           .def(vector_indexing)
-          .def(add_std_visitor)
-          .def_pickle(PickleVector<vector_type>());
+          .def(add_std_visitor);
+
+      internal::def_pickle_std_vector<vector_type, pickable>::run(cl);
     }
     if (EnableFromPythonListConverter) {
       // Register conversion

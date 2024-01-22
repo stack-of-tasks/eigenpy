@@ -1,4 +1,6 @@
-/// Copyright (c) 2023 CNRS INRIA
+///
+/// Copyright (c) 2023-2024 CNRS INRIA
+///
 
 #ifndef __eigenpy_utils_std_array_hpp__
 #define __eigenpy_utils_std_array_hpp__
@@ -110,8 +112,8 @@ template <typename array_type, bool NoProxy = false,
 struct StdArrayPythonVisitor {
   typedef typename array_type::value_type value_type;
 
-  static ::boost::python::list tolist(array_type &self) {
-    return details::build_list<array_type, NoProxy>::run(self);
+  static ::boost::python::list tolist(array_type &self, const bool deep_copy) {
+    return details::build_list<array_type, NoProxy>::run(self, deep_copy);
   }
 
   static void expose(const std::string &class_name,
@@ -137,7 +139,8 @@ struct StdArrayPythonVisitor {
       array_indexing_suite<array_type, NoProxy, SliceAllocator> indexing_suite;
       cl.def(indexing_suite)
           .def(visitor)
-          .def("tolist", tolist, bp::arg("self"),
+          .def("tolist", tolist,
+               (bp::arg("self"), bp::arg("deep_copy") = false),
                "Returns the std::array as a Python list.");
     }
   }
