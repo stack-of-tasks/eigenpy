@@ -56,8 +56,6 @@ struct EIGENPY_DLLAPI NumpyType {
 
   static bool sharedMemory();
 
-  static bp::object getNumpyType();
-
   static const PyTypeObject* getNumpyArrayType();
 
  protected:
