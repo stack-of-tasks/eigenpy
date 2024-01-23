@@ -62,7 +62,7 @@ struct copy_if_non_const<const MatType, true> {
 template <typename _RefType>
 struct referent_storage_eigen_ref {
   typedef _RefType RefType;
-  typedef typename get_eigen_ref_plain_type<RefType>::type PlainObjectType;
+  typedef typename get_eigen_plain_type<RefType>::type PlainObjectType;
   typedef typename ::eigenpy::aligned_storage<
       ::boost::python::detail::referent_size<RefType &>::value>::type
       AlignedStorage;
