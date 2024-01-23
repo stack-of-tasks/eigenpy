@@ -87,6 +87,8 @@ if(${NUMPY_VERSION} VERSION_LESS "1.16.0")
   set(NUMPY_WITH_BROKEN_UFUNC_SUPPORT TRUE)
 endif()
 
+find_scipy()
+
 if(WIN32)
   link_directories(${PYTHON_LIBRARY_DIRS})
   # # Set default Windows build paths SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY
