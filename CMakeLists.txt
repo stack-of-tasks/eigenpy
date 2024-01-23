@@ -170,6 +170,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/pickle-vector.hpp
     include/eigenpy/stride.hpp
     include/eigenpy/tensor/eigen-from-python.hpp
+    include/eigenpy/scipy-type.hpp
     include/eigenpy/swig.hpp
     include/eigenpy/version.hpp)
 
@@ -209,6 +210,7 @@ set(${PROJECT_NAME}_SOURCES
     src/angle-axis.cpp
     src/quaternion.cpp
     src/geometry-conversion.cpp
+    src/scipy-type.cpp
     src/std-vector.cpp
     src/optional.cpp
     src/version.cpp)
