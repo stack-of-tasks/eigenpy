@@ -109,6 +109,12 @@ namespace bp = boost::python;
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
 #define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type *)(NULL))
+#ifndef NDEBUG
+#define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var)
+#else
+#define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var) \
+  EIGENPY_UNUSED_VARIABLE(var)
+#endif
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
