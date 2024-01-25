@@ -565,4 +565,6 @@ struct EigenFromPy<const Eigen::Ref<const MatType, Options, Stride> > {
 #include "eigenpy/tensor/eigen-from-python.hpp"
 #endif
 
+#include "eigenpy/sparse/eigen-from-python.hpp"
+
 #endif  // __eigenpy_eigen_from_python_hpp__

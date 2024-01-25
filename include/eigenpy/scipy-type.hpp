@@ -32,6 +32,27 @@ struct EIGENPY_DLLAPI ScipyType {
                                     : getInstance().csc_matrix_obj;
   }
 
+  template <typename SparseMatrix>
+  static PyTypeObject const* get_pytype(
+      const Eigen::SparseMatrixBase<SparseMatrix>* ptr = nullptr) {
+    EIGENPY_UNUSED_VARIABLE(ptr);
+    return SparseMatrix::IsRowMajor ? getInstance().csr_matrix_type
+                                    : getInstance().csc_matrix_type;
+  }
+
+  static int get_numpy_type_num(const bp::object& obj) {
+    const PyTypeObject* type = Py_TYPE(obj.ptr());
+    EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(type);
+    assert(type == getInstance().csr_matrix_type ||
+           type == getInstance().csc_matrix_type);
+
+    bp::object dtype = obj.attr("dtype");
+
+    const PyArray_Descr* npy_type =
+        reinterpret_cast<PyArray_Descr*>(dtype.ptr());
+    return npy_type->type_num;
+  }
+
  protected:
   ScipyType();
 
