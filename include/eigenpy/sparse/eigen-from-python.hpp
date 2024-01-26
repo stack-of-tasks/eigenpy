@@ -9,7 +9,6 @@
 #include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/scipy-type.hpp"
 #include "eigenpy/scalar-conversion.hpp"
-#include <iostream>
 
 namespace eigenpy {
 

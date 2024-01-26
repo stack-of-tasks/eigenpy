@@ -10,8 +10,6 @@
 #include "eigenpy/scipy-type.hpp"
 #include "eigenpy/register.hpp"
 
-#include <iostream>
-
 namespace eigenpy {
 
 template <typename EigenType, typename BaseType>
