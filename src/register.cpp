@@ -14,6 +14,17 @@ PyArray_Descr* Register::getPyArrayDescr(PyTypeObject* py_type_ptr) {
     return NULL;
 }
 
+PyArray_Descr* Register::getPyArrayDescrFromTypeNum(const int type_num) {
+  if (type_num >= NPY_USERDEF) {
+    for (const auto& elt : instance().py_array_code_bindings) {
+      if (elt.second == type_num)
+        return instance().py_array_descr_bindings[elt.first];
+    }
+    return nullptr;
+  } else
+    return PyArray_DescrFromType(type_num);
+}
+
 bool Register::isRegistered(PyTypeObject* py_type_ptr) {
   if (getPyArrayDescr(py_type_ptr) != NULL)
     return true;

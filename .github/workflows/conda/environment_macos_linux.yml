@@ -10,3 +10,4 @@ dependencies:
   - ccache
   - cxx-compiler
   - ninja
+  - scipy

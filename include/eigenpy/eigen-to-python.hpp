@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2014-2023 CNRS INRIA
+// Copyright (c) 2014-2024 CNRS INRIA
 //
 
 #ifndef __eigenpy_eigen_to_python_hpp__
@@ -11,7 +11,9 @@
 
 #include "eigenpy/eigen-allocator.hpp"
 #include "eigenpy/numpy-allocator.hpp"
+#include "eigenpy/scipy-allocator.hpp"
 #include "eigenpy/numpy-type.hpp"
+#include "eigenpy/scipy-type.hpp"
 #include "eigenpy/registration.hpp"
 
 namespace boost {
@@ -116,6 +118,50 @@ struct eigen_to_py_impl_matrix {
     // Create an instance (either np.array or np.matrix)
     return NumpyType::make(pyArray).ptr();
   }
+
+  static PyTypeObject const* get_pytype() { return getPyArrayType(); }
+};
+
+template <typename MatType>
+struct eigen_to_py_impl_sparse_matrix;
+
+template <typename MatType>
+struct eigen_to_py_impl<MatType, Eigen::SparseMatrixBase<MatType> >
+    : eigen_to_py_impl_sparse_matrix<MatType> {};
+
+template <typename MatType>
+struct eigen_to_py_impl<MatType&, Eigen::SparseMatrixBase<MatType> >
+    : eigen_to_py_impl_sparse_matrix<MatType&> {};
+
+template <typename MatType>
+struct eigen_to_py_impl<const MatType, const Eigen::SparseMatrixBase<MatType> >
+    : eigen_to_py_impl_sparse_matrix<const MatType> {};
+
+template <typename MatType>
+struct eigen_to_py_impl<const MatType&, const Eigen::SparseMatrixBase<MatType> >
+    : eigen_to_py_impl_sparse_matrix<const MatType&> {};
+
+template <typename MatType>
+struct eigen_to_py_impl_sparse_matrix {
+  enum { IsRowMajor = MatType::IsRowMajor };
+
+  static PyObject* convert(
+      typename boost::add_reference<
+          typename boost::add_const<MatType>::type>::type mat) {
+    typedef typename boost::remove_const<
+        typename boost::remove_reference<MatType>::type>::type MatrixDerived;
+
+    // Allocate and perform the copy
+    PyObject* pyArray =
+        ScipyAllocator<MatType>::allocate(const_cast<MatrixDerived&>(mat));
+
+    return pyArray;
+  }
+
+  static PyTypeObject const* get_pytype() {
+    return IsRowMajor ? ScipyType::getScipyCSRMatrixType()
+                      : ScipyType::getScipyCSCMatrixType();
+  }
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
@@ -149,6 +195,8 @@ struct eigen_to_py_impl_tensor {
     // Create an instance (either np.array or np.matrix)
     return NumpyType::make(pyArray).ptr();
   }
+
+  static PyTypeObject const* get_pytype() { return getPyArrayType(); }
 };
 #endif
 
@@ -163,7 +211,6 @@ template <typename EigenType, typename _Scalar>
 struct EigenToPy
 #endif
     : eigen_to_py_impl<EigenType> {
-  static PyTypeObject const* get_pytype() { return getPyArrayType(); }
 };
 
 template <typename MatType>

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2023 INRIA
+# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2024 INRIA
 #
 
 macro(ADD_LIB_UNIT_TEST test)
@@ -25,6 +25,10 @@ macro(ADD_LIB_UNIT_TEST test)
 endmacro(ADD_LIB_UNIT_TEST)
 
 add_lib_unit_test(matrix)
+if(BUILD_TESTING_SCIPY)
+  find_scipy()
+  add_lib_unit_test(sparse_matrix)
+endif()
 add_lib_unit_test(tensor)
 add_lib_unit_test(geometry)
 add_lib_unit_test(complex)
@@ -63,6 +67,10 @@ endif()
 add_lib_unit_test(bind_virtual_factory)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
+if(BUILD_TESTING_SCIPY)
+  add_python_unit_test("py-sparse-matrix"
+                       "unittest/python/test_sparse_matrix.py" "unittest")
+endif()
 
 add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
 add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"

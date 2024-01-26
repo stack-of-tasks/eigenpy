@@ -62,7 +62,7 @@ struct copy_if_non_const<const MatType, true> {
 template <typename _RefType>
 struct referent_storage_eigen_ref {
   typedef _RefType RefType;
-  typedef typename get_eigen_ref_plain_type<RefType>::type PlainObjectType;
+  typedef typename get_eigen_plain_type<RefType>::type PlainObjectType;
   typedef typename ::eigenpy::aligned_storage<
       ::boost::python::detail::referent_size<RefType &>::value>::type
       AlignedStorage;
@@ -564,5 +564,7 @@ struct EigenFromPy<const Eigen::Ref<const MatType, Options, Stride> > {
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 #include "eigenpy/tensor/eigen-from-python.hpp"
 #endif
+
+#include "eigenpy/sparse/eigen-from-python.hpp"
 
 #endif  // __eigenpy_eigen_from_python_hpp__

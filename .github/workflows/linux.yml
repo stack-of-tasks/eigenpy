@@ -16,10 +16,10 @@ jobs:
           submodules: 'true'
       - run: |
           sudo apt-get update
-          sudo apt-get install cmake libboost-all-dev libeigen3-dev python*-numpy python*-dev
+          sudo apt-get install cmake libboost-all-dev libeigen3-dev python*-numpy python*-dev python*-scipy
           echo $(sudo apt list --installed)
           echo $(g++ --version)
-      - run: cmake -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) .
+      - run: cmake . -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) -DBUILD_TESTING_SCIPY=ON
       - run: make -j2
       - run: make test
 

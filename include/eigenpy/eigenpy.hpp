@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2023, INRIA
+ * Copyright 2018-2024, INRIA
  */
 
 #ifndef __eigenpy_eigenpy_hpp__
@@ -54,6 +54,8 @@ EIGEN_DONT_INLINE void exposeType() {
   ENABLE_SPECIFIC_MATRIX_TYPE(VectorXs);
   ENABLE_SPECIFIC_MATRIX_TYPE(RowVectorXs);
   ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXs);
+
+  enableEigenPySpecific<Eigen::SparseMatrix<Scalar, Options> >();
 }
 
 template <typename Scalar>

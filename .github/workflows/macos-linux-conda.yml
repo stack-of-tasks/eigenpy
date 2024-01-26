@@ -88,6 +88,7 @@ jobs:
           -G "Ninja" \
           -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
           -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_TESTING_SCIPY=ON \
           -DPYTHON_EXECUTABLE=$(which python3)
 
     - name: Uninstall EigenPy

@@ -9,3 +9,4 @@ dependencies:
   - boost
   - ccache
   - ninja
+  - scipy

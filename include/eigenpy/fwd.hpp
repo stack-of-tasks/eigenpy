@@ -89,6 +89,7 @@ namespace bp = boost::python;
 #undef BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 #include <Eigen/Core>
+#include <Eigen/Sparse>
 #include <Eigen/Geometry>
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
@@ -108,6 +109,12 @@ namespace bp = boost::python;
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
 #define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type *)(NULL))
+#ifndef NDEBUG
+#define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var)
+#else
+#define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var) \
+  EIGENPY_UNUSED_VARIABLE(var)
+#endif
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
@@ -138,17 +145,20 @@ struct get_eigen_base_type {
   typedef typename remove_const_reference<EigenType>::type EigenType_;
   typedef typename boost::mpl::if_<
       boost::is_base_of<Eigen::MatrixBase<EigenType_>, EigenType_>,
-      Eigen::MatrixBase<EigenType_>
-#ifdef EIGENPY_WITH_TENSOR_SUPPORT
-      ,
+      Eigen::MatrixBase<EigenType_>,
       typename boost::mpl::if_<
-          boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
-          Eigen::TensorBase<EigenType_>, void>::type
+          boost::is_base_of<Eigen::SparseMatrixBase<EigenType_>, EigenType_>,
+          Eigen::SparseMatrixBase<EigenType_>
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+          ,
+          typename boost::mpl::if_<
+              boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
+              Eigen::TensorBase<EigenType_>, void>::type
 #else
-      ,
-      void
+          ,
+          void
 #endif
-      >::type _type;
+          >::type>::type _type;
 
   typedef typename boost::mpl::if_<
       boost::is_const<typename boost::remove_reference<EigenType>::type>,
@@ -156,17 +166,17 @@ struct get_eigen_base_type {
 };
 
 template <typename EigenType>
-struct get_eigen_ref_plain_type;
+struct get_eigen_plain_type;
 
 template <typename MatType, int Options, typename Stride>
-struct get_eigen_ref_plain_type<Eigen::Ref<MatType, Options, Stride> > {
+struct get_eigen_plain_type<Eigen::Ref<MatType, Options, Stride> > {
   typedef typename Eigen::internal::traits<
       Eigen::Ref<MatType, Options, Stride> >::PlainObjectType type;
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-struct get_eigen_ref_plain_type<Eigen::TensorRef<TensorType> > {
+struct get_eigen_plain_type<Eigen::TensorRef<TensorType> > {
   typedef TensorType type;
 };
 #endif

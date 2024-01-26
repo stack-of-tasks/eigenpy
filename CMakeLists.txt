@@ -41,15 +41,8 @@ set(CMAKE_VERBOSE_MAKEFILE True)
 # ----------------------------------------------------
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
-
-if(DEFINED BUILD_UNIT_TESTS)
-  message(
-    AUTHOR_WARNING
-      "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
-    If you are manually building EigenPy from source in an existing build folder,\
-    we suggest that you delete your build folder and make a new one.")
-  set(BUILD_TESTING ${BUILD_UNIT_TESTS})
-endif(DEFINED BUILD_UNIT_TESTS)
+option(BUILD_TESTING_SCIPY
+       "Build the SciPy tests (scipy should be installed on the machine)" OFF)
 
 include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
@@ -170,6 +163,9 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/pickle-vector.hpp
     include/eigenpy/stride.hpp
     include/eigenpy/tensor/eigen-from-python.hpp
+    include/eigenpy/sparse/eigen-from-python.hpp
+    include/eigenpy/scipy-allocator.hpp
+    include/eigenpy/scipy-type.hpp
     include/eigenpy/swig.hpp
     include/eigenpy/version.hpp)
 
@@ -209,6 +205,7 @@ set(${PROJECT_NAME}_SOURCES
     src/angle-axis.cpp
     src/quaternion.cpp
     src/geometry-conversion.cpp
+    src/scipy-type.cpp
     src/std-vector.cpp
     src/optional.cpp
     src/version.cpp)
