@@ -41,6 +41,8 @@ set(CMAKE_VERBOSE_MAKEFILE True)
 # ----------------------------------------------------
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
+option(BUILD_TESTING_SCIPY
+       "Build the SciPy tests (scipy should be installed on the machine)" OFF)
 
 include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
@@ -77,8 +79,6 @@ findpython(REQUIRED)
 if(${NUMPY_VERSION} VERSION_LESS "1.16.0")
   set(NUMPY_WITH_BROKEN_UFUNC_SUPPORT TRUE)
 endif()
-
-find_scipy()
 
 if(WIN32)
   link_directories(${PYTHON_LIBRARY_DIRS})
