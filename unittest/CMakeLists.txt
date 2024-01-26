@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2023 INRIA
+# Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2024 INRIA
 #
 
 macro(ADD_LIB_UNIT_TEST test)
@@ -25,6 +25,7 @@ macro(ADD_LIB_UNIT_TEST test)
 endmacro(ADD_LIB_UNIT_TEST)
 
 add_lib_unit_test(matrix)
+add_lib_unit_test(sparse_matrix)
 add_lib_unit_test(tensor)
 add_lib_unit_test(geometry)
 add_lib_unit_test(complex)
