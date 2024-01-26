@@ -42,15 +42,6 @@ set(CMAKE_VERBOSE_MAKEFILE True)
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
 
-if(DEFINED BUILD_UNIT_TESTS)
-  message(
-    AUTHOR_WARNING
-      "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
-    If you are manually building EigenPy from source in an existing build folder,\
-    we suggest that you delete your build folder and make a new one.")
-  set(BUILD_TESTING ${BUILD_UNIT_TESTS})
-endif(DEFINED BUILD_UNIT_TESTS)
-
 include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
