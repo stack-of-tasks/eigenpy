@@ -24,14 +24,20 @@ bool np_type_is_convertible_into_scalar(const int np_type) {
   if (NumpyEquivalentType<Scalar>::type_code == np_type) return true;
 
   switch (np_type) {
+#ifdef WIN32
+    case NPY_INT:
+    case NPY_LONG:
+      return FromTypeToType<int, Scalar>::value;
+    case NPY_INT64:
+    case NPY_LONGLONG:
+      return FromTypeToType<__int64, Scalar>::value;
+#else
     case NPY_INT:
       return FromTypeToType<int, Scalar>::value;
-#ifdef WIN32
-    case NPY_INT64:
-      return FromTypeToType<__int64, Scalar>::value;
-#endif
     case NPY_LONG:
+    case NPY_LONGLONG:
       return FromTypeToType<long, Scalar>::value;
+#endif
     case NPY_FLOAT:
       return FromTypeToType<float, Scalar>::value;
     case NPY_CFLOAT:
