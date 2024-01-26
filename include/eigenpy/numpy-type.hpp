@@ -26,6 +26,10 @@ bool np_type_is_convertible_into_scalar(const int np_type) {
   switch (np_type) {
     case NPY_INT:
       return FromTypeToType<int, Scalar>::value;
+#ifdef WIN32
+    case NPY_INT64:
+      return FromTypeToType<__int64, Scalar>::value;
+#endif
     case NPY_LONG:
       return FromTypeToType<long, Scalar>::value;
     case NPY_FLOAT:
