@@ -73,13 +73,29 @@ struct scipy_allocator_impl_sparse_matrix {
         mat.outerIndexPtr(), (IsRowMajor ? mat.rows() : mat.cols()) + 1);
     MapStorageIndexVector inner_indices(mat.innerIndexPtr(), mat.nonZeros());
 
-    bp::object scipy_sparse_matrix = scipy_sparse_matrix_type(bp::make_tuple(
-        DataVector(data),
-        ScipyStorageIndexVector(inner_indices.template cast<int32_t>()),
-        ScipyStorageIndexVector(outer_indices.template cast<int32_t>())));  //,
-    //                                                              bp::make_tuple(mat.rows(),
-    //                                                              mat.cols())));
+    bp::object scipy_sparse_matrix;
 
+    if (mat.rows() == 0 &&
+        mat.cols() == 0)  // handle the specific case of empty matrix
+    {
+      //      PyArray_Descr* npy_type =
+      //      Register::getPyArrayDescrFromScalarType<Scalar>(); bp::dict args;
+      //      args["dtype"] =
+      //      bp::object(bp::handle<>(bp::borrowed(npy_type->typeobj)));
+      //      args["shape"] = bp::object(bp::handle<>(bp::borrowed(Py_None)));
+      //      scipy_sparse_matrix =
+      //      scipy_sparse_matrix_type(*bp::make_tuple(0,0),**args);
+      scipy_sparse_matrix = scipy_sparse_matrix_type(
+          Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(0, 0));
+    } else {
+      scipy_sparse_matrix = scipy_sparse_matrix_type(bp::make_tuple(
+          DataVector(data),
+          ScipyStorageIndexVector(inner_indices.template cast<int32_t>()),
+          ScipyStorageIndexVector(
+              outer_indices.template cast<int32_t>())));  //,
+      //                                                              bp::make_tuple(mat.rows(),
+      //                                                              mat.cols())));
+    }
     Py_INCREF(scipy_sparse_matrix.ptr());
     return scipy_sparse_matrix.ptr();
   }
