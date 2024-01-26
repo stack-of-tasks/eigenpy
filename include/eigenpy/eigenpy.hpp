@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2023, INRIA
+ * Copyright 2018-2024, INRIA
  */
 
 #ifndef __eigenpy_eigenpy_hpp__
@@ -59,6 +59,9 @@ EIGEN_DONT_INLINE void exposeType() {
 template <typename Scalar>
 EIGEN_DONT_INLINE void exposeType() {
   exposeType<Scalar, 0>();
+
+  enableEigenPySpecific<Eigen::SparseMatrix<Scalar, Eigen::ColMajor> >();
+  enableEigenPySpecific<Eigen::SparseMatrix<Scalar, Eigen::RowMajor> >();
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
   enableEigenPySpecific<Eigen::Tensor<Scalar, 1> >();
