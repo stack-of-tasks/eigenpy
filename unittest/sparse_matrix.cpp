@@ -36,11 +36,6 @@ Eigen::SparseMatrix<Scalar, Options> diagonal(
 }
 
 template <typename Scalar, int Options>
-void matrix1x1_input(const Eigen::Matrix<Scalar, 1, 1>& mat) {
-  std::cout << mat << std::endl;
-}
-
-template <typename Scalar, int Options>
 Eigen::SparseMatrix<Scalar, Options> emptyVector() {
   return Eigen::SparseMatrix<Scalar, Options>();
 }
@@ -61,24 +56,24 @@ Eigen::SparseMatrix<Scalar, Options> copy(
   return mat;
 }
 
+template <typename Scalar, int Options>
+void expose_functions() {
+  namespace bp = boost::python;
+  bp::def("vector1x1", vector1x1<Scalar, Options>);
+  bp::def("matrix1x1", matrix1x1<Scalar, Options>);
+
+  bp::def("print", print<Scalar, Options>);
+  bp::def("copy", copy<Scalar, Options>);
+  bp::def("diagonal", diagonal<Scalar, Options>);
+
+  bp::def("emptyVector", emptyVector<Scalar, Options>);
+  bp::def("emptyMatrix", emptyMatrix<Scalar, Options>);
+}
+
 BOOST_PYTHON_MODULE(sparse_matrix) {
-  using namespace Eigen;
   namespace bp = boost::python;
   eigenpy::enableEigenPy();
 
-  typedef Eigen::SparseMatrix<double> SparseMatrixD;
-  eigenpy::EigenToPyConverter<SparseMatrixD>::registration();
-  eigenpy::EigenFromPyConverter<SparseMatrixD>::registration();
-
-  bp::def("vector1x1", vector1x1<double, Eigen::ColMajor>);
-  bp::def("matrix1x1", matrix1x1<double, Eigen::ColMajor>);
-  bp::def("matrix1x1", matrix1x1_input<double, Eigen::ColMajor>);
-  bp::def("matrix1x1_int", matrix1x1_input<int, Eigen::ColMajor>);
-
-  bp::def("print", print<double, Eigen::ColMajor>);
-  bp::def("copy", copy<double, Eigen::ColMajor>);
-  bp::def("diagonal", diagonal<double, Eigen::ColMajor>);
-
-  bp::def("emptyVector", emptyVector<double, Eigen::ColMajor>);
-  bp::def("emptyMatrix", emptyMatrix<double, Eigen::ColMajor>);
+  expose_functions<double, Eigen::ColMajor>();
+  expose_functions<double, Eigen::RowMajor>();
 }

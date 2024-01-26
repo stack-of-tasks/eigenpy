@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 import sparse_matrix
+from scipy.sparse import csc_matrix, csr_matrix
 
 m = sparse_matrix.emptyMatrix()
 assert m.shape == (0, 0)
@@ -22,3 +23,6 @@ assert (diag_mat.toarray() == np.diag(diag_values)).all()
 
 diag_mat_copy = sparse_matrix.copy(diag_mat)
 assert (diag_mat_copy != diag_mat).nnz == 0
+
+diag_mat_csr = csr_matrix(diag_mat)
+assert (sparse_matrix.copy(diag_mat_csr) != diag_mat_csr).nnz == 0
