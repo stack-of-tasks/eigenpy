@@ -28,7 +28,6 @@ bool np_type_is_convertible_into_scalar(const int np_type) {
     case NPY_INT:
     case NPY_LONG:
       return FromTypeToType<int, Scalar>::value;
-    case NPY_INT64:
     case NPY_LONGLONG:
       return FromTypeToType<__int64, Scalar>::value;
 #else
