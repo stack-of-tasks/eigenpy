@@ -144,12 +144,13 @@ void eigen_sparse_matrix_from_py_construct(
     StorageIndexVector indptr =
         bp::extract<StorageIndexVector>(obj.attr("indptr"));
 
-    MapMatOrRefType map(bp::extract<Eigen::Index>(shape[0]),
-                        bp::extract<Eigen::Index>(shape[1]),
-                        bp::extract<Eigen::Index>(obj.attr("nnz")),
-                        indptr.data(), indices.data(), data.data());
+    const Eigen::Index m = bp::extract<Eigen::Index>(shape[0]),
+                       n = bp::extract<Eigen::Index>(shape[1]),
+                       nnz = bp::extract<Eigen::Index>(obj.attr("nnz"));
+    MapMatOrRefType sparse_map(m, n, nnz, indptr.data(), indices.data(),
+                               data.data());
 
-    new (raw_ptr) MatOrRefType(map);
+    new (raw_ptr) MatOrRefType(sparse_map);
   }
 
   memory->convertible = storage->storage.bytes;
