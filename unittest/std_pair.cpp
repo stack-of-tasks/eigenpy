@@ -18,12 +18,10 @@ std::pair<T1, T2> copy(const std::pair<T1, T2>& pair) {
 }
 
 BOOST_PYTHON_MODULE(std_pair) {
-  using namespace eigenpy;
-
-  enableEigenPy();
+  eigenpy::enableEigenPy();
 
   typedef std::pair<int, double> PairType;
-  StdPairConverter<PairType>::registration();
+  eigenpy::StdPairConverter<PairType>::registration();
 
   bp::def("std_pair_to_tuple", std_pair_to_tuple<int, double>);
   bp::def("copy", copy<int, double>);
