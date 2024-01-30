@@ -153,17 +153,17 @@ struct ReturnInternalVariant : boost::python::return_internal_reference<> {
 ///   void expose() {
 ///     boost::python::class_<Struct1>("Struct1", bp::init<>());
 ///     boost::python::class_<Struct2>("Struct1", bp::init<>())
-///     typedef eigenpy::VariantConvertor<MyVariant> Convertor;
-///     Convertor::registration();
+///     typedef eigenpy::VariantConverter<MyVariant> Converter;
+///     Converter::registration();
 ///
 ///     boost::python::class_<VariantHolder>("VariantHolder", bp::init<>())
 ///       .add_property("variant",
 ///         bp::make_getter(&VariantHolder::variant,
-///                         Convertor::return_internal_reference()),
+///                         Converter::return_internal_reference()),
 ///         bp::make_setter(&VariantHolder::variant));
 ///   }
 template <typename Variant>
-struct VariantConvertor {
+struct VariantConverter {
   typedef Variant variant_type;
   typedef ReturnInternalVariant<variant_type> return_internal_reference;
 
