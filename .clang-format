@@ -1,0 +1,3 @@
+BasedOnStyle: Google
+SortIncludes: false
+Standard: Cpp03
