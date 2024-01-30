@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Support for `Eigen::SparseMatrix` types ([#426](https://github.com/stack-of-tasks/eigenpy/pull/426))
+- Support for `boost::variant` types with `BoostVariantConvertor` ([#430](https://github.com/stack-of-tasks/eigenpy/pull/430))
 
 ### Fixed
 - Fix the issue of missing exposition of Eigen types with __int64 scalar type ([#426](https://github.com/stack-of-tasks/eigenpy/pull/426))
