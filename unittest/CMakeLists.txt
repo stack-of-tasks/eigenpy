@@ -55,8 +55,11 @@ function(config_test test tagname opttype)
   configure_file(python/test_${test}.py.in
                  ${CMAKE_CURRENT_BINARY_DIR}/python/${py_file})
   add_lib_unit_test(${MODNAME})
-  add_python_unit_test("py-${test}-${tagname}" "unittest/python/${py_file}"
-                       "unittest")
+  set(PYTHON_TEST_NAME "py-${test}-${tagname}")
+  add_test(NAME ${PYTHON_TEST_NAME}
+           COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/python/${py_file}")
+  compute_pythonpath(ENV_VARIABLES "unittest")
+  set_tests_properties(${PYTHON_TEST_NAME} PROPERTIES ENVIRONMENT "${ENV_VARIABLES}")
 endfunction()
 
 config_test(variant boost "boost::variant")
