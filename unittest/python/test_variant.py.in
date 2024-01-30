@@ -4,7 +4,9 @@ variant_module = importlib.import_module("@MODNAME@")
 V1 = variant_module.V1
 V2 = variant_module.V2
 VariantHolder = variant_module.VariantHolder
+VariantNoneHolder = variant_module.VariantNoneHolder
 make_variant = variant_module.make_variant
+make_variant_none = variant_module.make_variant_none
 
 variant = make_variant()
 assert isinstance(variant, V1)
@@ -40,3 +42,23 @@ assert v1.v == 1000
 variant_holder.variant = v2
 assert isinstance(variant_holder.variant, V2)
 assert variant_holder.variant.v == v2.v
+
+# Test variant that hold a None value
+v_none = make_variant_none()
+assert v_none is None
+v_none = 1
+assert v_none == 1
+v_none = None
+assert v_none is None
+
+variant_none_holder = VariantNoneHolder()
+v_none = variant_none_holder.variant
+assert v_none is None
+
+v1 = V1()
+v1.v = 1
+variant_none_holder.variant = v1
+assert variant_none_holder.variant.v == 1
+v1 = variant_none_holder.variant
+v1.v = 10
+assert variant_none_holder.variant.v == 10

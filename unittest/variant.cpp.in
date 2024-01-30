@@ -17,10 +17,33 @@ struct V2 {
 };
 typedef VARIANT<V1, V2> MyVariant;
 
+template <typename Variant>
+struct MyVariantNoneHelper {};
+
+template <typename... Alternatives>
+struct MyVariantNoneHelper<boost::variant<Alternatives...> > {
+  typedef VARIANT<boost::blank, Alternatives...> type;
+};
+
+#ifdef EIGENPY_WITH_CXX17_SUPPORT
+template <typename... Alternatives>
+struct MyVariantNoneHelper<std::variant<Alternatives...> > {
+  typedef VARIANT<std::monostate, Alternatives...> type;
+};
+#endif
+
+typedef typename MyVariantNoneHelper<VARIANT<V1> >::type MyVariantNone;
+
 MyVariant make_variant() { return V1(); }
+
+MyVariantNone make_variant_none() { return MyVariantNone(); }
 
 struct VariantHolder {
   MyVariant variant;
+};
+
+struct VariantNoneHolder {
+  MyVariantNone variant;
 };
 
 BOOST_PYTHON_MODULE(@MODNAME@) {
@@ -41,4 +64,14 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
                     bp::make_getter(&VariantHolder::variant,
                                     Converter::return_internal_reference()),
                     bp::make_setter(&VariantHolder::variant));
+
+  typedef eigenpy::VariantConverter<MyVariantNone> ConverterNone;
+  ConverterNone::registration();
+  bp::def("make_variant_none", make_variant_none);
+
+  boost::python::class_<VariantNoneHolder>("VariantNoneHolder", bp::init<>())
+      .add_property("variant",
+                    bp::make_getter(&VariantNoneHolder::variant,
+                                    ConverterNone::return_internal_reference()),
+                    bp::make_setter(&VariantNoneHolder::variant));
 }

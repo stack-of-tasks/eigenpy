@@ -41,6 +41,10 @@ struct VariantVisitorType<ResultType, std::variant<Alternatives...> > {
     return std::visit(std::forward<Visitor>(visitor),
                       std::forward<Visitable>(v));
   }
+
+  result_type operator()(std::monostate) const {
+    return boost::python::incref(boost::python::object().ptr());  // None
+  }
 };
 
 template <typename... Alternatives>
@@ -60,6 +64,10 @@ struct VariantVisitorType<ResultType, boost::variant<Alternatives...> >
   template <typename Visitor, typename Visitable>
   static result_type visit(Visitor&& visitor, Visitable&& visitable) {
     return std::forward<Visitable>(visitable).apply_visitor(visitor);
+  }
+
+  result_type operator()(boost::blank) const {
+    return boost::python::incref(boost::python::object().ptr());  // None
   }
 };
 
@@ -84,6 +92,8 @@ struct VariantValueToObject : VariantVisitorType<PyObject*, Variant> {
   result_type operator()(T& t) const {
     return boost::python::incref(boost::python::object(t).ptr());
   }
+
+  using Base::operator();
 };
 
 /// Convert {boost,std}::variant<class...> alternative reference to a Python
@@ -104,6 +114,9 @@ struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
   result_type operator()(T& t) const {
     return boost::python::detail::make_reference_holder::execute(&t);
   }
+
+  /// Copy the object when it's None
+  using Base::operator();
 };
 
 /// Converter used in \see ReturnInternalVariant.
