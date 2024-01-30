@@ -34,9 +34,13 @@ struct MyVariantNoneHelper<std::variant<Alternatives...> > {
 
 typedef typename MyVariantNoneHelper<VARIANT<V1> >::type MyVariantNone;
 
+typedef VARIANT<int, double> MyVariantArithmetic;
+
 MyVariant make_variant() { return V1(); }
 
 MyVariantNone make_variant_none() { return MyVariantNone(); }
+
+MyVariantArithmetic make_variant_arithmetic() { return MyVariantArithmetic(); }
 
 struct VariantHolder {
   MyVariant variant;
@@ -44,6 +48,10 @@ struct VariantHolder {
 
 struct VariantNoneHolder {
   MyVariantNone variant;
+};
+
+struct VariantArithmeticHolder {
+  MyVariantArithmetic variant;
 };
 
 BOOST_PYTHON_MODULE(@MODNAME@) {
@@ -74,4 +82,16 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
                     bp::make_getter(&VariantNoneHolder::variant,
                                     ConverterNone::return_internal_reference()),
                     bp::make_setter(&VariantNoneHolder::variant));
+
+  typedef eigenpy::VariantConverter<MyVariantArithmetic> ConverterArithmetic;
+  ConverterArithmetic::registration();
+  bp::def("make_variant_arithmetic", make_variant_arithmetic);
+
+  boost::python::class_<VariantArithmeticHolder>("VariantArithmeticHolder",
+                                                 bp::init<>())
+      .add_property(
+          "variant",
+          bp::make_getter(&VariantArithmeticHolder::variant,
+                          ConverterArithmetic::return_internal_reference()),
+          bp::make_setter(&VariantArithmeticHolder::variant));
 }

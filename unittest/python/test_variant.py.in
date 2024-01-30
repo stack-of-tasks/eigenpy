@@ -5,8 +5,10 @@ V1 = variant_module.V1
 V2 = variant_module.V2
 VariantHolder = variant_module.VariantHolder
 VariantNoneHolder = variant_module.VariantNoneHolder
+VariantArithmeticHolder = variant_module.VariantArithmeticHolder
 make_variant = variant_module.make_variant
 make_variant_none = variant_module.make_variant_none
+make_variant_arithmetic = variant_module.make_variant_arithmetic
 
 variant = make_variant()
 assert isinstance(variant, V1)
@@ -46,10 +48,6 @@ assert variant_holder.variant.v == v2.v
 # Test variant that hold a None value
 v_none = make_variant_none()
 assert v_none is None
-v_none = 1
-assert v_none == 1
-v_none = None
-assert v_none is None
 
 variant_none_holder = VariantNoneHolder()
 v_none = variant_none_holder.variant
@@ -62,3 +60,19 @@ assert variant_none_holder.variant.v == 1
 v1 = variant_none_holder.variant
 v1.v = 10
 assert variant_none_holder.variant.v == 10
+# variant_none_holder.variant = None
+
+
+# Test variant that hold base type
+v_arithmetic = make_variant_arithmetic()
+assert isinstance(v_arithmetic, int)
+
+variant_arithemtic_holder = VariantArithmeticHolder()
+assert isinstance(variant_arithemtic_holder.variant, int)
+variant_arithemtic_holder.variant = 2.0
+assert variant_arithemtic_holder.variant == 2
+assert isinstance(variant_arithemtic_holder.variant, float)
+# Arithmetic type doesn't support reference
+v1 = variant_arithemtic_holder.variant
+v1 = 3
+assert variant_arithemtic_holder.variant != v1

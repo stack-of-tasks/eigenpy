@@ -12,6 +12,8 @@
 #include <boost/mpl/for_each.hpp>
 #include <boost/mpl/vector.hpp>
 
+#include <type_traits>
+
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 #include <variant>
 #endif
@@ -96,6 +98,7 @@ struct VariantValueToObject : VariantVisitorType<PyObject*, Variant> {
   using Base::operator();
 };
 
+
 /// Convert {boost,std}::variant<class...> alternative reference to a Python
 /// object. This converter return the alternative reference. The code that
 /// create the reference holder is taken from \see
@@ -110,7 +113,20 @@ struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
     return Base::visit(VariantRefToObject(), v);
   }
 
-  template <typename T>
+  template <typename T,
+            typename std::enable_if<
+                std::is_arithmetic<typename std::remove_cv<
+                    typename std::remove_reference<T>::type>::type>::value,
+                bool>::type = true>
+  result_type operator()(T t) const {
+    return boost::python::incref(boost::python::object(t).ptr());
+  }
+
+  template <typename T,
+            typename std::enable_if<
+                !std::is_arithmetic<typename std::remove_cv<
+                    typename std::remove_reference<T>::type>::type>::value,
+                bool>::type = true>
   result_type operator()(T& t) const {
     return boost::python::detail::make_reference_holder::execute(&t);
   }
@@ -198,6 +214,7 @@ struct VariantConverter {
   static void registration() {
     typedef details::VariantValueToObject<variant_type> variant_to_value;
     typedef typename details::VariantAlternatives<variant_type>::types types;
+
     boost::python::to_python_converter<variant_type, variant_to_value>();
     boost::mpl::for_each<types>(
         details::VariantImplicitlyConvertible<variant_type>());
