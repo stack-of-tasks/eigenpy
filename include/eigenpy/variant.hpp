@@ -10,6 +10,7 @@
 #include <boost/python.hpp>
 #include <boost/variant.hpp>
 #include <boost/mpl/for_each.hpp>
+#include <boost/mpl/vector.hpp>
 
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 #include <variant>
@@ -23,6 +24,10 @@ namespace details {
 template <typename ResultType, typename Variant>
 struct VariantVisitorType {};
 
+/// Allow to get all alternatives in a boost::mpl vector
+template <typename Variant>
+struct VariantAlternatives{};
+
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 
 /// std::variant implementation
@@ -31,11 +36,16 @@ struct VariantVisitorType<ResultType, std::variant<Alternatives...> > {
   typedef std::variant<Alternatives...> variant_type;
   typedef ResultType result_type;
 
-  template <typename Visitor>
-  static result_type visit(Visitor&& visitor, Alternatives&&... alternatives) {
+  template <typename Visitor, typename Visitable>
+  static result_type visit(Visitor&& visitor, Visitable&& v) {
     return std::visit(std::forward<Visitor>(visitor),
-                      std::forward<Alternatives>(alternatives)...);
+                      std::forward<Visitable>(v));
   }
+};
+
+template<typename... Alternatives>
+struct VariantAlternatives<std::variant<Alternatives...>>{
+  typedef boost::mpl::vector<Alternatives...> types;
 };
 
 #endif
@@ -53,6 +63,11 @@ struct VariantVisitorType<ResultType, boost::variant<Alternatives...> >
   }
 };
 
+template<typename... Alternatives>
+struct VariantAlternatives<boost::variant<Alternatives...>>{
+  typedef typename boost::variant<Alternatives...>::types types;
+};
+
 /// Convert {boost,std}::variant<class...> alternative to a Python object.
 /// This converter copy the alternative.
 template <typename Variant>
@@ -61,8 +76,8 @@ struct VariantValueToObject : VariantVisitorType<PyObject*, Variant> {
   typedef typename Base::result_type result_type;
   typedef typename Base::variant_type variant_type;
 
-  static result_type convert(const variant_type& gm) {
-    return Base::visit(VariantValueToObject(), gm);
+  static result_type convert(const variant_type& v) {
+    return Base::visit(VariantValueToObject(), v);
   }
 
   template <typename T>
@@ -81,8 +96,8 @@ struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
   typedef typename Base::result_type result_type;
   typedef typename Base::variant_type variant_type;
 
-  static result_type convert(const variant_type& gm) {
-    return Base::visit(VariantRefToObject(), gm);
+  static result_type convert(const variant_type& v) {
+    return Base::visit(VariantRefToObject(), v);
   }
 
   template <typename T>
@@ -102,8 +117,8 @@ struct VariantConverter {
   template <class T>
   struct apply {
     struct type {
-      PyObject* operator()(const variant_type& gm) const {
-        return VariantRefToObject<variant_type>::convert(gm);
+      PyObject* operator()(const variant_type& v) const {
+        return VariantRefToObject<variant_type>::convert(v);
       }
 
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
@@ -169,8 +184,9 @@ struct VariantConverter {
 
   static void registration() {
     typedef details::VariantValueToObject<variant_type> variant_to_value;
+    typedef typename details::VariantAlternatives<variant_type>::types types;
     boost::python::to_python_converter<variant_type, variant_to_value>();
-    boost::mpl::for_each<typename variant_type::types>(
+    boost::mpl::for_each<types>(
         details::VariantImplicitlyConvertible<variant_type>());
   }
 };
