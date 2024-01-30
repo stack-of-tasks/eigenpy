@@ -45,6 +45,7 @@ add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
 add_lib_unit_test(std_pair)
 add_lib_unit_test(user_struct)
+add_lib_unit_test(boost_variant)
 
 function(config_bind_optional tagname opttype)
   set(MODNAME bind_optional_${tagname})
@@ -131,6 +132,10 @@ set_tests_properties("py-std-pair" PROPERTIES DEPENDS ${PYWRAP})
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
                      "python;unittest")
 set_tests_properties("py-user-struct" PROPERTIES DEPENDS ${PYWRAP})
+
+add_python_unit_test("py-boost-variant" "unittest/python/test_boost_variant.py"
+                     "python;unittest")
+set_tests_properties("py-boost-variant" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
                      "python;unittest")
