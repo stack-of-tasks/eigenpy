@@ -36,11 +36,16 @@ typedef typename MyVariantNoneHelper<VARIANT<V1> >::type MyVariantNone;
 
 typedef VARIANT<int, double> MyVariantArithmetic;
 
+// There is a conversion conflict between int and bool
+typedef VARIANT<bool, double> MyVariantBool;
+
 MyVariant make_variant() { return V1(); }
 
 MyVariantNone make_variant_none() { return MyVariantNone(); }
 
 MyVariantArithmetic make_variant_arithmetic() { return MyVariantArithmetic(); }
+
+MyVariantBool make_variant_bool() { return MyVariantBool(); }
 
 struct VariantHolder {
   MyVariant variant;
@@ -52,6 +57,10 @@ struct VariantNoneHolder {
 
 struct VariantArithmeticHolder {
   MyVariantArithmetic variant;
+};
+
+struct VariantBoolHolder {
+  MyVariantBool variant;
 };
 
 BOOST_PYTHON_MODULE(@MODNAME@) {
@@ -94,4 +103,16 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
           bp::make_getter(&VariantArithmeticHolder::variant,
                           ConverterArithmetic::return_internal_reference()),
           bp::make_setter(&VariantArithmeticHolder::variant));
+
+  typedef eigenpy::VariantConverter<MyVariantBool> ConverterBool;
+  ConverterBool::registration();
+  bp::def("make_variant_bool", make_variant_bool);
+
+  boost::python::class_<VariantBoolHolder>("VariantBoolHolder",
+                                                 bp::init<>())
+      .add_property(
+          "variant",
+          bp::make_getter(&VariantBoolHolder::variant,
+                          ConverterBool::return_internal_reference()),
+          bp::make_setter(&VariantBoolHolder::variant));
 }

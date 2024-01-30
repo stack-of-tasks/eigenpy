@@ -98,6 +98,15 @@ struct VariantValueToObject : VariantVisitorType<PyObject*, Variant> {
   using Base::operator();
 };
 
+template <typename T>
+struct is_class_or_union
+    : std::integral_constant<bool, std::is_class<T>::value ||
+                                       std::is_union<T>::value> {};
+template <typename T>
+struct is_class_or_union_remove_cvref
+    : is_class_or_union<typename std::remove_cv<
+          typename std::remove_reference<T>::type>::type> {};
+
 /// Convert {boost,std}::variant<class...> alternative reference to a Python
 /// object. This converter return the alternative reference. The code that
 /// create the reference holder is taken from \see
@@ -113,19 +122,15 @@ struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
   }
 
   template <typename T,
-            typename std::enable_if<
-                std::is_arithmetic<typename std::remove_cv<
-                    typename std::remove_reference<T>::type>::type>::value,
-                bool>::type = true>
+            typename std::enable_if<!is_class_or_union_remove_cvref<T>::value,
+                                    bool>::type = true>
   result_type operator()(T t) const {
     return boost::python::incref(boost::python::object(t).ptr());
   }
 
   template <typename T,
-            typename std::enable_if<
-                !std::is_arithmetic<typename std::remove_cv<
-                    typename std::remove_reference<T>::type>::type>::value,
-                bool>::type = true>
+            typename std::enable_if<is_class_or_union_remove_cvref<T>::value,
+                                    bool>::type = true>
   result_type operator()(T& t) const {
     return boost::python::detail::make_reference_holder::execute(&t);
   }
@@ -180,6 +185,15 @@ struct ReturnInternalVariant : boost::python::return_internal_reference<> {
   typedef Variant variant_type;
 
   typedef details::VariantConverter<variant_type> result_converter;
+
+  template <class ArgumentPackage>
+  static PyObject* postcall(ArgumentPackage const& args_, PyObject* result) {
+    // Don't run return_internal_reference postcall on primitive type
+    if (PyLong_Check(result) || PyBool_Check(result) || PyFloat_Check(result)) {
+      return result;
+    }
+    return boost::python::return_internal_reference<>::postcall(args_, result);
+  }
 };
 
 /// Define a defaults converter to convert a {boost,std}::variant alternative to

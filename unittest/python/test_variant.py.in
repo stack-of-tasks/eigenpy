@@ -6,9 +6,11 @@ V2 = variant_module.V2
 VariantHolder = variant_module.VariantHolder
 VariantNoneHolder = variant_module.VariantNoneHolder
 VariantArithmeticHolder = variant_module.VariantArithmeticHolder
+VariantBoolHolder = variant_module.VariantBoolHolder
 make_variant = variant_module.make_variant
 make_variant_none = variant_module.make_variant_none
 make_variant_arithmetic = variant_module.make_variant_arithmetic
+make_variant_bool = variant_module.make_variant_bool
 
 variant = make_variant()
 assert isinstance(variant, V1)
@@ -60,6 +62,7 @@ assert variant_none_holder.variant.v == 1
 v1 = variant_none_holder.variant
 v1.v = 10
 assert variant_none_holder.variant.v == 10
+# TODO make this work
 # variant_none_holder.variant = None
 
 
@@ -67,12 +70,27 @@ assert variant_none_holder.variant.v == 10
 v_arithmetic = make_variant_arithmetic()
 assert isinstance(v_arithmetic, int)
 
-variant_arithemtic_holder = VariantArithmeticHolder()
-assert isinstance(variant_arithemtic_holder.variant, int)
-variant_arithemtic_holder.variant = 2.0
-assert variant_arithemtic_holder.variant == 2
-assert isinstance(variant_arithemtic_holder.variant, float)
-# Arithmetic type doesn't support reference
-v1 = variant_arithemtic_holder.variant
-v1 = 3
-assert variant_arithemtic_holder.variant != v1
+variant_arithmetic_holder = VariantArithmeticHolder()
+assert isinstance(variant_arithmetic_holder.variant, int)
+variant_arithmetic_holder.variant = 2
+# Raise an exception if return_internal_postcall is called
+assert variant_arithmetic_holder.variant == 2
+
+variant_arithmetic_holder.variant = 2.0
+assert isinstance(variant_arithmetic_holder.variant, float)
+# Raise an exception if return_internal_postcall is called
+assert variant_arithmetic_holder.variant == 2.0
+
+v_bool = make_variant_bool()
+assert isinstance(v_bool, bool)
+
+variant_bool_holder = VariantBoolHolder()
+assert isinstance(variant_bool_holder.variant, bool)
+variant_bool_holder.variant = False
+# Raise an exception if return_internal_postcall is called
+assert not variant_bool_holder.variant
+
+variant_bool_holder.variant = 2.0
+assert isinstance(variant_bool_holder.variant, float)
+# Raise an exception if return_internal_postcall is called
+assert variant_bool_holder.variant == 2.0
