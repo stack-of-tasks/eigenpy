@@ -98,7 +98,6 @@ struct VariantValueToObject : VariantVisitorType<PyObject*, Variant> {
   using Base::operator();
 };
 
-
 /// Convert {boost,std}::variant<class...> alternative reference to a Python
 /// object. This converter return the alternative reference. The code that
 /// create the reference holder is taken from \see
