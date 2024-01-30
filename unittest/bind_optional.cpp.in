@@ -8,7 +8,8 @@
 #include <optional>
 #endif
 
-#cmakedefine OPTIONAL @OPTIONAL@
+#cmakedefine TEST_TYPE @TEST_TYPE@
+#define OPTIONAL TEST_TYPE
 
 typedef eigenpy::detail::nullopt_helper<OPTIONAL> none_helper;
 static auto OPT_NONE = none_helper::value();
@@ -74,6 +75,7 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
           bp::make_setter(&mystruct::msg));
 
   bp::def("none_if_zero", none_if_zero, bp::args("i"));
-  bp::def("create_if_true", create_if_true, (bp::arg("flag"), bp::arg("b") = OPT_NONE));
+  bp::def("create_if_true", create_if_true,
+          (bp::arg("flag"), bp::arg("b") = OPT_NONE));
   bp::def("random_mat_if_true", random_mat_if_true, bp::args("flag"));
 }

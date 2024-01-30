@@ -1,4 +1,10 @@
-from boost_variant import V1, V2, VariantHolder, make_variant
+import importlib
+
+variant_module = importlib.import_module("@MODNAME@")
+V1 = variant_module.V1
+V2 = variant_module.V2
+VariantHolder = variant_module.VariantHolder
+make_variant = variant_module.make_variant
 
 variant = make_variant()
 assert isinstance(variant, V1)

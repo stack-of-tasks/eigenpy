@@ -45,24 +45,28 @@ add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
 add_lib_unit_test(std_pair)
 add_lib_unit_test(user_struct)
-add_lib_unit_test(boost_variant)
 
-function(config_bind_optional tagname opttype)
-  set(MODNAME bind_optional_${tagname})
-  set(OPTIONAL ${opttype})
-  configure_file(bind_optional.cpp.in ${MODNAME}.cpp)
+function(config_test test tagname opttype)
+  set(MODNAME ${test}_${tagname})
+  set(TEST_TYPE ${opttype})
+  configure_file(${test}.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/${MODNAME}.cpp)
 
-  set(py_file test_optional_${tagname}.py)
-  configure_file(python/test_optional.py.in
+  set(py_file test_${test}_${tagname}.py)
+  configure_file(python/test_${test}.py.in
                  ${CMAKE_CURRENT_BINARY_DIR}/python/${py_file})
   add_lib_unit_test(${MODNAME})
-  add_python_unit_test("py-optional-${tagname}" "unittest/python/${py_file}"
+  add_python_unit_test("py-${test}-${tagname}" "unittest/python/${py_file}"
                        "unittest")
 endfunction()
 
-config_bind_optional(boost "boost::optional")
+config_test(variant boost "boost::variant")
 if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
-  config_bind_optional(std "std::optional")
+  config_test(variant std "std::variant")
+endif()
+
+config_test(bind_optional boost "boost::optional")
+if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
+  config_test(bind_optional std "std::optional")
 endif()
 
 add_lib_unit_test(bind_virtual_factory)
@@ -132,10 +136,6 @@ set_tests_properties("py-std-pair" PROPERTIES DEPENDS ${PYWRAP})
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
                      "python;unittest")
 set_tests_properties("py-user-struct" PROPERTIES DEPENDS ${PYWRAP})
-
-add_python_unit_test("py-boost-variant" "unittest/python/test_boost_variant.py"
-                     "python;unittest")
-set_tests_properties("py-boost-variant" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
                      "python;unittest")

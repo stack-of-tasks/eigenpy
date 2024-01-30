@@ -4,6 +4,9 @@
 #include <eigenpy/eigenpy.hpp>
 #include <eigenpy/variant.hpp>
 
+#cmakedefine TEST_TYPE @TEST_TYPE@
+#define VARIANT TEST_TYPE
+
 namespace bp = boost::python;
 
 struct V1 {
@@ -12,7 +15,7 @@ struct V1 {
 struct V2 {
   char v;
 };
-typedef boost::variant<V1, V2> MyVariant;
+typedef VARIANT<V1, V2> MyVariant;
 
 MyVariant make_variant() { return V1(); }
 
@@ -20,7 +23,7 @@ struct VariantHolder {
   MyVariant variant;
 };
 
-BOOST_PYTHON_MODULE(boost_variant) {
+BOOST_PYTHON_MODULE(@MODNAME@) {
   using namespace eigenpy;
 
   enableEigenPy();
