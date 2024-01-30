@@ -26,7 +26,7 @@ struct VariantVisitorType {};
 
 /// Allow to get all alternatives in a boost::mpl vector
 template <typename Variant>
-struct VariantAlternatives{};
+struct VariantAlternatives {};
 
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 
@@ -43,8 +43,8 @@ struct VariantVisitorType<ResultType, std::variant<Alternatives...> > {
   }
 };
 
-template<typename... Alternatives>
-struct VariantAlternatives<std::variant<Alternatives...>>{
+template <typename... Alternatives>
+struct VariantAlternatives<std::variant<Alternatives...> > {
   typedef boost::mpl::vector<Alternatives...> types;
 };
 
@@ -63,8 +63,8 @@ struct VariantVisitorType<ResultType, boost::variant<Alternatives...> >
   }
 };
 
-template<typename... Alternatives>
-struct VariantAlternatives<boost::variant<Alternatives...>>{
+template <typename... Alternatives>
+struct VariantAlternatives<boost::variant<Alternatives...> > {
   typedef typename boost::variant<Alternatives...>::types types;
 };
 
