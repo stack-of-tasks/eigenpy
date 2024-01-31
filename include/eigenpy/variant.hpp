@@ -214,9 +214,9 @@ struct VariantConverter {
   };
 };
 
-/// Declare a variant alternative implicitly convertible to the variant
+/// Convert an Alternative type to a Variant
 template <typename Variant>
-struct VariantImplicitlyConvertible {
+struct VariantConvertible {
   typedef Variant variant_type;
 
   template <class T, typename std::enable_if<is_empty_variant<T>::value,
@@ -286,8 +286,7 @@ struct VariantConverter {
     typedef typename details::VariantAlternatives<variant_type>::types types;
 
     bp::to_python_converter<variant_type, variant_to_value>();
-    boost::mpl::for_each<types>(
-        details::VariantImplicitlyConvertible<variant_type>());
+    boost::mpl::for_each<types>(details::VariantConvertible<variant_type>());
   }
 };
 
