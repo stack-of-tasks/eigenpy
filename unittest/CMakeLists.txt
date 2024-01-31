@@ -45,6 +45,7 @@ add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
 add_lib_unit_test(std_pair)
 add_lib_unit_test(user_struct)
+add_lib_unit_test(std_unique_ptr)
 
 function(config_test test tagname opttype)
   set(MODNAME ${test}_${tagname})

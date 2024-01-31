@@ -167,6 +167,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/scipy-allocator.hpp
     include/eigenpy/scipy-type.hpp
     include/eigenpy/variant.hpp
+    include/eigenpy/std_unique_ptr.hpp
     include/eigenpy/swig.hpp
     include/eigenpy/version.hpp)
 
