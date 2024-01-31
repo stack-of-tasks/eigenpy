@@ -30,6 +30,38 @@ struct VariantVisitorType {};
 template <typename Variant>
 struct VariantAlternatives {};
 
+template <typename Variant>
+struct empty_variant {};
+
+template <typename T>
+struct is_empty_variant : std::false_type {};
+
+/// Convert None to a {boost,std}::variant with boost::blank or std::monostate
+/// value
+template <typename Variant>
+struct EmptyConvertible {
+  static void registration() {
+    bp::converter::registry::push_back(convertible, construct,
+                                       bp::type_id<Variant>());
+  }
+
+  // convertible only for None
+  static void* convertible(PyObject* obj) {
+    return (obj == Py_None) ? obj : nullptr;
+  };
+
+  // construct in place
+  static void construct(PyObject*,
+                        bp::converter::rvalue_from_python_stage1_data* data) {
+    void* storage =
+        reinterpret_cast<bp::converter::rvalue_from_python_storage<Variant>*>(
+            data)
+            ->storage.bytes;
+    new (storage) Variant(typename empty_variant<Variant>::type());
+    data->convertible = storage;
+  };
+};
+
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 
 /// std::variant implementation
@@ -45,7 +77,7 @@ struct VariantVisitorType<ResultType, std::variant<Alternatives...> > {
   }
 
   result_type operator()(std::monostate) const {
-    return boost::python::incref(boost::python::object().ptr());  // None
+    return bp::incref(bp::object().ptr());  // None
   }
 };
 
@@ -53,6 +85,14 @@ template <typename... Alternatives>
 struct VariantAlternatives<std::variant<Alternatives...> > {
   typedef boost::mpl::vector<Alternatives...> types;
 };
+
+template <typename... Alternatives>
+struct empty_variant<std::variant<Alternatives...> > {
+  typedef std::monostate type;
+};
+
+template <>
+struct is_empty_variant<std::monostate> : std::true_type {};
 
 #endif
 
@@ -69,7 +109,7 @@ struct VariantVisitorType<ResultType, boost::variant<Alternatives...> >
   }
 
   result_type operator()(boost::blank) const {
-    return boost::python::incref(boost::python::object().ptr());  // None
+    return bp::incref(bp::object().ptr());  // None
   }
 };
 
@@ -77,6 +117,14 @@ template <typename... Alternatives>
 struct VariantAlternatives<boost::variant<Alternatives...> > {
   typedef typename boost::variant<Alternatives...>::types types;
 };
+
+template <typename... Alternatives>
+struct empty_variant<boost::variant<Alternatives...> > {
+  typedef boost::blank type;
+};
+
+template <>
+struct is_empty_variant<boost::blank> : std::true_type {};
 
 /// Convert {boost,std}::variant<class...> alternative to a Python object.
 /// This converter copy the alternative.
@@ -92,16 +140,19 @@ struct VariantValueToObject : VariantVisitorType<PyObject*, Variant> {
 
   template <typename T>
   result_type operator()(T& t) const {
-    return boost::python::incref(boost::python::object(t).ptr());
+    return bp::incref(bp::object(t).ptr());
   }
 
   using Base::operator();
 };
 
+/// Trait to detect if T is a class or an union
 template <typename T>
 struct is_class_or_union
     : std::integral_constant<bool, std::is_class<T>::value ||
                                        std::is_union<T>::value> {};
+
+/// Trait to remove cvref and call is_class_or_union
 template <typename T>
 struct is_class_or_union_remove_cvref
     : is_class_or_union<typename std::remove_cv<
@@ -110,7 +161,7 @@ struct is_class_or_union_remove_cvref
 /// Convert {boost,std}::variant<class...> alternative reference to a Python
 /// object. This converter return the alternative reference. The code that
 /// create the reference holder is taken from \see
-/// boost::python::to_python_indirect.
+/// bp::to_python_indirect.
 template <typename Variant>
 struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
   typedef VariantVisitorType<PyObject*, Variant> Base;
@@ -125,14 +176,14 @@ struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
             typename std::enable_if<!is_class_or_union_remove_cvref<T>::value,
                                     bool>::type = true>
   result_type operator()(T t) const {
-    return boost::python::incref(boost::python::object(t).ptr());
+    return bp::incref(bp::object(t).ptr());
   }
 
   template <typename T,
             typename std::enable_if<is_class_or_union_remove_cvref<T>::value,
                                     bool>::type = true>
   result_type operator()(T& t) const {
-    return boost::python::detail::make_reference_holder::execute(&t);
+    return bp::detail::make_reference_holder::execute(&t);
   }
 
   /// Copy the object when it's None
@@ -140,7 +191,7 @@ struct VariantRefToObject : VariantVisitorType<PyObject*, Variant> {
 };
 
 /// Converter used in \see ReturnInternalVariant.
-/// This is inspired by \see boost::python::reference_existing_object.
+/// This is inspired by \see bp::reference_existing_object.
 /// It will call \see VariantRefToObject to extract the alternative
 /// reference.
 template <typename Variant>
@@ -156,8 +207,7 @@ struct VariantConverter {
 
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
       PyTypeObject const* get_pytype() const {
-        return boost::python::converter::registered_pytype<
-            variant_type>::get_pytype();
+        return bp::converter::registered_pytype<variant_type>::get_pytype();
       }
 #endif
     };
@@ -169,19 +219,26 @@ template <typename Variant>
 struct VariantImplicitlyConvertible {
   typedef Variant variant_type;
 
-  template <class T>
+  template <class T, typename std::enable_if<is_empty_variant<T>::value,
+                                             bool>::type = true>
   void operator()(T) {
-    boost::python::implicitly_convertible<T, variant_type>();
+    EmptyConvertible<variant_type>::registration();
+  }
+
+  template <class T, typename std::enable_if<!is_empty_variant<T>::value,
+                                             bool>::type = true>
+  void operator()(T) {
+    bp::implicitly_convertible<T, variant_type>();
   }
 };
 
 }  // namespace details
 
-/// Variant of \see boost::python::return_internal_reference that
+/// Variant of \see bp::return_internal_reference that
 /// extract {boost,std}::variant<class...> alternative reference before
 /// converting it into a PyObject
 template <typename Variant>
-struct ReturnInternalVariant : boost::python::return_internal_reference<> {
+struct ReturnInternalVariant : bp::return_internal_reference<> {
   typedef Variant variant_type;
 
   typedef details::VariantConverter<variant_type> result_converter;
@@ -192,7 +249,7 @@ struct ReturnInternalVariant : boost::python::return_internal_reference<> {
     if (PyLong_Check(result) || PyBool_Check(result) || PyFloat_Check(result)) {
       return result;
     }
-    return boost::python::return_internal_reference<>::postcall(args_, result);
+    return bp::return_internal_reference<>::postcall(args_, result);
   }
 };
 
@@ -208,12 +265,12 @@ struct ReturnInternalVariant : boost::python::return_internal_reference<> {
 ///   };
 ///   ...
 ///   void expose() {
-///     boost::python::class_<Struct1>("Struct1", bp::init<>());
-///     boost::python::class_<Struct2>("Struct1", bp::init<>())
+///     bp::class_<Struct1>("Struct1", bp::init<>());
+///     bp::class_<Struct2>("Struct1", bp::init<>())
 ///     typedef eigenpy::VariantConverter<MyVariant> Converter;
 ///     Converter::registration();
 ///
-///     boost::python::class_<VariantHolder>("VariantHolder", bp::init<>())
+///     bp::class_<VariantHolder>("VariantHolder", bp::init<>())
 ///       .add_property("variant",
 ///         bp::make_getter(&VariantHolder::variant,
 ///                         Converter::return_internal_reference()),
@@ -228,7 +285,7 @@ struct VariantConverter {
     typedef details::VariantValueToObject<variant_type> variant_to_value;
     typedef typename details::VariantAlternatives<variant_type>::types types;
 
-    boost::python::to_python_converter<variant_type, variant_to_value>();
+    bp::to_python_converter<variant_type, variant_to_value>();
     boost::mpl::for_each<types>(
         details::VariantImplicitlyConvertible<variant_type>());
   }

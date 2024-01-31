@@ -62,8 +62,7 @@ assert variant_none_holder.variant.v == 1
 v1 = variant_none_holder.variant
 v1.v = 10
 assert variant_none_holder.variant.v == 10
-# TODO make this work
-# variant_none_holder.variant = None
+variant_none_holder.variant = None
 
 
 # Test variant that hold base type
