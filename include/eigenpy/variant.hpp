@@ -36,32 +36,6 @@ struct empty_variant {};
 template <typename T>
 struct is_empty_variant : std::false_type {};
 
-/// Convert None to a {boost,std}::variant with boost::blank or std::monostate
-/// value
-template <typename Variant>
-struct EmptyConvertible {
-  static void registration() {
-    bp::converter::registry::push_back(convertible, construct,
-                                       bp::type_id<Variant>());
-  }
-
-  // convertible only for None
-  static void* convertible(PyObject* obj) {
-    return (obj == Py_None) ? obj : nullptr;
-  };
-
-  // construct in place
-  static void construct(PyObject*,
-                        bp::converter::rvalue_from_python_stage1_data* data) {
-    void* storage =
-        reinterpret_cast<bp::converter::rvalue_from_python_storage<Variant>*>(
-            data)
-            ->storage.bytes;
-    new (storage) Variant(typename empty_variant<Variant>::type());
-    data->convertible = storage;
-  };
-};
-
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 
 /// std::variant implementation
@@ -125,6 +99,90 @@ struct empty_variant<boost::variant<Alternatives...> > {
 
 template <>
 struct is_empty_variant<boost::blank> : std::true_type {};
+
+/// Convert None to a {boost,std}::variant with boost::blank or std::monostate
+/// value
+template <typename Variant>
+struct EmptyConvertible {
+  static void registration() {
+    bp::converter::registry::push_back(convertible, construct,
+                                       bp::type_id<Variant>());
+  }
+
+  // convertible only for None
+  static void* convertible(PyObject* obj) {
+    return (obj == Py_None) ? obj : nullptr;
+  };
+
+  // construct in place
+  static void construct(PyObject*,
+                        bp::converter::rvalue_from_python_stage1_data* data) {
+    void* storage =
+        reinterpret_cast<bp::converter::rvalue_from_python_storage<Variant>*>(
+            data)
+            ->storage.bytes;
+    new (storage) Variant(typename empty_variant<Variant>::type());
+    data->convertible = storage;
+  };
+};
+
+/// Implement convertible and expected_pytype for bool, integer and float
+template <typename T, class Enable = void>
+struct NumericConvertibleImpl {};
+
+template <typename T>
+struct NumericConvertibleImpl<
+    T, typename std::enable_if<std::is_same<T, bool>::value>::type> {
+  static void* convertible(PyObject* obj) {
+    return PyBool_Check(obj) ? obj : nullptr;
+  }
+
+  static PyTypeObject const* expected_pytype() { return &PyBool_Type; }
+};
+
+template <typename T>
+struct NumericConvertibleImpl<
+    T, typename std::enable_if<!std::is_same<T, bool>::value &&
+                               std::is_integral<T>::value>::type> {
+  static void* convertible(PyObject* obj) {
+    // PyLong return true for bool type
+    return (PyLong_Check(obj) && !PyBool_Check(obj)) ? obj : nullptr;
+  }
+
+  static PyTypeObject const* expected_pytype() { return &PyLong_Type; }
+};
+
+template <typename T>
+struct NumericConvertibleImpl<
+    T, typename std::enable_if<std::is_floating_point<T>::value>::type> {
+  static void* convertible(PyObject* obj) {
+    return PyFloat_Check(obj) ? obj : nullptr;
+  }
+
+  static PyTypeObject const* expected_pytype() { return &PyFloat_Type; }
+};
+
+/// Convert numeric type to Variant without ambiguity
+template <typename T, typename Variant>
+struct NumericConvertible {
+  static void registration() {
+    bp::converter::registry::push_back(
+        &convertible, &bp::converter::implicit<T, Variant>::construct,
+        bp::type_id<Variant>()
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+            ,
+        &expected_pytype
+#endif
+    );
+  }
+
+  static void* convertible(PyObject* obj) {
+    return NumericConvertibleImpl<T>::convertible(obj);
+  }
+  static PyTypeObject const* expected_pytype() {
+    return NumericConvertibleImpl<T>::expected_pytype();
+  }
+};
 
 /// Convert {boost,std}::variant<class...> alternative to a Python object.
 /// This converter copy the alternative.
@@ -225,7 +283,15 @@ struct VariantConvertible {
     EmptyConvertible<variant_type>::registration();
   }
 
-  template <class T, typename std::enable_if<!is_empty_variant<T>::value,
+  template <class T, typename std::enable_if<!is_empty_variant<T>::value &&
+                                                 std::is_arithmetic<T>::value,
+                                             bool>::type = true>
+  void operator()(T) {
+    NumericConvertible<T, variant_type>::registration();
+  }
+
+  template <class T, typename std::enable_if<!is_empty_variant<T>::value &&
+                                                 !std::is_arithmetic<T>::value,
                                              bool>::type = true>
   void operator()(T) {
     bp::implicitly_convertible<T, variant_type>();

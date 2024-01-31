@@ -32,35 +32,19 @@ struct MyVariantNoneHelper<std::variant<Alternatives...> > {
 };
 #endif
 
-typedef typename MyVariantNoneHelper<VARIANT<V1> >::type MyVariantNone;
-
-typedef VARIANT<int, double> MyVariantArithmetic;
-
-// There is a conversion conflict between int and bool
-typedef VARIANT<bool, double> MyVariantBool;
+typedef typename MyVariantNoneHelper<VARIANT<V1, bool, int, double> >::type
+    MyVariantFull;
 
 MyVariant make_variant() { return V1(); }
 
-MyVariantNone make_variant_none() { return MyVariantNone(); }
-
-MyVariantArithmetic make_variant_arithmetic() { return MyVariantArithmetic(); }
-
-MyVariantBool make_variant_bool() { return MyVariantBool(); }
+MyVariantFull make_variant_full() { return MyVariantFull(); }
 
 struct VariantHolder {
   MyVariant variant;
 };
 
-struct VariantNoneHolder {
-  MyVariantNone variant;
-};
-
-struct VariantArithmeticHolder {
-  MyVariantArithmetic variant;
-};
-
-struct VariantBoolHolder {
-  MyVariantBool variant;
+struct VariantFullHolder {
+  MyVariantFull variant;
 };
 
 BOOST_PYTHON_MODULE(@MODNAME@) {
@@ -82,37 +66,13 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
                                     Converter::return_internal_reference()),
                     bp::make_setter(&VariantHolder::variant));
 
-  typedef eigenpy::VariantConverter<MyVariantNone> ConverterNone;
-  ConverterNone::registration();
-  bp::def("make_variant_none", make_variant_none);
+  typedef eigenpy::VariantConverter<MyVariantFull> ConverterFull;
+  ConverterFull::registration();
+  bp::def("make_variant_full", make_variant_full);
 
-  boost::python::class_<VariantNoneHolder>("VariantNoneHolder", bp::init<>())
+  boost::python::class_<VariantFullHolder>("VariantFullHolder", bp::init<>())
       .add_property("variant",
-                    bp::make_getter(&VariantNoneHolder::variant,
-                                    ConverterNone::return_internal_reference()),
-                    bp::make_setter(&VariantNoneHolder::variant));
-
-  typedef eigenpy::VariantConverter<MyVariantArithmetic> ConverterArithmetic;
-  ConverterArithmetic::registration();
-  bp::def("make_variant_arithmetic", make_variant_arithmetic);
-
-  boost::python::class_<VariantArithmeticHolder>("VariantArithmeticHolder",
-                                                 bp::init<>())
-      .add_property(
-          "variant",
-          bp::make_getter(&VariantArithmeticHolder::variant,
-                          ConverterArithmetic::return_internal_reference()),
-          bp::make_setter(&VariantArithmeticHolder::variant));
-
-  typedef eigenpy::VariantConverter<MyVariantBool> ConverterBool;
-  ConverterBool::registration();
-  bp::def("make_variant_bool", make_variant_bool);
-
-  boost::python::class_<VariantBoolHolder>("VariantBoolHolder",
-                                                 bp::init<>())
-      .add_property(
-          "variant",
-          bp::make_getter(&VariantBoolHolder::variant,
-                          ConverterBool::return_internal_reference()),
-          bp::make_setter(&VariantBoolHolder::variant));
+                    bp::make_getter(&VariantFullHolder::variant,
+                                    ConverterFull::return_internal_reference()),
+                    bp::make_setter(&VariantFullHolder::variant));
 }

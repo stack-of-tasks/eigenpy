@@ -4,13 +4,9 @@ variant_module = importlib.import_module("@MODNAME@")
 V1 = variant_module.V1
 V2 = variant_module.V2
 VariantHolder = variant_module.VariantHolder
-VariantNoneHolder = variant_module.VariantNoneHolder
-VariantArithmeticHolder = variant_module.VariantArithmeticHolder
-VariantBoolHolder = variant_module.VariantBoolHolder
+VariantFullHolder = variant_module.VariantFullHolder
 make_variant = variant_module.make_variant
-make_variant_none = variant_module.make_variant_none
-make_variant_arithmetic = variant_module.make_variant_arithmetic
-make_variant_bool = variant_module.make_variant_bool
+make_variant_full = variant_module.make_variant_full
 
 variant = make_variant()
 assert isinstance(variant, V1)
@@ -48,48 +44,40 @@ assert isinstance(variant_holder.variant, V2)
 assert variant_holder.variant.v == v2.v
 
 # Test variant that hold a None value
-v_none = make_variant_none()
+v_full = make_variant_full()
+assert v_full is None
+
+variant_full_holder = VariantFullHolder()
+
+# Test None
+v_none = variant_full_holder.variant
+assert v_none is None
+variant_full_holder.variant = None
 assert v_none is None
 
-variant_none_holder = VariantNoneHolder()
-v_none = variant_none_holder.variant
-assert v_none is None
-
+# Test V1
 v1 = V1()
-v1.v = 1
-variant_none_holder.variant = v1
-assert variant_none_holder.variant.v == 1
-v1 = variant_none_holder.variant
 v1.v = 10
-assert variant_none_holder.variant.v == 10
-variant_none_holder.variant = None
+variant_full_holder.variant = v1
+assert variant_full_holder.variant.v == 10
+assert isinstance(variant_full_holder.variant, V1)
+# Test V1 ref
+v1 = variant_full_holder.variant
+v1.v = 100
+assert variant_full_holder.variant.v == 100
+variant_full_holder.variant = None
 
+# Test bool
+variant_full_holder.variant = True
+assert variant_full_holder.variant
+assert isinstance(variant_full_holder.variant, bool)
 
-# Test variant that hold base type
-v_arithmetic = make_variant_arithmetic()
-assert isinstance(v_arithmetic, int)
+# Test int
+variant_full_holder.variant = 3
+assert variant_full_holder.variant == 3
+assert isinstance(variant_full_holder.variant, int)
 
-variant_arithmetic_holder = VariantArithmeticHolder()
-assert isinstance(variant_arithmetic_holder.variant, int)
-variant_arithmetic_holder.variant = 2
-# Raise an exception if return_internal_postcall is called
-assert variant_arithmetic_holder.variant == 2
-
-variant_arithmetic_holder.variant = 2.0
-assert isinstance(variant_arithmetic_holder.variant, float)
-# Raise an exception if return_internal_postcall is called
-assert variant_arithmetic_holder.variant == 2.0
-
-v_bool = make_variant_bool()
-assert isinstance(v_bool, bool)
-
-variant_bool_holder = VariantBoolHolder()
-assert isinstance(variant_bool_holder.variant, bool)
-variant_bool_holder.variant = False
-# Raise an exception if return_internal_postcall is called
-assert not variant_bool_holder.variant
-
-variant_bool_holder.variant = 2.0
-assert isinstance(variant_bool_holder.variant, float)
-# Raise an exception if return_internal_postcall is called
-assert variant_bool_holder.variant == 2.0
+# Test float
+variant_full_holder.variant = 3.14
+assert variant_full_holder.variant == 3.14
+assert isinstance(variant_full_holder.variant, float)
