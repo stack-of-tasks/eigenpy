@@ -22,6 +22,9 @@ std::unique_ptr<V1> make_unique_v1() { return std::make_unique<V1>(10); }
 std::unique_ptr<V1> make_unique_null() { return nullptr; }
 
 struct UniquePtrHolder {
+  UniquePtrHolder()
+      : int_ptr(std::make_unique<int>(20)), v1_ptr(std::make_unique<V1>(200)) {}
+
   std::unique_ptr<int> int_ptr;
   std::unique_ptr<V1> v1_ptr;
   std::unique_ptr<V1> null_ptr;
@@ -38,8 +41,16 @@ BOOST_PYTHON_MODULE(std_unique_ptr) {
           eigenpy::StdUniquePtrCallPolicies());
   bp::def("make_unique_null", make_unique_null,
           eigenpy::StdUniquePtrCallPolicies());
-  // TODO allow access with a CallPolicie like return_internal_reference
-  // boost::python::class_<UniquePtrHolder>("UniquePtrHolder", bp::init<>())
-  //     .add_property("int_ptr", bp::make_getter(&UniquePtrHolder::int_ptr),
-  //                   bp::make_setter(&UniquePtrHolder::int_ptr));
+
+  boost::python::class_<UniquePtrHolder, boost::noncopyable>("UniquePtrHolder",
+                                                             bp::init<>())
+      .add_property("int_ptr",
+                    bp::make_getter(&UniquePtrHolder::int_ptr,
+                                    eigenpy::ReturnInternalStdUniquePtr()))
+      .add_property("v1_ptr",
+                    bp::make_getter(&UniquePtrHolder::v1_ptr,
+                                    eigenpy::ReturnInternalStdUniquePtr()))
+      .add_property("null_ptr",
+                    bp::make_getter(&UniquePtrHolder::null_ptr,
+                                    eigenpy::ReturnInternalStdUniquePtr()));
 }

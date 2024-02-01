@@ -17,11 +17,14 @@ struct is_class_or_union
     : std::integral_constant<bool, std::is_class<T>::value ||
                                        std::is_union<T>::value> {};
 
+template <typename T>
+struct remove_cvref : std::remove_cv<typename std::remove_reference<T>::type> {
+};
+
 /// Trait to remove cvref and call is_class_or_union
 template <typename T>
 struct is_class_or_union_remove_cvref
-    : is_class_or_union<typename std::remove_cv<
-          typename std::remove_reference<T>::type>::type> {};
+    : is_class_or_union<typename remove_cvref<T>::type> {};
 
 }  // namespace details
 
