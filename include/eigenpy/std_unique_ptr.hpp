@@ -80,7 +80,6 @@ struct StdUniquePtrResultConverter {
         return bp::to_python_value<const element_type&>().get_pytype();
       }
 #endif
-      BOOST_STATIC_CONSTANT(bool, uses_registry = true);
     };
   };
 };
