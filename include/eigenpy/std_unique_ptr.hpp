@@ -73,7 +73,7 @@ struct StdUniquePtrResultConverter {
       typedef typename T::element_type element_type;
 
       PyObject* operator()(T&& x) const {
-        return details::unique_ptr_to_python(std::forward<T>(x));
+        return unique_ptr_to_python(std::forward<T>(x));
       }
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
       PyTypeObject const* get_pytype() const {
@@ -92,7 +92,7 @@ struct InternalStdUniquePtrConverter {
       typedef typename remove_cvref<T>::type::element_type element_type;
 
       PyObject* operator()(T x) const {
-        return details::internal_unique_ptr_to_python(x);
+        return internal_unique_ptr_to_python(x);
       }
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
       PyTypeObject const* get_pytype() const {
