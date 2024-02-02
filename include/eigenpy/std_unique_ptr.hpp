@@ -11,6 +11,7 @@
 #include <boost/python.hpp>
 
 #include <memory>
+#include <type_traits>
 
 namespace eigenpy {
 
@@ -133,6 +134,7 @@ struct ReturnInternalStdUniquePtr : bp::return_internal_reference<> {
 namespace boost {
 namespace python {
 
+/// Specialize to_python_value for std::unique_ptr
 template <typename T>
 struct to_python_value<const std::unique_ptr<T>&>
     : eigenpy::details::StdUniquePtrResultConverter::apply<
