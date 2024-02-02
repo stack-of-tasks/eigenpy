@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Support for `Eigen::SparseMatrix` types ([#426](https://github.com/stack-of-tasks/eigenpy/pull/426))
 - Support for `boost::variant` types with `VariantConverter` ([#430](https://github.com/stack-of-tasks/eigenpy/pull/430))
 - Support for `std::variant` types with `VariantConverter` ([#431](https://github.com/stack-of-tasks/eigenpy/pull/431))
-- Support for `std::unique_ptr` as a return types with `StdUniquePtrCallPolicies` ([#433](https://github.com/stack-of-tasks/eigenpy/pull/433))
+- Support for `std::unique_ptr` as a return types with `StdUniquePtrCallPolicies` and `boost::python::default_call_policies` ([#433](https://github.com/stack-of-tasks/eigenpy/pull/433))
 - Support for `std::unique_ptr` as an internal reference with `ReturnInternalStdUniquePtr` ([#433](https://github.com/stack-of-tasks/eigenpy/pull/433))
 
 ### Fixed
