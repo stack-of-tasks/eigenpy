@@ -2,10 +2,11 @@
 // Copyright (c) 2024 INRIA
 //
 //
-#include <type_traits>
 
 #ifndef __eigenpy_utils_traits_hpp__
 #define __eigenpy_utils_traits_hpp__
+
+#include <type_traits>
 
 namespace eigenpy {
 

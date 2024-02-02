@@ -1,9 +1,9 @@
 /// @file
 /// @copyright Copyright 2023 CNRS INRIA
 
-#include <iostream>
 #include <eigenpy/eigenpy.hpp>
 #include <eigenpy/std_unique_ptr.hpp>
+
 #include <memory>
 
 namespace bp = boost::python;
