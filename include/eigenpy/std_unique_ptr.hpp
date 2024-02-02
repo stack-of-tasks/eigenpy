@@ -130,4 +130,15 @@ struct ReturnInternalStdUniquePtr : bp::return_internal_reference<> {
 
 }  // namespace eigenpy
 
+namespace boost {
+namespace python {
+
+template <typename T>
+struct to_python_value<const std::unique_ptr<T>&>
+    : eigenpy::details::StdUniquePtrResultConverter::apply<
+          std::unique_ptr<T> >::type {};
+
+}  // namespace python
+}  // namespace boost
+
 #endif  // ifndef __eigenpy_utils_std_unique_ptr_hpp__

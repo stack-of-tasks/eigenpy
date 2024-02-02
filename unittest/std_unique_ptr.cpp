@@ -35,10 +35,8 @@ BOOST_PYTHON_MODULE(std_unique_ptr) {
 
   bp::class_<V1>("V1", bp::init<>()).def_readwrite("v", &V1::v);
 
-  bp::def("make_unique_int", make_unique_int,
-          eigenpy::StdUniquePtrCallPolicies());
-  bp::def("make_unique_v1", make_unique_v1,
-          eigenpy::StdUniquePtrCallPolicies());
+  bp::def("make_unique_int", make_unique_int);
+  bp::def("make_unique_v1", make_unique_v1);
   bp::def("make_unique_null", make_unique_null,
           eigenpy::StdUniquePtrCallPolicies());
 

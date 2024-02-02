@@ -10,6 +10,9 @@
 #include "eigenpy/eigen-typedef.hpp"
 #include "eigenpy/expose.hpp"
 
+/// Custom CallPolicies
+#include "eigenpy/std_unique_ptr.hpp"
+
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
   ::eigenpy::enableEigenPySpecific<TYPE>();
 
