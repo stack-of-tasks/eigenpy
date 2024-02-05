@@ -2,7 +2,7 @@
 /// @copyright Copyright 2023 CNRS INRIA
 
 #include <eigenpy/eigenpy.hpp>
-#include <eigenpy/std_unique_ptr.hpp>
+#include <eigenpy/std-unique-ptr.hpp>
 
 #include <memory>
 
