@@ -6,7 +6,12 @@ V2 = variant_module.V2
 VariantHolder = variant_module.VariantHolder
 VariantFullHolder = variant_module.VariantFullHolder
 make_variant = variant_module.make_variant
-make_variant_full = variant_module.make_variant_full
+make_variant_full_none = variant_module.make_variant_full_none
+make_variant_full_float = variant_module.make_variant_full_float
+make_variant_full_int = variant_module.make_variant_full_int
+make_variant_full_bool = variant_module.make_variant_full_bool
+make_variant_full_str = variant_module.make_variant_full_str
+make_variant_full_complex = variant_module.make_variant_full_complex
 
 variant = make_variant()
 assert isinstance(variant, V1)
@@ -44,8 +49,33 @@ assert isinstance(variant_holder.variant, V2)
 assert variant_holder.variant.v == v2.v
 
 # Test variant that hold a None value
-v_full = make_variant_full()
+v_full = make_variant_full_none()
 assert v_full is None
+
+# Test variant that hold a float value
+v_full = make_variant_full_float()
+assert v_full == 3.14
+assert isinstance(v_full, float)
+
+# Test variant that hold a int value
+v_full = make_variant_full_int()
+assert v_full == 3
+assert isinstance(v_full, int)
+
+# Test variant that hold a bool value
+v_full = make_variant_full_bool()
+assert not v_full
+assert isinstance(v_full, bool)
+
+# Test variant that hold a str value
+v_full = make_variant_full_str()
+assert v_full == "str"
+assert isinstance(v_full, str)
+
+# Test variant that hold a complex value
+v_full = make_variant_full_complex()
+assert v_full == 1 + 0j
+assert isinstance(v_full, complex)
 
 variant_full_holder = VariantFullHolder()
 
@@ -81,3 +111,13 @@ assert isinstance(variant_full_holder.variant, int)
 variant_full_holder.variant = 3.14
 assert variant_full_holder.variant == 3.14
 assert isinstance(variant_full_holder.variant, float)
+
+# Test str
+variant_full_holder.variant = "str"
+assert variant_full_holder.variant == "str"
+assert isinstance(variant_full_holder.variant, str)
+
+# Test complex
+variant_full_holder.variant = 1 + 0j
+assert variant_full_holder.variant == 1 + 0j
+assert isinstance(variant_full_holder.variant, complex)

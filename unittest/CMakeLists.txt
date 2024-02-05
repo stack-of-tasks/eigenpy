@@ -45,6 +45,7 @@ add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
 add_lib_unit_test(std_pair)
 add_lib_unit_test(user_struct)
+add_lib_unit_test(std_unique_ptr)
 
 function(config_test test tagname opttype)
   set(MODNAME ${test}_${tagname})
@@ -131,17 +132,16 @@ add_python_unit_test("py-std-vector" "unittest/python/test_std_vector.py"
 set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-std-array" "unittest/python/test_std_array.py"
-                     "python;unittest")
-set_tests_properties("py-std-array" PROPERTIES DEPENDS ${PYWRAP})
+                     "unittest")
 
 add_python_unit_test("py-std-pair" "unittest/python/test_std_pair.py"
                      "unittest")
-set_tests_properties("py-std-pair" PROPERTIES DEPENDS ${PYWRAP})
 
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
-                     "python;unittest")
-set_tests_properties("py-user-struct" PROPERTIES DEPENDS ${PYWRAP})
+                     "unittest")
+
+add_python_unit_test("py-std-unique-ptr"
+                     "unittest/python/test_std_unique_ptr.py" "unittest")
 
 add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
-                     "python;unittest")
-set_tests_properties("py-bind-virtual" PROPERTIES DEPENDS ${PYWRAP})
+                     "unittest")

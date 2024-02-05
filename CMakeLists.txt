@@ -104,7 +104,8 @@ search_for_boost_python(REQUIRED)
 # ----------------------------------------------------
 set(${PROJECT_NAME}_UTILS_HEADERS
     include/eigenpy/utils/scalar-name.hpp include/eigenpy/utils/is-approx.hpp
-    include/eigenpy/utils/is-aligned.hpp)
+    include/eigenpy/utils/is-aligned.hpp include/eigenpy/utils/traits.hpp
+    include/eigenpy/utils/python-compat.hpp)
 
 set(${PROJECT_NAME}_SOLVERS_HEADERS
     include/eigenpy/solvers/solvers.hpp
@@ -167,6 +168,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/scipy-allocator.hpp
     include/eigenpy/scipy-type.hpp
     include/eigenpy/variant.hpp
+    include/eigenpy/std-unique-ptr.hpp
     include/eigenpy/swig.hpp
     include/eigenpy/version.hpp)
 
