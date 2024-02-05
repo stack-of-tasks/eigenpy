@@ -2,6 +2,8 @@ from std_unique_ptr import (
     make_unique_int,
     make_unique_v1,
     make_unique_null,
+    make_unique_str,
+    make_unique_complex,
     V1,
     UniquePtrHolder,
 )
@@ -16,6 +18,14 @@ assert v.v == 10
 
 v = make_unique_null()
 assert v is None
+
+v = make_unique_str()
+assert isinstance(v, str)
+assert v == "str"
+
+v = make_unique_complex()
+assert isinstance(v, complex)
+assert v == 1 + 0j
 
 unique_ptr_holder = UniquePtrHolder()
 
@@ -33,6 +43,19 @@ assert v.v == 200
 v.v = 10
 assert unique_ptr_holder.v1_ptr.v == 10
 
-
 v = unique_ptr_holder.null_ptr
 assert v is None
+
+v = unique_ptr_holder.str_ptr
+assert isinstance(v, str)
+assert v == "str"
+# v is a copy, str_ptr will not be updated
+v = "str_updated"
+assert unique_ptr_holder.str_ptr == "str"
+
+v = unique_ptr_holder.complex_ptr
+assert isinstance(v, complex)
+assert v == 1 + 0j
+# v is a copy, complex_ptr will not be updated
+v = 1 + 2j
+assert unique_ptr_holder.complex_ptr == 1 + 0j

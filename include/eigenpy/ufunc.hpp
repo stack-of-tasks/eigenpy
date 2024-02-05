@@ -9,6 +9,7 @@
 
 #include "eigenpy/register.hpp"
 #include "eigenpy/user-type.hpp"
+#include "eigenpy/utils/python-compat.hpp"
 
 namespace eigenpy {
 namespace internal {
@@ -207,11 +208,7 @@ void registerCommonUfunc() {
   const int type_code = Register::getTypeCode<Scalar>();
 
   PyObject *numpy_str;
-#if PY_MAJOR_VERSION >= 3
-  numpy_str = PyUnicode_FromString("numpy");
-#else
-  numpy_str = PyString_FromString("numpy");
-#endif
+  numpy_str = PyStr_FromString("numpy");
   PyObject *numpy;
   numpy = PyImport_Import(numpy_str);
   Py_DECREF(numpy_str);

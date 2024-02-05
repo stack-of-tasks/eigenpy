@@ -7,6 +7,7 @@
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/utils/traits.hpp"
+#include "eigenpy/utils/python-compat.hpp"
 
 #include <boost/python.hpp>
 
@@ -19,8 +20,7 @@ namespace details {
 
 /// Transfer std::unique_ptr ownership to an owning holder
 template <typename T>
-typename std::enable_if<is_class_or_union_remove_cvref<T>::value,
-                        PyObject*>::type
+typename std::enable_if<!is_python_primitive_type<T>::value, PyObject*>::type
 unique_ptr_to_python(std::unique_ptr<T>&& x) {
   typedef bp::objects::pointer_holder<std::unique_ptr<T>, T> holder_t;
   if (!x) {
@@ -32,8 +32,7 @@ unique_ptr_to_python(std::unique_ptr<T>&& x) {
 
 /// Convert and copy the primitive value to python
 template <typename T>
-typename std::enable_if<!is_class_or_union_remove_cvref<T>::value,
-                        PyObject*>::type
+typename std::enable_if<is_python_primitive_type<T>::value, PyObject*>::type
 unique_ptr_to_python(std::unique_ptr<T>&& x) {
   if (!x) {
     return bp::detail::none();
@@ -45,8 +44,7 @@ unique_ptr_to_python(std::unique_ptr<T>&& x) {
 /// std::unique_ptr keep the ownership but a reference to the std::unique_ptr
 /// value is created
 template <typename T>
-typename std::enable_if<is_class_or_union_remove_cvref<T>::value,
-                        PyObject*>::type
+typename std::enable_if<!is_python_primitive_type<T>::value, PyObject*>::type
 internal_unique_ptr_to_python(std::unique_ptr<T>& x) {
   if (!x) {
     return bp::detail::none();
@@ -57,8 +55,7 @@ internal_unique_ptr_to_python(std::unique_ptr<T>& x) {
 
 /// Convert and copy the primitive value to python
 template <typename T>
-typename std::enable_if<!is_class_or_union_remove_cvref<T>::value,
-                        PyObject*>::type
+typename std::enable_if<is_python_primitive_type<T>::value, PyObject*>::type
 internal_unique_ptr_to_python(std::unique_ptr<T>& x) {
   if (!x) {
     return bp::detail::none();
@@ -123,7 +120,8 @@ struct ReturnInternalStdUniquePtr : bp::return_internal_reference<> {
   template <class ArgumentPackage>
   static PyObject* postcall(ArgumentPackage const& args_, PyObject* result) {
     // Don't run return_internal_reference postcall on primitive type
-    if (PyLong_Check(result) || PyBool_Check(result) || PyFloat_Check(result)) {
+    if (PyInt_Check(result) || PyBool_Check(result) || PyFloat_Check(result) ||
+        PyStr_Check(result) || PyComplex_Check(result)) {
       return result;
     }
     return bp::return_internal_reference<>::postcall(args_, result);
