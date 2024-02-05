@@ -4,6 +4,9 @@
 #include <eigenpy/eigenpy.hpp>
 #include <eigenpy/variant.hpp>
 
+#include <string>
+#include <complex>
+
 #cmakedefine TEST_TYPE @TEST_TYPE@
 #define VARIANT TEST_TYPE
 
@@ -32,12 +35,18 @@ struct MyVariantNoneHelper<std::variant<Alternatives...> > {
 };
 #endif
 
-typedef typename MyVariantNoneHelper<VARIANT<V1, bool, int, double> >::type
+typedef typename MyVariantNoneHelper<
+    VARIANT<V1, bool, int, double, std::string, std::complex<double> > >::type
     MyVariantFull;
 
 MyVariant make_variant() { return V1(); }
 
-MyVariantFull make_variant_full() { return MyVariantFull(); }
+MyVariantFull make_variant_full_none() { return MyVariantFull(); }
+MyVariantFull make_variant_full_float() { return 3.14; }
+MyVariantFull make_variant_full_int() { return 3; }
+MyVariantFull make_variant_full_bool() { return false; }
+MyVariantFull make_variant_full_str() { return std::string("str"); }
+MyVariantFull make_variant_full_complex() { return std::complex<double>(1., 0.); }
 
 struct VariantHolder {
   MyVariant variant;
@@ -68,7 +77,12 @@ BOOST_PYTHON_MODULE(@MODNAME@) {
 
   typedef eigenpy::VariantConverter<MyVariantFull> ConverterFull;
   ConverterFull::registration();
-  bp::def("make_variant_full", make_variant_full);
+  bp::def("make_variant_full_none", make_variant_full_none);
+  bp::def("make_variant_full_float", make_variant_full_float);
+  bp::def("make_variant_full_int", make_variant_full_int);
+  bp::def("make_variant_full_bool", make_variant_full_bool);
+  bp::def("make_variant_full_str", make_variant_full_str);
+  bp::def("make_variant_full_complex", make_variant_full_complex);
 
   boost::python::class_<VariantFullHolder>("VariantFullHolder", bp::init<>())
       .add_property("variant",
