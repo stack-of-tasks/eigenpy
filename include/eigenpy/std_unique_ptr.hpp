@@ -22,10 +22,11 @@ template <typename T>
 typename std::enable_if<is_class_or_union_remove_cvref<T>::value,
                         PyObject*>::type
 unique_ptr_to_python(std::unique_ptr<T>&& x) {
+  typedef bp::objects::pointer_holder<std::unique_ptr<T>, T> holder_t;
   if (!x) {
     return bp::detail::none();
   } else {
-    return bp::detail::make_owning_holder::execute(x.release());
+    return bp::objects::make_ptr_instance<T, holder_t>::execute(x);
   }
 }
 
