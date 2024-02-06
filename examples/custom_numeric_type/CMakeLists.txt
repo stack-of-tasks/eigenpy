@@ -1,6 +1,6 @@
 # derived from eigenpy/CMakeLists.txt for this example
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(PROJECT_NAME eigenpy_example_custom_numeric_type)
 set(PROJECT_DESCRIPTION
@@ -93,6 +93,7 @@ endif(WIN32)
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
 # ----------------------------------------------------
+
 add_project_dependency(Eigen3 REQUIRED PKG_CONFIG_REQUIRES "eigen3 >= 3.0.5")
 add_project_dependency(eigenpy REQUIRED PKG_CONFIG_REQUIRES "eigenpy >= 3.0.0")
 
@@ -116,14 +117,8 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
          $<INSTALL_INTERFACE:include>)
 
-modernize_target_link_libraries(
-  ${PROJECT_NAME}
-  SCOPE
-  PUBLIC
-  TARGETS
-  Eigen3::Eigen
-  INCLUDE_DIRS
-  ${EIGEN3_INCLUDE_DIR})
+target_link_directories(${PROJECT_NAME}
+  PUBLIC ${EIGENPY_LIB_DIR})
 
 modernize_target_link_libraries(
   ${PROJECT_NAME}
@@ -131,13 +126,25 @@ modernize_target_link_libraries(
   PUBLIC
   TARGETS
   Python${PYTHON_VERSION_MAJOR}::NumPy
+  Eigen3::Eigen
+  eigenpy
   INCLUDE_DIRS
+  ${EIGEN3_INCLUDE_DIR}
+  ${EIGENPY_INCLUDE_DIR}
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
+
+
+target_link_libraries(${PROJECT_NAME} PUBLIC eigenpy::eigenpy mpc mpfr)
 
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})
 endif(SUFFIX_SO_VERSION)
+
+
+#silviana did this
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".so")
 
 if(NOT WIN32)
   target_compile_options(
@@ -150,6 +157,9 @@ else()
 endif()
 
 target_link_boost_python(${PROJECT_NAME} PUBLIC)
+
+
+
 install(
   TARGETS ${PROJECT_NAME}
   EXPORT ${TARGETS_EXPORT_NAME}
