@@ -117,8 +117,7 @@ target_include_directories(
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
          $<INSTALL_INTERFACE:include>)
 
-target_link_directories(${PROJECT_NAME}
-  PUBLIC ${EIGENPY_LIB_DIR})
+target_link_directories(${PROJECT_NAME} PUBLIC ${EIGENPY_LIB_DIR})
 
 modernize_target_link_libraries(
   ${PROJECT_NAME}
@@ -134,15 +133,13 @@ modernize_target_link_libraries(
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
 
-
 target_link_libraries(${PROJECT_NAME} PUBLIC eigenpy::eigenpy mpc mpfr)
 
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})
 endif(SUFFIX_SO_VERSION)
 
-
-#silviana did this
+# silviana did this
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".so")
 
@@ -157,8 +154,6 @@ else()
 endif()
 
 target_link_boost_python(${PROJECT_NAME} PUBLIC)
-
-
 
 install(
   TARGETS ${PROJECT_NAME}
