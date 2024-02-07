@@ -20,9 +20,7 @@ BOOST_PYTHON_MODULE(
 #define IMPLICITLY_CONVERTIBLE(T1, T2) \
   boost::python::implicitly_convertible<T1, T2>();
 
-
-
-void ExposeAll(){
+void ExposeAll() {
   eigenpy::enableEigenPy();
 
   ExposeReal();
@@ -30,9 +28,7 @@ void ExposeAll(){
 }
 
 void ExposeReal() {
-
   BoostNumberPythonVisitor<mpfr_float>::expose("MpfrFloat");
-
 
   using VecX = Eigen::Matrix<mpfr_float, Eigen::Dynamic, 1>;
   using MatXX = Eigen::Matrix<mpfr_float, Eigen::Dynamic, Eigen::Dynamic>;
@@ -41,9 +37,7 @@ void ExposeReal() {
   eigenpy::enableEigenPySpecific<VecX>();
 }
 
-
 void ExposeComplex() {
-
   boost::python::class_<mpfr_complex>("MpfrComplex", "", bp::no_init)
       .def(BoostComplexPythonVisitor<mpfr_complex>());
 
