@@ -117,12 +117,15 @@ set(${PROJECT_NAME}_SOLVERS_HEADERS
     include/eigenpy/solvers/BasicPreconditioners.hpp
     include/eigenpy/solvers/BFGSPreconditioners.hpp)
 
+set(${PROJECT_NAME}_EIGEN_HEADERS include/eigenpy/eigen/EigenBase.hpp)
+
 set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
     include/eigenpy/decompositions/decompositions.hpp
     include/eigenpy/decompositions/sparse/LLT.hpp
     include/eigenpy/decompositions/sparse/LDLT.hpp
     include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
     include/eigenpy/decompositions/EigenSolver.hpp
+    include/eigenpy/decompositions/PermutationMatrix.hpp
     include/eigenpy/decompositions/LDLT.hpp
     include/eigenpy/decompositions/LLT.hpp
     include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
@@ -131,6 +134,7 @@ set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
 set(${PROJECT_NAME}_HEADERS
     ${${PROJECT_NAME}_UTILS_HEADERS}
     ${${PROJECT_NAME}_SOLVERS_HEADERS}
+    ${${PROJECT_NAME}_EIGEN_HEADERS}
     ${${PROJECT_NAME}_DECOMPOSITIONS_HEADERS}
     include/eigenpy/alignment.hpp
     include/eigenpy/computation-info.hpp
