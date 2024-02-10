@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest","macos-14-arm64"]
+        os: ["ubuntu-latest", "macos-latest","macos-14"]
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
         python-version: ["3.8", "3.12"]
@@ -32,10 +32,10 @@ jobs:
             os: macos-latest
           - build_type: Debug
             cxx_options: -mavx2
-            os: macos-14-arm64
+            os: macos-14
           - build_type: Release
             cxx_options: -mavx2
-            os: macos-14-arm64
+            os: macos-14
 
     steps:
     - uses: actions/checkout@v4
