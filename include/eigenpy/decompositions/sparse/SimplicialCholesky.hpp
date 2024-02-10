@@ -6,6 +6,7 @@
 #define __eigenpy_decomposition_sparse_simplicial_cholesky_hpp__
 
 #include "eigenpy/eigenpy.hpp"
+#include "eigenpy/eigen/EigenBase.hpp"
 
 #include <Eigen/SparseCholesky>
 
@@ -35,10 +36,7 @@ struct SimplicialCholeskyVisitor
            "This function is particularly useful when solving for several "
            "problems having the same structure.")
 
-        .def("cols", &Solver::cols, bp::arg("self"),
-             "Returns the number of columns.")
-        .def("rows", &Solver::rows, bp::arg("self"),
-             "Returns the number of rows.")
+        .def(EigenBaseVisitor<Solver>())
 
         .def("matrixL", &matrixL, bp::arg("self"),
              "Returns the lower triangular matrix L.")
