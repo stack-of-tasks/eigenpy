@@ -26,7 +26,8 @@ Eigen::SparseMatrix<Scalar, Options> matrix1x1(const Scalar& value) {
 
 template <typename Scalar, int Options>
 Eigen::SparseMatrix<Scalar, Options> diagonal(
-    const Eigen::Ref<Eigen::Matrix<Scalar, Eigen::Dynamic, 1> >& diag_values) {
+    const Eigen::Ref<const Eigen::Matrix<Scalar, Eigen::Dynamic, 1> >&
+        diag_values) {
   typedef Eigen::SparseMatrix<Scalar, Options> ReturnType;
   ReturnType mat(diag_values.size(), diag_values.size());
   for (Eigen::Index k = 0; k < diag_values.size(); ++k)
