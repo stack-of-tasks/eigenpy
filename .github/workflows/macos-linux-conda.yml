@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest", "macos-latest","macos-14-arm64"]
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
         python-version: ["3.8", "3.12"]
