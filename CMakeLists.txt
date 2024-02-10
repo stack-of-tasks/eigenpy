@@ -119,6 +119,9 @@ set(${PROJECT_NAME}_SOLVERS_HEADERS
 
 set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
     include/eigenpy/decompositions/decompositions.hpp
+    include/eigenpy/decompositions/sparse/LLT.hpp
+    include/eigenpy/decompositions/sparse/LDLT.hpp
+    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
     include/eigenpy/decompositions/EigenSolver.hpp
     include/eigenpy/decompositions/LDLT.hpp
     include/eigenpy/decompositions/LLT.hpp
