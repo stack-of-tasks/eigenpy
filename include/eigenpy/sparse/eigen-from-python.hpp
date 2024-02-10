@@ -146,8 +146,15 @@ void eigen_sparse_matrix_from_py_construct(
     const Eigen::Index m = bp::extract<Eigen::Index>(shape[0]),
                        n = bp::extract<Eigen::Index>(shape[1]),
                        nnz = bp::extract<Eigen::Index>(obj.attr("nnz"));
-    MapMatOrRefType sparse_map(m, n, nnz, indptr.data(), indices.data(),
-                               data.data());
+
+    // Handle the specific case of the null matrix
+    Scalar *data_ptr = nullptr;
+    StorageIndex *indices_ptr = nullptr;
+    if (nnz > 0) {
+      data_ptr = data.data();
+      indices_ptr = indices.data();
+    }
+    MapMatOrRefType sparse_map(m, n, nnz, indptr.data(), indices_ptr, data_ptr);
 
     new (raw_ptr) MatOrRefType(sparse_map);
   }

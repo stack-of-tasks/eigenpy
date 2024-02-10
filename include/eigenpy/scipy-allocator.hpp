@@ -85,6 +85,9 @@ struct scipy_allocator_impl_sparse_matrix {
       //      scipy_sparse_matrix_type(*bp::make_tuple(0,0),**args);
       scipy_sparse_matrix = scipy_sparse_matrix_type(
           Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic>(0, 0));
+    } else if (mat.nonZeros() == 0) {
+      scipy_sparse_matrix =
+          scipy_sparse_matrix_type(bp::make_tuple(mat.rows(), mat.cols()));
     } else {
       scipy_sparse_matrix = scipy_sparse_matrix_type(bp::make_tuple(
           DataVector(data),
