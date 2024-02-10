@@ -81,6 +81,13 @@ struct SimplicialCholeskyVisitor
              "Returns the solution X of A X = B using the current "
              "decomposition of A where B is a right hand side matrix.")
 
+        .def("permutationP", &Solver::permutationP, bp::arg("self"),
+             "Returns the permutation P.",
+             bp::return_value_policy<bp::copy_const_reference>())
+        .def("permutationPinv", &Solver::permutationPinv, bp::arg("self"),
+             "Returns the inverse P^-1 of the permutation P.",
+             bp::return_value_policy<bp::copy_const_reference>())
+
         .def("solve", &solve<MatrixType>, bp::args("self", "B"),
              "Returns the solution X of A X = B using the current "
              "decomposition of A where B is a right hand side matrix.");
