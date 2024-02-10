@@ -7,6 +7,7 @@
 #include "eigenpy/decompositions/EigenSolver.hpp"
 #include "eigenpy/decompositions/LDLT.hpp"
 #include "eigenpy/decompositions/LLT.hpp"
+#include "eigenpy/decompositions/PermutationMatrix.hpp"
 #include "eigenpy/decompositions/sparse/LLT.hpp"
 #include "eigenpy/decompositions/sparse/LDLT.hpp"
 #include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
@@ -45,5 +46,7 @@ void exposeDecompositions() {
     SimplicialLLTVisitor<ColMajorSparseMatrix>::expose("SimplicialLLT");
     SimplicialLDLTVisitor<ColMajorSparseMatrix>::expose("SimplicialLDLT");
   }
+
+  PermutationMatrixVisitor<Eigen::Dynamic>::expose("PermutationMatrix");
 }
 }  // namespace eigenpy
