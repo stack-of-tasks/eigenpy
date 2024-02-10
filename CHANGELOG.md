@@ -16,6 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 - Fix the issue of missing exposition of Eigen types with __int64 scalar type ([#426](https://github.com/stack-of-tasks/eigenpy/pull/426))
 - Fix namespace use in unittest/std_pair.cpp ([#429](https://github.com/stack-of-tasks/eigenpy/pull/429))
+- Fix case of zero-size sparse matrices ([#437](https://github.com/stack-of-tasks/eigenpy/pull/437))
 
 ## [3.3.0] - 2024-01-23
 
