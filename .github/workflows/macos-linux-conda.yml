@@ -30,6 +30,12 @@ jobs:
           - build_type: Release
             cxx_options: -mavx2
             os: macos-latest
+          - build_type: Debug
+            cxx_options: -mavx2
+            os: macos-14-arm64
+          - build_type: Release
+            cxx_options: -mavx2
+            os: macos-14-arm64
 
     steps:
     - uses: actions/checkout@v4
