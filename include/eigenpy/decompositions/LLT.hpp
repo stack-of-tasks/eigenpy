@@ -10,6 +10,7 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/utils/scalar-name.hpp"
+#include "eigenpy/eigen/EigenBase.hpp"
 
 namespace eigenpy {
 
@@ -35,6 +36,8 @@ struct LLTSolverVisitor
         .def(bp::init<MatrixType>(
             bp::args("self", "matrix"),
             "Constructs a LLT factorization from a given matrix."))
+
+        .def(EigenBaseVisitor<Solver>())
 
         .def("matrixL", &matrixL, bp::arg("self"),
              "Returns the lower triangular matrix L.")
