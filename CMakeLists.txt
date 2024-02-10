@@ -56,6 +56,8 @@ include("${JRL_CMAKE_MODULES}/apple.cmake")
 option(GENERATE_PYTHON_STUBS
        "Generate the Python stubs associated to the Python library" OFF)
 
+option(BUILD_WITH_CHOLMOD_SUPPORT "Build EigenPy with the Cholmod support" OFF)
+
 string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # If needed, fix CMake policy for APPLE systems
@@ -98,6 +100,16 @@ set_boost_default_options()
 export_boost_default_options()
 find_package(Boost REQUIRED)
 search_for_boost_python(REQUIRED)
+
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  set(CMAKE_MODULE_PATH ${JRL_CMAKE_MODULES}/find-external/CHOLMOD
+                        ${CMAKE_MODULE_PATH})
+  add_project_dependency(CHOLMOD REQUIRED)
+  message(
+    STATUS
+      "Build with CHOLDOD support (LGPL). See CHOLMOD/Doc/License.txt for further details."
+  )
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
 
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
@@ -246,6 +258,10 @@ modernize_target_link_libraries(
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
 
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  modernize_target_link_libraries(${PROJECT_NAME} SCOPE PUBLIC TARGETS
+                                  SuiteSparse::CHOLDMOD)
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})
 endif(SUFFIX_SO_VERSION)
