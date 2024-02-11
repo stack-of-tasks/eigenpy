@@ -79,10 +79,6 @@ endif()
 add_lib_unit_test(bind_virtual_factory)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
-if(BUILD_TESTING_SCIPY)
-  add_python_unit_test("py-sparse-matrix"
-                       "unittest/python/test_sparse_matrix.py" "unittest")
-endif()
 
 add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
 add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"
@@ -146,3 +142,19 @@ add_python_unit_test("py-std-unique-ptr"
 
 add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
                      "unittest")
+
+if(BUILD_TESTING_SCIPY)
+  add_python_unit_test("py-sparse-matrix"
+                       "unittest/python/test_sparse_matrix.py" "unittest")
+
+  add_python_unit_test(
+    "py-SimplicialLLT"
+    "unittest/python/decompositions/sparse/test_SimplicialLLT.py" "python")
+  add_python_unit_test(
+    "py-SimplicialLDLT"
+    "unittest/python/decompositions/sparse/test_SimplicialLDLT.py" "python")
+
+  if(BUILD_WITH_CHOLMOD_SUPPORT)
+
+  endif(BUILD_WITH_CHOLMOD_SUPPORT)
+endif()
