@@ -28,7 +28,13 @@ const PyTypeObject* ScipyType::getScipyCSCMatrixType() {
 }
 
 ScipyType::ScipyType() {
-  sparse_module = bp::import("scipy.sparse");
+  try {
+    sparse_module = bp::import("scipy.sparse");
+  } catch (...) {
+    throw std::runtime_error(
+        "SciPy is not installed. "
+        "You can install it using the command \'pip install scipy\'.");
+  }
 
 #if PY_MAJOR_VERSION >= 3
   // TODO I don't know why this Py_INCREF is necessary.
