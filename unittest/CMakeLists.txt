@@ -24,6 +24,7 @@ macro(ADD_LIB_UNIT_TEST test)
   endif(NOT BUILD_TESTING)
 endmacro(ADD_LIB_UNIT_TEST)
 
+add_dependencies(build_tests ${PYWRAP})
 add_lib_unit_test(matrix)
 if(BUILD_TESTING_SCIPY)
   find_scipy()
