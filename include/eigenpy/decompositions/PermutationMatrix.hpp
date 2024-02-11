@@ -11,7 +11,7 @@
 namespace eigenpy {
 
 template <int SizeAtCompileTime, int MaxSizeAtCompileTime = SizeAtCompileTime,
-          typename StorageIndex_ = EIGEN_DEFAULT_DENSE_INDEX_TYPE>
+          typename StorageIndex_ = int>
 struct PermutationMatrixVisitor
     : public boost::python::def_visitor<PermutationMatrixVisitor<
           SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_> > {
