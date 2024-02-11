@@ -109,6 +109,7 @@ if(BUILD_WITH_CHOLMOD_SUPPORT)
     STATUS
       "Build with CHOLDOD support (LGPL). See CHOLMOD/Doc/License.txt for further details."
   )
+  add_definitions(-DEIGENPY_WITH_CHOLMOD_SUPPORT)
 endif(BUILD_WITH_CHOLMOD_SUPPORT)
 
 # ----------------------------------------------------
@@ -131,11 +132,26 @@ set(${PROJECT_NAME}_SOLVERS_HEADERS
 
 set(${PROJECT_NAME}_EIGEN_HEADERS include/eigenpy/eigen/EigenBase.hpp)
 
-set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
-    include/eigenpy/decompositions/decompositions.hpp
+set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_CHOLMOD_HEADERS
+    include/eigenpy/decompositions/sparse/cholmod/CholmodBase.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodDecomposition.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLDLT.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLLT.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodSupernodalLLT.hpp)
+
+set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
     include/eigenpy/decompositions/sparse/LLT.hpp
     include/eigenpy/decompositions/sparse/LDLT.hpp
-    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
+    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp)
+
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
+       ${${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_CHOLMOD_HEADERS})
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
+    ${${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS}
+    include/eigenpy/decompositions/decompositions.hpp
     include/eigenpy/decompositions/EigenSolver.hpp
     include/eigenpy/decompositions/PermutationMatrix.hpp
     include/eigenpy/decompositions/LDLT.hpp
@@ -207,6 +223,11 @@ set(${PROJECT_NAME}_SOLVERS_SOURCES src/solvers/preconditioners.cpp
 set(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
     src/decompositions/decompositions.cpp)
 
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
+       src/decompositions/cholmod.cpp)
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
 set(${PROJECT_NAME}_SOURCES
     ${${PROJECT_NAME}_SOLVERS_SOURCES}
     ${${PROJECT_NAME}_DECOMPOSITIONS_SOURCES}
@@ -259,8 +280,11 @@ modernize_target_link_libraries(
   ${PYTHON_INCLUDE_DIR})
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
+  if(TARGET CHOLMOD::CHOLMOD)
+    message(STATUS "CHOLMOD_FOUND: ${CHOLMOD_FOUND}")
+  endif()
   modernize_target_link_libraries(${PROJECT_NAME} SCOPE PUBLIC TARGETS
-                                  SuiteSparse::CHOLDMOD)
+                                  CHOLMOD::CHOLMOD)
 endif(BUILD_WITH_CHOLMOD_SUPPORT)
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})

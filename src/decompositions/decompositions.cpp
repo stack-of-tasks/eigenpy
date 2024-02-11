@@ -48,5 +48,9 @@ void exposeDecompositions() {
   }
 
   PermutationMatrixVisitor<Eigen::Dynamic>::expose("PermutationMatrix");
+
+#ifdef EIGENPY_WITH_CHOLMOD_SUPPORT
+  exposeCholmod();
+#endif
 }
 }  // namespace eigenpy
