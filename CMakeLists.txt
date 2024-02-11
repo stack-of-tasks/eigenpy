@@ -104,7 +104,7 @@ search_for_boost_python(REQUIRED)
 if(BUILD_WITH_CHOLMOD_SUPPORT)
   set(CMAKE_MODULE_PATH ${JRL_CMAKE_MODULES}/find-external/CHOLMOD
                         ${CMAKE_MODULE_PATH})
-  add_project_dependency(CHOLMOD REQUIRED)
+  add_project_dependency(CHOLMOD REQUIRED FIND_EXTERNAL "CHOLMOD")
   message(
     STATUS
       "Build with CHOLDOD support (LGPL). See CHOLMOD/Doc/License.txt for further details."
