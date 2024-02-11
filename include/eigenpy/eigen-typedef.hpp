@@ -32,6 +32,7 @@
   EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 2)           \
   EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 3)           \
   EIGENPY_MAKE_FIXED_TYPEDEFS(Type, Options, TypeSuffix, 4)           \
-  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, 1, 1)
+  EIGENPY_MAKE_TYPEDEFS(Type, Options, TypeSuffix, 1, 1)              \
+  typedef Eigen::SparseMatrix<Scalar, Options> SparseMatrixX##TypeSuffix
 
 #endif  // ifndef __eigenpy_eigen_typedef_hpp__

@@ -58,7 +58,7 @@ EIGEN_DONT_INLINE void exposeType() {
   ENABLE_SPECIFIC_MATRIX_TYPE(RowVectorXs);
   ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXs);
 
-  enableEigenPySpecific<Eigen::SparseMatrix<Scalar, Options> >();
+  enableEigenPySpecific<SparseMatrixXs>();
 }
 
 template <typename Scalar>
