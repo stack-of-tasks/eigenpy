@@ -38,14 +38,14 @@ void exposeIsApprox() {
           "Returns True if A is approximately equal to B, within the "
           "precision determined by prec.");
 
-  bp::def("is_approx",
-          (bool (*)(const Eigen::SparseMatrixBase<SparseMatrixXs> &,
-                    const Eigen::SparseMatrixBase<SparseMatrixXs> &,
-                    const RealScalar &)) &
-              is_approx,
-          (bp::arg("A"), bp::arg("B"), bp::arg("prec") = dummy_precision),
-          "Returns True if A is approximately equal to B, within the "
-          "precision determined by prec.");
+  //  bp::def("is_approx",
+  //          (bool (*)(const Eigen::SparseMatrixBase<SparseMatrixXs> &,
+  //                    const Eigen::SparseMatrixBase<SparseMatrixXs> &,
+  //                    const RealScalar &)) &
+  //              is_approx,
+  //          (bp::arg("A"), bp::arg("B"), bp::arg("prec") = dummy_precision),
+  //          "Returns True if A is approximately equal to B, within the "
+  //          "precision determined by prec.");
 }
 
 BOOST_PYTHON_MODULE(eigenpy_pywrap) {
