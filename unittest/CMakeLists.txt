@@ -156,5 +156,20 @@ if(BUILD_TESTING_SCIPY)
 
   if(BUILD_WITH_CHOLMOD_SUPPORT)
 
+    add_python_unit_test(
+      "py-CholmodSimplicialLLT"
+      "unittest/python/decompositions/sparse/cholmod/test_CholmodSimplicialLLT.py"
+      "python")
+
+    add_python_unit_test(
+      "py-CholmodSimplicialLDLT"
+      "unittest/python/decompositions/sparse/cholmod/test_CholmodSimplicialLDLT.py"
+      "python")
+
+    add_python_unit_test(
+      "py-CholmodSupernodalLLT"
+      "unittest/python/decompositions/sparse/cholmod/test_CholmodSupernodalLLT.py"
+      "python")
+
   endif(BUILD_WITH_CHOLMOD_SUPPORT)
 endif()
