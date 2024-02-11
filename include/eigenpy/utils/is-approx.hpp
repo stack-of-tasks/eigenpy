@@ -12,7 +12,7 @@ namespace eigenpy {
 template <typename MatrixType1, typename MatrixType2>
 EIGEN_DONT_INLINE bool is_approx(const Eigen::MatrixBase<MatrixType1>& mat1,
                                  const Eigen::MatrixBase<MatrixType2>& mat2,
-                                 const typename MatrixType1::Scalar& prec) {
+                                 const typename MatrixType1::RealScalar& prec) {
   return mat1.isApprox(mat2, prec);
 }
 
@@ -21,14 +21,14 @@ EIGEN_DONT_INLINE bool is_approx(const Eigen::MatrixBase<MatrixType1>& mat1,
                                  const Eigen::MatrixBase<MatrixType2>& mat2) {
   return is_approx(
       mat1, mat2,
-      Eigen::NumTraits<typename MatrixType1::Scalar>::dummy_precision());
+      Eigen::NumTraits<typename MatrixType1::RealScalar>::dummy_precision());
 }
 
 template <typename MatrixType1, typename MatrixType2>
 EIGEN_DONT_INLINE bool is_approx(
     const Eigen::SparseMatrixBase<MatrixType1>& mat1,
     const Eigen::SparseMatrixBase<MatrixType2>& mat2,
-    const typename MatrixType1::Scalar& prec) {
+    const typename MatrixType1::RealScalar& prec) {
   return mat1.isApprox(mat2, prec);
 }
 
@@ -38,7 +38,7 @@ EIGEN_DONT_INLINE bool is_approx(
     const Eigen::SparseMatrixBase<MatrixType2>& mat2) {
   return is_approx(
       mat1, mat2,
-      Eigen::NumTraits<typename MatrixType1::Scalar>::dummy_precision());
+      Eigen::NumTraits<typename MatrixType1::RealScalar>::dummy_precision());
 }
 }  // namespace eigenpy
 
