@@ -23,7 +23,7 @@ void exposeIsApprox() {
   EIGENPY_MAKE_TYPEDEFS(Scalar, Options, s, Eigen::Dynamic, X);
   EIGENPY_UNUSED_TYPE(VectorXs);
   EIGENPY_UNUSED_TYPE(RowVectorXs);
-  typedef Eigen::SparseMatrix<Scalar, Options> SparseMatrixXs;
+  //  typedef Eigen::SparseMatrix<Scalar, Options> SparseMatrixXs;
   typedef typename MatrixXs::RealScalar RealScalar;
 
   using namespace Eigen;
