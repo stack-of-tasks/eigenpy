@@ -32,4 +32,4 @@ test(eigenpy.AccelerateLDLTUnpivoted)
 test(eigenpy.AccelerateLDLTSBK)
 test(eigenpy.AccelerateLDLTTPP)
 test(eigenpy.AccelerateQR)
-# test(eigenpy.AccelerateCholeskyAtA)
+# test(eigenpy.AccelerateCholeskyAtA) # This test is not passing. Seems there is a bug in Eigen with the support of Accelerate.
