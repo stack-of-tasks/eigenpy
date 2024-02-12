@@ -14,6 +14,10 @@ void EIGENPY_DLLAPI exposeDecompositions();
 void EIGENPY_DLLAPI exposeCholmod();
 #endif
 
+#ifdef EIGENPY_WITH_ACCELERATE_SUPPORT
+void EIGENPY_DLLAPI exposeAccelerate();
+#endif
+
 }  // namespace eigenpy
 
 #endif  // define __eigenpy_decompositions_decompositions_hpp__

@@ -52,5 +52,9 @@ void exposeDecompositions() {
 #ifdef EIGENPY_WITH_CHOLMOD_SUPPORT
   exposeCholmod();
 #endif
+
+#ifdef EIGENPY_WITH_ACCELERATE_SUPPORT
+  exposeAccelerate();
+#endif
 }
 }  // namespace eigenpy
