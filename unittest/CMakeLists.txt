@@ -172,4 +172,10 @@ if(BUILD_TESTING_SCIPY)
       "python")
 
   endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+  if(BUILD_WITH_ACCELERATE_SUPPORT)
+    add_python_unit_test(
+      "py-Accelerate"
+      "unittest/python/decompositions/sparse/test_Accelerate.py" "python")
+  endif(BUILD_WITH_ACCELERATE_SUPPORT)
 endif()
