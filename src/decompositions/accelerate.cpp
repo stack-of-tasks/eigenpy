@@ -21,16 +21,33 @@ void exposeAccelerate() {
       .value("SparseOrderMetis", SparseOrderMetis)
       .value("SparseOrderCOLAMD", SparseOrderCOLAMD);
 
-#define EXPOSE_ACCELERATE_DECOMPOSITION(name)                 \
+#define EXPOSE_ACCELERATE_DECOMPOSITION(name, doc)            \
   AccelerateImplVisitor<name<ColMajorSparseMatrix> >::expose( \
-      EIGENPY_STRINGIZE(name))
+      EIGENPY_STRINGIZE(name), doc)
 
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateLLT);
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateLDLT);
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateLDLTUnpivoted);
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateLDLTSBK);
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateLDLTTPP);
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateQR);
-  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateCholeskyAtA);
+  EXPOSE_ACCELERATE_DECOMPOSITION(
+      AccelerateLLT,
+      "A direct Cholesky (LLT) factorization and solver based on Accelerate.");
+  EXPOSE_ACCELERATE_DECOMPOSITION(AccelerateLDLT,
+                                  "The default Cholesky (LDLT) factorization "
+                                  "and solver based on Accelerate.");
+  EXPOSE_ACCELERATE_DECOMPOSITION(
+      AccelerateLDLTUnpivoted,
+      "A direct Cholesky-like LDL^T factorization and solver based on "
+      "Accelerate with only 1x1 pivots and no pivoting.");
+  EXPOSE_ACCELERATE_DECOMPOSITION(
+      AccelerateLDLTSBK,
+      "A direct Cholesky (LDLT) factorization and solver based on Accelerate "
+      "with Supernode Bunch-Kaufman and static pivoting.");
+  EXPOSE_ACCELERATE_DECOMPOSITION(
+      AccelerateLDLTTPP,
+      "A direct Cholesky (LDLT) factorization and solver based on Accelerate "
+      "with full threshold partial pivoting.");
+  EXPOSE_ACCELERATE_DECOMPOSITION(
+      AccelerateQR, "A QR factorization and solver based on Accelerate.");
+  EXPOSE_ACCELERATE_DECOMPOSITION(
+      AccelerateCholeskyAtA,
+      "A QR factorization and solver based on Accelerate without storing Q "
+      "(equivalent to A^TA = R^T R).");
 }
 }  // namespace eigenpy
