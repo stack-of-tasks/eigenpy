@@ -142,7 +142,8 @@ set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_CHOLMOD_HEADERS
 set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
     include/eigenpy/decompositions/sparse/LLT.hpp
     include/eigenpy/decompositions/sparse/LDLT.hpp
-    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp)
+    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
+    include/eigenpy/decompositions/sparse/SparseSolverBase.hpp)
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
   list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS

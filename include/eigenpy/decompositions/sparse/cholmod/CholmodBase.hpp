@@ -7,6 +7,7 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/eigen/EigenBase.hpp"
+#include "eigenpy/decompositions/sparse/SparseSolverBase.hpp"
 
 #include <Eigen/CholmodSupport>
 
@@ -23,12 +24,6 @@ struct CholmodBaseVisitor
   typedef MatrixType CholMatrixType;
   typedef typename MatrixType::StorageIndex StorageIndex;
 
-  typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1, MatrixType::Options>
-      DenseVectorXs;
-  typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic,
-                        MatrixType::Options>
-      DenseMatrixXs;
-
   template <class PyClass>
   void visit(PyClass &cl) const {
     cl.def("analyzePattern", &Solver::analyzePattern,
@@ -38,6 +33,7 @@ struct CholmodBaseVisitor
            "problems having the same structure.")
 
         .def(EigenBaseVisitor<Solver>())
+        .def(SparseSolverBaseVisitor<Solver>())
 
         .def("compute",
              (Solver & (Solver::*)(const MatrixType &matrix)) & Solver::compute,
@@ -70,24 +66,7 @@ struct CholmodBaseVisitor
              "are transformed by the following linear model: d_ii = offset + "
              "d_ii.\n"
              "The default is the identity transformation with offset=0.",
-             bp::return_self<>())
-
-        .def("solve", &solve<DenseVectorXs>, bp::args("self", "b"),
-             "Returns the solution x of A x = b using the current "
-             "decomposition of A.")
-        .def("solve", &solve<DenseMatrixXs>, bp::args("self", "B"),
-             "Returns the solution X of A X = B using the current "
-             "decomposition of A where B is a right hand side matrix.")
-
-        .def("solve", &solve<MatrixType>, bp::args("self", "B"),
-             "Returns the solution X of A X = B using the current "
-             "decomposition of A where B is a right hand side matrix.");
-  }
-
- private:
-  template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
-    return self.solve(vec);
+             bp::return_self<>());
   }
 };
 

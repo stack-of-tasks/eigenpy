@@ -7,6 +7,7 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/eigen/EigenBase.hpp"
+#include "eigenpy/decompositions/sparse/SparseSolverBase.hpp"
 
 #include <Eigen/SparseCholesky>
 
@@ -37,6 +38,7 @@ struct SimplicialCholeskyVisitor
            "problems having the same structure.")
 
         .def(EigenBaseVisitor<Solver>())
+        .def(SparseSolverBaseVisitor<Solver>())
 
         .def("matrixL", &matrixL, bp::arg("self"),
              "Returns the lower triangular matrix L.")
@@ -74,33 +76,17 @@ struct SimplicialCholeskyVisitor
              "scale=1.",
              bp::return_self<>())
 
-        .def("solve", &solve<DenseVectorXs>, bp::args("self", "b"),
-             "Returns the solution x of A x = b using the current "
-             "decomposition of A.")
-        .def("solve", &solve<DenseMatrixXs>, bp::args("self", "B"),
-             "Returns the solution X of A X = B using the current "
-             "decomposition of A where B is a right hand side matrix.")
-
         .def("permutationP", &Solver::permutationP, bp::arg("self"),
              "Returns the permutation P.",
              bp::return_value_policy<bp::copy_const_reference>())
         .def("permutationPinv", &Solver::permutationPinv, bp::arg("self"),
              "Returns the inverse P^-1 of the permutation P.",
-             bp::return_value_policy<bp::copy_const_reference>())
-
-        .def("solve", &solve<MatrixType>, bp::args("self", "B"),
-             "Returns the solution X of A X = B using the current "
-             "decomposition of A where B is a right hand side matrix.");
+             bp::return_value_policy<bp::copy_const_reference>());
   }
 
  private:
   static MatrixType matrixL(const Solver &self) { return self.matrixL(); }
   static MatrixType matrixU(const Solver &self) { return self.matrixU(); }
-
-  template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
-    return self.solve(vec);
-  }
 };
 
 }  // namespace eigenpy
