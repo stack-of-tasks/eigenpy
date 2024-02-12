@@ -280,9 +280,6 @@ modernize_target_link_libraries(
   ${PYTHON_INCLUDE_DIR})
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
-  if(TARGET CHOLMOD::CHOLMOD)
-    message(STATUS "CHOLMOD_FOUND: ${CHOLMOD_FOUND}")
-  endif()
   modernize_target_link_libraries(${PROJECT_NAME} SCOPE PUBLIC TARGETS
                                   CHOLMOD::CHOLMOD)
 endif(BUILD_WITH_CHOLMOD_SUPPORT)
