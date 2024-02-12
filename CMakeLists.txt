@@ -129,7 +129,7 @@ if(BUILD_WITH_ACCELERATE_SUPPORT)
 
   set(CMAKE_MODULE_PATH ${JRL_CMAKE_MODULES}/find-external/Accelerate
                         ${CMAKE_MODULE_PATH})
-  add_project_dependency(
+  find_package(
     Accelerate REQUIRED # FIND_EXTERNAL "Accelerate" # We don't export yet as
                         # there might be an issue on AMR64 platforms
   )
