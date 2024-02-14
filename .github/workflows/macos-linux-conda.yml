@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-latest", "macos-latest","macos-14"]
         cxx_options: ['', '-mavx2']
         build_type: [Release, Debug]
         python-version: ["3.8", "3.12"]
@@ -30,6 +30,12 @@ jobs:
           - build_type: Release
             cxx_options: -mavx2
             os: macos-latest
+          - build_type: Debug
+            cxx_options: -mavx2
+            os: macos-14
+          - build_type: Release
+            cxx_options: -mavx2
+            os: macos-14
 
     steps:
     - uses: actions/checkout@v4
@@ -43,12 +49,23 @@ jobs:
         restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-
 
     - uses: conda-incubator/setup-miniconda@v3
+      if: matrix.os != 'macos-14'
       with:
         activate-environment: eigenpy
         auto-update-conda: true
         environment-file: .github/workflows/conda/environment_macos_linux.yml
         python-version: ${{ matrix.python-version }}
         auto-activate-base: false
+
+    - uses: conda-incubator/setup-miniconda@v3
+      if: matrix.os == 'macos-14'
+      with:
+        activate-environment: eigenpy
+        auto-update-conda: true
+        environment-file: .github/workflows/conda/environment_macos_linux.yml
+        python-version: ${{ matrix.python-version }}
+        auto-activate-base: false
+        installer-url: https://github.com/conda-forge/miniforge/releases/download/23.11.0-0/Mambaforge-23.11.0-0-MacOSX-arm64.sh
 
     - name: Build EigenPy
       shell: bash -el {0}
