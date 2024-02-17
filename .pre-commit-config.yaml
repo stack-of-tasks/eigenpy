@@ -1,6 +1,16 @@
 ci:
   autoupdate_branch: devel
 repos:
+- repo: https://github.com/PyCQA/isort
+  rev: 5.13.2
+  hooks:
+  - id: isort
+    args:
+    - --profile
+    - black
+    - --project
+    - eigenpy
+    - --filter-files
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.2.1
   hooks:
