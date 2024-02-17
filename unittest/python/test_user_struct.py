@@ -1,6 +1,5 @@
 import numpy as np
-from user_struct import *
-
+from user_struct import MyStruct
 
 x = np.ones(3)
 y = np.ones(4)

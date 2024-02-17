@@ -1,8 +1,9 @@
-import numpy as np
-import eigenpy
 import pprint
+
+import eigenpy
+import numpy as np
 import std_vector
-from std_vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector
+from std_vector import copyStdVector, printVectorOf3x3, printVectorOfMatrix
 
 np.random.seed(0)
 
@@ -47,8 +48,8 @@ l4_copy2 = std_vector.copyStdVec_3x3(l4)
 assert isinstance(l4_copy2, std_vector.StdVec_Mat3d)
 
 
-def checkZero(l):
-    for x in l:
+def checkZero(v):
+    for x in v:
         assert np.allclose(x, 0.0), "x = {}".format(x)
 
 
