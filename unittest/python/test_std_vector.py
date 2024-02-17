@@ -1,6 +1,5 @@
 import numpy as np
 import eigenpy
-import inspect
 import pprint
 import std_vector
 from std_vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector

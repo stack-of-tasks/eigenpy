@@ -2,7 +2,7 @@ from __future__ import print_function
 
 import numpy as np
 import sparse_matrix
-from scipy.sparse import csc_matrix, csr_matrix
+from scipy.sparse import csr_matrix
 
 m = sparse_matrix.emptyMatrix()
 assert m.shape == (0, 0)
