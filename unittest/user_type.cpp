@@ -54,6 +54,9 @@ struct NumTraits<CustomType<Scalar> > {
   }
 
   static int digits10() { return std::numeric_limits<Scalar>::digits10; }
+  static int max_digits10() {
+    return std::numeric_limits<Scalar>::max_digits10;
+  }
 };
 }  // namespace Eigen
 

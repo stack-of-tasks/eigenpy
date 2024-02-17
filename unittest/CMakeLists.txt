@@ -24,6 +24,7 @@ macro(ADD_LIB_UNIT_TEST test)
   endif(NOT BUILD_TESTING)
 endmacro(ADD_LIB_UNIT_TEST)
 
+add_dependencies(build_tests ${PYWRAP})
 add_lib_unit_test(matrix)
 if(BUILD_TESTING_SCIPY)
   find_scipy()
@@ -78,10 +79,6 @@ endif()
 add_lib_unit_test(bind_virtual_factory)
 
 add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
-if(BUILD_TESTING_SCIPY)
-  add_python_unit_test("py-sparse-matrix"
-                       "unittest/python/test_sparse_matrix.py" "unittest")
-endif()
 
 add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
 add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"
@@ -145,3 +142,40 @@ add_python_unit_test("py-std-unique-ptr"
 
 add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
                      "unittest")
+
+if(BUILD_TESTING_SCIPY)
+  add_python_unit_test("py-sparse-matrix"
+                       "unittest/python/test_sparse_matrix.py" "unittest")
+
+  add_python_unit_test(
+    "py-SimplicialLLT"
+    "unittest/python/decompositions/sparse/test_SimplicialLLT.py" "python")
+  add_python_unit_test(
+    "py-SimplicialLDLT"
+    "unittest/python/decompositions/sparse/test_SimplicialLDLT.py" "python")
+
+  if(BUILD_WITH_CHOLMOD_SUPPORT)
+
+    add_python_unit_test(
+      "py-CholmodSimplicialLLT"
+      "unittest/python/decompositions/sparse/cholmod/test_CholmodSimplicialLLT.py"
+      "python")
+
+    add_python_unit_test(
+      "py-CholmodSimplicialLDLT"
+      "unittest/python/decompositions/sparse/cholmod/test_CholmodSimplicialLDLT.py"
+      "python")
+
+    add_python_unit_test(
+      "py-CholmodSupernodalLLT"
+      "unittest/python/decompositions/sparse/cholmod/test_CholmodSupernodalLLT.py"
+      "python")
+
+  endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+  if(BUILD_WITH_ACCELERATE_SUPPORT)
+    add_python_unit_test(
+      "py-Accelerate"
+      "unittest/python/decompositions/sparse/test_Accelerate.py" "python")
+  endif(BUILD_WITH_ACCELERATE_SUPPORT)
+endif()

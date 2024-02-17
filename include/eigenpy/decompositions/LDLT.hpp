@@ -10,6 +10,7 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/utils/scalar-name.hpp"
+#include "eigenpy/eigen/EigenBase.hpp"
 
 namespace eigenpy {
 
@@ -35,6 +36,8 @@ struct LDLTSolverVisitor
         .def(bp::init<MatrixType>(
             bp::args("self", "matrix"),
             "Constructs a LDLT factorization from a given matrix."))
+
+        .def(EigenBaseVisitor<Solver>())
 
         .def("isNegative", &Solver::isNegative, bp::arg("self"),
              "Returns true if the matrix is negative (semidefinite).")

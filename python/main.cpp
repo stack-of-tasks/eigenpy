@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2023, INRIA
+ * Copyright 2018-2024, INRIA
  */
 
 #include <boost/python/scope.hpp>
@@ -16,6 +16,37 @@
 #include "eigenpy/version.hpp"
 
 using namespace eigenpy;
+
+template <typename Scalar>
+void exposeIsApprox() {
+  enum { Options = 0 };
+  EIGENPY_MAKE_TYPEDEFS(Scalar, Options, s, Eigen::Dynamic, X);
+  EIGENPY_UNUSED_TYPE(VectorXs);
+  EIGENPY_UNUSED_TYPE(RowVectorXs);
+  //  typedef Eigen::SparseMatrix<Scalar, Options> SparseMatrixXs;
+  typedef typename MatrixXs::RealScalar RealScalar;
+
+  using namespace Eigen;
+  const RealScalar dummy_precision =
+      Eigen::NumTraits<RealScalar>::dummy_precision();
+
+  bp::def("is_approx",
+          (bool (*)(const Eigen::MatrixBase<MatrixXs> &,
+                    const Eigen::MatrixBase<MatrixXs> &, const RealScalar &)) &
+              is_approx,
+          (bp::arg("A"), bp::arg("B"), bp::arg("prec") = dummy_precision),
+          "Returns True if A is approximately equal to B, within the "
+          "precision determined by prec.");
+
+  //  bp::def("is_approx",
+  //          (bool (*)(const Eigen::SparseMatrixBase<SparseMatrixXs> &,
+  //                    const Eigen::SparseMatrixBase<SparseMatrixXs> &,
+  //                    const RealScalar &)) &
+  //              is_approx,
+  //          (bp::arg("A"), bp::arg("B"), bp::arg("prec") = dummy_precision),
+  //          "Returns True if A is approximately equal to B, within the "
+  //          "precision determined by prec.");
+}
 
 BOOST_PYTHON_MODULE(eigenpy_pywrap) {
   enableEigenPy();
@@ -46,17 +77,8 @@ BOOST_PYTHON_MODULE(eigenpy_pywrap) {
     register_symbolic_link_to_registered_type<Eigen::ComputationInfo>();
   }
 
-  {
-    using namespace Eigen;
-
-    bp::def("is_approx",
-            (bool (*)(const Eigen::MatrixBase<MatrixXd> &,
-                      const Eigen::MatrixBase<MatrixXd> &, const double &)) &
-                is_approx<MatrixXd, MatrixXd>,
-            (bp::arg("A"), bp::arg("B"), bp::arg("prec") = 1e-12),
-            "Returns True if A is approximately equal to B, within the "
-            "precision determined by prec.");
-  }
+  exposeIsApprox<double>();
+  exposeIsApprox<std::complex<double> >();
 
   exposeDecompositions();
 }
