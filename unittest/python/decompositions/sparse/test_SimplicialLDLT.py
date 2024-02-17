@@ -1,7 +1,7 @@
-import eigenpy
-
 import numpy as np
 from scipy.sparse import csc_matrix
+
+import eigenpy
 
 dim = 100
 A = np.random.rand(dim, dim)

@@ -1,7 +1,7 @@
-import eigenpy
-
 import numpy as np
 from scipy.sparse import csc_matrix
+
+import eigenpy
 
 
 def test(SolverType: type):

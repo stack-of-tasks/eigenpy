@@ -3,4 +3,4 @@
 #
 
 from .eigenpy_pywrap import *  # noqa
-from .eigenpy_pywrap import __version__, __raw_version__  # noqa
+from .eigenpy_pywrap import __raw_version__, __version__  # noqa

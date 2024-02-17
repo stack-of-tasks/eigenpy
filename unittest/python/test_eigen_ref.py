@@ -1,16 +1,16 @@
 import numpy as np
 from eigen_ref import (
-    printMatrix,
-    getRefToStatic,
-    asRef,
     asConstRef,
+    asRef,
+    copyRowVectorFromConstRef,
+    copyVectorFromConstRef,
+    editBlock,
     fill,
     getBlock,
-    editBlock,
-    modify_block,
+    getRefToStatic,
     has_ref_member,
-    copyVectorFromConstRef,
-    copyRowVectorFromConstRef,
+    modify_block,
+    printMatrix,
 )
 
 

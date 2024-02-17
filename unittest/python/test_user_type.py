@@ -1,5 +1,5 @@
-import user_type
 import numpy as np
+import user_type
 
 # from packaging import version
 

@@ -1,9 +1,10 @@
 import pprint
 
-import eigenpy
 import numpy as np
 import std_vector
 from std_vector import copyStdVector, printVectorOf3x3, printVectorOfMatrix
+
+import eigenpy
 
 np.random.seed(0)
 

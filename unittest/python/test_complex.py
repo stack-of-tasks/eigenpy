@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
-from complex import real, imag, ascomplex
+from complex import ascomplex, imag, real
 
 rows = 10
 cols = 20

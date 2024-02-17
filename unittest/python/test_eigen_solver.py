@@ -1,4 +1,5 @@
 import numpy as np
+
 import eigenpy
 
 dim = 100

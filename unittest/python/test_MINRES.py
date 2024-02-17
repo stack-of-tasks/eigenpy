@@ -1,5 +1,6 @@
-import eigenpy
 import numpy as np
+
+import eigenpy
 
 dim = 100
 A = np.eye(dim)
