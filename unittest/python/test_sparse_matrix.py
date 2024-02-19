@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import numpy as np
 import sparse_matrix
 from scipy.sparse import csr_matrix

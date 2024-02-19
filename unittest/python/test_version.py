@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import eigenpy
 
 assert eigenpy.checkVersionAtLeast(0, 0, 0)

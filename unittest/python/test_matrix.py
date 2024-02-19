@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import matrix as eigenpy
 import numpy as np
 

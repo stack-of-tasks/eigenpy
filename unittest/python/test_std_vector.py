@@ -51,7 +51,7 @@ assert isinstance(l4_copy2, std_vector.StdVec_Mat3d)
 
 def checkZero(v):
     for x in v:
-        assert np.allclose(x, 0.0), "x = {}".format(x)
+        assert np.allclose(x, 0.0), f"x = {x}"
 
 
 print("Check setZero() works:")
