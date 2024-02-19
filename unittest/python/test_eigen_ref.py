@@ -100,9 +100,6 @@ def test_edit_block(rows, cols):
     assert np.array_equal(mat, mat_copy)
 
     class ModifyBlockImpl(modify_block):
-        def __init__(self):
-            super(ModifyBlockImpl, self).__init__()
-
         def call(self, mat):
             n, m = mat.shape
             mat[:, :] = np.arange(n * m).reshape(n, m)
