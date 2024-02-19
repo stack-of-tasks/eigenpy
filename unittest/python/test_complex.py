@@ -3,12 +3,13 @@ from complex import ascomplex, imag, real
 
 rows = 10
 cols = 20
+rng = np.random.default_rng()
 
 
 def test(dtype):
     Z = np.zeros((rows, cols), dtype=dtype)
-    Z.real = np.random.rand(rows, cols)
-    Z.imag = np.random.rand(rows, cols)
+    Z.real = rng.random((rows, cols))
+    Z.imag = rng.random((rows, cols))
 
     Z_real = real(Z)
     assert (Z_real == Z.real).all()

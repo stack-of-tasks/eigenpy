@@ -6,16 +6,16 @@ from std_vector import copyStdVector, printVectorOf3x3, printVectorOfMatrix
 
 import eigenpy
 
-np.random.seed(0)
+rng = np.random.default_rng(0)
 
-l1 = [np.random.randn(3), np.random.randn(2)]
+l1 = [rng.standard_normal(3), rng.standard_normal(2)]
 l2 = eigenpy.StdVec_VectorXd(l1)
-l3 = [np.random.randn(2, 2), np.random.randn(3, 1)]
+l3 = [rng.standard_normal((2, 2)), rng.standard_normal((3, 1))]
 l3.append(np.asfortranarray(np.eye(2)))
 l3.append(np.eye(2))
-l4 = [np.random.randn(3, 3).T for _ in range(3)]
+l4 = [rng.standard_normal((3, 3)).T for _ in range(3)]
 l4[-1] = l4[-1].T
-l5 = [np.random.randn(2, 2).T for _ in range(3)]
+l5 = [rng.standard_normal((2, 2)).T for _ in range(3)]
 
 
 def checkAllValues(li1, li2):

@@ -14,7 +14,8 @@ assert m.toarray() == np.array([2])
 v = sparse_matrix.vector1x1(2)
 assert v.toarray() == np.array([2])
 
-diag_values = np.random.rand(10)
+rng = np.random.default_rng()
+diag_values = rng.random(10)
 diag_mat = sparse_matrix.diagonal(diag_values)
 assert (diag_mat.toarray() == np.diag(diag_values)).all()
 

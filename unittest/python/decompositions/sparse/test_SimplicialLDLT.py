@@ -4,8 +4,10 @@ from scipy.sparse import csc_matrix
 import eigenpy
 
 dim = 100
-A = np.random.rand(dim, dim)
-A = (A + A.T) * 0.5 + np.diag(10.0 + np.random.rand(dim))
+rng = np.random.default_rng()
+
+A = rng.random((dim, dim))
+A = (A + A.T) * 0.5 + np.diag(10.0 + rng.random(dim))
 
 A = csc_matrix(A)
 
@@ -20,7 +22,7 @@ D = csc_matrix(np.diag(ldlt.vectorD()))
 LDU = L @ D @ U
 assert eigenpy.is_approx(LDU.toarray(), A.toarray())
 
-X = np.random.rand(dim, 20)
+X = rng.random((dim, 20))
 B = A.dot(X)
 X_est = ldlt.solve(B)
 assert eigenpy.is_approx(X, X_est)
