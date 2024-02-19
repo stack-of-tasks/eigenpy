@@ -1,5 +1,8 @@
+[tool.ruff]
+extend-exclude = ["cmake"]
+
 [tool.ruff.lint]
-extend-select = ["I"]
+extend-select = ["I", "W", "UP", "NPY", "RUF"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["eigenpy"]
