@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Support for `std::unique_ptr` as a return types with `StdUniquePtrCallPolicies` and `boost::python::default_call_policies` ([#433](https://github.com/stack-of-tasks/eigenpy/pull/433))
 - Support for `std::unique_ptr` as an internal reference with `ReturnInternalStdUniquePtr` ([#433](https://github.com/stack-of-tasks/eigenpy/pull/433))
 - Support for `Eigen::Simplicial{LLT,LDLT}` and `Eigen::Cholmod{Simplicial,Supernodal}{LLT,LDLT}` Cholesky de compositions ([#438](https://github.com/stack-of-tasks/eigenpy/pull/438))
+- Switch to ruff for lints, format, and import sort ([#441](https://github.com/stack-of-tasks/eigenpy/pull/441))
 
 ### Fixed
 - Fix the issue of missing exposition of Eigen types with __int64 scalar type ([#426](https://github.com/stack-of-tasks/eigenpy/pull/426))

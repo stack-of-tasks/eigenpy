@@ -1,12 +1,14 @@
-import eigenpy
 import numpy as np
 
+import eigenpy
+
 dim = 100
+rng = np.random.default_rng()
 A = np.eye(dim)
 
 minres = eigenpy.MINRES(A)
 
-X = np.random.rand(dim, 20)
+X = rng.random((dim, 20))
 B = A.dot(X)
 X_est = minres.solve(B)
 print("A.dot(X_est):", A.dot(X_est))

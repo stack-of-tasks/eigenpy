@@ -1,14 +1,12 @@
-from __future__ import print_function
-
+import numpy as np
 from geometry import (
     AngleAxis,
     Quaternion,
-    testOutAngleAxis,
     testInAngleAxis,
-    testOutQuaternion,
     testInQuaternion,
+    testOutAngleAxis,
+    testOutQuaternion,
 )
-import numpy as np
 from numpy import cos
 
 verbose = True

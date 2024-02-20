@@ -1,11 +1,11 @@
 from std_unique_ptr import (
-    make_unique_int,
-    make_unique_v1,
-    make_unique_null,
-    make_unique_str,
-    make_unique_complex,
     V1,
     UniquePtrHolder,
+    make_unique_complex,
+    make_unique_int,
+    make_unique_null,
+    make_unique_str,
+    make_unique_v1,
 )
 
 v = make_unique_int()

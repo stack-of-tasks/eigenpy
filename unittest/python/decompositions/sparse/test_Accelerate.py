@@ -1,13 +1,15 @@
-import eigenpy
-
 import numpy as np
 from scipy.sparse import csc_matrix
+
+import eigenpy
+
+rng = np.random.default_rng()
 
 
 def test(SolverType: type):
     dim = 100
-    A = np.random.rand(dim, dim)
-    A = (A + A.T) * 0.5 + np.diag(10.0 + np.random.rand(dim))
+    A = rng.random((dim, dim))
+    A = (A + A.T) * 0.5 + np.diag(10.0 + rng.random(dim))
 
     A = csc_matrix(A)
 
@@ -15,7 +17,7 @@ def test(SolverType: type):
 
     assert llt.info() == eigenpy.ComputationInfo.Success
 
-    X = np.random.rand(dim, 20)
+    X = rng.random((dim, 20))
     B = A.dot(X)
     X_est = llt.solve(B)
     #    import pdb; pdb.set_trace()

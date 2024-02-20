@@ -1,8 +1,10 @@
 import numpy as np
+
 import eigenpy
 
 dim = 100
-A = np.random.rand(dim, dim)
+rng = np.random.default_rng()
+A = rng.random((dim, dim))
 
 es = eigenpy.EigenSolver(A)
 

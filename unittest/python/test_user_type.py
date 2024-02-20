@@ -1,5 +1,5 @@
-import user_type
 import numpy as np
+import user_type
 
 # from packaging import version
 
@@ -8,8 +8,9 @@ cols = 20
 
 
 def test(dtype):
+    rng = np.random.default_rng()
     mat = np.array(np.ones((rows, cols)).astype(np.intc), dtype=dtype)
-    mat = np.random.rand(rows, cols).astype(dtype)
+    mat = rng.random((rows, cols)).astype(dtype)
     mat_copy = mat.copy()
     assert (mat == mat_copy).all()
     assert not (mat != mat_copy).all()

@@ -1,16 +1,16 @@
 import numpy as np
 from eigen_ref import (
-    printMatrix,
-    getRefToStatic,
-    asRef,
     asConstRef,
+    asRef,
+    copyRowVectorFromConstRef,
+    copyVectorFromConstRef,
+    editBlock,
     fill,
     getBlock,
-    editBlock,
-    modify_block,
+    getRefToStatic,
     has_ref_member,
-    copyVectorFromConstRef,
-    copyRowVectorFromConstRef,
+    modify_block,
+    printMatrix,
 )
 
 
@@ -60,7 +60,7 @@ def test_read_block():
 def test_create_ref(mat):
     print("[asRef(mat)]")
     ref = asRef(mat)
-    assert np.array_equal(ref, mat), "ref=\n{}\nmat=\n{}".format(ref, mat)
+    assert np.array_equal(ref, mat), f"ref=\n{ref}\nmat=\n{mat}"
     assert not (ref.flags.owndata)
     assert ref.flags.writeable
 
@@ -68,7 +68,7 @@ def test_create_ref(mat):
 def test_create_const_ref(mat):
     print("[asConstRef]")
     const_ref = asConstRef(mat)
-    assert np.array_equal(const_ref, mat), "ref=\n{}\nmat=\n{}".format(const_ref, mat)
+    assert np.array_equal(const_ref, mat), f"ref=\n{const_ref}\nmat=\n{mat}"
     assert not (const_ref.flags.writeable)
     assert not (const_ref.flags.owndata)
 
@@ -79,11 +79,11 @@ def test_edit_block(rows, cols):
     mat[:, :] = np.arange(rows * cols).reshape(rows, cols)
     mat0 = mat.copy()
     for i, rowsize, colsize in ([0, 3, 2], [1, 1, 2], [0, 3, 1]):
-        print("taking block [{}:{}, {}:{}]".format(i, rowsize + i, 0, colsize))
+        print(f"taking block [{i}:{rowsize + i}, {0}:{colsize}]")
         B = getBlock(mat, i, 0, rowsize, colsize)
         B = B.reshape(rowsize, colsize)
         lhs = mat[i : rowsize + i, :colsize]
-        assert np.array_equal(lhs, B), "got lhs\n{}\nrhs B=\n{}".format(lhs, B)
+        assert np.array_equal(lhs, B), f"got lhs\n{lhs}\nrhs B=\n{B}"
 
         B[:] = 1.0
         rhs = np.ones((rowsize, colsize))
@@ -100,9 +100,6 @@ def test_edit_block(rows, cols):
     assert np.array_equal(mat, mat_copy)
 
     class ModifyBlockImpl(modify_block):
-        def __init__(self):
-            super(ModifyBlockImpl, self).__init__()
-
         def call(self, mat):
             n, m = mat.shape
             mat[:, :] = np.arange(n * m).reshape(n, m)

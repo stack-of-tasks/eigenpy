@@ -1,12 +1,10 @@
-from __future__ import print_function
-
-import eigenpy
-import numpy as np
-
 import time  # noqa
 import timeit  # noqa
 
+import numpy as np
 from IPython import get_ipython
+
+import eigenpy
 
 ipython = get_ipython()
 
