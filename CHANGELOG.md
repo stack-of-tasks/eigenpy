@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.4.0] - 2024-02-26
+
 ### Added
 - Support for `Eigen::SparseMatrix` types ([#426](https://github.com/stack-of-tasks/eigenpy/pull/426))
 - Support for `boost::variant` types with `VariantConverter` ([#430](https://github.com/stack-of-tasks/eigenpy/pull/430))
@@ -600,7 +602,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.3.0...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.4.0...HEAD
+[3.4.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.4...v3.2.0
 [3.1.4]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.3...v3.1.4
