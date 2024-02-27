@@ -46,7 +46,10 @@ add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
 add_lib_unit_test(std_pair)
 add_lib_unit_test(user_struct)
-add_lib_unit_test(std_unique_ptr)
+
+if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
+  add_lib_unit_test(std_unique_ptr)
+endif()
 
 function(config_test test tagname opttype)
   set(MODNAME ${test}_${tagname})
@@ -137,8 +140,10 @@ add_python_unit_test("py-std-pair" "unittest/python/test_std_pair.py"
 add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
                      "unittest")
 
-add_python_unit_test("py-std-unique-ptr"
-                     "unittest/python/test_std_unique_ptr.py" "unittest")
+if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
+  add_python_unit_test("py-std-unique-ptr"
+                       "unittest/python/test_std_unique_ptr.py" "unittest")
+endif()
 
 add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
                      "unittest")
