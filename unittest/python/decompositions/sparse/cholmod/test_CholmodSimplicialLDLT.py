@@ -14,7 +14,7 @@ llt = eigenpy.CholmodSimplicialLDLT(A)
 
 assert llt.info() == eigenpy.ComputationInfo.Success
 
-X = rng.rand((dim, 20))
+X = rng.random((dim, 20))
 B = A.dot(X)
 X_est = llt.solve(B)
 assert eigenpy.is_approx(X, X_est)
