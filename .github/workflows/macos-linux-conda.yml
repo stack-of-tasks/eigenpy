@@ -1,24 +1,6 @@
-name: CI - OSX/Linux via Conda
+name: Conda-CI
 
-on:
-  push:
-    paths-ignore:
-      - 'doc/**'
-      - '.gitlab-ci.yml'
-      - '.gitignore'
-      - '*.md'
-      - 'LICENSE'
-      - 'colcon.pkg'
-      - '.pre-commit-config.yaml'
-  pull_request:
-    paths-ignore:
-      - 'doc/**'
-      - '.gitlab-ci.yml'
-      - '.gitignore'
-      - '*.md'
-      - 'LICENSE'
-      - 'colcon.pkg'
-      - '.pre-commit-config.yaml'
+on: [push,pull_request]
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -60,82 +42,21 @@ jobs:
       with:
         submodules: recursive
 
-    - uses: actions/cache@v4
+    - uses: actions/cache@v3
       with:
         path: .ccache
         key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-${{ github.sha }}
         restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-
 
-    - uses: conda-incubator/setup-miniconda@v3
-      if: matrix.os != 'macos-14'
+    - uses: prefix-dev/setup-pixi@v0.5.1
       with:
-        activate-environment: eigenpy
-        auto-update-conda: true
-        environment-file: .github/workflows/conda/environment_all.yml
-        python-version: ${{ matrix.python-version }}
-        auto-activate-base: false
-
-    - uses: conda-incubator/setup-miniconda@v3
-      if: matrix.os == 'macos-14'
-      with:
-        activate-environment: eigenpy
-        auto-update-conda: true
-        environment-file: .github/workflows/conda/environment_all.yml
-        python-version: ${{ matrix.python-version }}
-        auto-activate-base: false
-        installer-url: https://github.com/conda-forge/miniforge/releases/download/23.11.0-0/Mambaforge-23.11.0-0-MacOSX-arm64.sh
+        pixi-version: v0.15.2
+        cache: true
 
     - name: Build EigenPy
       shell: bash -el {0}
       run: |
-        conda list
-        echo $CONDA_PREFIX
-
-        mkdir build
-        cd build
-
-        cmake .. \
-          -G "Ninja" \
-          -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
-          -DPYTHON_EXECUTABLE=$(which python3) \
-          -DGENERATE_PYTHON_STUBS=ON \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }} \
-          -DCMAKE_CXX_STANDARD=11
-        cmake --build . -j3
-        ctest --output-on-failure
-        cmake --install .
-
-    - name: Test packaging
-      shell: bash -el {0}
-      run: |
-        cmake -B test-packaging \
-          -S unittest/packaging/cmake \
-          -G "Ninja" \
-          -DPYTHON_EXECUTABLE=$(which python3)
-
-    - name: Configure hpp-fcl
-      shell: bash -el {0}
-      run: |
-        conda install -c conda-forge octomap assimp qhull
-
-        git clone https://github.com/humanoid-path-planner/hpp-fcl.git --recursive
-        cd hpp-fcl
-        mkdir build && cd build
-        cmake .. \
-          -G "Ninja" \
-          -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-          -DCMAKE_BUILD_TYPE=Release \
-          -DBUILD_TESTING_SCIPY=ON \
-          -DPYTHON_EXECUTABLE=$(which python3)
-
-    - name: Uninstall EigenPy
-      shell: bash -el {0}
-      run: |
-        cd build
-        cmake --build . --target uninstall
-
+        pixi run test
 
   check:
     if: always()
