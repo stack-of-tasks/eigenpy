@@ -6,9 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Allow use of installed JRL-cmakemodule ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
+
 ### Fixed
 - Fix unit test build in C++11 ([#442](https://github.com/stack-of-tasks/eigenpy/pull/442))
 - Fix unit test function signature [#443](https://github.com/stack-of-tasks/eigenpy/pull/443))
+- Fix CMake export ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
 
 ## [3.4.0] - 2024-02-26
 
