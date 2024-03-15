@@ -63,9 +63,9 @@ int Register::registerNewType(
     throw std::invalid_argument("PyType_Ready fails to initialize input type.");
   }
 
-  PyArray_Descr* descr_ptr =
-      new PyArray_Descr(*call_PyArray_DescrFromType(NPY_OBJECT));
-  PyArray_Descr& descr = *descr_ptr;
+  PyArray_DescrProto* descr_ptr = new PyArray_DescrProto();
+  Py_SET_TYPE(descr_ptr, &PyArrayDescr_Type);
+  PyArray_DescrProto& descr = *descr_ptr;
   descr.typeobj = py_type_ptr;
   descr.kind = 'V';
   descr.byteorder = '=';
@@ -98,7 +98,7 @@ int Register::registerNewType(
   PyArray_Descr* new_descr = call_PyArray_DescrFromType(code);
 
   if (PyDict_SetItemString(py_type_ptr->tp_dict, "dtype",
-                           (PyObject*)descr_ptr) < 0) {
+                           (PyObject*)new_descr) < 0) {
     throw std::invalid_argument("PyDict_SetItemString fails.");
   }
 
