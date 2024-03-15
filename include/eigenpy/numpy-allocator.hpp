@@ -141,7 +141,8 @@ struct numpy_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
 #if NPY_ABI_VERSION < 0x02000000
       const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
 #else
-      const int elsize = PyDataType_ELSIZE(call_PyArray_DescrFromType(Scalar_type_code));
+      const int elsize =
+          PyDataType_ELSIZE(call_PyArray_DescrFromType(Scalar_type_code));
 #endif
       npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
 
@@ -211,7 +212,8 @@ struct numpy_allocator_impl_matrix<
 #if NPY_ABI_VERSION < 0x02000000
       const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
 #else
-      const int elsize = PyDataType_ELSIZE(call_PyArray_DescrFromType(Scalar_type_code));
+      const int elsize =
+          PyDataType_ELSIZE(call_PyArray_DescrFromType(Scalar_type_code));
 #endif
       npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
 

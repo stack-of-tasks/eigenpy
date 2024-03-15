@@ -14,9 +14,10 @@ void import_numpy() {
 }
 
 int PyArray_TypeNum(PyTypeObject* type) {
-  PyArray_Descr * descr = PyArray_DescrFromTypeObject(reinterpret_cast<PyObject*>(type));
+  PyArray_Descr* descr =
+      PyArray_DescrFromTypeObject(reinterpret_cast<PyObject*>(type));
   if (descr == NULL) {
-      return NPY_NOTYPE;
+    return NPY_NOTYPE;
   }
   return descr->type_num;
 }
