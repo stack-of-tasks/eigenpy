@@ -171,7 +171,8 @@ struct SpecialMethods<T, NPY_USERDEF> {
     char* srcptr = static_cast<char*>(src);
 
     PyArrayObject* py_array = static_cast<PyArrayObject*>(array);
-    PyArray_CopySwapFunc* copyswap = PyArray_DESCR(py_array)->f->copyswap;
+    PyArray_CopySwapFunc* copyswap =
+        PyDataType_GetArrFuncs(PyArray_DESCR(py_array))->copyswap;
 
     for (npy_intp i = 0; i < n; i++) {
       copyswap(dstptr, srcptr, swap, array);
@@ -189,8 +190,8 @@ struct SpecialMethods<T, NPY_USERDEF> {
       return (npy_bool)(value != ZeroValue);
     } else {
       T tmp_value;
-      PyArray_DESCR(py_array)->f->copyswap(
-          &tmp_value, ip, PyArray_ISBYTESWAPPED(py_array), array);
+      PyDataType_GetArrFuncs(PyArray_DESCR(py_array))
+          ->copyswap(&tmp_value, ip, PyArray_ISBYTESWAPPED(py_array), array);
       return (npy_bool)(tmp_value != ZeroValue);
     }
   }

@@ -16,8 +16,32 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
 
+/* Allow compiling against NumPy 1.x and 2.x
+   see:
+   https://github.com/numpy/numpy/blob/afea8fd66f6bdbde855f5aff0b4e73eb0213c646/doc/source/reference/c-api/array.rst#L1224
+*/
+#if NPY_ABI_VERSION < 0x02000000
+#define PyArray_DescrProto PyArray_Descr
+#endif
+
 #include <numpy/ndarrayobject.h>
 #include <numpy/ufuncobject.h>
+
+#if NPY_ABI_VERSION < 0x02000000
+static inline PyArray_ArrFuncs* PyDataType_GetArrFuncs(PyArray_Descr* descr) {
+  return descr->f;
+}
+#endif
+
+/* PEP 674 disallow using macros as l-values
+   see : https://peps.python.org/pep-0674/
+*/
+#if PY_VERSION_HEX < 0x030900A4 && !defined(Py_SET_TYPE)
+static inline void _Py_SET_TYPE(PyObject* o, PyTypeObject* type) {
+  Py_TYPE(o) = type;
+}
+#define Py_SET_TYPE(o, type) _Py_SET_TYPE((PyObject*)(o), type)
+#endif
 
 #if defined _WIN32 || defined __CYGWIN__
 #define EIGENPY_GET_PY_ARRAY_TYPE(array) \
@@ -170,7 +194,7 @@ inline void call_PyArray_InitArrFuncs(PyArray_ArrFuncs* funcs) {
   PyArray_InitArrFuncs(funcs);
 }
 
-inline int call_PyArray_RegisterDataType(PyArray_Descr* dtype) {
+inline int call_PyArray_RegisterDataType(PyArray_DescrProto* dtype) {
   return PyArray_RegisterDataType(dtype);
 }
 

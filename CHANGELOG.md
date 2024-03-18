@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Allow use of installed JRL-cmakemodule ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
+- Support of Numpy 2.0.0b1 ([#448](https://github.com/stack-of-tasks/eigenpy/pull/448))
 
 ### Fixed
 - Fix unit test build in C++11 ([#442](https://github.com/stack-of-tasks/eigenpy/pull/442))

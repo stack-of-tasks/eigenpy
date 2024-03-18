@@ -138,7 +138,12 @@ struct numpy_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
                         outer_stride = reverse_strides ? mat.innerStride()
                                                        : mat.outerStride();
 
+#if NPY_ABI_VERSION < 0x02000000
       const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
+#else
+      const int elsize =
+          PyDataType_ELSIZE(call_PyArray_DescrFromType(Scalar_type_code));
+#endif
       npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
 
       PyArrayObject *pyArray = (PyArrayObject *)call_PyArray_New(
@@ -204,7 +209,12 @@ struct numpy_allocator_impl_matrix<
                         outer_stride = reverse_strides ? mat.innerStride()
                                                        : mat.outerStride();
 
+#if NPY_ABI_VERSION < 0x02000000
       const int elsize = call_PyArray_DescrFromType(Scalar_type_code)->elsize;
+#else
+      const int elsize =
+          PyDataType_ELSIZE(call_PyArray_DescrFromType(Scalar_type_code));
+#endif
       npy_intp strides[2] = {elsize * inner_stride, elsize * outer_stride};
 
       PyArrayObject *pyArray = (PyArrayObject *)call_PyArray_New(
