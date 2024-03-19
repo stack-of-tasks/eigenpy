@@ -57,7 +57,7 @@ void call_PyArray_InitArrFuncs(PyArray_ArrFuncs* funcs) {
   PyArray_InitArrFuncs(funcs);
 }
 
-int call_PyArray_RegisterDataType(PyArray_Descr* dtype) {
+int call_PyArray_RegisterDataType(PyArray_DescrProto* dtype) {
   return PyArray_RegisterDataType(dtype);
 }
 
