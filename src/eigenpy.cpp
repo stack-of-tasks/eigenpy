@@ -12,8 +12,21 @@ namespace eigenpy {
 void seed(unsigned int seed_value) { srand(seed_value); }
 
 void exposeMatrixBool();
-void exposeMatrixInt();
-void exposeMatrixLong();
+void exposeMatrixInt8();
+void exposeMatrixChar();
+void exposeMatrixUInt8();
+void exposeMatrixInt16();
+void exposeMatrixUInt16();
+void exposeMatrixInt32();
+void exposeMatrixUInt32();
+void exposeMatrixWindowsLong();
+void exposeMatrixWindowsULong();
+void exposeMatrixMacLong();
+void exposeMatrixMacULong();
+void exposeMatrixInt64();
+void exposeMatrixUInt64();
+void exposeMatrixLinuxLongLong();
+void exposeMatrixLinuxULongLong();
 void exposeMatrixFloat();
 void exposeMatrixDouble();
 void exposeMatrixLongDouble();
@@ -47,8 +60,21 @@ void enableEigenPy() {
           "seed_value.");
 
   exposeMatrixBool();
-  exposeMatrixInt();
-  exposeMatrixLong();
+  exposeMatrixInt8();
+  exposeMatrixChar();
+  exposeMatrixUInt8();
+  exposeMatrixInt16();
+  exposeMatrixUInt16();
+  exposeMatrixInt32();
+  exposeMatrixUInt32();
+  exposeMatrixWindowsLong();
+  exposeMatrixWindowsULong();
+  exposeMatrixMacLong();
+  exposeMatrixMacULong();
+  exposeMatrixInt64();
+  exposeMatrixUInt64();
+  exposeMatrixLinuxLongLong();
+  exposeMatrixLinuxULongLong();
   exposeMatrixFloat();
   exposeMatrixDouble();
   exposeMatrixLongDouble();

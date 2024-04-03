@@ -9,11 +9,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 - Allow use of installed JRL-cmakemodule ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
 - Support of Numpy 2.0.0b1 ([#448](https://github.com/stack-of-tasks/eigenpy/pull/448))
+- Support new primitive type (char, int8_t, uint8_t, int16_t, uint16_t, uint32_t, uint64_t) ([#455]()https://github.com/stack-of-tasks/eigenpy/pull/455)
+- Support conversion between signed <-> unsigned integers ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
+- Support conversion between complex numbers ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
 
 ### Fixed
 - Fix unit test build in C++11 ([#442](https://github.com/stack-of-tasks/eigenpy/pull/442))
 - Fix unit test function signature [#443](https://github.com/stack-of-tasks/eigenpy/pull/443))
 - Fix CMake export ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
+- Fix `int` management on Windows ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
+- Fix `long long` management on Mac ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
+
+### Removed
+- Remove casting when converting from Eigen scalar to Numpy scalar.
+  This should not remove any functionality since Numpy array are created from the Eigen scalar type
+  ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
 
 ## [3.4.0] - 2024-02-26
 

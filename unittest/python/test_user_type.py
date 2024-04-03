@@ -9,7 +9,7 @@ cols = 20
 
 def test(dtype):
     rng = np.random.default_rng()
-    mat = np.array(np.ones((rows, cols)).astype(np.intc), dtype=dtype)
+    mat = np.array(np.ones((rows, cols)).astype(np.int32), dtype=dtype)
     mat = rng.random((rows, cols)).astype(dtype)
     mat_copy = mat.copy()
     assert (mat == mat_copy).all()
