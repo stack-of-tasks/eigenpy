@@ -1,10 +1,28 @@
 # This config uses industrial_ci (https://github.com/ros-industrial/industrial_ci.git).
 # For troubleshooting, see readme (https://github.com/ros-industrial/industrial_ci/blob/master/README.rst)
 
-name: ROS-CI
+name: CI - Linux via ROS
 
 # This determines when this workflow is run
-on: [push, pull_request] # on all pushes and PRs
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

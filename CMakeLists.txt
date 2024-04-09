@@ -43,6 +43,14 @@ else()
   endif()
 endif()
 
+function(set_standard_output_directory target)
+  set_target_properties(
+    ${target}
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
+               LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+               ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+endfunction()
+
 # Disable -Werror on Unix for now.
 set(CXX_DISABLE_WERROR True)
 set(CMAKE_VERBOSE_MAKEFILE True)
@@ -328,6 +336,7 @@ set(${PROJECT_NAME}_SOURCES
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})
+set_standard_output_directory(${PROJECT_NAME})
 target_include_directories(
   ${PROJECT_NAME} SYSTEM
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>

@@ -67,7 +67,7 @@ if(GENERATE_PYTHON_STUBS)
 endif(GENERATE_PYTHON_STUBS)
 
 # --- INSTALL SCRIPTS
-set(PYTHON_FILES __init__.py)
+set(PYTHON_FILES __init__.py windows_dll_manager.py)
 
 foreach(python ${PYTHON_FILES})
   python_build(${PROJECT_NAME} ${python})

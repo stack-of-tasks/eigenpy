@@ -10,13 +10,17 @@ macro(ADD_LIB_UNIT_TEST test)
   else(BUILD_TESTING)
     add_library(${test} SHARED EXCLUDE_FROM_ALL "${test}.cpp")
   endif(BUILD_TESTING)
+  set_standard_output_directory(${test})
 
   target_link_libraries(${test} PUBLIC ${PROJECT_NAME})
   set_target_properties(${test} PROPERTIES PREFIX "")
 
   set_target_properties(${test} PROPERTIES SUFFIX ${PYTHON_EXT_SUFFIX})
 
-  add_test(NAME ${test} COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}")
+  add_test(
+    NAME ${test}
+    COMMAND ${PYTHON_EXECUTABLE} -c "import ${test}"
+    WORKING_DIRECTORY $<TARGET_FILE_DIR:${test}>)
 
   add_dependencies(build_tests ${test})
   if(NOT BUILD_TESTING)
@@ -51,6 +55,20 @@ if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
   add_lib_unit_test(std_unique_ptr)
 endif()
 
+function(add_python_lib_unit_test name source)
+  add_python_unit_test(${name} ${source} "lib" "bin")
+endfunction()
+
+function(add_python_eigenpy_lib_unit_test name source)
+  add_python_unit_test(${name} ${source} "lib" "bin" "python")
+  set_tests_properties(${name} PROPERTIES DEPENDS ${PYWRAP})
+endfunction()
+
+function(add_python_eigenpy_unit_test name source)
+  add_python_unit_test(${name} ${source} "python")
+  set_tests_properties(${name} PROPERTIES DEPENDS ${PYWRAP})
+endfunction()
+
 function(config_test test tagname opttype)
   set(MODNAME ${test}_${tagname})
   set(TEST_TYPE ${opttype})
@@ -64,7 +82,7 @@ function(config_test test tagname opttype)
   add_test(NAME ${PYTHON_TEST_NAME}
            COMMAND ${PYTHON_EXECUTABLE}
                    "${CMAKE_CURRENT_BINARY_DIR}/python/${py_file}")
-  compute_pythonpath(ENV_VARIABLES "unittest")
+  compute_pythonpath(ENV_VARIABLES "lib" "bin")
   set_tests_properties(${PYTHON_TEST_NAME} PROPERTIES ENVIRONMENT
                                                       "${ENV_VARIABLES}")
 endfunction()
@@ -81,106 +99,87 @@ endif()
 
 add_lib_unit_test(bind_virtual_factory)
 
-add_python_unit_test("py-matrix" "unittest/python/test_matrix.py" "unittest")
+add_python_lib_unit_test("py-matrix" "unittest/python/test_matrix.py")
 
-add_python_unit_test("py-tensor" "unittest/python/test_tensor.py" "unittest")
-add_python_unit_test("py-geometry" "unittest/python/test_geometry.py"
-                     "unittest")
-add_python_unit_test("py-complex" "unittest/python/test_complex.py" "unittest")
-add_python_unit_test("py-return-by-ref" "unittest/python/test_return_by_ref.py"
-                     "unittest")
-add_python_unit_test("py-eigen-ref" "unittest/python/test_eigen_ref.py"
-                     "unittest")
+add_python_lib_unit_test("py-tensor" "unittest/python/test_tensor.py")
+add_python_lib_unit_test("py-geometry" "unittest/python/test_geometry.py")
+add_python_lib_unit_test("py-complex" "unittest/python/test_complex.py")
+add_python_lib_unit_test("py-return-by-ref"
+                         "unittest/python/test_return_by_ref.py")
+add_python_lib_unit_test("py-eigen-ref" "unittest/python/test_eigen_ref.py")
 
 if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
-  add_python_unit_test("py-user-type" "unittest/python/test_user_type.py"
-                       "unittest")
+  add_python_lib_unit_test("py-user-type" "unittest/python/test_user_type.py")
 endif()
 
-add_python_unit_test("py-dimensions" "unittest/python/test_dimensions.py"
-                     "python;unittest")
-set_tests_properties("py-dimensions" PROPERTIES DEPENDS ${PYWRAP})
+add_python_eigenpy_lib_unit_test("py-dimensions"
+                                 "unittest/python/test_dimensions.py")
 
-add_python_unit_test("py-version" "unittest/python/test_version.py"
-                     "python;unittest")
-set_tests_properties("py-version" PROPERTIES DEPENDS ${PYWRAP})
+add_python_eigenpy_lib_unit_test("py-version" "unittest/python/test_version.py")
 
-add_python_unit_test("py-eigen-solver" "unittest/python/test_eigen_solver.py"
-                     "python;unittest")
-set_tests_properties("py-eigen-solver" PROPERTIES DEPENDS ${PYWRAP})
+add_python_eigenpy_lib_unit_test("py-eigen-solver"
+                                 "unittest/python/test_eigen_solver.py")
 
-add_python_unit_test(
+add_python_eigenpy_lib_unit_test(
   "py-self-adjoint-eigen-solver"
-  "unittest/python/test_self_adjoint_eigen_solver.py" "python;unittest")
-set_tests_properties("py-self-adjoint-eigen-solver" PROPERTIES DEPENDS
-                                                               ${PYWRAP})
+  "unittest/python/test_self_adjoint_eigen_solver.py")
 
-add_python_unit_test("py-LLT" "unittest/python/test_LLT.py" "python;unittest")
-set_tests_properties("py-LLT" PROPERTIES DEPENDS ${PYWRAP})
+add_python_eigenpy_lib_unit_test("py-LLT" "unittest/python/test_LLT.py")
 
-add_python_unit_test("py-LDLT" "unittest/python/test_LDLT.py" "python;unittest")
-set_tests_properties("py-LDLT" PROPERTIES DEPENDS ${PYWRAP})
+add_python_eigenpy_lib_unit_test("py-LDLT" "unittest/python/test_LDLT.py")
 
 if(NOT WIN32)
-  add_python_unit_test("py-MINRES" "unittest/python/test_MINRES.py"
-                       "python;unittest")
-  set_tests_properties("py-MINRES" PROPERTIES DEPENDS ${PYWRAP})
+  add_python_eigenpy_lib_unit_test("py-MINRES" "unittest/python/test_MINRES.py")
 endif(NOT WIN32)
 
-add_python_unit_test("py-std-vector" "unittest/python/test_std_vector.py"
-                     "python;unittest")
-set_tests_properties("py-std-vector" PROPERTIES DEPENDS ${PYWRAP})
+add_python_eigenpy_lib_unit_test("py-std-vector"
+                                 "unittest/python/test_std_vector.py")
 
-add_python_unit_test("py-std-array" "unittest/python/test_std_array.py"
-                     "unittest")
+add_python_lib_unit_test("py-std-array" "unittest/python/test_std_array.py")
 
-add_python_unit_test("py-std-pair" "unittest/python/test_std_pair.py"
-                     "unittest")
+add_python_lib_unit_test("py-std-pair" "unittest/python/test_std_pair.py")
 
-add_python_unit_test("py-user-struct" "unittest/python/test_user_struct.py"
-                     "unittest")
+add_python_lib_unit_test("py-user-struct" "unittest/python/test_user_struct.py")
 
 if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
-  add_python_unit_test("py-std-unique-ptr"
-                       "unittest/python/test_std_unique_ptr.py" "unittest")
+  add_python_lib_unit_test("py-std-unique-ptr"
+                           "unittest/python/test_std_unique_ptr.py")
 endif()
 
-add_python_unit_test("py-bind-virtual" "unittest/python/test_bind_virtual.py"
-                     "unittest")
+add_python_lib_unit_test("py-bind-virtual"
+                         "unittest/python/test_bind_virtual.py")
 
 if(BUILD_TESTING_SCIPY)
-  add_python_unit_test("py-sparse-matrix"
-                       "unittest/python/test_sparse_matrix.py" "unittest")
+  add_python_lib_unit_test("py-sparse-matrix"
+                           "unittest/python/test_sparse_matrix.py")
 
-  add_python_unit_test(
+  add_python_eigenpy_unit_test(
     "py-SimplicialLLT"
-    "unittest/python/decompositions/sparse/test_SimplicialLLT.py" "python")
-  add_python_unit_test(
+    "unittest/python/decompositions/sparse/test_SimplicialLLT.py")
+  add_python_eigenpy_unit_test(
     "py-SimplicialLDLT"
-    "unittest/python/decompositions/sparse/test_SimplicialLDLT.py" "python")
+    "unittest/python/decompositions/sparse/test_SimplicialLDLT.py")
 
   if(BUILD_WITH_CHOLMOD_SUPPORT)
-
-    add_python_unit_test(
+    add_python_eigenpy_unit_test(
       "py-CholmodSimplicialLLT"
       "unittest/python/decompositions/sparse/cholmod/test_CholmodSimplicialLLT.py"
-      "python")
+    )
 
-    add_python_unit_test(
+    add_python_eigenpy_unit_test(
       "py-CholmodSimplicialLDLT"
       "unittest/python/decompositions/sparse/cholmod/test_CholmodSimplicialLDLT.py"
-      "python")
+    )
 
-    add_python_unit_test(
+    add_python_eigenpy_unit_test(
       "py-CholmodSupernodalLLT"
       "unittest/python/decompositions/sparse/cholmod/test_CholmodSupernodalLLT.py"
-      "python")
-
+    )
   endif(BUILD_WITH_CHOLMOD_SUPPORT)
 
   if(BUILD_WITH_ACCELERATE_SUPPORT)
-    add_python_unit_test(
+    add_python_eigenpy_unit_test(
       "py-Accelerate"
-      "unittest/python/decompositions/sparse/test_Accelerate.py" "python")
+      "unittest/python/decompositions/sparse/test_Accelerate.py")
   endif(BUILD_WITH_ACCELERATE_SUPPORT)
 endif()

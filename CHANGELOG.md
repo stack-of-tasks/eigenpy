@@ -19,6 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fix CMake export ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
 - Fix `int` management on Windows ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
 - Fix `long long` management on Mac ([#455](https://github.com/stack-of-tasks/eigenpy/pull/455))
+- Allow to run test in the build directory on Windows ([#457](https://github.com/stack-of-tasks/eigenpy/pull/457))
 
 ### Removed
 - Remove casting when converting from Eigen scalar to Numpy scalar.
