@@ -70,6 +70,7 @@ jobs:
         cmake ^
           -G "Ninja" ^
           -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%\Library ^
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DGENERATE_PYTHON_STUBS=ON ^
           -DPYTHON_SITELIB=%CONDA_PREFIX%\Lib\site-packages ^

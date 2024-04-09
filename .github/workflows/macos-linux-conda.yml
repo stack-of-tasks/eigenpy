@@ -97,6 +97,7 @@ jobs:
         cmake .. \
           -G "Ninja" \
           -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
           -DPYTHON_EXECUTABLE=$(which python3) \
           -DGENERATE_PYTHON_STUBS=ON \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
