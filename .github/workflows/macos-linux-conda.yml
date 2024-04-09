@@ -1,6 +1,24 @@
-name: Conda-CI
+name: CI - OSX/Linux via Conda
 
-on: [push,pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -42,7 +60,7 @@ jobs:
       with:
         submodules: recursive
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: .ccache
         key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-${{ github.sha }}

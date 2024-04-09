@@ -1,5 +1,24 @@
-name: Build Eigenpy on Windows via Conda
-on: [push,pull_request]
+name: CI - Windows via Conda
+
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -17,11 +36,18 @@ jobs:
       fail-fast: false
       matrix:
           os: [windows-latest]
+          compiler: ["cl", "clang-cl"]
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
+
+    - uses: actions/cache@v4
+      with:
+        path: .ccache
+        key: ccache-windows-conda-${{ matrix.os }}-${{ github.sha }}
+        restore-keys: ccache-windows-conda-${{ matrix.os }}-
 
     - uses: conda-incubator/setup-miniconda@v3
       with:
@@ -31,15 +57,14 @@ jobs:
         python-version: "3.10"
         auto-activate-base: false
 
-    - uses: actions/cache@v3
-      with:
-        path: .ccache
-        key: ccache-windows-conda-${{ matrix.os }}-${{ github.sha }}
-        restore-keys: ccache-windows-conda-${{ matrix.os }}-
-
     - name: Build Eigenpy
       shell: cmd /C CALL {0}
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
       run: |
+        call conda list
+
         :: start building
         call "%programfiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64
         if errorlevel 1 exit 1
@@ -57,13 +82,16 @@ jobs:
           ..
         if errorlevel 1 exit 1
 
-        :: Build and Install
-        cmake --build . -j3 --config Release --target install
+        :: Build
+        cmake --build . -j3
         if errorlevel 1 exit 1
 
         :: Testing
-        ctest --output-on-failure -C Release -V
+        ctest --output-on-failure
         if errorlevel 1 exit 1
+
+        :: Install
+        cmake --install .
 
         :: Test Python import
         cd ..
