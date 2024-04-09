@@ -8,5 +8,6 @@ dependencies:
   - pkg-config
   - boost
   - ccache
+  - cxx-compiler
   - ninja
   - scipy
