@@ -54,7 +54,7 @@ set(CMAKE_VERBOSE_MAKEFILE True)
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
 option(BUILD_TESTING_SCIPY
-       "Build the SciPy tests (scipy should be installed on the machine)" OFF)
+       "Build the SciPy tests (scipy should be installed on the machine)" ON)
 
 include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
@@ -267,7 +267,16 @@ set(${PROJECT_NAME}_SOLVERS_SOURCES src/solvers/preconditioners.cpp
                                     src/solvers/solvers.cpp)
 
 set(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
-    src/decompositions/decompositions.cpp)
+    src/decompositions/decompositions.cpp
+    src/decompositions/eigen-solver.cpp
+    src/decompositions/llt-solver.cpp
+    src/decompositions/ldlt-solver.cpp
+    src/decompositions/minres-solver.cpp
+    src/decompositions/eigen-solver.cpp
+    src/decompositions/self-adjoint-eigen-solver.cpp
+    src/decompositions/permutation-matrix.cpp
+    src/decompositions/simplicial-llt-solver.cpp
+    src/decompositions/simplicial-ldlt-solver.cpp)
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
   list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
@@ -294,8 +303,21 @@ set(${PROJECT_NAME}_SOURCES
     src/matrix-long-double.cpp
     src/matrix-complex-long-double.cpp
     src/matrix-bool.cpp
-    src/matrix-int.cpp
-    src/matrix-long.cpp
+    src/matrix-char.cpp
+    src/matrix-int8.cpp
+    src/matrix-uint8.cpp
+    src/matrix-int16.cpp
+    src/matrix-uint16.cpp
+    src/matrix-int32.cpp
+    src/matrix-uint32.cpp
+    src/matrix-windows-long.cpp
+    src/matrix-windows-ulong.cpp
+    src/matrix-mac-long.cpp
+    src/matrix-mac-ulong.cpp
+    src/matrix-int64.cpp
+    src/matrix-uint64.cpp
+    src/matrix-linux-long-long.cpp
+    src/matrix-linux-ulong-long.cpp
     src/angle-axis.cpp
     src/quaternion.cpp
     src/geometry-conversion.cpp

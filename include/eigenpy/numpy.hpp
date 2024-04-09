@@ -61,57 +61,119 @@ struct NumpyEquivalentType {
 };
 
 template <>
-struct NumpyEquivalentType<float> {
-  enum { type_code = NPY_FLOAT };
+struct NumpyEquivalentType<bool> {
+  enum { type_code = NPY_BOOL };
+};
+
+template <>
+struct NumpyEquivalentType<char> {
+  enum { type_code = NPY_INT8 };
 };
 template <>
-struct NumpyEquivalentType<std::complex<float> > {
-  enum { type_code = NPY_CFLOAT };
+struct NumpyEquivalentType<unsigned char> {
+  enum { type_code = NPY_UINT8 };
+};
+template <>
+struct NumpyEquivalentType<int8_t> {
+  enum { type_code = NPY_INT8 };
+};
+
+template <>
+struct NumpyEquivalentType<int16_t> {
+  enum { type_code = NPY_INT16 };
+};
+template <>
+struct NumpyEquivalentType<uint16_t> {
+  enum { type_code = NPY_UINT16 };
+};
+
+template <>
+struct NumpyEquivalentType<int32_t> {
+  enum { type_code = NPY_INT32 };
+};
+template <>
+struct NumpyEquivalentType<uint32_t> {
+  enum { type_code = NPY_UINT32 };
+};
+
+// On Windows, long is a 32 bytes type but it's a different type than int
+// See https://github.com/stack-of-tasks/eigenpy/pull/455
+#if defined _WIN32 || defined __CYGWIN__
+
+template <>
+struct NumpyEquivalentType<long> {
+  enum { type_code = NPY_INT32 };
+};
+template <>
+struct NumpyEquivalentType<unsigned long> {
+  enum { type_code = NPY_UINT32 };
+};
+
+#endif  // WIN32
+
+template <>
+struct NumpyEquivalentType<int64_t> {
+  enum { type_code = NPY_INT64 };
+};
+template <>
+struct NumpyEquivalentType<uint64_t> {
+  enum { type_code = NPY_UINT64 };
+};
+
+// On Mac, long is a 64 bytes type but it's a different type than int64_t
+// See https://github.com/stack-of-tasks/eigenpy/pull/455
+#if defined __APPLE__
+
+template <>
+struct NumpyEquivalentType<long> {
+  enum { type_code = NPY_INT64 };
+};
+template <>
+struct NumpyEquivalentType<unsigned long> {
+  enum { type_code = NPY_UINT64 };
+};
+
+#endif  // MAC
+
+// On Linux, long long is a 64 bytes type but it's a different type than int64_t
+// See https://github.com/stack-of-tasks/eigenpy/pull/455
+#if defined __linux__
+
+template <>
+struct NumpyEquivalentType<long long> {
+  enum { type_code = NPY_LONGLONG };
+};
+template <>
+struct NumpyEquivalentType<unsigned long long> {
+  enum { type_code = NPY_ULONGLONG };
+};
+
+#endif  // Linux
+
+template <>
+struct NumpyEquivalentType<float> {
+  enum { type_code = NPY_FLOAT };
 };
 template <>
 struct NumpyEquivalentType<double> {
   enum { type_code = NPY_DOUBLE };
 };
 template <>
+struct NumpyEquivalentType<long double> {
+  enum { type_code = NPY_LONGDOUBLE };
+};
+
+template <>
+struct NumpyEquivalentType<std::complex<float> > {
+  enum { type_code = NPY_CFLOAT };
+};
+template <>
 struct NumpyEquivalentType<std::complex<double> > {
   enum { type_code = NPY_CDOUBLE };
 };
 template <>
-struct NumpyEquivalentType<long double> {
-  enum { type_code = NPY_LONGDOUBLE };
-};
-template <>
 struct NumpyEquivalentType<std::complex<long double> > {
   enum { type_code = NPY_CLONGDOUBLE };
-};
-template <>
-struct NumpyEquivalentType<bool> {
-  enum { type_code = NPY_BOOL };
-};
-template <>
-struct NumpyEquivalentType<int> {
-  enum { type_code = NPY_INT };
-};
-template <>
-struct NumpyEquivalentType<unsigned int> {
-  enum { type_code = NPY_UINT };
-};
-template <>
-struct NumpyEquivalentType<long> {
-  enum { type_code = NPY_LONG };
-};
-// #if defined _WIN32 || defined __CYGWIN__
-template <>
-struct NumpyEquivalentType<long long> {
-  enum { type_code = NPY_LONGLONG };
-};
-// #else
-//   template <> struct NumpyEquivalentType<long long>    { enum { type_code =
-//   NPY_LONGLONG    };};
-// #endif
-template <>
-struct NumpyEquivalentType<unsigned long> {
-  enum { type_code = NPY_ULONG };
 };
 
 template <typename Scalar>

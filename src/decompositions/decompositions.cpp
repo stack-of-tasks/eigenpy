@@ -4,29 +4,27 @@
 
 #include "eigenpy/decompositions/decompositions.hpp"
 
-#include "eigenpy/decompositions/EigenSolver.hpp"
-#include "eigenpy/decompositions/LDLT.hpp"
-#include "eigenpy/decompositions/LLT.hpp"
-#include "eigenpy/decompositions/PermutationMatrix.hpp"
-#include "eigenpy/decompositions/sparse/LLT.hpp"
-#include "eigenpy/decompositions/sparse/LDLT.hpp"
-#include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
-#include "eigenpy/decompositions/minres.hpp"
 #include "eigenpy/fwd.hpp"
 
 namespace eigenpy {
+
+void exposeEigenSolver();
+void exposeSelfAdjointEigenSolver();
+void exposeLLTSolver();
+void exposeLDLTSolver();
+void exposeMINRESSolver();
+void exposeSimplicialLLTSolver();
+void exposeSimplicialLDLTSolver();
+void exposePermutationMatrix();
+
 void exposeDecompositions() {
   using namespace Eigen;
 
-  typedef Eigen::SparseMatrix<double, Eigen::ColMajor> ColMajorSparseMatrix;
-  //  typedef Eigen::SparseMatrix<double,Eigen::RowMajor> RowMajorSparseMatrix;
-
-  EigenSolverVisitor<MatrixXd>::expose("EigenSolver");
-  SelfAdjointEigenSolverVisitor<MatrixXd>::expose("SelfAdjointEigenSolver");
-  LLTSolverVisitor<MatrixXd>::expose("LLT");
-  LDLTSolverVisitor<MatrixXd>::expose("LDLT");
-
-  MINRESSolverVisitor<MatrixXd>::expose("MINRES");
+  exposeEigenSolver();
+  exposeSelfAdjointEigenSolver();
+  exposeLLTSolver();
+  exposeLDLTSolver();
+  exposeMINRESSolver();
 
   {
     bp::enum_<DecompositionOptions>("DecompositionOptions")
@@ -42,12 +40,10 @@ void exposeDecompositions() {
   }
 
   // Expose sparse decompositions
-  {
-    SimplicialLLTVisitor<ColMajorSparseMatrix>::expose("SimplicialLLT");
-    SimplicialLDLTVisitor<ColMajorSparseMatrix>::expose("SimplicialLDLT");
-  }
+  exposeSimplicialLLTSolver();
+  exposeSimplicialLDLTSolver();
 
-  PermutationMatrixVisitor<Eigen::Dynamic>::expose("PermutationMatrix");
+  exposePermutationMatrix();
 
 #ifdef EIGENPY_WITH_CHOLMOD_SUPPORT
   exposeCholmod();
