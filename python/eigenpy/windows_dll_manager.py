@@ -11,9 +11,12 @@ def get_dll_paths():
         RELATIVE_DLL_PATH1 = "..\\..\\..\\..\\bin"
         # lib/site-packages/package
         RELATIVE_DLL_PATH2 = "..\\..\\..\\bin"
+        # For unit test
+        RELATIVE_DLL_PATH3 = "..\\..\\bin"
         return [
             os.path.join(os.path.dirname(__file__), RELATIVE_DLL_PATH1),
             os.path.join(os.path.dirname(__file__), RELATIVE_DLL_PATH2),
+            os.path.join(os.path.dirname(__file__), RELATIVE_DLL_PATH3),
         ]
     else:
         return eigenpy_paths.split(os.pathsep)
