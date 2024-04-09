@@ -14,12 +14,12 @@
 # More resources on https://github.com/diffpy/pyobjcryst/issues/33
 try:
     from .eigenpy_pywrap import *  # noqa
-    from .eigenpy_pywrap import __raw_version__, __version__  # noqa
+    from .eigenpy_pywrap import __raw_version__, __version__
 except ImportError:
     import platform
 
     if platform.system() == "Windows":
-        from .windows_dll_manager import get_dll_paths, build_directory_manager
+        from .windows_dll_manager import build_directory_manager, get_dll_paths
 
         with build_directory_manager() as dll_dir_manager:
             for p in get_dll_paths():

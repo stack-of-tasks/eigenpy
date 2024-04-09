@@ -1,6 +1,6 @@
+import contextlib
 import os
 import sys
-import contextlib
 
 
 def get_dll_paths():
