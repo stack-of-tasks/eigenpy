@@ -18,45 +18,44 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macos-latest","macos-14"]
-        cxx_options: ['', '-mavx2']
+        os: [ubuntu-latest, macos-latest, macos-14]
+        environment: [py38_ci, py312_ci]
         build_type: [Release, Debug]
-        python-version: ["3.8", "3.12"]
+        cxx_options: ['']
 
-        exclude:
-          - build_type: Debug
-            cxx_options: -mavx2
-            os: macos-latest
-          - build_type: Release
-            cxx_options: -mavx2
-            os: macos-latest
-          - build_type: Debug
-            cxx_options: -mavx2
-            os: macos-14
-          - build_type: Release
-            cxx_options: -mavx2
-            os: macos-14
+        include:
+          - os: ubuntu-latest
+            environment: py312_ci
+            cxx_options: '-mavx2'
+          - os: macos-14
+            environment: accelerate_ci
 
     steps:
     - uses: actions/checkout@v4
       with:
         submodules: recursive
 
-    - uses: actions/cache@v3
+    - uses: actions/cache@v4
       with:
         path: .ccache
-        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-${{ github.sha }}
-        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.python-version }}-
+        key: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-${{ github.sha }}
+        restore-keys: ccache-macos-linux-conda-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-
 
     - uses: prefix-dev/setup-pixi@v0.5.1
       with:
-        pixi-version: v0.15.2
+        pixi-version: v0.18.0
         cache: true
+        environments: ${{ matrix.environment }}
 
     - name: Build EigenPy
       shell: bash -el {0}
       run: |
-        pixi run test
+        pixi run -e ${{ matrix.environment }} \
+          configure \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DCMAKE_CXX_OPTIONS=${{ matrix.cxx_options }}
+        pixi run -e ${{ matrix.environment }} build
+        pixi run -e ${{ matrix.environment }} test
 
   check:
     if: always()

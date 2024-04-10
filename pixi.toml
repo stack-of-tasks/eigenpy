@@ -1,10 +1,18 @@
+[project]
+name = "eigenpy"
+version = "3.4.0"
+description = "Bindings between Numpy and Eigen using Boost.Python"
+platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
+channels = ["conda-forge"]
+license = "BSD-2-Clause"
+license-file = "LICENSE"
+
 [build-dependencies]
 ccache = ">=4.9.1,<4.10"
 cmake = ">=3.10"
 cxx-compiler = "1.7.0"
 ninja = "1.11.*"
 pkg-config = ">=0.29.2,<0.30"
-pre-commit = ">=3.6.2,<3.7"
 
 [dependencies]
 boost = ">=1.80.0,<1.85"
@@ -13,25 +21,66 @@ numpy = ">=1.22.0,<1.27"
 python = ">=3.8.0,<3.13"
 scipy = ">=1.10.0,<1.13"
 
-[project]
-channels = ["conda-forge"]
-description = "Bindings between Numpy and Eigen using Boost.Python"
-license = "BSD-2-Clause"
-license-file = "LICENSE"
-name = "eigenpy"
-platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
-version = "3.4.0"
-
 [tasks]
-build = {cmd = "cmake --build build --target all", depends_on = [
-  "prepare"
-]}
-clean = {cmd = "rm -rf build"}
-lint = "pre-commit run --all"
-prepare = """cmake -G 'Ninja'
-                   -B build
-                   -S .
-                   -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-                   -DCMAKE_BUILD_TYPE=Release
-                   -DGENERATE_PYTHON_STUBS=ON"""
-test = {cmd = "ctest --test-dir build --output-on-failure ", depends_on = ["build"]}
+base_configure = { cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "build",
+  "-S",
+  ".",
+  "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
+  "-DGENERATE_PYTHON_STUBS=ON",
+  # Remove CXX_FLAGS from cxx-compiler and activate color with Ninja
+  "-DCMAKE_CXX_FLAGS=-fdiagnostics-color=always",
+  "-DCMAKE_BUILD_TYPE=Release",
+] }
+configure = { depends_on = ["base_configure"] }
+build = { cmd = "cmake --build build --target all", depends_on = ["configure"] }
+clean = { cmd = "rm -rf build" }
+test = { cmd = "ctest --test-dir build --output-on-failure ", depends_on = [
+  "build",
+] }
+
+[feature.dev]
+dependencies = { pre-commit = ">=3.6.2,<3.7" }
+tasks = { lint = { cmd = "pre-commit run --all" } }
+
+[feature.cholmod.dependencies]
+suitesparse = ">=5,<6"
+
+[feature.cholmod.tasks]
+configure = { cmd = "cmake -B build -S . -DBUILD_WITH_CHOLMOD_SUPPORT=ON", depends_on = [
+  "base_configure",
+] }
+
+# Accelerate only work on apple ARM platform
+[feature.accelerate]
+platforms = ["osx-arm64"]
+
+[feature.accelerate.tasks]
+configure = { cmd = "cmake -B build -S . -DBUILD_WITH_CHOLMOD_SUPPORT=ON -DBUILD_WITH_ACCELERATE_SUPPORT=ON", depends_on = [
+  "base_configure",
+] }
+
+[feature.py312.dependencies]
+python = "3.12.*"
+
+[feature.py38.dependencies]
+python = "3.8.*"
+
+[environments]
+default = { features = ["py312"], solve-group = "py312" }
+dev = { features = ["dev"], solve-group = "py312" }
+cholmod = { features = ["cholmod", "py312"], solve-group = "py312" }
+accelerate = { features = ["accelerate", "py312"], solve-group = "py312" }
+py38_ci = { features = ["py38", "cholmod"], solve-group = "py38" }
+py312_ci = { features = ["py312", "cholmod"], solve-group = "py312" }
+accelerate_ci = { features = [
+  "py312",
+  "cholmod",
+  "accelerate",
+], solve-group = "py312" }
+
+# TODO all ?
