@@ -53,8 +53,12 @@ jobs:
 
         include:
           - os: windows-latest
+            environment: py312-ci
+            build_type: Release
             compiler: cl
           - os: windows-latest
+            environment: py312-ci
+            build_type: Release
             compiler: clang-cl
 
     steps:
