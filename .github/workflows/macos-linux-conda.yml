@@ -83,7 +83,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
-        cmake --build build --target all
+        cmake --build build --target all -j4
         ctest --test-dir build --output-on-failure
 
     - name: Build EigenPy
@@ -98,7 +98,7 @@ jobs:
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
-        cmake --build build --target all
+        cmake --build build --target all -j4
         ctest --test-dir build --output-on-failure
 
   check:
