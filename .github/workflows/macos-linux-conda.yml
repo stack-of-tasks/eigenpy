@@ -51,6 +51,12 @@ jobs:
           - os: macos-14
             cxx_options: '-mavx2'
 
+        include:
+          - os: windows-latest
+            compiler: cl
+          - os: windows-latest
+            compiler: clang-cl
+
     steps:
     - uses: actions/checkout@v4
       with:
@@ -70,10 +76,26 @@ jobs:
 
     - name: Build EigenPy
       shell: pixi run bash -el {0}
+      if: contains(${{ matrix.os }}, 'ubuntu') || contains(${{ matrix.os }}, macos)
       run: |
         pixi run -e ${{ matrix.environment }} \
           configure \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
+        # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
+        cmake --build build --target all
+        ctest --test-dir build --output-on-failure
+
+    - name: Build EigenPy
+      shell: pixi run cmd /C CALL {0}
+      if: contains(${{ matrix.os }}, 'windows')
+      env:
+        CC: ${{ matrix.compiler }}
+        CXX: ${{ matrix.compiler }}
+      run: |
+        pixi run -e ${{ matrix.environment }} ^
+          configure ^
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ^
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
         cmake --build build --target all
