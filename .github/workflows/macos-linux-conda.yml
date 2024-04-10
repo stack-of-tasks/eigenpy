@@ -19,16 +19,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, macos-14]
-        environment: [py38_ci, py312_ci]
+        environment: [py38-ci, py312-ci]
         build_type: [Release, Debug]
         cxx_options: ['']
 
         include:
           - os: ubuntu-latest
-            environment: py312_ci
+            environment: py312-ci
             cxx_options: '-mavx2'
           - os: macos-14
-            environment: accelerate_ci
+            environment: accelerate-ci
 
     steps:
     - uses: actions/checkout@v4

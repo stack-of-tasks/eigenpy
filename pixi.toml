@@ -75,12 +75,10 @@ default = { features = ["py312"], solve-group = "py312" }
 dev = { features = ["dev"], solve-group = "py312" }
 cholmod = { features = ["cholmod", "py312"], solve-group = "py312" }
 accelerate = { features = ["accelerate", "py312"], solve-group = "py312" }
-py38_ci = { features = ["py38", "cholmod"], solve-group = "py38" }
-py312_ci = { features = ["py312", "cholmod"], solve-group = "py312" }
-accelerate_ci = { features = [
+py38-ci = { features = ["py38", "cholmod"], solve-group = "py38" }
+py312-ci = { features = ["py312", "cholmod"], solve-group = "py312" }
+accelerate-ci = { features = [
   "py312",
   "cholmod",
   "accelerate",
 ], solve-group = "py312" }
-
-# TODO all ?
