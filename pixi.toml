@@ -39,7 +39,7 @@ base_configure = { cmd = [
 configure = { depends_on = ["base_configure"] }
 build = { cmd = "cmake --build build --target all", depends_on = ["configure"] }
 clean = { cmd = "rm -rf build" }
-test = { cmd = "ctest --test-dir build --output-on-failure ", depends_on = [
+test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
   "build",
 ] }
 

@@ -69,14 +69,15 @@ jobs:
         environments: ${{ matrix.environment }}
 
     - name: Build EigenPy
-      shell: bash -el {0}
+      shell: pixi run bash -el {0}
       run: |
         pixi run -e ${{ matrix.environment }} \
           configure \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        pixi run -e ${{ matrix.environment }} build
-        pixi run -e ${{ matrix.environment }} test
+        # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
+        cmake --build build --target all
+        ctest --test-dir build --output-on-failure
 
   check:
     if: always()
