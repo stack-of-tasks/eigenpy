@@ -60,7 +60,7 @@ configure = { cmd = "cmake -B build -S . -DBUILD_WITH_CHOLMOD_SUPPORT=ON", depen
 platforms = ["osx-arm64"]
 
 [feature.accelerate.tasks]
-configure = { cmd = "cmake -B build -S . -DBUILD_WITH_CHOLMOD_SUPPORT=ON -DBUILD_WITH_ACCELERATE_SUPPORT=ON", depends_on = [
+configure = { cmd = "cmake -B build -S . -DBUILD_WITH_ACCELERATE_SUPPORT=ON", depends_on = [
   "base_configure",
 ] }
 

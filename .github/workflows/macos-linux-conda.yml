@@ -1,13 +1,31 @@
-name: Conda-CI
+name: CI - OSX/Linux via Conda
 
-on: [push,pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   eigenpy-conda:
-    name: ${{ matrix.os }} - Python ${{ matrix.python-version }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
+    name: ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
       CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
@@ -19,16 +37,19 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, macos-14]
-        environment: [py38-ci, py312-ci]
+        environment: [py38-ci, py312-ci, accelerate-ci]
         build_type: [Release, Debug]
-        cxx_options: ['']
+        cxx_options: ['', '-mavx2']
 
-        include:
+        exclude:
           - os: ubuntu-latest
-            environment: py312-ci
+            environment: accelerate-ci
+          - os: macos-latest
+            environment: accelerate-ci
+          - os: macos-latest
             cxx_options: '-mavx2'
           - os: macos-14
-            environment: accelerate-ci
+            cxx_options: '-mavx2'
 
     steps:
     - uses: actions/checkout@v4
@@ -53,7 +74,7 @@ jobs:
         pixi run -e ${{ matrix.environment }} \
           configure \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DCMAKE_CXX_OPTIONS=${{ matrix.cxx_options }}
+          -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         pixi run -e ${{ matrix.environment }} build
         pixi run -e ${{ matrix.environment }} test
 
