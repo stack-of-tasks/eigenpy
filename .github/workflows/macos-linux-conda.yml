@@ -87,15 +87,15 @@ jobs:
         ctest --test-dir build --output-on-failure
 
     - name: Build EigenPy
-      shell: pixi run cmd /C CALL {0}
+      shell: pixi run bash -el {0}
       if: contains(${{ matrix.os }}, 'windows')
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
       run: |
-        pixi run -e ${{ matrix.environment }} ^
-          configure ^
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} ^
+        pixi run -e ${{ matrix.environment }} \
+          configure \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
         # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
         cmake --build build --target all
