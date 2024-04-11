@@ -1,4 +1,4 @@
-name: CI - OSX/Linux/Windows via Pixi
+name: CI - MacOS/Linux/Windows via Pixi
 
 on:
   push:
@@ -78,9 +78,9 @@ jobs:
         cache: true
         environments: ${{ matrix.environment }}
 
-    - name: Build EigenPy
+    - name: Build EigenPy [MacOS/Linux]
       shell: pixi run bash -el {0}
-      if: contains(${{ matrix.os }}, 'ubuntu') || contains(${{ matrix.os }}, macos)
+      if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 4
       run: |
@@ -90,9 +90,9 @@ jobs:
         export CXXFLAGS=${{ matrix.cxx_options }}
         pixi run -e ${{ matrix.environment }} test
 
-    - name: Build EigenPy
+    - name: Build EigenPy [Windows]
       shell: pixi run bash -el {0}
-      if: contains(${{ matrix.os }}, 'windows')
+      if: contains(matrix.os, 'windows')
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
