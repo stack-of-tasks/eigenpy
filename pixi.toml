@@ -45,7 +45,7 @@ test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
 ] }
 
 [feature.dev]
-dependencies = { pre-commit = ">=3.6.2,<3.7" }
+dependencies = { pre-commit = ">=3.6.2,<3.7", tomlkit = ">=0.12.4,<0.13" }
 tasks = { lint = { cmd = "pre-commit run --all" } }
 
 [feature.cholmod.dependencies]
