@@ -50,6 +50,8 @@ jobs:
             cxx_options: '-mavx2'
           - os: macos-14
             cxx_options: '-mavx2'
+          - os: macos-14
+            environment: py312-ci
 
         include:
           - os: windows-latest
