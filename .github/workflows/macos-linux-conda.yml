@@ -54,11 +54,9 @@ jobs:
         include:
           - os: windows-latest
             environment: py312-ci
-            build_type: Release
             compiler: cl
           - os: windows-latest
             environment: py312-ci
-            build_type: Release
             compiler: clang-cl
 
     steps:
@@ -81,14 +79,14 @@ jobs:
     - name: Build EigenPy
       shell: pixi run bash -el {0}
       if: contains(${{ matrix.os }}, 'ubuntu') || contains(${{ matrix.os }}, macos)
+      env:
+        CMAKE_BUILD_PARALLEL_LEVEL: 4
       run: |
-        pixi run -e ${{ matrix.environment }} \
-          configure \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
-        cmake --build build --target all -j4
-        ctest --test-dir build --output-on-failure
+        # We can't setup these variables in env because
+        # conda and pixi activation script can overwrite them
+        export CMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        export CXXFLAGS=${{ matrix.cxx_options }}
+        pixi run -e ${{ matrix.environment }} test
 
     - name: Build EigenPy
       shell: pixi run bash -el {0}
@@ -96,14 +94,9 @@ jobs:
       env:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
+        CMAKE_BUILD_PARALLEL_LEVEL: 4
       run: |
-        pixi run -e ${{ matrix.environment }} \
-          configure \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        # Don't run build and clean to not overwrite CMAKE_BUILD_TYPE and CMAKE_CXX_FLAGS
-        cmake --build build --target all -j4
-        ctest --test-dir build --output-on-failure
+        pixi run -e ${{ matrix.environment }} test
 
   check:
     if: always()

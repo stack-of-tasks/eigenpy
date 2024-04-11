@@ -21,8 +21,14 @@ numpy = ">=1.22.0,<1.27"
 python = ">=3.8.0,<3.13"
 scipy = ">=1.10.0,<1.13"
 
+[activation]
+scripts = ["scripts/activation.sh"]
+
+[target.win-64.activation]
+scripts = ["scripts/activation.bat"]
+
 [tasks]
-base_configure = { cmd = [
+configure = { cmd = [
   "cmake",
   "-G",
   "Ninja",
@@ -30,13 +36,8 @@ base_configure = { cmd = [
   "build",
   "-S",
   ".",
-  "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache",
   "-DGENERATE_PYTHON_STUBS=ON",
-  # Remove CXX_FLAGS from cxx-compiler and activate color with Ninja
-  "-DCMAKE_CXX_FLAGS=-fdiagnostics-color=always",
-  "-DCMAKE_BUILD_TYPE=Release",
 ] }
-configure = { depends_on = ["base_configure"] }
 build = { cmd = "cmake --build build --target all", depends_on = ["configure"] }
 clean = { cmd = "rm -rf build" }
 test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
@@ -51,8 +52,16 @@ tasks = { lint = { cmd = "pre-commit run --all" } }
 suitesparse = ">=5,<6"
 
 [feature.cholmod.tasks]
-configure = { cmd = "cmake -B build -S . -DBUILD_WITH_CHOLMOD_SUPPORT=ON", depends_on = [
-  "base_configure",
+configure = { cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "build",
+  "-S",
+  ".",
+  "-DGENERATE_PYTHON_STUBS=ON",
+  "-DBUILD_WITH_CHOLMOD_SUPPORT=ON",
 ] }
 
 # Accelerate only work on apple ARM platform
@@ -60,8 +69,16 @@ configure = { cmd = "cmake -B build -S . -DBUILD_WITH_CHOLMOD_SUPPORT=ON", depen
 platforms = ["osx-arm64"]
 
 [feature.accelerate.tasks]
-configure = { cmd = "cmake -B build -S . -DBUILD_WITH_ACCELERATE_SUPPORT=ON", depends_on = [
-  "base_configure",
+configure = { cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "build",
+  "-S",
+  ".",
+  "-DGENERATE_PYTHON_STUBS=ON",
+  "-DBUILD_WITH_ACCELERATE_SUPPORT=ON",
 ] }
 
 [feature.py312.dependencies]
