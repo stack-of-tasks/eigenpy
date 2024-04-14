@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.5.0] - 2024-04-14
+
 ### Added
 - Allow use of installed JRL-cmakemodule ([#446](https://github.com/stack-of-tasks/eigenpy/pull/446)
 - Support of Numpy 2.0.0b1 ([#448](https://github.com/stack-of-tasks/eigenpy/pull/448))
@@ -622,7 +624,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.4.0...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.5.0...HEAD
+[3.5.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.1.4...v3.2.0
