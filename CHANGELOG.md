@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Allow EigenToPy/EigenFromPy specialization with CL compiler ([#462](https://github.com/stack-of-tasks/eigenpy/pull/462))
+
 ## [3.5.0] - 2024-04-14
 
 ### Added
