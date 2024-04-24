@@ -102,7 +102,7 @@ jobs:
           -DGENERATE_PYTHON_STUBS=ON \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
           -DCMAKE_CXX_FLAGS=${{ matrix.cxx_options }}
-        cmake --build . -j4
+        cmake --build . -j3
         ctest --output-on-failure
         cmake --install .
 
