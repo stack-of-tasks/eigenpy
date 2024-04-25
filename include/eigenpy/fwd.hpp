@@ -125,13 +125,13 @@ namespace bp = boost::python;
 #endif
 
 namespace eigenpy {
-template <typename MatType,
-          typename Scalar =
-              typename boost::remove_reference<MatType>::type::Scalar>
+
+// Default Scalar value can't be defined in the declaration
+// because of a CL bug.
+// See https://github.com/stack-of-tasks/eigenpy/pull/462
+template <typename MatType, typename Scalar>
 struct EigenToPy;
-template <typename MatType,
-          typename Scalar =
-              typename boost::remove_reference<MatType>::type::Scalar>
+template <typename MatType, typename Scalar>
 struct EigenFromPy;
 
 template <typename T>

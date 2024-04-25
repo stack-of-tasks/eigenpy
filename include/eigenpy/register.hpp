@@ -106,7 +106,7 @@ struct EIGENPY_DLLAPI Register {
   static Register &instance();
 
  private:
-  Register(){};
+  Register() {};
 
   struct Compare_PyTypeObject {
     bool operator()(const PyTypeObject *a, const PyTypeObject *b) const {

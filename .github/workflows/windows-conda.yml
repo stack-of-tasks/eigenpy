@@ -79,7 +79,7 @@ jobs:
         if errorlevel 1 exit 1
 
         :: Build
-        cmake --build . -j4
+        cmake --build . -j3
         if errorlevel 1 exit 1
 
         :: Testing

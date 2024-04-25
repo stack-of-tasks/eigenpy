@@ -16,51 +16,6 @@
 #include "eigenpy/scipy-type.hpp"
 #include "eigenpy/registration.hpp"
 
-namespace boost {
-namespace python {
-
-template <typename MatrixRef, class MakeHolder>
-struct to_python_indirect_eigen {
-  template <class U>
-  inline PyObject* operator()(U const& mat) const {
-    return eigenpy::EigenToPy<MatrixRef>::convert(const_cast<U&>(mat));
-  }
-
-#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
-  inline PyTypeObject const* get_pytype() const {
-    return converter::registered_pytype<MatrixRef>::get_pytype();
-  }
-#endif
-};
-
-template <typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime,
-          int Options, int MaxRowsAtCompileTime, int MaxColsAtCompileTime,
-          class MakeHolder>
-struct to_python_indirect<
-    Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime, Options,
-                  MaxRowsAtCompileTime, MaxColsAtCompileTime>&,
-    MakeHolder>
-    : to_python_indirect_eigen<
-          Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime, Options,
-                        MaxRowsAtCompileTime, MaxColsAtCompileTime>&,
-          MakeHolder> {};
-
-template <typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime,
-          int Options, int MaxRowsAtCompileTime, int MaxColsAtCompileTime,
-          class MakeHolder>
-struct to_python_indirect<
-    const Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime, Options,
-                        MaxRowsAtCompileTime, MaxColsAtCompileTime>&,
-    MakeHolder>
-    : to_python_indirect_eigen<
-          const Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime,
-                              Options, MaxRowsAtCompileTime,
-                              MaxColsAtCompileTime>&,
-          MakeHolder> {};
-
-}  // namespace python
-}  // namespace boost
-
 namespace eigenpy {
 
 EIGENPY_DOCUMENTATION_START_IGNORE
@@ -202,16 +157,10 @@ struct eigen_to_py_impl_tensor {
 
 EIGENPY_DOCUMENTATION_END_IGNORE
 
-#ifdef EIGENPY_MSVC_COMPILER
-template <typename EigenType>
-struct EigenToPy<EigenType,
-                 typename boost::remove_reference<EigenType>::type::Scalar>
-#else
-template <typename EigenType, typename _Scalar>
-struct EigenToPy
-#endif
-    : eigen_to_py_impl<EigenType> {
-};
+template <typename EigenType,
+          typename Scalar =
+              typename boost::remove_reference<EigenType>::type::Scalar>
+struct EigenToPy : eigen_to_py_impl<EigenType> {};
 
 template <typename MatType>
 struct EigenToPyConverter {
@@ -219,6 +168,52 @@ struct EigenToPyConverter {
     bp::to_python_converter<MatType, EigenToPy<MatType>, true>();
   }
 };
+
 }  // namespace eigenpy
+
+namespace boost {
+namespace python {
+
+template <typename MatrixRef, class MakeHolder>
+struct to_python_indirect_eigen {
+  template <class U>
+  inline PyObject* operator()(U const& mat) const {
+    return eigenpy::EigenToPy<MatrixRef>::convert(const_cast<U&>(mat));
+  }
+
+#ifndef BOOST_PYTHON_NO_PY_SIGNATURES
+  inline PyTypeObject const* get_pytype() const {
+    return converter::registered_pytype<MatrixRef>::get_pytype();
+  }
+#endif
+};
+
+template <typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime,
+          int Options, int MaxRowsAtCompileTime, int MaxColsAtCompileTime,
+          class MakeHolder>
+struct to_python_indirect<
+    Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime, Options,
+                  MaxRowsAtCompileTime, MaxColsAtCompileTime>&,
+    MakeHolder>
+    : to_python_indirect_eigen<
+          Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime, Options,
+                        MaxRowsAtCompileTime, MaxColsAtCompileTime>&,
+          MakeHolder> {};
+
+template <typename Scalar, int RowsAtCompileTime, int ColsAtCompileTime,
+          int Options, int MaxRowsAtCompileTime, int MaxColsAtCompileTime,
+          class MakeHolder>
+struct to_python_indirect<
+    const Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime, Options,
+                        MaxRowsAtCompileTime, MaxColsAtCompileTime>&,
+    MakeHolder>
+    : to_python_indirect_eigen<
+          const Eigen::Matrix<Scalar, RowsAtCompileTime, ColsAtCompileTime,
+                              Options, MaxRowsAtCompileTime,
+                              MaxColsAtCompileTime>&,
+          MakeHolder> {};
+
+}  // namespace python
+}  // namespace boost
 
 #endif  // __eigenpy_eigen_to_python_hpp__
