@@ -65,6 +65,7 @@
 #define EIGENPY_DOCUMENTATION_END_IGNORE    /// \endcond
 
 #include "eigenpy/config.hpp"
+#include <boost/type_traits/is_base_of.hpp>
 
 // Silence a warning about a deprecated use of boost bind by boost python
 // at least fo boost 1.73 to 1.75

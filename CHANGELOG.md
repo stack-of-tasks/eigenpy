@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Allow EigenToPy/EigenFromPy specialization with CL compiler ([#462](https://github.com/stack-of-tasks/eigenpy/pull/462))
+- Fix missing include for boost >= 1.85  ([#464](https://github.com/stack-of-tasks/eigenpy/pull/464))
 
 ## [3.5.0] - 2024-04-14
 
