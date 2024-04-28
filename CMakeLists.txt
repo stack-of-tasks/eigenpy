@@ -220,6 +220,7 @@ set(${PROJECT_NAME}_HEADERS
     ${${PROJECT_NAME}_DECOMPOSITIONS_HEADERS}
     include/eigenpy/alignment.hpp
     include/eigenpy/computation-info.hpp
+    include/eigenpy/deprecation-policy.hpp
     include/eigenpy/eigenpy.hpp
     include/eigenpy/exception.hpp
     include/eigenpy/scalar-conversion.hpp
