@@ -1,4 +1,5 @@
 //
+// Copyright (C) 2020 INRIA
 // Copyright (C) 2024 LAAS-CNRS, INRIA
 //
 #ifndef __eigenpy_deprecation_hpp__
@@ -23,11 +24,6 @@ constexpr PyObject *deprecationTypeToPyObj(DeprecationType dep) {
 
 }  // namespace detail
 
-constexpr char defaultDeprecationMessage[] =
-    "This function or attribute has been marked as deprecated, and will be "
-    "removed in the "
-    "future.";
-
 /// @brief A Boost.Python call policy which triggers a Python warning on
 /// precall.
 template <DeprecationType deprecation_type = DeprecationType::DEPRECATION,
@@ -36,11 +32,10 @@ struct deprecation_warning_policy : BasePolicy {
   using result_converter = typename BasePolicy::result_converter;
   using argument_package = typename BasePolicy::argument_package;
 
-  deprecation_warning_policy(
-      const std::string &warning_msg = defaultDeprecationMessage)
+  deprecation_warning_policy(const std::string &warning_msg)
       : BasePolicy(), m_what(warning_msg) {}
 
-  const std::string what() const { return m_what; }
+  std::string what() const { return m_what; }
 
   const BasePolicy *derived() const {
     return static_cast<const BasePolicy *>(this);
@@ -53,8 +48,32 @@ struct deprecation_warning_policy : BasePolicy {
     return derived()->precall(args);
   }
 
- private:
+ protected:
   const std::string m_what;
+};
+
+template <DeprecationType deprecation_type = DeprecationType::DEPRECATION,
+          class BasePolicy = bp::default_call_policies>
+struct deprecated_function
+    : deprecation_warning_policy<deprecation_type, BasePolicy> {
+  static constexpr char defaultMsg[] =
+      "This function has been marked as deprecated, and will be "
+      "removed in the future.";
+
+  deprecated_function(const std::string &msg = defaultMsg)
+      : deprecation_warning_policy<deprecation_type, BasePolicy>(msg) {}
+};
+
+template <DeprecationType deprecation_type = DeprecationType::DEPRECATION,
+          class BasePolicy = bp::default_call_policies>
+struct deprecated_member
+    : deprecation_warning_policy<deprecation_type, BasePolicy> {
+  static constexpr char defaultMsg[] =
+      "This attribute or method has been marked as deprecated, and will be "
+      "removed in the future.";
+
+  deprecated_member(const std::string &msg = defaultMsg)
+      : deprecation_warning_policy<deprecation_type, BasePolicy>(msg) {}
 };
 
 }  // namespace eigenpy

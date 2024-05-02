@@ -16,9 +16,18 @@ void some_future_deprecated_function() {
       << std::endl;
 }
 
+class X {
+ public:
+  void deprecated_member_function() {}
+};
+
 BOOST_PYTHON_MODULE(deprecation_policy) {
   bp::def("some_deprecated_function", some_deprecated_function,
-          eigenpy::deprecation_warning_policy<DeprecationType::DEPRECATION>());
+          eigenpy::deprecated_function<DeprecationType::DEPRECATION>());
   bp::def("some_future_deprecated_function", some_future_deprecated_function,
-          eigenpy::deprecation_warning_policy<DeprecationType::FUTURE>());
+          eigenpy::deprecated_function<DeprecationType::FUTURE>());
+
+  bp::class_<X>("X", bp::init<>(bp::args("self")))
+      .def("deprecated_member_function", &X::deprecated_member_function,
+           eigenpy::deprecated_member<>());
 }
