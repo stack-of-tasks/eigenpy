@@ -56,11 +56,9 @@ template <DeprecationType deprecation_type = DeprecationType::DEPRECATION,
           class BasePolicy = bp::default_call_policies>
 struct deprecated_function
     : deprecation_warning_policy<deprecation_type, BasePolicy> {
-  static constexpr char defaultMsg[] =
-      "This function has been marked as deprecated, and will be "
-      "removed in the future.";
-
-  deprecated_function(const std::string &msg = defaultMsg)
+  deprecated_function(const std::string &msg =
+                          "This function has been marked as deprecated, and "
+                          "will be removed in the future.")
       : deprecation_warning_policy<deprecation_type, BasePolicy>(msg) {}
 };
 
@@ -68,11 +66,9 @@ template <DeprecationType deprecation_type = DeprecationType::DEPRECATION,
           class BasePolicy = bp::default_call_policies>
 struct deprecated_member
     : deprecation_warning_policy<deprecation_type, BasePolicy> {
-  static constexpr char defaultMsg[] =
-      "This attribute or method has been marked as deprecated, and will be "
-      "removed in the future.";
-
-  deprecated_member(const std::string &msg = defaultMsg)
+  deprecated_member(const std::string &msg =
+                        "This attribute or method has been marked as "
+                        "deprecated, and will be removed in the future.")
       : deprecation_warning_policy<deprecation_type, BasePolicy>(msg) {}
 };
 
