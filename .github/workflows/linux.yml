@@ -42,7 +42,7 @@ jobs:
           echo $(g++ --version)
       - run: cmake . -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) -DBUILD_TESTING_SCIPY=ON
       - run: make -j2
-      - run: make test
+      - run: ctest --output-on-failure
 
   check:
     if: always()
