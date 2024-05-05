@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Added a deprecation call policy shortcut ([#466](https://github.com/stack-of-tasks/eigenpy/pull/466))
+
 ## [3.5.1] - 2024-04-25
 
 ### Fixed
