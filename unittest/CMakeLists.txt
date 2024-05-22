@@ -30,6 +30,7 @@ endmacro(ADD_LIB_UNIT_TEST)
 
 add_dependencies(build_tests ${PYWRAP})
 add_lib_unit_test(matrix)
+add_lib_unit_test(multiple_registration)
 if(BUILD_TESTING_SCIPY)
   find_scipy()
   add_lib_unit_test(sparse_matrix)
@@ -101,6 +102,8 @@ endif()
 add_lib_unit_test(bind_virtual_factory)
 
 add_python_lib_unit_test("py-matrix" "unittest/python/test_matrix.py")
+add_python_lib_unit_test("py-multiple-registration"
+                         "unittest/python/test_multiple_registration.py")
 
 add_python_lib_unit_test("py-tensor" "unittest/python/test_tensor.py")
 add_python_lib_unit_test("py-geometry" "unittest/python/test_geometry.py")
