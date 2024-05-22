@@ -45,6 +45,7 @@ inline bool register_symbolic_link_to_registered_type() {
     const bp::converter::registration* reg =
         bp::converter::registry::query(info);
     bp::handle<> class_obj(reg->get_class_object());
+    bp::incref(class_obj.get());
     bp::scope().attr(reg->get_class_object()->tp_name) = bp::object(class_obj);
     return true;
   }
@@ -61,6 +62,7 @@ inline bool register_symbolic_link_to_registered_type(const Visitor& visitor) {
     const bp::converter::registration* reg =
         bp::converter::registry::query(info);
     bp::handle<> class_obj(reg->get_class_object());
+    bp::incref(class_obj.get());
     bp::object object(class_obj);
     bp::scope().attr(reg->get_class_object()->tp_name) = object;
     registration_class<T> cl(object);
