@@ -20,7 +20,9 @@
   <depend condition="$ROS_PYTHON_VERSION == 2">python</depend>
   <depend condition="$ROS_PYTHON_VERSION == 3">python3</depend>
   <depend condition="$ROS_PYTHON_VERSION == 2">python-numpy</depend>
+  <depend condition="$ROS_PYTHON_VERSION == 2">python-scipy</depend>
   <depend condition="$ROS_PYTHON_VERSION == 3">python3-numpy</depend>
+  <depend condition="$ROS_PYTHON_VERSION == 3">python3-scipy</depend>
   <depend>eigen</depend>
   <depend>boost</depend>
 
