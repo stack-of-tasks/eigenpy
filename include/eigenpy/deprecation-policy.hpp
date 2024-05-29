@@ -19,6 +19,10 @@ constexpr PyObject *deprecationTypeToPyObj(DeprecationType dep) {
       return PyExc_DeprecationWarning;
     case DeprecationType::FUTURE:
       return PyExc_FutureWarning;
+    default:  // The switch handles all cases explicitly, this should never be
+              // triggered.
+      throw std::invalid_argument(
+          "Undefined DeprecationType - this should never be triggered.");
   }
 }
 
