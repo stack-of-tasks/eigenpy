@@ -7,7 +7,6 @@
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/utils/scalar-name.hpp"
-#include "eigenpy/eigen/EigenBase.hpp"
 
 #include <Eigen/QR>
 
@@ -83,7 +82,7 @@ struct HouseholderQRSolverVisitor
 
   static void expose() {
     static const std::string classname =
-        "LDLT" + scalar_name<Scalar>::shortname();
+        "HouseholderQR" + scalar_name<Scalar>::shortname();
     expose(classname);
   }
 
