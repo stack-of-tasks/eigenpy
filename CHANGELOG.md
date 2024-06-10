@@ -6,12 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Added id() helper to retrieve unique object identifier in Python ([#477](https://github.com/stack-of-tasks/eigenpy/pull/477))
+- Expose QR solvers ([#478](https://github.com/stack-of-tasks/eigenpy/pull/478))
+
 ## [3.6.0] - 2024-06-05
 
 ### Added
 - Added a deprecation call policy shortcut ([#466](https://github.com/stack-of-tasks/eigenpy/pull/466))
-- Added id() helper to retrieve unique object identifier in Python ([#477](https://github.com/stack-of-tasks/eigenpy/pull/477))
-- Expose QR solvers ([#478](https://github.com/stack-of-tasks/eigenpy/pull/478))
 
 ### Fixed
 - Fix register_symbolic_link_to_registered_type() for multiple successive registrations ([#471](https://github.com/stack-of-tasks/eigenpy/pull/471))
