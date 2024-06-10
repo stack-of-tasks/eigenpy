@@ -113,6 +113,7 @@ add_python_lib_unit_test("py-deprecation-policy"
 add_python_lib_unit_test("py-return-by-ref"
                          "unittest/python/test_return_by_ref.py")
 add_python_lib_unit_test("py-eigen-ref" "unittest/python/test_eigen_ref.py")
+add_python_lib_unit_test("py-id" "unittest/python/test_id.py")
 
 if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
   add_python_lib_unit_test("py-user-type" "unittest/python/test_user_type.py")
