@@ -31,7 +31,8 @@ struct ConjugateGradientVisitor
 
   static void expose(const std::string& name = "ConjugateGradient") {
     bp::class_<ConjugateGradient, boost::noncopyable>(name.c_str(), bp::no_init)
-        .def(ConjugateGradientVisitor<ConjugateGradient>());
+        .def(ConjugateGradientVisitor<ConjugateGradient>())
+        .def(IdVisitor<ConjugateGradient>());
   }
 };
 

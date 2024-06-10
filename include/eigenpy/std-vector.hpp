@@ -454,6 +454,7 @@ struct StdVectorPythonVisitor {
     if (!register_symbolic_link_to_registered_type<vector_type>(
             add_std_visitor)) {
       bp::class_<vector_type> cl(class_name.c_str(), doc_string.c_str());
+      cl.def(IdVisitor<vector_type>());
 
       // Standard vector indexing definition
       boost::python::vector_indexing_suite<

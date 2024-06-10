@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #ifndef __eigenpy_decomposition_llt_hpp__
@@ -115,6 +115,7 @@ struct LLTSolverVisitor
         "remains useful in many other situations like generalised eigen "
         "problems with hermitian matrices.",
         bp::no_init)
+        .def(IdVisitor<Solver>())
         .def(LLTSolverVisitor());
   }
 

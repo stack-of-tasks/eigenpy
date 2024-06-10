@@ -75,7 +75,9 @@ struct EigenSolverVisitor
   }
 
   static void expose(const std::string& name) {
-    bp::class_<Solver>(name.c_str(), bp::no_init).def(EigenSolverVisitor());
+    bp::class_<Solver>(name.c_str(), bp::no_init)
+        .def(EigenSolverVisitor())
+        .def(IdVisitor<Solver>());
   }
 
  private:

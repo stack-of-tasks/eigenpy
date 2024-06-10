@@ -232,6 +232,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/eigen-to-python.hpp
     include/eigenpy/eigen-from-python.hpp
     include/eigenpy/eigen-typedef.hpp
+    include/eigenpy/id.hpp
     include/eigenpy/numpy-map.hpp
     include/eigenpy/geometry.hpp
     include/eigenpy/geometry-conversion.hpp

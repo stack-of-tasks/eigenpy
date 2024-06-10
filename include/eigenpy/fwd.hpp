@@ -200,5 +200,6 @@ struct has_operator_equal : internal::has_operator_equal_impl<T1, T2>::type {};
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
+#include "eigenpy/id.hpp"
 
 #endif  // ifndef __eigenpy_fwd_hpp__

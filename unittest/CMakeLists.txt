@@ -134,6 +134,8 @@ add_python_eigenpy_lib_unit_test("py-LLT" "unittest/python/test_LLT.py")
 
 add_python_eigenpy_lib_unit_test("py-LDLT" "unittest/python/test_LDLT.py")
 
+add_python_eigenpy_lib_unit_test("py-id" "unittest/python/test_id.py")
+
 if(NOT WIN32)
   add_python_eigenpy_lib_unit_test("py-MINRES" "unittest/python/test_MINRES.py")
 endif(NOT WIN32)

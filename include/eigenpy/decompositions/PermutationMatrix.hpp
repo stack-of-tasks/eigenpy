@@ -97,6 +97,7 @@ struct PermutationMatrixVisitor
                                   "This class represents a permutation matrix, "
                                   "internally stored as a vector of integers.",
                                   bp::no_init)
+        .def(IdVisitor<PermutationMatrix>())
         .def(PermutationMatrixVisitor());
   }
 };

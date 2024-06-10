@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #ifndef __eigenpy_decomposition_ldlt_hpp__
@@ -119,6 +119,7 @@ struct LDLTSolverVisitor
         "have zeros in the bottom right rank(A) - n submatrix. Avoiding the "
         "square root on D also stabilizes the computation.",
         bp::no_init)
+        .def(IdVisitor<Solver>())
         .def(LDLTSolverVisitor());
   }
 
