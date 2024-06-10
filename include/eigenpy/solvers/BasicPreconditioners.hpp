@@ -1,6 +1,6 @@
 /*
  * Copyright 2017 CNRS
- * Copyright 2014 Inria
+ * Copyright 2024 Inria
  */
 
 #ifndef __eigenpy_basic_preconditioners_hpp__
