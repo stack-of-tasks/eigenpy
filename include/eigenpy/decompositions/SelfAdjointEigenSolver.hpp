@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #ifndef __eigenpy_decomposition_self_adjoint_eigen_solver_hpp__
@@ -84,6 +84,7 @@ struct SelfAdjointEigenSolverVisitor
 
   static void expose(const std::string& name) {
     bp::class_<Solver>(name.c_str(), bp::no_init)
+        .def(IdVisitor<Solver>())
         .def(SelfAdjointEigenSolverVisitor());
   }
 

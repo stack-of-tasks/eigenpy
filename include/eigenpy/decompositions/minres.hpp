@@ -165,7 +165,8 @@ struct MINRESSolverVisitor
         "defaults are the size of the problem for the maximal number of "
         "iterations and NumTraits<Scalar>::epsilon() for the tolerance.\n",
         bp::no_init)
-        .def(MINRESSolverVisitor());
+        .def(MINRESSolverVisitor())
+        .def(IdVisitor<Solver>());
   }
 
  private:

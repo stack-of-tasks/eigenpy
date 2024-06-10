@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 CNRS
+ * Copyright 2014 Inria
  */
 
 #ifndef __eigenpy_basic_preconditioners_hpp__
@@ -69,7 +70,8 @@ struct DiagonalPreconditionerVisitor
         "A preconditioner based on the digonal entrie.\n"
         "This class allows to approximately solve for A.x = b problems "
         "assuming A is a diagonal matrix.",
-        bp::no_init);
+        bp::no_init)
+        .def(IdVisitor<Preconditioner>());
   }
 };
 
@@ -91,7 +93,8 @@ struct LeastSquareDiagonalPreconditionerVisitor
         "his class allows to approximately solve for A' A x  = A' b problems "
         "assuming A' A is a diagonal matrix.",
         bp::no_init)
-        .def(DiagonalPreconditionerVisitor<Scalar>());
+        .def(DiagonalPreconditionerVisitor<Scalar>())
+        .def(IdVisitor<Preconditioner>());
   }
 };
 #endif
@@ -105,7 +108,8 @@ struct IdentityPreconditionerVisitor
 
   static void expose() {
     bp::class_<Preconditioner>("IdentityPreconditioner", bp::no_init)
-        .def(PreconditionerBaseVisitor<Preconditioner>());
+        .def(PreconditionerBaseVisitor<Preconditioner>())
+        .def(IdVisitor<Preconditioner>());
   }
 };
 

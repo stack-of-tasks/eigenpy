@@ -135,6 +135,7 @@ struct StdArrayPythonVisitor {
       bp::class_<array_type> cl(class_name.c_str(), doc_string.c_str());
       cl.def(bp::init<const array_type &>(bp::args("self", "other"),
                                           "Copy constructor"));
+      cl.def(IdVisitor<array_type>());
 
       array_indexing_suite<array_type, NoProxy, SliceAllocator> indexing_suite;
       cl.def(indexing_suite)

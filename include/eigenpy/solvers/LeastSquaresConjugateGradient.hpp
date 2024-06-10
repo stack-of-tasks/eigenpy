@@ -34,7 +34,8 @@ struct LeastSquaresConjugateGradientVisitor
         "LeastSquaresConjugateGradient", bp::no_init)
         .def(IterativeSolverVisitor<LeastSquaresConjugateGradient>())
         .def(LeastSquaresConjugateGradientVisitor<
-             LeastSquaresConjugateGradient>());
+             LeastSquaresConjugateGradient>())
+        .def(IdVisitor<LeastSquaresConjugateGradient>());
   }
 };
 

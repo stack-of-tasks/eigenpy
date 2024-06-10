@@ -118,7 +118,8 @@ class AngleAxisVisitor : public bp::def_visitor<AngleAxisVisitor<AngleAxis> > {
   static void expose() {
     bp::class_<AngleAxis>(
         "AngleAxis", "AngleAxis representation of a rotation.\n\n", bp::no_init)
-        .def(AngleAxisVisitor<AngleAxis>());
+        .def(AngleAxisVisitor<AngleAxis>())
+        .def(IdVisitor<AngleAxis>());
 
     // Cast to Eigen::RotationBase
     bp::implicitly_convertible<AngleAxis, RotationBase>();

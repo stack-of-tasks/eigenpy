@@ -59,7 +59,8 @@ struct SimplicialLDLTVisitor
         "prior to the factorization such that the factorized matrix is P A "
         "P^-1.",
         bp::no_init)
-        .def(SimplicialLDLTVisitor());
+        .def(SimplicialLDLTVisitor())
+        .def(IdVisitor<Solver>());
   }
 
  private:

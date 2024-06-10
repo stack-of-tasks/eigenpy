@@ -1,5 +1,6 @@
 /*
  * Copyright 2017 CNRS
+ * Copyright 2024 Inria
  */
 
 #ifndef __eigenpy_bfgs_preconditioners_hpp__
@@ -37,6 +38,7 @@ struct BFGSPreconditionerBaseVisitor
 
   static void expose(const std::string& name) {
     bp::class_<Preconditioner>(name, bp::no_init)
+        .def(IdVisitor<Preconditioner>())
         .def(BFGSPreconditionerBaseVisitor<Preconditioner>());
   }
 };
@@ -56,6 +58,7 @@ struct LimitedBFGSPreconditionerBaseVisitor
 
   static void expose(const std::string& name) {
     bp::class_<Preconditioner>(name.c_str(), bp::no_init)
+        .def(IdVisitor<Preconditioner>())
         .def(LimitedBFGSPreconditionerBaseVisitor<Preconditioner>());
   }
 };
