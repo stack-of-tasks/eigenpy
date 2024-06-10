@@ -2,8 +2,8 @@
  * Copyright 2024 INRIA
  */
 
-#ifndef __eigenpy_decomposition_sparse_sparse_solver_base_hpp__
-#define __eigenpy_decomposition_sparse_sparse_solver_base_hpp__
+#ifndef __eigenpy_decompositions_sparse_sparse_solver_base_hpp__
+#define __eigenpy_decompositions_sparse_sparse_solver_base_hpp__
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/eigen/EigenBase.hpp"
@@ -51,4 +51,4 @@ struct SparseSolverBaseVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_decomposition_sparse_sparse_solver_base_hpp__
+#endif  // ifndef __eigenpy_decompositions_sparse_sparse_solver_base_hpp__
