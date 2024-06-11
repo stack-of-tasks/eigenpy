@@ -56,3 +56,21 @@ assert colpiv_householder_qr.rank() == rows
 colpiv_householder_qr.setThreshold(1e-8)
 assert colpiv_householder_qr.threshold() == 1e-8
 assert eigenpy.is_approx(np.eye(rows, rows), colpiv_householder_qr.inverse())
+
+# Test CompleteOrthogonalDecomposition
+cod = eigenpy.CompleteOrthogonalDecomposition()
+cod = eigenpy.CompleteOrthogonalDecomposition(rows, cols)
+cod = eigenpy.CompleteOrthogonalDecomposition(A)
+
+cod = eigenpy.CompleteOrthogonalDecomposition(np.eye(rows, rows))
+X = rng.random((rows, 20))
+assert cod.absDeterminant() == 1.0
+assert cod.logAbsDeterminant() == 0.0
+
+Y = cod.solve(X)
+assert (X == Y).all()
+assert cod.rank() == rows
+
+cod.setThreshold(1e-8)
+assert cod.threshold() == 1e-8
+assert eigenpy.is_approx(np.eye(rows, rows), cod.pseudoInverse())
