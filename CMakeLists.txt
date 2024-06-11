@@ -212,6 +212,7 @@ set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
     include/eigenpy/decompositions/LLT.hpp
     include/eigenpy/decompositions/QR.hpp
     include/eigenpy/decompositions/HouseholderQR.hpp
+    include/eigenpy/decompositions/ColPivHouseholderQR.hpp
     include/eigenpy/decompositions/FullPivHouseholderQR.hpp
     include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
     include/eigenpy/decompositions/minres.hpp)
