@@ -2,8 +2,8 @@
  * Copyright 2024 INRIA
  */
 
-#ifndef __eigenpy_decomposition_permutation_matrix_hpp__
-#define __eigenpy_decomposition_permutation_matrix_hpp__
+#ifndef __eigenpy_decompositions_permutation_matrix_hpp__
+#define __eigenpy_decompositions_permutation_matrix_hpp__
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/eigen/EigenBase.hpp"
@@ -104,4 +104,4 @@ struct PermutationMatrixVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_decomposition_permutation_matrix_hpp__
+#endif  // ifndef __eigenpy_decompositions_permutation_matrix_hpp__

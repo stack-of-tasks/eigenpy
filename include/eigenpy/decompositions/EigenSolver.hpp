@@ -2,8 +2,8 @@
  * Copyright 2020 INRIA
  */
 
-#ifndef __eigenpy_decomposition_eigen_solver_hpp__
-#define __eigenpy_decomposition_eigen_solver_hpp__
+#ifndef __eigenpy_decompositions_eigen_solver_hpp__
+#define __eigenpy_decompositions_eigen_solver_hpp__
 
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
@@ -90,4 +90,4 @@ struct EigenSolverVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_decomposition_eigen_solver_hpp__
+#endif  // ifndef __eigenpy_decompositions_eigen_solver_hpp__

@@ -2,8 +2,8 @@
  * Copyright 2020-2024 INRIA
  */
 
-#ifndef __eigenpy_decomposition_ldlt_hpp__
-#define __eigenpy_decomposition_ldlt_hpp__
+#ifndef __eigenpy_decompositions_ldlt_hpp__
+#define __eigenpy_decompositions_ldlt_hpp__
 
 #include <Eigen/Cholesky>
 #include <Eigen/Core>
@@ -141,4 +141,4 @@ struct LDLTSolverVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_decomposition_ldlt_hpp__
+#endif  // ifndef __eigenpy_decompositions_ldlt_hpp__

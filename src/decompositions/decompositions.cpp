@@ -12,6 +12,7 @@ void exposeEigenSolver();
 void exposeSelfAdjointEigenSolver();
 void exposeLLTSolver();
 void exposeLDLTSolver();
+void exposeQRSolvers();
 void exposeMINRESSolver();
 void exposeSimplicialLLTSolver();
 void exposeSimplicialLDLTSolver();
@@ -24,6 +25,7 @@ void exposeDecompositions() {
   exposeSelfAdjointEigenSolver();
   exposeLLTSolver();
   exposeLDLTSolver();
+  exposeQRSolvers();
   exposeMINRESSolver();
 
   {
