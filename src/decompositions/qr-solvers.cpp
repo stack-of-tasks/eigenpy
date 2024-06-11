@@ -8,5 +8,6 @@ namespace eigenpy {
 void exposeQRSolvers() {
   using namespace Eigen;
   HouseholderQRSolverVisitor<MatrixXd>::expose("HouseholderQR");
+  FullPivHouseholderQRSolverVisitor<MatrixXd>::expose("FullPivHouseholderQR");
 }
 }  // namespace eigenpy
