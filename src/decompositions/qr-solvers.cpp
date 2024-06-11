@@ -10,5 +10,7 @@ void exposeQRSolvers() {
   HouseholderQRSolverVisitor<MatrixXd>::expose("HouseholderQR");
   FullPivHouseholderQRSolverVisitor<MatrixXd>::expose("FullPivHouseholderQR");
   ColPivHouseholderQRSolverVisitor<MatrixXd>::expose("ColPivHouseholderQR");
+  CompleteOrthogonalDecompositionSolverVisitor<MatrixXd>::expose(
+      "CompleteOrthogonalDecomposition");
 }
 }  // namespace eigenpy
