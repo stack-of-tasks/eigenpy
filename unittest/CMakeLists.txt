@@ -8,13 +8,17 @@ function(ADD_LIB_UNIT_TEST test)
 
   if(BUILD_TESTING)
     add_library(${test_target} SHARED "${test}.cpp")
-  else(BUILD_TESTING)
+  else()
     add_library(${test_target} SHARED EXCLUDE_FROM_ALL "${test}.cpp")
-  endif(BUILD_TESTING)
+  endif()
   set_standard_output_directory(${test_target})
 
   target_link_libraries(${test_target} PUBLIC ${PROJECT_NAME})
-  set_target_properties(${test_target} PROPERTIES PREFIX "")
+  set_target_properties(
+    ${test_target}
+    PROPERTIES PREFIX ""
+               LIBRARY_OUTPUT_NAME ${test}
+               RUNTIME_OUTPUT_NAME ${test})
 
   set_target_properties(${test_target} PROPERTIES SUFFIX ${PYTHON_EXT_SUFFIX})
 
