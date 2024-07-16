@@ -11,7 +11,10 @@ set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 set(PROJECT_COMPATIBILITY_VERSION AnyNewerVersion)
+# To enable jrl-cmakemodules compatibility with workspace we must define the two
+# following lines
 set(PROJECT_AUTO_RUN_FINALIZE FALSE)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
