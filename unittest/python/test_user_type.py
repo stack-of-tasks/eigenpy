@@ -67,4 +67,4 @@ test(user_type.CustomFloat)
 
 v = user_type.CustomDouble(1)
 a = np.array(v)
-assert type(v) == a.dtype.type
+assert type(v) is a.dtype.type

@@ -11,6 +11,10 @@ set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 set(PROJECT_COMPATIBILITY_VERSION AnyNewerVersion)
+# To enable jrl-cmakemodules compatibility with workspace we must define the two
+# following lines
+set(PROJECT_AUTO_RUN_FINALIZE FALSE)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
@@ -344,10 +348,12 @@ set(${PROJECT_NAME}_SOURCES
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
 set_standard_output_directory(${PROJECT_NAME})
 target_include_directories(
   ${PROJECT_NAME} SYSTEM
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
          $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 modernize_target_link_libraries(
@@ -450,3 +456,5 @@ pkg_config_append_libs(${PROJECT_NAME})
 pkg_config_append_cflags("-I${PYTHON_INCLUDE_DIRS}")
 pkg_config_append_cflags("-I${NUMPY_INCLUDE_DIRS}")
 pkg_config_append_boost_libs(${BOOST_COMPONENTS})
+
+setup_project_finalize()

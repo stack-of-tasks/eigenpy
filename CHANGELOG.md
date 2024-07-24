@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Add compatibility with jrl-cmakemodules workspace ([#485](https://github.com/stack-of-tasks/eigenpy/pull/485))
+
 ## [3.7.0] - 2024-06-11
 
 ### Added
