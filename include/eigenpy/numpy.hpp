@@ -139,12 +139,14 @@ struct NumpyEquivalentType<unsigned long> {
 // See https://github.com/stack-of-tasks/eigenpy/pull/455
 #if defined __linux__
 
+#include <type_traits>
+
 template <>
-struct NumpyEquivalentType<long long> {
+struct NumpyEquivalentType<std::enable_if<!std::is_same<int64_t, long long>::value, long long>::type> {
   enum { type_code = NPY_LONGLONG };
 };
 template <>
-struct NumpyEquivalentType<unsigned long long> {
+struct NumpyEquivalentType<std::enable_if<!std::is_same<uint64_t, unsigned long long>::value, unsigned long long>::type> {
   enum { type_code = NPY_ULONGLONG };
 };
 
