@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 - Remove CMake CMP0167 warnings ([#487](https://github.com/stack-of-tasks/eigenpy/pull/487))
+- Fix compilation error on armhf ([#488](https://github.com/stack-of-tasks/eigenpy/pull/488))
 
 ## [3.7.0] - 2024-06-11
 

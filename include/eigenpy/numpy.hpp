@@ -55,7 +55,7 @@ void EIGENPY_DLLAPI import_numpy();
 int EIGENPY_DLLAPI PyArray_TypeNum(PyTypeObject* type);
 
 // By default, the Scalar is considered as a Python object
-template <typename Scalar>
+template <typename Scalar, typename Enable = void>
 struct NumpyEquivalentType {
   enum { type_code = NPY_USERDEF };
 };
@@ -139,12 +139,19 @@ struct NumpyEquivalentType<unsigned long> {
 // See https://github.com/stack-of-tasks/eigenpy/pull/455
 #if defined __linux__
 
-template <>
-struct NumpyEquivalentType<long long> {
+#include <type_traits>
+
+template <typename Scalar>
+struct NumpyEquivalentType<
+    Scalar, std::enable_if_t<!std::is_same<int64_t, long long>::value &&
+                             std::is_same<Scalar, long long>::value> > {
   enum { type_code = NPY_LONGLONG };
 };
-template <>
-struct NumpyEquivalentType<unsigned long long> {
+template <typename Scalar>
+struct NumpyEquivalentType<
+    Scalar,
+    std::enable_if_t<!std::is_same<uint64_t, unsigned long long>::value &&
+                     std::is_same<Scalar, unsigned long long>::value> > {
   enum { type_code = NPY_ULONGLONG };
 };
 
