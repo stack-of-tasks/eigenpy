@@ -1,6 +1,5 @@
 import contextlib
 import os
-import sys
 
 
 def get_dll_paths():
@@ -20,20 +19,6 @@ def get_dll_paths():
         ]
     else:
         return eigenpy_paths.split(os.pathsep)
-
-
-class PathManager(contextlib.AbstractContextManager):
-    """Restore PATH state after importing Python module"""
-
-    def add_dll_directory(self, dll_dir: str):
-        os.environ["PATH"] += os.pathsep + dll_dir
-
-    def __enter__(self):
-        self.old_path = os.environ["PATH"]
-        return self
-
-    def __exit__(self, *exc_details):
-        os.environ["PATH"] = self.old_path
 
 
 class DllDirectoryManager(contextlib.AbstractContextManager):
@@ -59,7 +44,4 @@ class DllDirectoryManager(contextlib.AbstractContextManager):
 
 
 def build_directory_manager():
-    if sys.version_info >= (3, 8):
-        return DllDirectoryManager()
-    else:
-        return PathManager()
+    return DllDirectoryManager()
