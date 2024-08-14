@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 - Add compatibility with jrl-cmakemodules workspace ([#485](https://github.com/stack-of-tasks/eigenpy/pull/485))
+- Remove support of Python 3.7 ([#490](https://github.com/stack-of-tasks/eigenpy/pull/490))
 
 ### Fixed
 - Remove CMake CMP0167 warnings ([#487](https://github.com/stack-of-tasks/eigenpy/pull/487))
