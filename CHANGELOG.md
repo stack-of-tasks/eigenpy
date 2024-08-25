@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Fix compatibility issue with NumPy 2.x on Windows ([#492](https://github.com/stack-of-tasks/eigenpy/pull/492))
+
 ## [3.8.0] - 2024-08-14
 
 ### Added
