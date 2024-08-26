@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+- Fix function signature on Windows ([#494](https://github.com/stack-of-tasks/eigenpy/pull/494))
+
 ## [3.8.1] - 2024-08-25
 
 ### Fixed
