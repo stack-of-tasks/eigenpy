@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #ifndef __eigenpy_numpy_hpp__
@@ -215,7 +215,7 @@ EIGENPY_DLLAPI PyArray_Descr* call_PyArray_DescrFromType(int typenum);
 
 EIGENPY_DLLAPI void call_PyArray_InitArrFuncs(PyArray_ArrFuncs* funcs);
 
-EIGENPY_DLLAPI int call_PyArray_RegisterDataType(PyArray_Descr* dtype);
+EIGENPY_DLLAPI int call_PyArray_RegisterDataType(PyArray_DescrProto* dtype);
 
 EIGENPY_DLLAPI int call_PyArray_RegisterCanCast(PyArray_Descr* descr,
                                                 int totype,
