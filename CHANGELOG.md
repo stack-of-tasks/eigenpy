@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.8.2] - 2024-08-26
+
 ### Fixed
 - Fix function signature on Windows ([#494](https://github.com/stack-of-tasks/eigenpy/pull/494))
 
@@ -662,7 +664,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.8.1...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.8.2...HEAD
+[3.8.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.8.1...v3.8.2
 [3.8.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.8.0...v3.8.1
 [3.8.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.6.0...v3.7.0
