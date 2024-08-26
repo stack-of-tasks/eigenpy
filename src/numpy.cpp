@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #include "eigenpy/numpy.hpp"
