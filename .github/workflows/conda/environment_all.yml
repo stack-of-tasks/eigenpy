@@ -4,7 +4,7 @@ channels:
 dependencies:
   - eigen
   - cmake
-  - numpy<2.0
+  - numpy
   - pkg-config
   - boost
   - ccache
