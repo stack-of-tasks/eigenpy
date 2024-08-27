@@ -5,7 +5,7 @@
 #ifndef __eigenpy_numpy_hpp__
 #define __eigenpy_numpy_hpp__
 
-#include "eigenpy/fwd.hpp"
+#include "eigenpy/config.hpp"
 
 #ifndef PY_ARRAY_UNIQUE_SYMBOL
 #define PY_ARRAY_UNIQUE_SYMBOL EIGENPY_ARRAY_API
@@ -49,6 +49,8 @@ static inline void _Py_SET_TYPE(PyObject* o, PyTypeObject* type) {
 #else
 #define EIGENPY_GET_PY_ARRAY_TYPE(array) PyArray_MinScalarType(array)->type_num
 #endif
+
+#include <complex>
 
 namespace eigenpy {
 void EIGENPY_DLLAPI import_numpy();
