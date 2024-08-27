@@ -11,6 +11,11 @@
 #define PY_ARRAY_UNIQUE_SYMBOL EIGENPY_ARRAY_API
 #endif
 
+// For compatibility with Numpy 2.x
+// See
+// https://numpy.org/devdocs/reference/c-api/array.html#c.NPY_API_SYMBOL_ATTRIBUTE
+#define NPY_API_SYMBOL_ATTRIBUTE
+
 #include <numpy/numpyconfig.h>
 #ifdef NPY_1_8_API_VERSION
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
