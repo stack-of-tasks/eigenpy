@@ -56,6 +56,7 @@ endif()
 add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
 add_lib_unit_test(std_pair)
+add_lib_unit_test(std_map)
 add_lib_unit_test(user_struct)
 
 if(CMAKE_CXX_STANDARD GREATER 14 AND CMAKE_CXX_STANDARD LESS 98)
@@ -154,6 +155,8 @@ add_python_eigenpy_lib_unit_test("py-std-vector"
                                  "unittest/python/test_std_vector.py")
 
 add_python_lib_unit_test("py-std-array" "unittest/python/test_std_array.py")
+
+add_python_lib_unit_test("py-std-map" "unittest/python/test_std_map.py")
 
 add_python_lib_unit_test("py-std-pair" "unittest/python/test_std_pair.py")
 
