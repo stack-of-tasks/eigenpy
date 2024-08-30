@@ -485,9 +485,9 @@ struct StdVectorPythonVisitor {
  */
 void EIGENPY_DLLAPI exposeStdVector();
 
-template <typename MatType>
+template <typename MatType, typename Alloc = Eigen::aligned_allocator<MatType> >
 void exposeStdVectorEigenSpecificType(const char *name) {
-  typedef std::vector<MatType, Eigen::aligned_allocator<MatType> > VecMatType;
+  typedef std::vector<MatType, Alloc> VecMatType;
   std::string full_name = "StdVec_";
   full_name += name;
   StdVectorPythonVisitor<VecMatType>::expose(

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- The `exposeStdVectorEigenSpecificType()` template function now takes the vector allocator as a template parameter.
+
 ## [3.8.2] - 2024-08-26
 
 ### Fixed
