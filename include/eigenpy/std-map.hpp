@@ -6,8 +6,9 @@
 #ifndef __eigenpy_utils_map_hpp__
 #define __eigenpy_utils_map_hpp__
 
-#include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include "eigenpy/pickle-vector.hpp"
+
+#include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/stl_iterator.hpp>
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/to_python_converter.hpp>
