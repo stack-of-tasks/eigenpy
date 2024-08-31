@@ -9,16 +9,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [3.9.0] - 2024-08-31
 
 ### Changed
+- The `exposeStdVectorEigenSpecificType()` template function now takes the vector allocator as a template parameter ([#500](https://github.com/stack-of-tasks/eigenpy/pull/500))
 
-- The `exposeStdVectorEigenSpecificType()` template function now takes the vector allocator as a template parameter.
+### Added
+- Add bp::dist to std::map converter ([#499](https://github.com/stack-of-tasks/eigenpy/pull/499))
 
 ## [3.8.2] - 2024-08-26
 
 ### Fixed
 - Fix function signature on Windows ([#494](https://github.com/stack-of-tasks/eigenpy/pull/494))
-
-### Added
-- Add bp::dist to std::map converter ([#499](https://github.com/stack-of-tasks/eigenpy/pull/499))
 
 ## [3.8.1] - 2024-08-25
 
