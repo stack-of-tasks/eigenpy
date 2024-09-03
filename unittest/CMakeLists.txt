@@ -35,6 +35,7 @@ endfunction()
 
 add_dependencies(build_tests ${PYWRAP})
 add_lib_unit_test(matrix)
+add_lib_unit_test(type_info)
 add_lib_unit_test(multiple_registration)
 if(BUILD_TESTING_SCIPY)
   find_scipy()
@@ -111,6 +112,7 @@ endif()
 add_lib_unit_test(bind_virtual_factory)
 
 add_python_lib_unit_test("py-matrix" "unittest/python/test_matrix.py")
+add_python_lib_unit_test("py-type-info" "unittest/python/test_type_info.py")
 add_python_lib_unit_test("py-multiple-registration"
                          "unittest/python/test_multiple_registration.py")
 

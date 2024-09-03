@@ -275,6 +275,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/variant.hpp
     include/eigenpy/std-unique-ptr.hpp
     include/eigenpy/swig.hpp
+    include/eigenpy/type_info.hpp
     include/eigenpy/version.hpp)
 
 list(
@@ -349,6 +350,7 @@ set(${PROJECT_NAME}_SOURCES
     src/scipy-type.cpp
     src/std-vector.cpp
     src/optional.cpp
+    src/type_info.cpp
     src/version.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}

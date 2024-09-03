@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Add type_info helpers ([#502](https://github.com/stack-of-tasks/eigenpy/pull/502))
+
 ## [3.9.0] - 2024-08-31
 
 ### Changed
