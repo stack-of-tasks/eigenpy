@@ -8,10 +8,16 @@
 #include <boost/python.hpp>
 #include <boost/type_index.hpp>
 
+#include "eigenpy/registration.hpp"
+
 namespace bp = boost::python;
+
+namespace eigenpy {
 
 void exposeStdTypeIndex() {
   typedef std::type_index Self;
+  if (register_symbolic_link_to_registered_type<Self>()) return;
+
   bp::class_<Self>(
       "std_type_index",
       "The class type_index holds implementation-specific information about a "
@@ -42,6 +48,8 @@ void exposeStdTypeIndex() {
 
 void exposeBoostTypeIndex() {
   typedef boost::typeindex::type_index Self;
+  if (register_symbolic_link_to_registered_type<Self>()) return;
+
   bp::class_<Self>(
       "boost_type_index",
       "The class type_index holds implementation-specific information about a "
@@ -66,7 +74,6 @@ void exposeBoostTypeIndex() {
            "Human readible name.");
 }
 
-namespace eigenpy {
 void exposeTypeInfo() {
   exposeStdTypeIndex();
   exposeBoostTypeIndex();
