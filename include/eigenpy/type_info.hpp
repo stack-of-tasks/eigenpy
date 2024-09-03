@@ -66,10 +66,10 @@ struct TypeInfoVisitor : public bp::def_visitor<TypeInfoVisitor<C> > {
 
  private:
   static boost::typeindex::type_index boost_type_info(const C& self) {
-    return boost::typeindex::type_id<C>();
+    return boost::typeindex::type_id_runtime(self);
   }
 
-  static std::type_index std_type_info(const C& self) { return typeid(C); }
+  static std::type_index std_type_info(const C& self) { return typeid(self); }
 };
 
 }  // namespace eigenpy
