@@ -31,7 +31,13 @@ void exposeStdTypeIndex() {
            "Returns an implementation defined null-terminated character string "
            "containing the name of the type. No guarantees are given; in "
            "particular, the returned string can be identical for several types "
-           "and change between invocations of the same program.");
+           "and change between invocations of the same program.")
+      .def(
+          "pretty_name",
+          +[](const Self &value) -> std::string {
+            return boost::core::demangle(value.name());
+          },
+          bp::arg("self"), "Human readible name.");
 }
 
 void exposeBoostTypeIndex() {
