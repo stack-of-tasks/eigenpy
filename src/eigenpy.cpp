@@ -36,6 +36,7 @@ void exposeMatrixComplexDouble();
 void exposeMatrixComplexLongDouble();
 
 void exposeNoneType();
+void exposeTypeInfo();
 
 /* Enable Eigen-Numpy serialization for a set of standard MatrixBase instances.
  */
@@ -84,6 +85,7 @@ void enableEigenPy() {
   exposeMatrixComplexLongDouble();
 
   exposeNoneType();
+  exposeTypeInfo();
 }
 
 bool withTensorSupport() {
