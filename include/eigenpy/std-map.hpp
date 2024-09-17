@@ -142,7 +142,7 @@ struct dict_to_map {
         bp::throw_error_already_set();
       }
       typename Container::mapped_type val = valproxy();
-      map[key] = val;
+      map.emplace(key, val);
     }
 
     // remember the location for later
