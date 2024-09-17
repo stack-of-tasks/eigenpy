@@ -28,6 +28,12 @@ boost::unordered_map<std::string, T1> copy_boost(
   return obj;
 }
 
+struct X {
+  X() = delete;
+  X(int x) : val(x) {}
+  int val;
+};
+
 BOOST_PYTHON_MODULE(std_map) {
   eigenpy::enableEigenPy();
 
@@ -38,6 +44,8 @@ BOOST_PYTHON_MODULE(std_map) {
 
   eigenpy::GenericMapVisitor<boost::unordered_map<std::string, int> >::expose(
       "boost_map_int");
+
+  eigenpy::GenericMapVisitor<std::map<std::string, X> >::expose("StdMap_X");
 
   bp::def("std_map_to_dict", std_map_to_dict<double>);
   bp::def("copy", copy<double>);
