@@ -31,7 +31,7 @@ boost::unordered_map<std::string, T1> copy_boost(
 BOOST_PYTHON_MODULE(std_map) {
   eigenpy::enableEigenPy();
 
-  eigenpy::python::StdMapPythonVisitor<
+  eigenpy::StdMapPythonVisitor<
       std::string, double, std::less<std::string>,
       std::allocator<std::pair<const std::string, double> >,
       true>::expose("StdMap_Double");
