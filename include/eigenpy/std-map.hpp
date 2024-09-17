@@ -70,8 +70,6 @@ struct overload_base_get_item_for_std_map
 // Rohan Budhiraja.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace python {
-
 namespace bp = boost::python;
 
 /**
@@ -162,6 +160,32 @@ struct dict_to_map {
 };
 
 /**
+ * @brief Expose the map-like container, e.g. (std::map).
+ *
+ * @param[in] Container  Container to expose.
+ * @param[in] NoProxy    When set to false, the elements will be copied when
+ * returned to Python.
+ */
+template <class Container, bool NoProxy = false>
+struct GenericMapVisitor : public bp::map_indexing_suite<Container, NoProxy>,
+                           public dict_to_map<Container> {
+  typedef dict_to_map<Container> FromPythonDictConverter;
+
+  static void expose(const std::string& class_name,
+                     const std::string& doc_string = "") {
+    namespace bp = bp;
+
+    bp::class_<Container>(class_name.c_str(), doc_string.c_str())
+        .def(GenericMapVisitor())
+        .def("todict", &FromPythonDictConverter::todict, bp::arg("self"),
+             "Returns the map type as a Python dictionary.")
+        .def_pickle(PickleMap<Container>());
+    // Register conversion
+    FromPythonDictConverter::register_converter();
+  }
+};
+
+/**
  * @brief Expose an std::map from a type given as template argument.
  *
  * @param[in] T          Type to expose as std::map<T>.
@@ -175,26 +199,11 @@ template <class Key, class T, class Compare = std::less<Key>,
           class Allocator = std::allocator<std::pair<const Key, T> >,
           bool NoProxy = false>
 struct StdMapPythonVisitor
-    : public bp::map_indexing_suite<
-          typename std::map<Key, T, Compare, Allocator>, NoProxy>,
-      public dict_to_map<std::map<Key, T, Compare, Allocator> > {
-  typedef std::map<Key, T, Compare, Allocator> Container;
-  typedef dict_to_map<Container> FromPythonDictConverter;
+    : GenericMapVisitor<std::map<Key, T, Compare, Allocator>, NoProxy> {};
 
-  static void expose(const std::string& class_name,
-                     const std::string& doc_string = "") {
-    namespace bp = bp;
-
-    bp::class_<Container>(class_name.c_str(), doc_string.c_str())
-        .def(StdMapPythonVisitor())
-        .def("todict", &FromPythonDictConverter::todict, bp::arg("self"),
-             "Returns the std::map as a Python dictionary.")
-        .def_pickle(PickleMap<Container>());
-    // Register conversion
-    FromPythonDictConverter::register_converter();
-  }
-};
-
+namespace python {
+// fix previous mistake
+using ::eigenpy::StdMapPythonVisitor;
 }  // namespace python
 }  // namespace eigenpy
 
