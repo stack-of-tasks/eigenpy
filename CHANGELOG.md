@@ -7,7 +7,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [Unreleased]
 
 ### Added
+
+- Add more general visitor `GenericMapPythonVisitor` for map types test `boost::unordered_map<std::string, int>` ([#504](https://github.com/stack-of-tasks/eigenpy/pull/504))
+- Support for non-[default-contructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible) types in map types ([#504](https://github.com/stack-of-tasks/eigenpy/pull/504))
 - Add type_info helpers ([#502](https://github.com/stack-of-tasks/eigenpy/pull/502))
+
+### Changed
+
+- Move `StdMapPythonVisitor` out of `eigenpy::python` namespace, which was a mistake ([#504](https://github.com/stack-of-tasks/eigenpy/pull/504))
 
 ## [3.9.0] - 2024-08-31
 

@@ -70,8 +70,6 @@ struct overload_base_get_item_for_std_map
 // Rohan Budhiraja.
 ///////////////////////////////////////////////////////////////////////////////
 
-namespace python {
-
 namespace bp = boost::python;
 
 /**
@@ -144,7 +142,7 @@ struct dict_to_map {
         bp::throw_error_already_set();
       }
       typename Container::mapped_type val = valproxy();
-      map[key] = val;
+      map.emplace(key, val);
     }
 
     // remember the location for later
@@ -158,6 +156,72 @@ struct dict_to_map {
       dict.setdefault(it->first, it->second);
     }
     return dict;
+  }
+};
+
+/// Policies which handle the non-default constructible case
+/// and set_item() using emplace().
+template <class Container, bool NoProxy>
+struct emplace_set_derived_policies
+    : bp::map_indexing_suite<
+          Container, NoProxy,
+          emplace_set_derived_policies<Container, NoProxy> > {
+  typedef typename Container::key_type index_type;
+  typedef typename Container::value_type::second_type data_type;
+  typedef typename Container::value_type value_type;
+  using DerivedPolicies =
+      bp::detail::final_map_derived_policies<Container, NoProxy>;
+
+  template <class Class>
+  static void extension_def(Class& cl) {
+    //  Wrap the map's element (value_type)
+    std::string elem_name = "map_indexing_suite_";
+    bp::object class_name(cl.attr("__name__"));
+    bp::extract<std::string> class_name_extractor(class_name);
+    elem_name += class_name_extractor();
+    elem_name += "_entry";
+    namespace mpl = boost::mpl;
+
+    typedef typename mpl::if_<
+        mpl::and_<boost::is_class<data_type>, mpl::bool_<!NoProxy> >,
+        bp::return_internal_reference<>, bp::default_call_policies>::type
+        get_data_return_policy;
+
+    bp::class_<value_type>(elem_name.c_str(), bp::no_init)
+        .def("__repr__", &DerivedPolicies::print_elem)
+        .def("data", &DerivedPolicies::get_data, get_data_return_policy())
+        .def("key", &DerivedPolicies::get_key);
+  }
+
+  static void set_item(Container& container, index_type i, data_type const& v) {
+    container.emplace(i, v);
+  }
+};
+
+/**
+ * @brief Expose the map-like container, e.g. (std::map).
+ *
+ * @param[in] Container  Container to expose.
+ * @param[in] NoProxy    When set to false, the elements will be copied when
+ * returned to Python.
+ */
+template <class Container, bool NoProxy = false>
+struct GenericMapVisitor
+    : public emplace_set_derived_policies<Container, NoProxy>,
+      public dict_to_map<Container> {
+  typedef dict_to_map<Container> FromPythonDictConverter;
+
+  static void expose(const std::string& class_name,
+                     const std::string& doc_string = "") {
+    namespace bp = bp;
+
+    bp::class_<Container>(class_name.c_str(), doc_string.c_str())
+        .def(GenericMapVisitor())
+        .def("todict", &FromPythonDictConverter::todict, bp::arg("self"),
+             "Returns the map type as a Python dictionary.")
+        .def_pickle(PickleMap<Container>());
+    // Register conversion
+    FromPythonDictConverter::register_converter();
   }
 };
 
@@ -175,26 +239,11 @@ template <class Key, class T, class Compare = std::less<Key>,
           class Allocator = std::allocator<std::pair<const Key, T> >,
           bool NoProxy = false>
 struct StdMapPythonVisitor
-    : public bp::map_indexing_suite<
-          typename std::map<Key, T, Compare, Allocator>, NoProxy>,
-      public dict_to_map<std::map<Key, T, Compare, Allocator> > {
-  typedef std::map<Key, T, Compare, Allocator> Container;
-  typedef dict_to_map<Container> FromPythonDictConverter;
+    : GenericMapVisitor<std::map<Key, T, Compare, Allocator>, NoProxy> {};
 
-  static void expose(const std::string& class_name,
-                     const std::string& doc_string = "") {
-    namespace bp = bp;
-
-    bp::class_<Container>(class_name.c_str(), doc_string.c_str())
-        .def(StdMapPythonVisitor())
-        .def("todict", &FromPythonDictConverter::todict, bp::arg("self"),
-             "Returns the std::map as a Python dictionary.")
-        .def_pickle(PickleMap<Container>());
-    // Register conversion
-    FromPythonDictConverter::register_converter();
-  }
-};
-
+namespace python {
+// fix previous mistake
+using ::eigenpy::StdMapPythonVisitor;
 }  // namespace python
 }  // namespace eigenpy
 

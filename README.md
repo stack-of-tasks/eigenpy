@@ -14,15 +14,16 @@ EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
 **EigenPy** is an open-source framework that allows the binding of the famous [Eigen](http://eigen.tuxfamily.org) C++ library in Python via Boost.Python.
 
 **EigenPy** provides:
- - full memory sharing between Numpy and Eigen, avoiding memory allocation
- - full support Eigen::Ref avoiding memory allocation
- - full support of the Eigen::Tensor module
- - exposition of the Geometry module of Eigen for easy code prototyping
- - standard matrix decomposion routines of Eigen such as the Cholesky decomposition (SVD and QR decompositions [can be added](#contributing))
- - full support of SWIG objects
- - full support of runtime declaration of Numpy scalar types
- - extended API to expose std::vector types
- - full support of vectorization between C++ and Python (all the hold objects are properly aligned in memory)
+
+- full memory sharing between Numpy and Eigen, avoiding memory allocation
+- full support Eigen::Ref avoiding memory allocation
+- full support of the Eigen::Tensor module
+- exposition of the Geometry module of Eigen for easy code prototyping
+- standard matrix decomposion routines of Eigen such as the Cholesky decomposition (SVD and QR decompositions [can be added](#contributing))
+- full support of SWIG objects
+- full support of runtime declaration of Numpy scalar types
+- extended API to expose several STL types and some of their Boost equivalents: `optional` types, `std::pair`, maps, variants...
+- full support of vectorization between C++ and Python (all the hold objects are properly aligned in memory)
 
 ## Setup
 
