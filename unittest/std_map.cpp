@@ -50,8 +50,7 @@ BOOST_PYTHON_MODULE(std_map) {
 
   // this just needs to compile
   eigenpy::GenericMapVisitor<StdMap_X>::expose(
-      "StdMap_X",
-      eigenpy::details::overload_base_get_item_for_std_map<StdMap_X>());
+      "StdMap_X", eigenpy::overload_base_get_item_for_map<StdMap_X>());
 
   bp::def("std_map_to_dict", std_map_to_dict<double>);
   bp::def("copy", copy<double>);

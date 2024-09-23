@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - Move `GenericMapPythonVisitor` to its own header `eigenpy/map.hpp`
+- Rename `overload_base_get_item_for_std_map` to `overload_base_get_item_for_map`, move out of `eigenpy::details` namespace
 - Move `EmptyPythonVisitor` to new header `eigenpy/utils/empty-visitor.hpp`
 
 ## [3.9.1] - 2024-09-19

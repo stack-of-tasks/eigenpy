@@ -9,22 +9,22 @@
 #include "eigenpy/pickle-vector.hpp"
 #include "eigenpy/registration.hpp"
 #include "eigenpy/utils/empty-visitor.hpp"
+#include "eigenpy/deprecated.hpp"
 
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/stl_iterator.hpp>
 #include <boost/python/to_python_converter.hpp>
 
 namespace eigenpy {
-namespace details {
 
 /// \brief Change the behavior of indexing (method __getitem__ in Python).
 /// This is suitable e.g. for container of Eigen matrix objects if you want to
 /// mutate them.
 /// \sa overload_base_get_item_for_std_vector
 template <typename Container>
-struct overload_base_get_item_for_std_map
+struct overload_base_get_item_for_map
     : public boost::python::def_visitor<
-          overload_base_get_item_for_std_map<Container> > {
+          overload_base_get_item_for_map<Container> > {
   typedef typename Container::value_type value_type;
   typedef typename Container::value_type::second_type data_type;
   typedef typename Container::key_type key_type;
@@ -66,6 +66,13 @@ struct overload_base_get_item_for_std_map
   }
 };
 
+namespace details {
+
+template <typename Container>
+using overload_base_get_item_for_std_map EIGENPY_DEPRECATED_MESSAGE(
+    "Use overload_base_get_item_for_map<> instead.") =
+    overload_base_get_item_for_map<Container>;
+
 }  // namespace details
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -78,7 +85,7 @@ struct overload_base_get_item_for_std_map
 namespace bp = boost::python;
 
 /**
- * @brief Create a pickle interface for the std::map
+ * @brief Create a pickle interface for the map type
  *
  * @param[in] Container  Map type to be pickled
  * \sa Pickle
