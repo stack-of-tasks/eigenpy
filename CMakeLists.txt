@@ -170,9 +170,12 @@ endif(BUILD_WITH_ACCELERATE_SUPPORT)
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
 set(${PROJECT_NAME}_UTILS_HEADERS
-    include/eigenpy/utils/scalar-name.hpp include/eigenpy/utils/is-approx.hpp
-    include/eigenpy/utils/is-aligned.hpp include/eigenpy/utils/traits.hpp
-    include/eigenpy/utils/python-compat.hpp)
+    include/eigenpy/utils/scalar-name.hpp
+    include/eigenpy/utils/is-approx.hpp
+    include/eigenpy/utils/is-aligned.hpp
+    include/eigenpy/utils/traits.hpp
+    include/eigenpy/utils/python-compat.hpp
+    include/eigenpy/utils/empty-visitor.hpp)
 
 set(${PROJECT_NAME}_SOLVERS_HEADERS
     include/eigenpy/solvers/solvers.hpp
@@ -250,6 +253,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/numpy-map.hpp
     include/eigenpy/geometry.hpp
     include/eigenpy/geometry-conversion.hpp
+    include/eigenpy/map.hpp
     include/eigenpy/memory.hpp
     include/eigenpy/numpy.hpp
     include/eigenpy/numpy-allocator.hpp
