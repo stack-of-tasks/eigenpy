@@ -1,3 +1,6 @@
+#ifndef __eigenpy_utils_empty_visitor_hpp__
+#define __eigenpy_utils_empty_visitor_hpp__
+
 #include <boost/python.hpp>
 
 namespace eigenpy {
@@ -9,3 +12,5 @@ struct EmptyPythonVisitor
 };
 
 }  // namespace eigenpy
+
+#endif  // ifndef __eigenpy_utils_empty_visitor_hpp__
