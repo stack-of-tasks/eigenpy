@@ -1,4 +1,4 @@
-#include "eigenpy/fwd.hpp"
+#include <boost/python.hpp>
 
 namespace eigenpy {
 

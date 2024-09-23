@@ -45,9 +45,16 @@ BOOST_PYTHON_MODULE(std_map) {
   eigenpy::GenericMapVisitor<boost::unordered_map<std::string, int> >::expose(
       "boost_map_int");
 
-  eigenpy::GenericMapVisitor<std::map<std::string, X> >::expose("StdMap_X");
+  using StdMap_X = std::map<std::string, X>;
+  bp::class_<X>("X", bp::init<int>()).def_readwrite("val", &X::val);
+
+  // this just needs to compile
+  eigenpy::GenericMapVisitor<StdMap_X>::expose(
+      "StdMap_X",
+      eigenpy::details::overload_base_get_item_for_std_map<StdMap_X>());
 
   bp::def("std_map_to_dict", std_map_to_dict<double>);
   bp::def("copy", copy<double>);
   bp::def("copy_boost", copy_boost<int>);
+  bp::def("copy_X", +[](const StdMap_X& m) { return m; });
 }
