@@ -27,8 +27,8 @@ struct StdMapPythonVisitor
     : GenericMapVisitor<std::map<Key, T, Compare, Allocator>, NoProxy> {};
 
 namespace python {
-// fix previous mistake (deprecated using-decl)
-using ::eigenpy::StdMapPythonVisitor EIGENPY_DEPRECATED;
+// fix previous mistake
+using ::eigenpy::StdMapPythonVisitor;
 }  // namespace python
 }  // namespace eigenpy
 
