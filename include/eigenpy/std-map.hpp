@@ -28,7 +28,7 @@ struct StdMapPythonVisitor
 
 namespace python {
 // fix previous mistake (deprecated using-decl)
-EIGENPY_DEPRECATED using ::eigenpy::StdMapPythonVisitor;
+using ::eigenpy::StdMapPythonVisitor EIGENPY_DEPRECATED;
 }  // namespace python
 }  // namespace eigenpy
 
