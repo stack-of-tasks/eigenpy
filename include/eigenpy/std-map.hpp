@@ -10,6 +10,15 @@
 
 namespace eigenpy {
 
+template <typename Container>
+using overload_base_get_item_for_std_map EIGENPY_DEPRECATED_MESSAGE(
+    "Use overload_base_get_item_for_map<> instead.") =
+    overload_base_get_item_for_map<Container>;
+
+namespace details {
+using ::eigenpy::overload_base_get_item_for_std_map;
+}  // namespace details
+
 /**
  * @brief Expose an std::map from a type given as template argument.
  *

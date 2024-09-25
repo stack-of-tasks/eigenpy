@@ -9,7 +9,6 @@
 #include "eigenpy/pickle-vector.hpp"
 #include "eigenpy/registration.hpp"
 #include "eigenpy/utils/empty-visitor.hpp"
-#include "eigenpy/deprecated.hpp"
 
 #include <boost/python/suite/indexing/map_indexing_suite.hpp>
 #include <boost/python/stl_iterator.hpp>
@@ -65,15 +64,6 @@ struct overload_base_get_item_for_map
     return index_type();
   }
 };
-
-namespace details {
-
-template <typename Container>
-using overload_base_get_item_for_std_map EIGENPY_DEPRECATED_MESSAGE(
-    "Use overload_base_get_item_for_map<> instead.") =
-    overload_base_get_item_for_map<Container>;
-
-}  // namespace details
 
 ///////////////////////////////////////////////////////////////////////////////
 // The following snippet of code has been taken from the header
