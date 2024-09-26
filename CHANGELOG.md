@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.10.0] - 2024-09-26
+
 ### Added
 
 - `GenericMapPythonVisitor`/`StdMapPythonVisitor` can now take an extra visitor argument in the `expose()` method, similar to `StdVectorPythonVisitor`
@@ -696,7 +698,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.1...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.0...HEAD
+[3.10.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.1...v3.10.0
 [3.9.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.0...v3.9.1
 [3.9.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.8.2...v3.9.0
 [3.8.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.8.1...v3.8.2
