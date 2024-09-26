@@ -21,6 +21,7 @@
 #include "eigenpy/eigen-to-python.hpp"
 #include "eigenpy/pickle-vector.hpp"
 #include "eigenpy/registration.hpp"
+#include "eigenpy/utils/empty-visitor.hpp"
 
 namespace eigenpy {
 // Forward declaration
@@ -395,12 +396,6 @@ createExposeStdMethodToStdVector(const CoVisitor &co_visitor) {
 }
 
 }  // namespace internal
-
-struct EmptyPythonVisitor
-    : public ::boost::python::def_visitor<EmptyPythonVisitor> {
-  template <class classT>
-  void visit(classT &) const {}
-};
 
 namespace internal {
 template <typename vector_type, bool T_picklable = false>
