@@ -150,15 +150,16 @@ struct NumpyEquivalentType<unsigned long> {
 
 template <typename Scalar>
 struct NumpyEquivalentType<
-    Scalar, std::enable_if_t<!std::is_same<int64_t, long long>::value &&
-                             std::is_same<Scalar, long long>::value> > {
+    Scalar,
+    typename std::enable_if<!std::is_same<int64_t, long long>::value &&
+                            std::is_same<Scalar, long long>::value>::type> {
   enum { type_code = NPY_LONGLONG };
 };
 template <typename Scalar>
 struct NumpyEquivalentType<
-    Scalar,
-    std::enable_if_t<!std::is_same<uint64_t, unsigned long long>::value &&
-                     std::is_same<Scalar, unsigned long long>::value> > {
+    Scalar, typename std::enable_if<
+                !std::is_same<uint64_t, unsigned long long>::value &&
+                std::is_same<Scalar, unsigned long long>::value>::type> {
   enum { type_code = NPY_ULONGLONG };
 };
 
