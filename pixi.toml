@@ -8,18 +8,18 @@ license = "BSD-2-Clause"
 license-file = "LICENSE"
 
 [build-dependencies]
-ccache = ">=4.9.1,<4.10"
+ccache = ">=4.9.1"
 cmake = ">=3.10"
-cxx-compiler = "1.7.0"
-ninja = "1.11.*"
-pkg-config = ">=0.29.2,<0.30"
+cxx-compiler = ">=1.7.0"
+ninja = ">=1.11"
+pkg-config = ">=0.29.2"
 
 [dependencies]
-boost = ">=1.80.0,<1.85"
-eigen = ">=3.3.0,<3.5"
-numpy = ">=1.22.0,<1.27"
-python = ">=3.8.0,<3.13"
-scipy = ">=1.10.0,<1.13"
+boost = ">=1.80.0"
+eigen = ">=3.4.0"
+numpy = ">=1.22.0"
+python = ">=3.9.0"
+scipy = ">=1.10.0"
 
 [activation]
 scripts = ["scripts/activation.sh"]
@@ -49,7 +49,7 @@ dependencies = { pre-commit = ">=3.6.2,<3.7", tomlkit = ">=0.12.4,<0.13" }
 tasks = { lint = { cmd = "pre-commit run --all" } }
 
 [feature.cholmod.dependencies]
-suitesparse = ">=5,<6"
+suitesparse = ">=5"
 
 [feature.cholmod.tasks]
 configure = { cmd = [
