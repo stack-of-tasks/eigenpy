@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, macos-14]
+        os: [ubuntu-latest, macos-latest, macos-13]
         environment: [all, all-py39]
         build_type: [Release, Debug]
         cxx_options: ['', '-mavx2']
