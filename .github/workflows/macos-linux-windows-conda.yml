@@ -50,10 +50,12 @@ jobs:
         include:
           - os: windows-latest
             environment: all
-            compiler: cl
+            cxx_options: ''
+            build_type: Release
           - os: windows-latest
-            environment: all
-            compiler: clang-cl
+            environment: all-clang-cl
+            cxx_options: ''
+            build_type: Release
 
     steps:
     - uses: actions/checkout@v4
@@ -72,21 +74,11 @@ jobs:
         cache: true
         environments: ${{ matrix.environment }}
 
-    - name: Build EigenPy [MacOS/Linux]
-      if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
+    - name: Build EigenPy [MacOS/Linux/Windows]
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 4
         EIGENPY_BUILD_TYPE: ${{ matrix.build_type }}
         EIGENPY_CXX_FLAGS: ${{ matrix.cxx_options }}
-      run: |
-        pixi run -e ${{ matrix.environment }} test
-
-    - name: Build EigenPy [Windows]
-      if: contains(matrix.os, 'windows')
-      env:
-        CMAKE_BUILD_PARALLEL_LEVEL: 4
-        CC: ${{ matrix.compiler }}
-        CXX: ${{ matrix.compiler }}
       run: |
         pixi run -e ${{ matrix.environment }} test
 

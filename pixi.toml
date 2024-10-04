@@ -75,6 +75,11 @@ python = "3.12.*"
 [feature.py39.dependencies]
 python = "3.9.*"
 
+# Use clang-cl on Windows
+[feature.clang-cl]
+platforms = ["win-64"]
+activation = { env = { CC = "clang-cl", CXX = "clang-cl" } }
+
 [environments]
 default = { features = ["py312"], solve-group = "py312" }
 lint = { features = ["lint"], solve-group = "py312" }
@@ -83,3 +88,8 @@ accelerate = { features = ["accelerate", "py312"], solve-group = "py312" }
 py39 = { features = ["py39"], solve-group = "py39" }
 all = { features = ["all", "py312"], solve-group = "py312" }
 all-py39 = { features = ["all", "py39"], solve-group = "py39" }
+all-clang-cl = { features = [
+  "clang-cl",
+  "all",
+  "py312",
+], solve-group = "py312" }
