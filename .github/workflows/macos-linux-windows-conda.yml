@@ -71,7 +71,6 @@ jobs:
         pixi-version: v0.31.0
         cache: true
         environments: ${{ matrix.environment }}
-        activate-environment: true
 
     - name: Build EigenPy [MacOS/Linux]
       if: contains(matrix.os, 'ubuntu') || contains(matrix.os, 'macos')
@@ -80,7 +79,7 @@ jobs:
         EIGENPY_BUILD_TYPE: ${{ matrix.build_type }}
         EIGENPY_CXX_FLAGS: ${{ matrix.cxx_options }}
       run: |
-        pixi run test
+        pixi run -e ${{ matrix.environment }} test
 
     - name: Build EigenPy [Windows]
       if: contains(matrix.os, 'windows')
@@ -89,7 +88,7 @@ jobs:
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
       run: |
-        pixi run test
+        pixi run -e ${{ matrix.environment }} test
 
   check:
     if: always()
