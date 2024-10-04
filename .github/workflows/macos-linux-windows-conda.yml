@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   eigenpy-pixi:
-    name: ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
+    name: ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }} ${{ matrix.compiler }}
     runs-on: ${{ matrix.os }}
     env:
       CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
@@ -37,7 +37,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, macos-14]
-        environment: [all, all_py39]
+        environment: [all, all-py39]
         build_type: [Release, Debug]
         cxx_options: ['', '-mavx2']
 
@@ -83,12 +83,11 @@ jobs:
         pixi run test
 
     - name: Build EigenPy [Windows]
-      shell: pixi run bash -el {0}
       if: contains(matrix.os, 'windows')
       env:
+        CMAKE_BUILD_PARALLEL_LEVEL: 4
         CC: ${{ matrix.compiler }}
         CXX: ${{ matrix.compiler }}
-        CMAKE_BUILD_PARALLEL_LEVEL: 4
       run: |
         pixi run test
 
