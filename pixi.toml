@@ -36,66 +36,50 @@ configure = { cmd = [
   "build",
   "-S",
   ".",
-  "-DGENERATE_PYTHON_STUBS=ON",
-] }
+  "-DCMAKE_BUILD_TYPE=$EIGENPY_BUILD_TYPE",
+  "-DCMAKE_CXX_FLAGS=$EIGENPY_CXX_FLAGS",
+  "-DGENERATE_PYTHON_STUBS=$EIGENPY_PYTHON_STUBS",
+  "-DBUILD_WITH_CHOLMOD_SUPPORT=$EIGENPY_CHOLMOD_SUPPORT",
+  "-DBUILD_WITH_ACCELERATE_SUPPORT=$EIGENPY_ACCELERATE_SUPPORT",
+], env = { EIGENPY_PYTHON_STUBS = "ON", EIGENPY_CHOLMOD_SUPPORT = "OFF", EIGENPY_ACCELERATE_SUPPORT = "OFF", EIGENPY_BUILD_TYPE = "Release" } }
 build = { cmd = "cmake --build build --target all", depends_on = ["configure"] }
 clean = { cmd = "rm -rf build" }
 test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
   "build",
 ] }
 
-[feature.dev]
-dependencies = { pre-commit = ">=3.6.2,<3.7", tomlkit = ">=0.12.4,<0.13" }
+[feature.lint]
+dependencies = { pre-commit = ">=3.6.2" }
 tasks = { lint = { cmd = "pre-commit run --all" } }
 
-[feature.cholmod.dependencies]
-suitesparse = ">=5"
+# Cholmod support
+[feature.cholmod]
+dependencies = { suitesparse = ">=5" }
+activation = { env = { EIGENPY_CHOLMOD_SUPPORT = "ON" } }
 
-[feature.cholmod.tasks]
-configure = { cmd = [
-  "cmake",
-  "-G",
-  "Ninja",
-  "-B",
-  "build",
-  "-S",
-  ".",
-  "-DGENERATE_PYTHON_STUBS=ON",
-  "-DBUILD_WITH_CHOLMOD_SUPPORT=ON",
-] }
-
-# Accelerate only work on apple ARM platform
+# Accelerate only work on Apple ARM platform
 [feature.accelerate]
 platforms = ["osx-arm64"]
+activation = { env = { EIGENPY_ACCELERATE_SUPPORT = "ON" } }
 
-[feature.accelerate.tasks]
-configure = { cmd = [
-  "cmake",
-  "-G",
-  "Ninja",
-  "-B",
-  "build",
-  "-S",
-  ".",
-  "-DGENERATE_PYTHON_STUBS=ON",
-  "-DBUILD_WITH_ACCELERATE_SUPPORT=ON",
-] }
+[feature.all]
+dependencies = { suitesparse = ">=5" }
+activation = { env = { EIGENPY_CHOLMOD_SUPPORT = "ON" } }
+
+[feature.all.target.osx-arm64]
+activation = { env = { EIGENPY_ACCELERATE_SUPPORT = "ON" } }
 
 [feature.py312.dependencies]
 python = "3.12.*"
 
-[feature.py38.dependencies]
-python = "3.8.*"
+[feature.py39.dependencies]
+python = "3.9.*"
 
 [environments]
 default = { features = ["py312"], solve-group = "py312" }
-dev = { features = ["dev"], solve-group = "py312" }
+lint = { features = ["lint"], solve-group = "py312" }
 cholmod = { features = ["cholmod", "py312"], solve-group = "py312" }
 accelerate = { features = ["accelerate", "py312"], solve-group = "py312" }
-py38-ci = { features = ["py38", "cholmod"], solve-group = "py38" }
-py312-ci = { features = ["py312", "cholmod"], solve-group = "py312" }
-accelerate-ci = { features = [
-  "py312",
-  "cholmod",
-  "accelerate",
-], solve-group = "py312" }
+py39 = { features = ["py39"], solve-group = "py39" }
+all = { features = ["all", "py312"], solve-group = "py312" }
+all-py39 = { features = ["all", "py39"], solve-group = "py39" }
