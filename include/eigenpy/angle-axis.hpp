@@ -55,8 +55,7 @@ class AngleAxisVisitor : public bp::def_visitor<AngleAxisVisitor<AngleAxis> > {
             bp::make_function((Vector3 & (AngleAxis::*)()) & AngleAxis::axis,
                               bp::return_internal_reference<>()),
             &AngleAxisVisitor::setAxis, "The rotation axis.")
-        .add_property("angle",
-                      (Scalar(AngleAxis::*)() const) & AngleAxis::angle,
+        .add_property("angle", (Scalar(AngleAxis::*)() const)&AngleAxis::angle,
                       &AngleAxisVisitor::setAngle, "The rotation angle.")
 
         /* --- Methods --- */
