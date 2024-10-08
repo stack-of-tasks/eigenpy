@@ -43,9 +43,8 @@
   EIGENPY_PRAGMA_WARNING(Deprecated : the_message)
 #define EIGENPY_PRAGMA_DEPRECATED_HEADER(old_header, new_header) \
   EIGENPY_PRAGMA_WARNING(                                        \
-      Deprecated header file                                     \
-      : #old_header has been replaced                            \
-            by #new_header.\n Please use #new_header instead of #old_header.)
+      Deprecated header file : #old_header has been replaced     \
+          by #new_header.\n Please use #new_header instead of #old_header.)
 #elif defined(WIN32)
 #define EIGENPY_PRAGMA(x) __pragma(#x)
 #define EIGENPY_PRAGMA_MESSAGE(the_message) \

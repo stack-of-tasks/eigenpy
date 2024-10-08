@@ -54,8 +54,9 @@ struct LLTSolverVisitor
              bp::args("self", "vector", "sigma"), bp::return_self<>())
 #else
         .def("rankUpdate",
-             (Solver(Solver::*)(const VectorXs &, const RealScalar &)) &
-                 Solver::template rankUpdate<VectorXs>,
+             (Solver(Solver::*)(
+                 const VectorXs &,
+                 const RealScalar &))&Solver::template rankUpdate<VectorXs>,
              bp::args("self", "vector", "sigma"))
 #endif
 

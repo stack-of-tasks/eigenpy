@@ -32,8 +32,8 @@ void exposeIsApprox() {
 
   bp::def("is_approx",
           (bool (*)(const Eigen::MatrixBase<MatrixXs> &,
-                    const Eigen::MatrixBase<MatrixXs> &, const RealScalar &)) &
-              is_approx,
+                    const Eigen::MatrixBase<MatrixXs> &,
+                    const RealScalar &))&is_approx,
           (bp::arg("A"), bp::arg("B"), bp::arg("prec") = dummy_precision),
           "Returns True if A is approximately equal to B, within the "
           "precision determined by prec.");

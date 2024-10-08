@@ -69,17 +69,19 @@ BOOST_PYTHON_MODULE(complex) {
   bp::def("ascomplex",
           ascomplex<long double, Eigen::Dynamic, Eigen::Dynamic, 0>);
 
-  bp::def("real", (MatrixXf(*)(const Eigen::MatrixBase<MatrixXcf> &)) &
-                      real<MatrixXcf>);
-  bp::def("real", (MatrixXd(*)(const Eigen::MatrixBase<MatrixXcd> &)) &
-                      real<MatrixXcd>);
-  bp::def("real", (MatrixXld(*)(const Eigen::MatrixBase<MatrixXcld> &)) &
-                      real<MatrixXcld>);
+  bp::def("real",
+          (MatrixXf(*)(const Eigen::MatrixBase<MatrixXcf> &))&real<MatrixXcf>);
+  bp::def("real",
+          (MatrixXd(*)(const Eigen::MatrixBase<MatrixXcd> &))&real<MatrixXcd>);
+  bp::def(
+      "real",
+      (MatrixXld(*)(const Eigen::MatrixBase<MatrixXcld> &))&real<MatrixXcld>);
 
-  bp::def("imag", (MatrixXf(*)(const Eigen::MatrixBase<MatrixXcf> &)) &
-                      imag<MatrixXcf>);
-  bp::def("imag", (MatrixXd(*)(const Eigen::MatrixBase<MatrixXcd> &)) &
-                      imag<MatrixXcd>);
-  bp::def("imag", (MatrixXld(*)(const Eigen::MatrixBase<MatrixXcld> &)) &
-                      imag<MatrixXcld>);
+  bp::def("imag",
+          (MatrixXf(*)(const Eigen::MatrixBase<MatrixXcf> &))&imag<MatrixXcf>);
+  bp::def("imag",
+          (MatrixXd(*)(const Eigen::MatrixBase<MatrixXcd> &))&imag<MatrixXcd>);
+  bp::def(
+      "imag",
+      (MatrixXld(*)(const Eigen::MatrixBase<MatrixXcld> &))&imag<MatrixXcld>);
 }
