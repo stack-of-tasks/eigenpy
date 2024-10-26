@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - Don't use C++14 feature ([#510](https://github.com/stack-of-tasks/eigenpy/pull/510))
+- Add inline to `deprecationTypeToPyObj` definition to avoid linking error ([#512](https://github.com/stack-of-tasks/eigenpy/pull/512))
 
 ## [3.10.0] - 2024-09-26
 
