@@ -13,7 +13,7 @@ enum class DeprecationType { DEPRECATION, FUTURE };
 
 namespace detail {
 
-PyObject *deprecationTypeToPyObj(DeprecationType dep) {
+inline PyObject *deprecationTypeToPyObj(DeprecationType dep) {
   switch (dep) {
     case DeprecationType::DEPRECATION:
       return PyExc_DeprecationWarning;
