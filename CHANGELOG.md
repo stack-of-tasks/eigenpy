@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Add Pixi support ([#444](https://github.com/stack-of-tasks/eigenpy/pull/444))
+
 ### Fixed
 
 - Don't use C++14 feature ([#510](https://github.com/stack-of-tasks/eigenpy/pull/510))

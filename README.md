@@ -25,7 +25,7 @@ EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
 - extended API to expose several STL types and some of their Boost equivalents: `optional` types, `std::pair`, maps, variants...
 - full support of vectorization between C++ and Python (all the hold objects are properly aligned in memory)
 
-## Setup
+## Installation
 
 The installation of **EigenPy** on your computer is made easy for Linux/BSD, Mac OS X, and Windows environments.
 
@@ -78,6 +78,23 @@ brew install eigenpy
 ## Contributing
 
 Standard matrix decomposion routines of Eigen such as the SVD and QR decompositions can be readily added to **EigenPy** following the example of the Cholesky decomposition that is already implemented. Feel free to open a PR if you wrap them for your use case.
+
+## Build/install from source with Pixi
+
+To build **EigenPy** from source the easiest way is to use [Pixi](https://pixi.sh/latest/#installation).
+
+[Pixi](https://pixi.sh/latest/) is a cross-platform package management tool for developers that
+will install all required dependencies in `.pixi` directory.
+It's used by our CI agent so you have the guarantee to get the right dependencies.
+
+Run the following command to install dependencies, configure, build and test the project:
+
+```bash
+pixi run test
+```
+
+The project will be built in the `build` directory.
+You can run `pixi shell` and build the project with `cmake` and `ninja` manually.
 
 ## Credits
 
