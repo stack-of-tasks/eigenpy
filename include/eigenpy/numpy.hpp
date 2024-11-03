@@ -13,7 +13,7 @@
 
 // For compatibility with Numpy 2.x. See:
 // https://numpy.org/devdocs/reference/c-api/array.html#c.NPY_API_SYMBOL_ATTRIBUTE
-#define NPY_API_SYMBOL_ATTRIBUTE
+#define NPY_API_SYMBOL_ATTRIBUTE EIGENPY_DLLAPI
 
 // Numpy headers drags Python with them. As a result, it
 // is necessary to include the desired Python library before 
