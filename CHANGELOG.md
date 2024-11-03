@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
-- Fix Python library linkage for Debug build on Windows ([[#514](https://github.com/stack-of-tasks/eigenpy/pull/514)])
+- Fix Python library linkage for Debug build on Windows ([#514](https://github.com/stack-of-tasks/eigenpy/pull/514))
 
 ## [3.10.1] - 2024-10-30
 
