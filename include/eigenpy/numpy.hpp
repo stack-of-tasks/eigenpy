@@ -16,10 +16,10 @@
 #define NPY_API_SYMBOL_ATTRIBUTE EIGENPY_DLLAPI
 
 // Numpy headers drags Python with them. As a result, it
-// is necessary to include the desired Python library before 
+// is necessary to include the desired Python library before
 // Numpy picks the default one, as it would be impossible to
-// to change it afterward. Boost::Python provides a helper 
-// specifically dedicated to selecting the right Python 
+// to change it afterward. Boost::Python provides a helper
+// specifically dedicated to selecting the right Python
 // library depending on build type, so let's make use of it.
 #include <boost/python/detail/wrap_python.hpp>
 
