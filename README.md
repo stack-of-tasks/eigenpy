@@ -96,6 +96,24 @@ pixi run test
 The project will be built in the `build` directory.
 You can run `pixi shell` and build the project with `cmake` and `ninja` manually.
 
+## Release with Pixi
+
+To create a release with Pixi run the following commands on the **devel** branch:
+
+```bash
+EIGENPY_VERSION=X.Y.Z pixi run release_new_version
+git push origin
+git push origin vX.Y.Z
+git push origin devel:master
+```
+
+Where `X.Y.Z` is the new version.
+Be careful to follow the [Semantic Versioning](https://semver.org/spec/v2.0.0.html) rules.
+
+You will find the following assets to upload to GitHub:
+- `./build_new_version/eigenpy-X.Y.Z.tar.gz`
+- `./build_new_version/eigenpy-X.Y.Z.tar.gz.sig`
+
 ## Credits
 
 The following people have been involved in the development of **EigenPy**:
