@@ -24,10 +24,10 @@ python = ">=3.9.0"
 scipy = ">=1.10.0"
 
 [activation]
-scripts = ["build_scripts/pixi/activation.sh"]
+scripts = ["development/scripts//pixi/activation.sh"]
 
 [target.win-64.activation]
-scripts = ["build_scripts/pixi/activation.bat"]
+scripts = ["development/scripts//pixi/activation.bat"]
 
 [tasks]
 # We must avoid to set CMAKE_CXX_FLAGS because of WIN32
@@ -57,6 +57,30 @@ test = { cmd = "ctest --test-dir build --output-on-failure", depends_on = [
 dependencies = { pre-commit = ">=3.6.2" }
 tasks = { lint = { cmd = "pre-commit run --all" } }
 
+# Increment the version number with EIGENPY_VERSION variable
+[feature.new-version.dependencies]
+tomlkit = ">=0.13.2"
+
+[feature.new-version.tasks]
+configure_new_version = { cmd = [
+  "CXXFLAGS=$EIGENPY_CXX_FLAGS",
+  "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "build_new_version",
+  "-S",
+  ".",
+  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
+  "-DCMAKE_BUILD_TYPE=$EIGENPY_BUILD_TYPE",
+  "-DGENERATE_PYTHON_STUBS=ON",
+  "-DBUILD_WITH_CHOLMOD_SUPPORT=ON",
+  "-DBUILD_WITH_ACCELERATE_SUPPORT=OFF",
+] }
+release_new_version = { cmd = "VERSION=$EIGENPY_VERSION cmake --build build_new_version --target release", depends-on = [
+  "configure_new_version",
+] }
+
 # Cholmod support
 [feature.cholmod]
 dependencies = { suitesparse = ">=5" }
@@ -78,14 +102,14 @@ python = "3.9.*"
 # to avoid cxx-compiler to overwrite them.
 [feature.clang-cl]
 platforms = ["win-64"]
-activation = { scripts = ["build_scripts/pixi/activation_clang_cl.bat"] }
+activation = { scripts = ["development/scripts//pixi/activation_clang_cl.bat"] }
 
 # Use clang on GNU/Linux.
 # We must use scripts instead of env to setup CC and CXX
 # to avoid cxx-compiler to overwrite them.
 [feature.clang]
 platforms = ["linux-64"]
-activation = { scripts = ["build_scripts/pixi/activation_clang.sh"] }
+activation = { scripts = ["development/scripts//pixi/activation_clang.sh"] }
 dependencies = { clangxx = "*" }
 
 [environments]
@@ -101,5 +125,11 @@ all-py39 = { features = ["cholmod", "py39"], solve-group = "py39" }
 all-clang-cl = { features = [
   "cholmod",
   "clang-cl",
+  "py312",
+], solve-group = "py312" }
+# Release a new software version
+new-version = { features = [
+  "new-version",
+  "cholmod",
   "py312",
 ], solve-group = "py312" }
