@@ -29,7 +29,7 @@ EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
 
 The installation of **EigenPy** on your computer is made easy for Linux/BSD, Mac OS X, and Windows environments.
 
-### The Conda approach
+### Conda
 
 You simply need this simple line:
 ```bash
@@ -41,6 +41,7 @@ conda install eigenpy -c conda-forge
 You can easily install **EigenPy** from binaries.
 
 #### Add robotpkg apt repository
+
 1. Add robotpkg as source repository to apt:
 ```
 sudo sh -c "echo 'deb [arch=amd64] http://robotpkg.openrobots.org/packages/debian/pub $(lsb_release -cs) robotpkg' >> /etc/apt/sources.list.d/robotpkg.list"
@@ -55,6 +56,7 @@ sudo apt-get update
 ```
 
 #### Install EigenPy
+
 4. The installation of **EigenPy** and its dependencies is made through the line:
 
 ```bash
@@ -75,44 +77,9 @@ and then install **EigenPy** for Python 3.x with:
 brew install eigenpy
 ```
 
-## Contributing
+## Build
 
-Standard matrix decomposion routines of Eigen such as the SVD and QR decompositions can be readily added to **EigenPy** following the example of the Cholesky decomposition that is already implemented. Feel free to open a PR if you wrap them for your use case.
-
-## Build/install from source with Pixi
-
-To build **EigenPy** from source the easiest way is to use [Pixi](https://pixi.sh/latest/#installation).
-
-[Pixi](https://pixi.sh/latest/) is a cross-platform package management tool for developers that
-will install all required dependencies in `.pixi` directory.
-It's used by our CI agent so you have the guarantee to get the right dependencies.
-
-Run the following command to install dependencies, configure, build and test the project:
-
-```bash
-pixi run test
-```
-
-The project will be built in the `build` directory.
-You can run `pixi shell` and build the project with `cmake` and `ninja` manually.
-
-## Release with Pixi
-
-To create a release with Pixi run the following commands on the **devel** branch:
-
-```bash
-EIGENPY_VERSION=X.Y.Z pixi run release_new_version
-git push origin
-git push origin vX.Y.Z
-git push origin devel:master
-```
-
-Where `X.Y.Z` is the new version.
-Be careful to follow the [Semantic Versioning](https://semver.org/spec/v2.0.0.html) rules.
-
-You will find the following assets to upload to GitHub:
-- `./build_new_version/eigenpy-X.Y.Z.tar.gz`
-- `./build_new_version/eigenpy-X.Y.Z.tar.gz.sig`
+Build instruction can be found [here](./development/build.md)
 
 ## Credits
 
