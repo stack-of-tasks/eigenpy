@@ -1,5 +1,19 @@
 #include "header.hpp"
 
+
+// a placeholder for a library function that writes data into an existing matrix
+void set_to_ones(Eigen::Ref<Eigen::Matrix<mpfr_complex, Eigen::Dynamic, Eigen::Dynamic>>  M){
+  for (size_t ii=0; ii<M.rows(); ++ii){
+    for (size_t jj=0; jj<M.cols(); ++jj){
+      M(ii,jj) = mpfr_complex(1);
+    }
+  }
+
+}
+
+
+
+
 BOOST_PYTHON_MODULE(
     eigenpy_example_custom_numeric_type)  // this name must match the name of
                                           // the generated .so file.
@@ -25,6 +39,8 @@ void ExposeAll() {
 
   ExposeReal();
   ExposeComplex();
+
+  boost::python::def("set_to_ones", &set_to_ones, "set an array to all ones");
 }
 
 void ExposeReal() {
@@ -58,5 +74,6 @@ void ExposeComplex() {
   eigenpy::enableEigenPySpecific<MatXX>();
   eigenpy::enableEigenPySpecific<VecX>();
 }
+
 
 #undef IMPLICITLY_CONVERTIBLE
