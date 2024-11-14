@@ -11,20 +11,28 @@
 #define PY_ARRAY_UNIQUE_SYMBOL EIGENPY_ARRAY_API
 #endif
 
-// For compatibility with Numpy 2.x
-// See
+// For compatibility with Numpy 2.x. See:
 // https://numpy.org/devdocs/reference/c-api/array.html#c.NPY_API_SYMBOL_ATTRIBUTE
 #define NPY_API_SYMBOL_ATTRIBUTE EIGENPY_DLLAPI
+
+// When building with MSVC, Python headers use some pragma operator to link
+// against the Python DLL.
+// Unfortunately, it can link against the wrong build type of the library
+// leading to some linking issue.
+// Boost::Python provides a helper specifically dedicated to selecting the right
+// Python library depending on build type, so let's make use of it.
+// Numpy headers drags Python with them. As a result, it
+// is necessary to include this helper before including Numpy.
+// See: https://github.com/stack-of-tasks/eigenpy/pull/514
+#include <boost/python/detail/wrap_python.hpp>
 
 #include <numpy/numpyconfig.h>
 #ifdef NPY_1_8_API_VERSION
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #endif
 
-/* Allow compiling against NumPy 1.x and 2.x
-   see:
-   https://github.com/numpy/numpy/blob/afea8fd66f6bdbde855f5aff0b4e73eb0213c646/doc/source/reference/c-api/array.rst#L1224
-*/
+// Allow compiling against NumPy 1.x and 2.x. See:
+// https://github.com/numpy/numpy/blob/afea8fd66f6bdbde855f5aff0b4e73eb0213c646/doc/source/reference/c-api/array.rst#L1224
 #if NPY_ABI_VERSION < 0x02000000
 #define PyArray_DescrProto PyArray_Descr
 #endif
