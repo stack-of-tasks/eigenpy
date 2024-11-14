@@ -102,6 +102,14 @@ export_boost_default_options()
 find_package(Boost REQUIRED)
 search_for_boost_python(REQUIRED)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+find_package(MPFR REQUIRED)
+include_directories(${MPFR_INCLUDES})
+
+find_package(MPC REQUIRED)
+include_directories(${MPC_INCLUDES})
+
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
@@ -133,7 +141,7 @@ modernize_target_link_libraries(
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC eigenpy::eigenpy mpc mpfr)
+target_link_libraries(${PROJECT_NAME} PUBLIC eigenpy::eigenpy ${MPC_LIBRARIES} ${MPFR_LIBRARIES})
 
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})
