@@ -15,12 +15,15 @@
 // https://numpy.org/devdocs/reference/c-api/array.html#c.NPY_API_SYMBOL_ATTRIBUTE
 #define NPY_API_SYMBOL_ATTRIBUTE EIGENPY_DLLAPI
 
+// When building with MSVC, Python headers use some pragma operator to link
+// against the Python DLL.
+// Unfortunately, it can link against the wrong build type of the library
+// leading to some linking issue.
+// Boost::Python provides a helper specifically dedicated to selecting the right
+// Python library depending on build type, so let's make use of it.
 // Numpy headers drags Python with them. As a result, it
-// is necessary to include the desired Python library before
-// Numpy picks the default one, as it would be impossible to
-// to change it afterward. Boost::Python provides a helper
-// specifically dedicated to selecting the right Python
-// library depending on build type, so let's make use of it.
+// is necessary to include this helper before including Numpy.
+// See: https://github.com/stack-of-tasks/eigenpy/pull/514
 #include <boost/python/detail/wrap_python.hpp>
 
 #include <numpy/numpyconfig.h>
