@@ -1,26 +1,32 @@
 /*
- * Copyright 2020-2021 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #include "eigenpy/decompositions/decompositions.hpp"
 
-#include "eigenpy/decompositions/EigenSolver.hpp"
-#include "eigenpy/decompositions/LDLT.hpp"
-#include "eigenpy/decompositions/LLT.hpp"
-#include "eigenpy/decompositions/SelfAdjointEigenSolver.hpp"
-#include "eigenpy/decompositions/minres.hpp"
 #include "eigenpy/fwd.hpp"
 
 namespace eigenpy {
+
+void exposeEigenSolver();
+void exposeSelfAdjointEigenSolver();
+void exposeLLTSolver();
+void exposeLDLTSolver();
+void exposeQRSolvers();
+void exposeMINRESSolver();
+void exposeSimplicialLLTSolver();
+void exposeSimplicialLDLTSolver();
+void exposePermutationMatrix();
+
 void exposeDecompositions() {
   using namespace Eigen;
 
-  EigenSolverVisitor<MatrixXd>::expose("EigenSolver");
-  SelfAdjointEigenSolverVisitor<MatrixXd>::expose("SelfAdjointEigenSolver");
-  LLTSolverVisitor<MatrixXd>::expose("LLT");
-  LDLTSolverVisitor<MatrixXd>::expose("LDLT");
-
-  MINRESSolverVisitor<MatrixXd>::expose("MINRES");
+  exposeEigenSolver();
+  exposeSelfAdjointEigenSolver();
+  exposeLLTSolver();
+  exposeLDLTSolver();
+  exposeQRSolvers();
+  exposeMINRESSolver();
 
   {
     bp::enum_<DecompositionOptions>("DecompositionOptions")
@@ -34,5 +40,19 @@ void exposeDecompositions() {
         .value("ABx_lx", ABx_lx)
         .value("BAx_lx", BAx_lx);
   }
+
+  // Expose sparse decompositions
+  exposeSimplicialLLTSolver();
+  exposeSimplicialLDLTSolver();
+
+  exposePermutationMatrix();
+
+#ifdef EIGENPY_WITH_CHOLMOD_SUPPORT
+  exposeCholmod();
+#endif
+
+#ifdef EIGENPY_WITH_ACCELERATE_SUPPORT
+  exposeAccelerate();
+#endif
 }
 }  // namespace eigenpy

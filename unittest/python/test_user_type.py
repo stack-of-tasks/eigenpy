@@ -1,5 +1,5 @@
-import user_type
 import numpy as np
+import user_type
 
 # from packaging import version
 
@@ -8,8 +8,9 @@ cols = 20
 
 
 def test(dtype):
-    mat = np.array(np.ones((rows, cols)).astype(np.intc), dtype=dtype)
-    mat = np.random.rand(rows, cols).astype(dtype)
+    rng = np.random.default_rng()
+    mat = np.array(np.ones((rows, cols)).astype(np.int32), dtype=dtype)
+    mat = rng.random((rows, cols)).astype(dtype)
     mat_copy = mat.copy()
     assert (mat == mat_copy).all()
     assert not (mat != mat_copy).all()
@@ -66,4 +67,4 @@ test(user_type.CustomFloat)
 
 v = user_type.CustomDouble(1)
 a = np.array(v)
-assert type(v) == a.dtype.type
+assert type(v) is a.dtype.type

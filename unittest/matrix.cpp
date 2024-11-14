@@ -132,6 +132,11 @@ ReturnMatrix copy(const Eigen::MatrixBase<Matrix>& mat) {
   return mat;
 }
 
+template <typename Matrix>
+Matrix copy_same(const Eigen::MatrixBase<Matrix>& mat) {
+  return mat;
+}
+
 BOOST_PYTHON_MODULE(matrix) {
   using namespace Eigen;
   namespace bp = boost::python;
@@ -190,4 +195,39 @@ BOOST_PYTHON_MODULE(matrix) {
           copy<RowMajorMatrixXd, RowMajorMatrixXd>);
   bp::def("asRowMajorFromRowMajorVector",
           copy<Eigen::RowVectorXd, Eigen::RowVectorXd>);
+
+  bp::def("copyBoolToBool", copy_same<Eigen::Matrix<bool, -1, -1> >);
+
+  bp::def("copyInt8ToInt8", copy_same<Eigen::Matrix<int8_t, -1, -1> >);
+  bp::def("copyCharToChar", copy_same<Eigen::Matrix<char, -1, -1> >);
+  bp::def("copyUCharToUChar", copy_same<Eigen::Matrix<unsigned char, -1, -1> >);
+
+  bp::def("copyInt16ToInt16", copy_same<Eigen::Matrix<int16_t, -1, -1> >);
+  bp::def("copyUInt16ToUInt16", copy_same<Eigen::Matrix<uint16_t, -1, -1> >);
+
+  bp::def("copyInt32ToInt32", copy_same<Eigen::Matrix<int32_t, -1, -1> >);
+  bp::def("copyUInt32ToUInt32", copy_same<Eigen::Matrix<uint32_t, -1, -1> >);
+
+  bp::def("copyInt64ToInt64", copy_same<Eigen::Matrix<int64_t, -1, -1> >);
+  bp::def("copyUInt64ToUInt64", copy_same<Eigen::Matrix<uint64_t, -1, -1> >);
+
+  bp::def("copyLongToLong", copy_same<Eigen::Matrix<long, -1, -1> >);
+  bp::def("copyULongToULong", copy_same<Eigen::Matrix<unsigned long, -1, -1> >);
+
+  bp::def("copyLongLongToLongLong",
+          copy_same<Eigen::Matrix<long long, -1, -1> >);
+  bp::def("copyULongLongToULongLong",
+          copy_same<Eigen::Matrix<unsigned long long, -1, -1> >);
+
+  bp::def("copyFloatToFloat", copy_same<Eigen::Matrix<float, -1, -1> >);
+  bp::def("copyDoubleToDouble", copy_same<Eigen::Matrix<double, -1, -1> >);
+  bp::def("copyLongDoubleToLongDouble",
+          copy_same<Eigen::Matrix<long double, -1, -1> >);
+
+  bp::def("copyCFloatToCFloat",
+          copy_same<Eigen::Matrix<std::complex<float>, -1, -1> >);
+  bp::def("copyCDoubleToCDouble",
+          copy_same<Eigen::Matrix<std::complex<double>, -1, -1> >);
+  bp::def("copyCLongDoubleToCLongDouble",
+          copy_same<Eigen::Matrix<std::complex<long double>, -1, -1> >);
 }

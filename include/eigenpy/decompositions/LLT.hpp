@@ -1,15 +1,16 @@
 /*
- * Copyright 2020-2021 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
-#ifndef __eigenpy_decomposition_llt_hpp__
-#define __eigenpy_decomposition_llt_hpp__
+#ifndef __eigenpy_decompositions_llt_hpp__
+#define __eigenpy_decompositions_llt_hpp__
 
 #include <Eigen/Cholesky>
 #include <Eigen/Core>
 
 #include "eigenpy/eigenpy.hpp"
 #include "eigenpy/utils/scalar-name.hpp"
+#include "eigenpy/eigen/EigenBase.hpp"
 
 namespace eigenpy {
 
@@ -36,6 +37,8 @@ struct LLTSolverVisitor
             bp::args("self", "matrix"),
             "Constructs a LLT factorization from a given matrix."))
 
+        .def(EigenBaseVisitor<Solver>())
+
         .def("matrixL", &matrixL, bp::arg("self"),
              "Returns the lower triangular matrix L.")
         .def("matrixU", &matrixU, bp::arg("self"),
@@ -51,8 +54,9 @@ struct LLTSolverVisitor
              bp::args("self", "vector", "sigma"), bp::return_self<>())
 #else
         .def("rankUpdate",
-             (Solver(Solver::*)(const VectorXs &, const RealScalar &)) &
-                 Solver::template rankUpdate<VectorXs>,
+             (Solver(Solver::*)(
+                 const VectorXs &,
+                 const RealScalar &))&Solver::template rankUpdate<VectorXs>,
              bp::args("self", "vector", "sigma"))
 #endif
 
@@ -112,6 +116,7 @@ struct LLTSolverVisitor
         "remains useful in many other situations like generalised eigen "
         "problems with hermitian matrices.",
         bp::no_init)
+        .def(IdVisitor<Solver>())
         .def(LLTSolverVisitor());
   }
 
@@ -127,4 +132,4 @@ struct LLTSolverVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_decomposition_llt_hpp__
+#endif  // ifndef __eigenpy_decompositions_llt_hpp__

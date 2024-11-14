@@ -1,20 +1,21 @@
-import numpy as np
-import eigenpy
-import inspect
 import pprint
+
+import numpy as np
 import std_vector
-from std_vector import printVectorOfMatrix, printVectorOf3x3, copyStdVector
+from std_vector import copyStdVector, printVectorOf3x3, printVectorOfMatrix
 
-np.random.seed(0)
+import eigenpy
 
-l1 = [np.random.randn(3), np.random.randn(2)]
+rng = np.random.default_rng(0)
+
+l1 = [rng.standard_normal(3), rng.standard_normal(2)]
 l2 = eigenpy.StdVec_VectorXd(l1)
-l3 = [np.random.randn(2, 2), np.random.randn(3, 1)]
+l3 = [rng.standard_normal((2, 2)), rng.standard_normal((3, 1))]
 l3.append(np.asfortranarray(np.eye(2)))
 l3.append(np.eye(2))
-l4 = [np.random.randn(3, 3).T for _ in range(3)]
+l4 = [rng.standard_normal((3, 3)).T for _ in range(3)]
 l4[-1] = l4[-1].T
-l5 = [np.random.randn(2, 2).T for _ in range(3)]
+l5 = [rng.standard_normal((2, 2)).T for _ in range(3)]
 
 
 def checkAllValues(li1, li2):
@@ -48,9 +49,9 @@ l4_copy2 = std_vector.copyStdVec_3x3(l4)
 assert isinstance(l4_copy2, std_vector.StdVec_Mat3d)
 
 
-def checkZero(l):
-    for x in l:
-        assert np.allclose(x, 0.0), "x = {}".format(x)
+def checkZero(v):
+    for x in v:
+        assert np.allclose(x, 0.0), f"x = {x}"
 
 
 print("Check setZero() works:")

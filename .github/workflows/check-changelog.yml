@@ -1,7 +1,8 @@
-name: Check-changelog
+name: CI - Check-changelog
+
 on:
   pull_request:
-    types: [assigned, opened, synchronize, reopened, labeled, unlabeled]
+    types: [assigned, opened, synchronize, reopened, labeled, unlabeled, edited]
     branches:
       - devel
 jobs:

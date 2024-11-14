@@ -1,6 +1,6 @@
+import numpy as np
 import return_by_ref
 from return_by_ref import Matrix, RowMatrix, Vector
-import numpy as np
 
 
 def test_shared(mat):

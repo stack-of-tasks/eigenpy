@@ -1,6 +1,5 @@
 import std_array
 
-
 ints = std_array.get_arr_3_ints()
 print(ints[0])
 print(ints[1])

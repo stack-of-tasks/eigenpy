@@ -1,61 +1,44 @@
-/// Copyright (c) 2016-2022 CNRS INRIA
-/// This file was taken from Pinocchio (header
-/// <pinocchio/bindings/python/utils/std-vector.hpp>)
+/// Copyright (c) 2024, INRIA
 ///
 
-#ifndef __eigenpy_utils_map_hpp__
-#define __eigenpy_utils_map_hpp__
+#ifndef __eigenpy_std_map_hpp__
+#define __eigenpy_std_map_hpp__
 
-#include <boost/python/suite/indexing/map_indexing_suite.hpp>
+#include "eigenpy/map.hpp"
+#include "eigenpy/deprecated.hpp"
+#include <map>
 
 namespace eigenpy {
-namespace details {
+
 template <typename Container>
-struct overload_base_get_item_for_std_map
-    : public boost::python::def_visitor<
-          overload_base_get_item_for_std_map<Container> > {
-  typedef typename Container::value_type value_type;
-  typedef typename Container::value_type::second_type data_type;
-  typedef typename Container::key_type key_type;
-  typedef typename Container::key_type index_type;
+using overload_base_get_item_for_std_map EIGENPY_DEPRECATED_MESSAGE(
+    "Use overload_base_get_item_for_map<> instead.") =
+    overload_base_get_item_for_map<Container>;
 
-  template <class Class>
-  void visit(Class& cl) const {
-    cl.def("__getitem__", &base_get_item);
-  }
-
- private:
-  static boost::python::object base_get_item(
-      boost::python::back_reference<Container&> container, PyObject* i_) {
-    index_type idx = convert_index(container.get(), i_);
-    typename Container::iterator i = container.get().find(idx);
-    if (i == container.get().end()) {
-      PyErr_SetString(PyExc_KeyError, "Invalid key");
-      bp::throw_error_already_set();
-    }
-
-    typename bp::to_python_indirect<data_type&,
-                                    bp::detail::make_reference_holder>
-        convert;
-    return bp::object(bp::handle<>(convert(i->second)));
-  }
-
-  static index_type convert_index(Container& /*container*/, PyObject* i_) {
-    bp::extract<key_type const&> i(i_);
-    if (i.check()) {
-      return i();
-    } else {
-      bp::extract<key_type> i(i_);
-      if (i.check()) return i();
-    }
-
-    PyErr_SetString(PyExc_TypeError, "Invalid index type");
-    bp::throw_error_already_set();
-    return index_type();
-  }
-};
-
+namespace details {
+using ::eigenpy::overload_base_get_item_for_std_map;
 }  // namespace details
+
+/**
+ * @brief Expose an std::map from a type given as template argument.
+ *
+ * @param[in] T          Type to expose as std::map<T>.
+ * @param[in] Compare    Type for the Compare in std::map<T,Compare,Allocator>.
+ * @param[in] Allocator  Type for the Allocator in
+ * std::map<T,Compare,Allocator>.
+ * @param[in] NoProxy    When set to false, the elements will be copied when
+ * returned to Python.
+ */
+template <class Key, class T, class Compare = std::less<Key>,
+          class Allocator = std::allocator<std::pair<const Key, T> >,
+          bool NoProxy = false>
+struct StdMapPythonVisitor
+    : GenericMapVisitor<std::map<Key, T, Compare, Allocator>, NoProxy> {};
+
+namespace python {
+// fix previous mistake
+using ::eigenpy::StdMapPythonVisitor;
+}  // namespace python
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_utils_map_hpp__
+#endif  // ifndef __eigenpy_std_map_hpp__

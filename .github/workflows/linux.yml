@@ -1,6 +1,27 @@
-name: Check build on linux
+name: CI - Linux via APT
 
-on: ["push", "pull_request"]
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
@@ -16,12 +37,12 @@ jobs:
           submodules: 'true'
       - run: |
           sudo apt-get update
-          sudo apt-get install cmake libboost-all-dev libeigen3-dev python*-numpy python*-dev
+          sudo apt-get install cmake libboost-all-dev libeigen3-dev python*-numpy python*-dev python*-scipy
           echo $(sudo apt list --installed)
           echo $(g++ --version)
-      - run: cmake -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) .
+      - run: cmake . -DPYTHON_EXECUTABLE=$(which python${{ matrix.python }}) -DBUILD_TESTING_SCIPY=ON
       - run: make -j2
-      - run: make test
+      - run: ctest --output-on-failure
 
   check:
     if: always()

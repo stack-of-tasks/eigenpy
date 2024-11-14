@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 CNRS INRIA
+ * Copyright 2014-2024 CNRS INRIA
  */
 
 #ifndef __eigenpy_fwd_hpp__
@@ -43,9 +43,8 @@
   EIGENPY_PRAGMA_WARNING(Deprecated : the_message)
 #define EIGENPY_PRAGMA_DEPRECATED_HEADER(old_header, new_header) \
   EIGENPY_PRAGMA_WARNING(                                        \
-      Deprecated header file                                     \
-      : #old_header has been replaced                            \
-            by #new_header.\n Please use #new_header instead of #old_header.)
+      Deprecated header file : #old_header has been replaced     \
+          by #new_header.\n Please use #new_header instead of #old_header.)
 #elif defined(WIN32)
 #define EIGENPY_PRAGMA(x) __pragma(#x)
 #define EIGENPY_PRAGMA_MESSAGE(the_message) \
@@ -65,6 +64,7 @@
 #define EIGENPY_DOCUMENTATION_END_IGNORE    /// \endcond
 
 #include "eigenpy/config.hpp"
+#include <boost/type_traits/is_base_of.hpp>
 
 // Silence a warning about a deprecated use of boost bind by boost python
 // at least fo boost 1.73 to 1.75
@@ -72,6 +72,9 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <boost/python/scope.hpp>
+
+#include <type_traits>
+#include <utility>
 
 namespace eigenpy {
 
@@ -86,6 +89,7 @@ namespace bp = boost::python;
 #undef BOOST_BIND_GLOBAL_PLACEHOLDERS
 
 #include <Eigen/Core>
+#include <Eigen/Sparse>
 #include <Eigen/Geometry>
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
@@ -105,6 +109,12 @@ namespace bp = boost::python;
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
 #define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type *)(NULL))
+#ifndef NDEBUG
+#define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var)
+#else
+#define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var) \
+  EIGENPY_UNUSED_VARIABLE(var)
+#endif
 
 #ifdef EIGENPY_WITH_CXX11_SUPPORT
 #include <memory>
@@ -115,13 +125,13 @@ namespace bp = boost::python;
 #endif
 
 namespace eigenpy {
-template <typename MatType,
-          typename Scalar =
-              typename boost::remove_reference<MatType>::type::Scalar>
+
+// Default Scalar value can't be defined in the declaration
+// because of a CL bug.
+// See https://github.com/stack-of-tasks/eigenpy/pull/462
+template <typename MatType, typename Scalar>
 struct EigenToPy;
-template <typename MatType,
-          typename Scalar =
-              typename boost::remove_reference<MatType>::type::Scalar>
+template <typename MatType, typename Scalar>
 struct EigenFromPy;
 
 template <typename T>
@@ -135,17 +145,20 @@ struct get_eigen_base_type {
   typedef typename remove_const_reference<EigenType>::type EigenType_;
   typedef typename boost::mpl::if_<
       boost::is_base_of<Eigen::MatrixBase<EigenType_>, EigenType_>,
-      Eigen::MatrixBase<EigenType_>
-#ifdef EIGENPY_WITH_TENSOR_SUPPORT
-      ,
+      Eigen::MatrixBase<EigenType_>,
       typename boost::mpl::if_<
-          boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
-          Eigen::TensorBase<EigenType_>, void>::type
+          boost::is_base_of<Eigen::SparseMatrixBase<EigenType_>, EigenType_>,
+          Eigen::SparseMatrixBase<EigenType_>
+#ifdef EIGENPY_WITH_TENSOR_SUPPORT
+          ,
+          typename boost::mpl::if_<
+              boost::is_base_of<Eigen::TensorBase<EigenType_>, EigenType_>,
+              Eigen::TensorBase<EigenType_>, void>::type
 #else
-      ,
-      void
+          ,
+          void
 #endif
-      >::type _type;
+          >::type>::type _type;
 
   typedef typename boost::mpl::if_<
       boost::is_const<typename boost::remove_reference<EigenType>::type>,
@@ -153,22 +166,39 @@ struct get_eigen_base_type {
 };
 
 template <typename EigenType>
-struct get_eigen_ref_plain_type;
+struct get_eigen_plain_type;
 
 template <typename MatType, int Options, typename Stride>
-struct get_eigen_ref_plain_type<Eigen::Ref<MatType, Options, Stride> > {
+struct get_eigen_plain_type<Eigen::Ref<MatType, Options, Stride> > {
   typedef typename Eigen::internal::traits<
       Eigen::Ref<MatType, Options, Stride> >::PlainObjectType type;
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-struct get_eigen_ref_plain_type<Eigen::TensorRef<TensorType> > {
+struct get_eigen_plain_type<Eigen::TensorRef<TensorType> > {
   typedef TensorType type;
 };
 #endif
+
+namespace internal {
+template <class T1, class T2>
+struct has_operator_equal_impl {
+  template <class U, class V>
+  static auto check(U *) -> decltype(std::declval<U>() == std::declval<V>());
+  template <typename, typename>
+  static auto check(...) -> std::false_type;
+
+  using type = typename std::is_same<bool, decltype(check<T1, T2>(0))>::type;
+};
+}  // namespace internal
+
+template <class T1, class T2 = T1>
+struct has_operator_equal : internal::has_operator_equal_impl<T1, T2>::type {};
+
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
+#include "eigenpy/id.hpp"
 
 #endif  // ifndef __eigenpy_fwd_hpp__

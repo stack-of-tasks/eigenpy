@@ -11,14 +11,30 @@ set(PROJECT_USE_CMAKE_EXPORT TRUE)
 set(PROJECT_USE_KEYWORD_LINK_LIBRARIES TRUE)
 set(PROJECT_CUSTOM_HEADER_EXTENSION "hpp")
 set(PROJECT_COMPATIBILITY_VERSION AnyNewerVersion)
+# To enable jrl-cmakemodules compatibility with workspace we must define the two
+# following lines
+set(PROJECT_AUTO_RUN_FINALIZE FALSE)
+set(PROJECT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # Check if the submodule cmake have been initialized
 set(JRL_CMAKE_MODULES "${CMAKE_CURRENT_LIST_DIR}/cmake")
-if(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
-  if(${CMAKE_VERSION} VERSION_LESS "3.14.0")
+if(EXISTS "${JRL_CMAKE_MODULES}/base.cmake")
+  message(STATUS "JRL cmakemodules found in 'cmake/' git submodule")
+else()
+  find_package(jrl-cmakemodules QUIET CONFIG)
+  if(jrl-cmakemodules_FOUND)
+    get_property(
+      JRL_CMAKE_MODULES
+      TARGET jrl-cmakemodules::jrl-cmakemodules
+      PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
+    message(STATUS "JRL cmakemodules found on system at ${JRL_CMAKE_MODULES}")
+  elseif(${CMAKE_VERSION} VERSION_LESS "3.14.0")
     message(
       FATAL_ERROR
-        "\nPlease run the following command first:\ngit submodule update --init\n"
+        "\nCan't find jrl-cmakemodules. Please either:\n"
+        "  - use git submodule: 'git submodule update --init'\n"
+        "  - or install https://github.com/jrl-umi3218/jrl-cmakemodules\n"
+        "  - or upgrade your CMake version to >= 3.14 to allow automatic fetching\n"
     )
   else()
     message(STATUS "JRL cmakemodules not found. Let's fetch it.")
@@ -31,6 +47,14 @@ if(NOT EXISTS "${CMAKE_SOURCE_DIR}/cmake/base.cmake")
   endif()
 endif()
 
+function(set_standard_output_directory target)
+  set_target_properties(
+    ${target}
+    PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
+               LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+               ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+endfunction()
+
 # Disable -Werror on Unix for now.
 set(CXX_DISABLE_WERROR True)
 set(CMAKE_VERBOSE_MAKEFILE True)
@@ -41,16 +65,14 @@ set(CMAKE_VERBOSE_MAKEFILE True)
 # ----------------------------------------------------
 option(INSTALL_DOCUMENTATION "Generate and install the documentation" OFF)
 option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
+option(BUILD_TESTING_SCIPY
+       "Build the SciPy tests (scipy should be installed on the machine)" ON)
 
-if(DEFINED BUILD_UNIT_TESTS)
-  message(
-    AUTHOR_WARNING
-      "BUILD_UNIT_TESTS is deprecated. Use BUILD_TESTING instead.\
-    If you are manually building EigenPy from source in an existing build folder,\
-    we suggest that you delete your build folder and make a new one.")
-  set(BUILD_TESTING ${BUILD_UNIT_TESTS})
-endif(DEFINED BUILD_UNIT_TESTS)
-
+# Use BoostConfig module distributed by boost library instead of using FindBoost
+# module distributed by CMake
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 NEW)
+endif()
 include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
 project(${PROJECT_NAME} ${PROJECT_ARGS})
@@ -62,6 +84,15 @@ include("${JRL_CMAKE_MODULES}/apple.cmake")
 
 option(GENERATE_PYTHON_STUBS
        "Generate the Python stubs associated to the Python library" OFF)
+
+option(BUILD_WITH_CHOLMOD_SUPPORT "Build EigenPy with the Cholmod support" OFF)
+
+if(APPLE)
+  option(BUILD_WITH_ACCELERATE_SUPPORT
+         "Build EigenPy with the Accelerate support" OFF)
+else(APPLE)
+  set(BUILD_WITH_ACCELERATE_SUPPORT FALSE)
+endif(APPLE)
 
 string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
@@ -106,12 +137,45 @@ export_boost_default_options()
 find_package(Boost REQUIRED)
 search_for_boost_python(REQUIRED)
 
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  set(CMAKE_MODULE_PATH ${JRL_CMAKE_MODULES}/find-external/CHOLMOD
+                        ${CMAKE_MODULE_PATH})
+  add_project_dependency(CHOLMOD REQUIRED FIND_EXTERNAL "CHOLMOD")
+  message(
+    STATUS
+      "Build with CHOLDOD support (LGPL). See CHOLMOD/Doc/License.txt for further details."
+  )
+  add_definitions(-DEIGENPY_WITH_CHOLMOD_SUPPORT)
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+if(BUILD_WITH_ACCELERATE_SUPPORT)
+  if(NOT ${Eigen3_VERSION} VERSION_GREATER_EQUAL "3.4.90")
+    message(
+      FATAL_ERROR
+        "Your version of Eigen is too low. Should be at least 3.4.90. Current version is ${Eigen3_VERSION}."
+    )
+  endif()
+
+  set(CMAKE_MODULE_PATH ${JRL_CMAKE_MODULES}/find-external/Accelerate
+                        ${CMAKE_MODULE_PATH})
+  find_package(
+    Accelerate REQUIRED # FIND_EXTERNAL "Accelerate" # We don't export yet as
+                        # there might be an issue on AMR64 platforms
+  )
+  message(STATUS "Build with Accelerate support framework.")
+  add_definitions(-DEIGENPY_WITH_ACCELERATE_SUPPORT)
+endif(BUILD_WITH_ACCELERATE_SUPPORT)
+
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
 set(${PROJECT_NAME}_UTILS_HEADERS
-    include/eigenpy/utils/scalar-name.hpp include/eigenpy/utils/is-approx.hpp
-    include/eigenpy/utils/is-aligned.hpp)
+    include/eigenpy/utils/scalar-name.hpp
+    include/eigenpy/utils/is-approx.hpp
+    include/eigenpy/utils/is-aligned.hpp
+    include/eigenpy/utils/traits.hpp
+    include/eigenpy/utils/python-compat.hpp
+    include/eigenpy/utils/empty-visitor.hpp)
 
 set(${PROJECT_NAME}_SOLVERS_HEADERS
     include/eigenpy/solvers/solvers.hpp
@@ -123,20 +187,57 @@ set(${PROJECT_NAME}_SOLVERS_HEADERS
     include/eigenpy/solvers/BasicPreconditioners.hpp
     include/eigenpy/solvers/BFGSPreconditioners.hpp)
 
+set(${PROJECT_NAME}_EIGEN_HEADERS include/eigenpy/eigen/EigenBase.hpp)
+
+set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_CHOLMOD_HEADERS
+    include/eigenpy/decompositions/sparse/cholmod/CholmodBase.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodDecomposition.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLDLT.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLLT.hpp
+    include/eigenpy/decompositions/sparse/cholmod/CholmodSupernodalLLT.hpp)
+
+set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_ACCELERATE_HEADERS
+    include/eigenpy/decompositions/sparse/accelerate/accelerate.hpp)
+
+set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
+    include/eigenpy/decompositions/sparse/LLT.hpp
+    include/eigenpy/decompositions/sparse/LDLT.hpp
+    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
+    include/eigenpy/decompositions/sparse/SparseSolverBase.hpp)
+
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
+       ${${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_CHOLMOD_HEADERS})
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+if(BUILD_WITH_ACCELERATE_SUPPORT)
+  list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
+       ${${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_ACCELERATE_HEADERS})
+endif(BUILD_WITH_ACCELERATE_SUPPORT)
+
 set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
+    ${${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS}
     include/eigenpy/decompositions/decompositions.hpp
     include/eigenpy/decompositions/EigenSolver.hpp
+    include/eigenpy/decompositions/PermutationMatrix.hpp
     include/eigenpy/decompositions/LDLT.hpp
     include/eigenpy/decompositions/LLT.hpp
+    include/eigenpy/decompositions/QR.hpp
+    include/eigenpy/decompositions/HouseholderQR.hpp
+    include/eigenpy/decompositions/ColPivHouseholderQR.hpp
+    include/eigenpy/decompositions/CompleteOrthogonalDecomposition.hpp
+    include/eigenpy/decompositions/FullPivHouseholderQR.hpp
     include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
     include/eigenpy/decompositions/minres.hpp)
 
 set(${PROJECT_NAME}_HEADERS
     ${${PROJECT_NAME}_UTILS_HEADERS}
     ${${PROJECT_NAME}_SOLVERS_HEADERS}
+    ${${PROJECT_NAME}_EIGEN_HEADERS}
     ${${PROJECT_NAME}_DECOMPOSITIONS_HEADERS}
     include/eigenpy/alignment.hpp
     include/eigenpy/computation-info.hpp
+    include/eigenpy/deprecation-policy.hpp
     include/eigenpy/eigenpy.hpp
     include/eigenpy/exception.hpp
     include/eigenpy/scalar-conversion.hpp
@@ -148,9 +249,11 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/eigen-to-python.hpp
     include/eigenpy/eigen-from-python.hpp
     include/eigenpy/eigen-typedef.hpp
+    include/eigenpy/id.hpp
     include/eigenpy/numpy-map.hpp
     include/eigenpy/geometry.hpp
     include/eigenpy/geometry-conversion.hpp
+    include/eigenpy/map.hpp
     include/eigenpy/memory.hpp
     include/eigenpy/numpy.hpp
     include/eigenpy/numpy-allocator.hpp
@@ -170,7 +273,13 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/pickle-vector.hpp
     include/eigenpy/stride.hpp
     include/eigenpy/tensor/eigen-from-python.hpp
+    include/eigenpy/sparse/eigen-from-python.hpp
+    include/eigenpy/scipy-allocator.hpp
+    include/eigenpy/scipy-type.hpp
+    include/eigenpy/variant.hpp
+    include/eigenpy/std-unique-ptr.hpp
     include/eigenpy/swig.hpp
+    include/eigenpy/type_info.hpp
     include/eigenpy/version.hpp)
 
 list(
@@ -187,7 +296,27 @@ set(${PROJECT_NAME}_SOLVERS_SOURCES src/solvers/preconditioners.cpp
                                     src/solvers/solvers.cpp)
 
 set(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
-    src/decompositions/decompositions.cpp)
+    src/decompositions/decompositions.cpp
+    src/decompositions/eigen-solver.cpp
+    src/decompositions/llt-solver.cpp
+    src/decompositions/ldlt-solver.cpp
+    src/decompositions/minres-solver.cpp
+    src/decompositions/qr-solvers.cpp
+    src/decompositions/eigen-solver.cpp
+    src/decompositions/self-adjoint-eigen-solver.cpp
+    src/decompositions/permutation-matrix.cpp
+    src/decompositions/simplicial-llt-solver.cpp
+    src/decompositions/simplicial-ldlt-solver.cpp)
+
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
+       src/decompositions/cholmod.cpp)
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+if(BUILD_WITH_ACCELERATE_SUPPORT)
+  list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
+       src/decompositions/accelerate.cpp)
+endif(BUILD_WITH_ACCELERATE_SUPPORT)
 
 set(${PROJECT_NAME}_SOURCES
     ${${PROJECT_NAME}_SOLVERS_SOURCES}
@@ -204,21 +333,39 @@ set(${PROJECT_NAME}_SOURCES
     src/matrix-long-double.cpp
     src/matrix-complex-long-double.cpp
     src/matrix-bool.cpp
-    src/matrix-int.cpp
-    src/matrix-long.cpp
+    src/matrix-char.cpp
+    src/matrix-int8.cpp
+    src/matrix-uint8.cpp
+    src/matrix-int16.cpp
+    src/matrix-uint16.cpp
+    src/matrix-int32.cpp
+    src/matrix-uint32.cpp
+    src/matrix-windows-long.cpp
+    src/matrix-windows-ulong.cpp
+    src/matrix-mac-long.cpp
+    src/matrix-mac-ulong.cpp
+    src/matrix-int64.cpp
+    src/matrix-uint64.cpp
+    src/matrix-linux-long-long.cpp
+    src/matrix-linux-ulong-long.cpp
     src/angle-axis.cpp
     src/quaternion.cpp
     src/geometry-conversion.cpp
+    src/scipy-type.cpp
     src/std-vector.cpp
     src/optional.cpp
+    src/type_info.cpp
     src/version.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})
+add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+set_standard_output_directory(${PROJECT_NAME})
 target_include_directories(
   ${PROJECT_NAME} SYSTEM
   PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-         $<INSTALL_INTERFACE:include>)
+         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 modernize_target_link_libraries(
   ${PROJECT_NAME}
@@ -238,6 +385,19 @@ modernize_target_link_libraries(
   INCLUDE_DIRS
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
+
+# Links against CholMod
+if(BUILD_WITH_CHOLMOD_SUPPORT)
+  modernize_target_link_libraries(${PROJECT_NAME} SCOPE PUBLIC TARGETS
+                                  CHOLMOD::CHOLMOD)
+endif(BUILD_WITH_CHOLMOD_SUPPORT)
+
+# Links against accelerate
+if(BUILD_WITH_ACCELERATE_SUPPORT)
+  # modernize_target_link_libraries(${PROJECT_NAME} SCOPE PUBLIC TARGETS
+  # Accelerate)
+  target_link_libraries(${PROJECT_NAME} PRIVATE "-framework accelerate")
+endif(BUILD_WITH_ACCELERATE_SUPPORT)
 
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})
@@ -307,3 +467,5 @@ pkg_config_append_libs(${PROJECT_NAME})
 pkg_config_append_cflags("-I${PYTHON_INCLUDE_DIRS}")
 pkg_config_append_cflags("-I${NUMPY_INCLUDE_DIRS}")
 pkg_config_append_boost_libs(${BOOST_COMPONENTS})
+
+setup_project_finalize()

@@ -1,0 +1,92 @@
+/// @file
+/// @copyright Copyright 2024 CNRS INRIA
+
+#include <eigenpy/eigenpy.hpp>
+#include <eigenpy/variant.hpp>
+
+#include <string>
+#include <complex>
+
+#cmakedefine TEST_TYPE @TEST_TYPE@
+#define VARIANT TEST_TYPE
+
+namespace bp = boost::python;
+
+struct V1 {
+  int v;
+};
+struct V2 {
+  char v;
+};
+typedef VARIANT<V1, V2> MyVariant;
+
+template <typename Variant>
+struct MyVariantNoneHelper {};
+
+template <typename... Alternatives>
+struct MyVariantNoneHelper<boost::variant<Alternatives...> > {
+  typedef VARIANT<boost::blank, Alternatives...> type;
+};
+
+#ifdef EIGENPY_WITH_CXX17_SUPPORT
+template <typename... Alternatives>
+struct MyVariantNoneHelper<std::variant<Alternatives...> > {
+  typedef VARIANT<std::monostate, Alternatives...> type;
+};
+#endif
+
+typedef typename MyVariantNoneHelper<
+    VARIANT<V1, bool, int, double, std::string, std::complex<double> > >::type
+    MyVariantFull;
+
+MyVariant make_variant() { return V1(); }
+
+MyVariantFull make_variant_full_none() { return MyVariantFull(); }
+MyVariantFull make_variant_full_float() { return 3.14; }
+MyVariantFull make_variant_full_int() { return 3; }
+MyVariantFull make_variant_full_bool() { return false; }
+MyVariantFull make_variant_full_str() { return std::string("str"); }
+MyVariantFull make_variant_full_complex() { return std::complex<double>(1., 0.); }
+
+struct VariantHolder {
+  MyVariant variant;
+};
+
+struct VariantFullHolder {
+  MyVariantFull variant;
+};
+
+BOOST_PYTHON_MODULE(@MODNAME@) {
+  using namespace eigenpy;
+
+  enableEigenPy();
+
+  bp::class_<V1>("V1", bp::init<>()).def_readwrite("v", &V1::v);
+  bp::class_<V2>("V2", bp::init<>()).def_readwrite("v", &V2::v);
+
+  typedef eigenpy::VariantConverter<MyVariant> Converter;
+  Converter::registration();
+
+  bp::def("make_variant", make_variant);
+
+  boost::python::class_<VariantHolder>("VariantHolder", bp::init<>())
+      .add_property("variant",
+                    bp::make_getter(&VariantHolder::variant,
+                                    Converter::return_internal_reference()),
+                    bp::make_setter(&VariantHolder::variant));
+
+  typedef eigenpy::VariantConverter<MyVariantFull> ConverterFull;
+  ConverterFull::registration();
+  bp::def("make_variant_full_none", make_variant_full_none);
+  bp::def("make_variant_full_float", make_variant_full_float);
+  bp::def("make_variant_full_int", make_variant_full_int);
+  bp::def("make_variant_full_bool", make_variant_full_bool);
+  bp::def("make_variant_full_str", make_variant_full_str);
+  bp::def("make_variant_full_complex", make_variant_full_complex);
+
+  boost::python::class_<VariantFullHolder>("VariantFullHolder", bp::init<>())
+      .add_property("variant",
+                    bp::make_getter(&VariantFullHolder::variant,
+                                    ConverterFull::return_internal_reference()),
+                    bp::make_setter(&VariantFullHolder::variant));
+}

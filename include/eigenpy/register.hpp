@@ -20,6 +20,25 @@ namespace eigenpy {
 struct EIGENPY_DLLAPI Register {
   static PyArray_Descr *getPyArrayDescr(PyTypeObject *py_type_ptr);
 
+  static PyArray_Descr *getPyArrayDescrFromTypeNum(const int type_num);
+
+  template <typename Scalar>
+  static PyArray_Descr *getPyArrayDescrFromScalarType() {
+    if (!isNumpyNativeType<Scalar>()) {
+      const std::type_info &info = typeid(Scalar);
+      if (instance().type_to_py_type_bindings.find(&info) !=
+          instance().type_to_py_type_bindings.end()) {
+        PyTypeObject *py_type = instance().type_to_py_type_bindings[&info];
+        return instance().py_array_descr_bindings[py_type];
+      } else
+        return nullptr;
+    } else {
+      PyArray_Descr *new_descr =
+          call_PyArray_DescrFromType(NumpyEquivalentType<Scalar>::type_code);
+      return new_descr;
+    }
+  }
+
   template <typename Scalar>
   static bool isRegistered() {
     return isRegistered(Register::getPyType<Scalar>());
@@ -87,7 +106,7 @@ struct EIGENPY_DLLAPI Register {
   static Register &instance();
 
  private:
-  Register(){};
+  Register() {};
 
   struct Compare_PyTypeObject {
     bool operator()(const PyTypeObject *a, const PyTypeObject *b) const {

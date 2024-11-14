@@ -1,9 +1,9 @@
 /*
- * Copyright 2020 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
-#ifndef __eigenpy_decomposition_self_adjoint_eigen_solver_hpp__
-#define __eigenpy_decomposition_self_adjoint_eigen_solver_hpp__
+#ifndef __eigenpy_decompositions_self_adjoint_eigen_solver_hpp__
+#define __eigenpy_decompositions_self_adjoint_eigen_solver_hpp__
 
 #include <Eigen/Core>
 #include <Eigen/Eigenvalues>
@@ -84,6 +84,7 @@ struct SelfAdjointEigenSolverVisitor
 
   static void expose(const std::string& name) {
     bp::class_<Solver>(name.c_str(), bp::no_init)
+        .def(IdVisitor<Solver>())
         .def(SelfAdjointEigenSolverVisitor());
   }
 
@@ -101,4 +102,4 @@ struct SelfAdjointEigenSolverVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_decomposition_self_adjoint_eigen_solver_hpp__
+#endif  // ifndef __eigenpy_decompositions_self_adjoint_eigen_solver_hpp__

@@ -72,7 +72,10 @@ struct VirtualClassWrapper : MyVirtualClass, bp::wrapper<MyVirtualClass> {
   }
 
   shared_ptr<MyVirtualData> createData() const override {
-    if (bp::override fo = this->get_override("createData")) return fo();
+    if (bp::override fo = this->get_override("createData")) {
+      bp::object result = fo().as<bp::object>();
+      return bp::extract<shared_ptr<MyVirtualData> >(result);
+    }
     return default_createData();
   }
 

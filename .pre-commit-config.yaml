@@ -1,20 +1,34 @@
 ci:
-    autoupdate_branch: 'devel'
+  autoupdate_branch: devel
+  autofix_prs: false
+  autoupdate_schedule: quarterly
 repos:
--   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v17.0.6
-    hooks:
-    -   id: clang-format
-        args: ['--style={BasedOnStyle: Google, SortIncludes: false, Standard: Cpp03}']
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
-    hooks:
-    -   id: trailing-whitespace
--   repo: https://github.com/psf/black
-    rev: 23.11.0
-    hooks:
-    -   id: black
--   repo: https://github.com/cheshirekow/cmake-format-precommit
-    rev: v0.6.13
-    hooks:
-    - id: cmake-format
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.6.9
+  hooks:
+  - id: ruff
+    args:
+    - --fix
+    - --exit-non-zero-on-fix
+    - --ignore
+    - UP036
+  - id: ruff-format
+- repo: https://github.com/cheshirekow/cmake-format-precommit
+  rev: v0.6.13
+  hooks:
+  - id: cmake-format
+- repo: https://github.com/pappasam/toml-sort
+  rev: v0.23.1
+  hooks:
+  - id: toml-sort-fix
+    exclude: pixi.toml
+- repo: https://github.com/pre-commit/mirrors-clang-format
+  rev: v19.1.1
+  hooks:
+  - id: clang-format
+    args:
+    - '--style={BasedOnStyle: Google, SortIncludes: false, Standard: Cpp03}'
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+  - id: trailing-whitespace

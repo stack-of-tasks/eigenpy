@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 INRIA
+ * Copyright 2020-2024 INRIA
  */
 
 #include "eigenpy/numpy.hpp"
@@ -14,7 +14,12 @@ void import_numpy() {
 }
 
 int PyArray_TypeNum(PyTypeObject* type) {
-  return PyArray_TypeNumFromName(const_cast<char*>(type->tp_name));
+  PyArray_Descr* descr =
+      PyArray_DescrFromTypeObject(reinterpret_cast<PyObject*>(type));
+  if (descr == NULL) {
+    return NPY_NOTYPE;
+  }
+  return descr->type_num;
 }
 
 #if defined _WIN32 || defined __CYGWIN__
@@ -52,7 +57,7 @@ void call_PyArray_InitArrFuncs(PyArray_ArrFuncs* funcs) {
   PyArray_InitArrFuncs(funcs);
 }
 
-int call_PyArray_RegisterDataType(PyArray_Descr* dtype) {
+int call_PyArray_RegisterDataType(PyArray_DescrProto* dtype) {
   return PyArray_RegisterDataType(dtype);
 }
 

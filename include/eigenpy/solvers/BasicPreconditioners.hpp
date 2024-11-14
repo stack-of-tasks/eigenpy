@@ -1,17 +1,6 @@
 /*
- * Copyright 2017, Justin Carpentier, LAAS-CNRS
- *
- * This file is part of eigenpy.
- * eigenpy is free software: you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public License
- * as published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- * eigenpy is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.  You should
- * have received a copy of the GNU Lesser General Public License along
- * with eigenpy.  If not, see <http://www.gnu.org/licenses/>.
+ * Copyright 2017 CNRS
+ * Copyright 2024 Inria
  */
 
 #ifndef __eigenpy_basic_preconditioners_hpp__
@@ -81,7 +70,8 @@ struct DiagonalPreconditionerVisitor
         "A preconditioner based on the digonal entrie.\n"
         "This class allows to approximately solve for A.x = b problems "
         "assuming A is a diagonal matrix.",
-        bp::no_init);
+        bp::no_init)
+        .def(IdVisitor<Preconditioner>());
   }
 };
 
@@ -103,7 +93,8 @@ struct LeastSquareDiagonalPreconditionerVisitor
         "his class allows to approximately solve for A' A x  = A' b problems "
         "assuming A' A is a diagonal matrix.",
         bp::no_init)
-        .def(DiagonalPreconditionerVisitor<Scalar>());
+        .def(DiagonalPreconditionerVisitor<Scalar>())
+        .def(IdVisitor<Preconditioner>());
   }
 };
 #endif
@@ -117,7 +108,8 @@ struct IdentityPreconditionerVisitor
 
   static void expose() {
     bp::class_<Preconditioner>("IdentityPreconditioner", bp::no_init)
-        .def(PreconditionerBaseVisitor<Preconditioner>());
+        .def(PreconditionerBaseVisitor<Preconditioner>())
+        .def(IdVisitor<Preconditioner>());
   }
 };
 

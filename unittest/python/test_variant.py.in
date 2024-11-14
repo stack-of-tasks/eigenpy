@@ -1,0 +1,123 @@
+import importlib
+
+variant_module = importlib.import_module("@MODNAME@")
+V1 = variant_module.V1
+V2 = variant_module.V2
+VariantHolder = variant_module.VariantHolder
+VariantFullHolder = variant_module.VariantFullHolder
+make_variant = variant_module.make_variant
+make_variant_full_none = variant_module.make_variant_full_none
+make_variant_full_float = variant_module.make_variant_full_float
+make_variant_full_int = variant_module.make_variant_full_int
+make_variant_full_bool = variant_module.make_variant_full_bool
+make_variant_full_str = variant_module.make_variant_full_str
+make_variant_full_complex = variant_module.make_variant_full_complex
+
+variant = make_variant()
+assert isinstance(variant, V1)
+
+v1 = V1()
+v1.v = 10
+
+v2 = V2()
+v2.v = "c"
+
+variant_holder = VariantHolder()
+
+# Test copy from variant alternative V1 to non initialized variant
+variant_holder.variant = v1
+assert isinstance(variant_holder.variant, V1)
+assert variant_holder.variant.v == v1.v
+
+# variant_holder.variant is a copy of v1
+variant_holder.variant.v = 11
+assert v1.v != variant_holder.variant.v
+
+# Test variant_holder.variant return by reference
+# v1 reference variant_holder.variant
+v1 = variant_holder.variant
+variant_holder.variant.v = 100
+assert variant_holder.variant.v == 100
+assert v1.v == 100
+v1.v = 1000
+assert variant_holder.variant.v == 1000
+assert v1.v == 1000
+
+# Test with the second alternative type
+variant_holder.variant = v2
+assert isinstance(variant_holder.variant, V2)
+assert variant_holder.variant.v == v2.v
+
+# Test variant that hold a None value
+v_full = make_variant_full_none()
+assert v_full is None
+
+# Test variant that hold a float value
+v_full = make_variant_full_float()
+assert v_full == 3.14
+assert isinstance(v_full, float)
+
+# Test variant that hold a int value
+v_full = make_variant_full_int()
+assert v_full == 3
+assert isinstance(v_full, int)
+
+# Test variant that hold a bool value
+v_full = make_variant_full_bool()
+assert not v_full
+assert isinstance(v_full, bool)
+
+# Test variant that hold a str value
+v_full = make_variant_full_str()
+assert v_full == "str"
+assert isinstance(v_full, str)
+
+# Test variant that hold a complex value
+v_full = make_variant_full_complex()
+assert v_full == 1 + 0j
+assert isinstance(v_full, complex)
+
+variant_full_holder = VariantFullHolder()
+
+# Test None
+v_none = variant_full_holder.variant
+assert v_none is None
+variant_full_holder.variant = None
+assert v_none is None
+
+# Test V1
+v1 = V1()
+v1.v = 10
+variant_full_holder.variant = v1
+assert variant_full_holder.variant.v == 10
+assert isinstance(variant_full_holder.variant, V1)
+# Test V1 ref
+v1 = variant_full_holder.variant
+v1.v = 100
+assert variant_full_holder.variant.v == 100
+variant_full_holder.variant = None
+
+# Test bool
+variant_full_holder.variant = True
+assert variant_full_holder.variant
+assert isinstance(variant_full_holder.variant, bool)
+
+# Test int
+variant_full_holder.variant = 3
+assert variant_full_holder.variant == 3
+assert isinstance(variant_full_holder.variant, int)
+
+# Test float
+variant_full_holder.variant = 3.14
+assert variant_full_holder.variant == 3.14
+assert isinstance(variant_full_holder.variant, float)
+
+# Test str
+variant_full_holder.variant = "str"
+assert variant_full_holder.variant == "str"
+assert isinstance(variant_full_holder.variant, str)
+
+# Test complex
+variant_full_holder.variant = 1 + 0j
+assert variant_full_holder.variant == 1 + 0j
+assert isinstance(variant_full_holder.variant, complex)

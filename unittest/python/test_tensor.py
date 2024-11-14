@@ -1,9 +1,7 @@
-from __future__ import print_function
-
 import numpy as np
 import tensor
 
-dim = np.array([10, 20, 30], dtype=np.int32)
+dim = np.array([10, 20, 30], dtype=np.int64)
 t = tensor.TensorContainer3(dim)
 r = t.get_ref()
 r[:] = 0.0

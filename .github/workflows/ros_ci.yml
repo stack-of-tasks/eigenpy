@@ -1,36 +1,54 @@
 # This config uses industrial_ci (https://github.com/ros-industrial/industrial_ci.git).
 # For troubleshooting, see readme (https://github.com/ros-industrial/industrial_ci/blob/master/README.rst)
 
-name: ROS-CI
+name: CI - Linux via ROS
 
 # This determines when this workflow is run
-on: [push, pull_request] # on all pushes and PRs
+on:
+  push:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+  pull_request:
+    paths-ignore:
+      - 'doc/**'
+      - '.gitlab-ci.yml'
+      - '.gitignore'
+      - '*.md'
+      - 'LICENSE'
+      - 'colcon.pkg'
+      - '.pre-commit-config.yaml'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   CI:
     strategy:
       matrix:
         env:
+          # ROS1
           - {ROS_DISTRO: noetic}
+          # ROS2
           - {ROS_DISTRO: iron}
           - {ROS_DISTRO: humble}
+          - {ROS_DISTRO: jazzy}
           - {ROS_DISTRO: rolling}
     env:
-      # CCACHE_DIR: /home/runner/.ccache # Enable ccache
-      PRERELEASE: true
+      # PRERELEASE: true  # Fails due to issues in the underlying Docker image
       BUILDER: colcon
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
-      # This step will fetch/store the directory used by ccache before/after the ci run
-      # - uses: actions/cache@v3
-      #   with:
-      #     path: ${{ env.CCACHE_DIR }}
-      #     key: ccache-${{ matrix.env.ROS_DISTRO }}-${{ matrix.env.ROS_REPO }}
       # Run industrial_ci
-      - uses: 'ros-industrial/industrial_ci@9f963f67ebb889792175776c5ee00134d7bb569b'
+      - uses: 'ros-industrial/industrial_ci@875c2aebfd634eebaa84dbe5198f2fdb4c5f1b7e'
         env: ${{ matrix.env }}
 
   check:

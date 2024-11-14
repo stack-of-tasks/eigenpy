@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2023, INRIA
+ * Copyright 2018-2024, INRIA
  */
 
 #ifndef __eigenpy_eigenpy_hpp__
@@ -9,6 +9,9 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/eigen-typedef.hpp"
 #include "eigenpy/expose.hpp"
+
+/// Custom CallPolicies
+#include "eigenpy/std-unique-ptr.hpp"
 
 #define ENABLE_SPECIFIC_MATRIX_TYPE(TYPE) \
   ::eigenpy::enableEigenPySpecific<TYPE>();
@@ -54,6 +57,8 @@ EIGEN_DONT_INLINE void exposeType() {
   ENABLE_SPECIFIC_MATRIX_TYPE(VectorXs);
   ENABLE_SPECIFIC_MATRIX_TYPE(RowVectorXs);
   ENABLE_SPECIFIC_MATRIX_TYPE(MatrixXs);
+
+  enableEigenPySpecific<SparseMatrixXs>();
 }
 
 template <typename Scalar>

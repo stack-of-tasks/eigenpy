@@ -17,17 +17,54 @@ namespace eigenpy {
 
 template <typename Scalar>
 bool np_type_is_convertible_into_scalar(const int np_type) {
-  if (static_cast<NPY_TYPES>(NumpyEquivalentType<Scalar>::type_code) >=
-      NPY_USERDEF)
+  const auto scalar_np_code =
+      static_cast<NPY_TYPES>(NumpyEquivalentType<Scalar>::type_code);
+
+  if (scalar_np_code >= NPY_USERDEF)
     return np_type == Register::getTypeCode<Scalar>();
 
-  if (NumpyEquivalentType<Scalar>::type_code == np_type) return true;
+  if (scalar_np_code == np_type) return true;
 
+  // Manage type promotion
   switch (np_type) {
+    case NPY_BOOL:
+      return FromTypeToType<bool, Scalar>::value;
+    case NPY_INT8:
+      return FromTypeToType<int8_t, Scalar>::value;
+    case NPY_INT16:
+      return FromTypeToType<int16_t, Scalar>::value;
+    case NPY_INT32:
+      return FromTypeToType<int32_t, Scalar>::value;
+    case NPY_INT64:
+      return FromTypeToType<int64_t, Scalar>::value;
+    case NPY_UINT8:
+      return FromTypeToType<uint8_t, Scalar>::value;
+    case NPY_UINT16:
+      return FromTypeToType<uint16_t, Scalar>::value;
+    case NPY_UINT32:
+      return FromTypeToType<uint32_t, Scalar>::value;
+    case NPY_UINT64:
+      return FromTypeToType<uint64_t, Scalar>::value;
+
+#if defined _WIN32 || defined __CYGWIN__
+    // Manage NPY_INT on Windows (NPY_INT32 is NPY_LONG).
+    // See https://github.com/stack-of-tasks/eigenpy/pull/455
     case NPY_INT:
-      return FromTypeToType<int, Scalar>::value;
-    case NPY_LONG:
-      return FromTypeToType<long, Scalar>::value;
+      return FromTypeToType<int32_t, Scalar>::value;
+    case NPY_UINT:
+      return FromTypeToType<uint32_t, Scalar>::value;
+#endif  // WIN32
+
+#if defined __APPLE__
+    // Manage NPY_LONGLONG on Mac (NPY_INT64 is NPY_LONG)..
+    // long long and long are both the same type
+    // but NPY_LONGLONG and NPY_LONG are different dtype.
+    // See https://github.com/stack-of-tasks/eigenpy/pull/455
+    case NPY_LONGLONG:
+      return FromTypeToType<int64_t, Scalar>::value;
+    case NPY_ULONGLONG:
+      return FromTypeToType<uint64_t, Scalar>::value;
+#endif  // MAC
     case NPY_FLOAT:
       return FromTypeToType<float, Scalar>::value;
     case NPY_CFLOAT:
@@ -55,8 +92,6 @@ struct EIGENPY_DLLAPI NumpyType {
   static void sharedMemory(const bool value);
 
   static bool sharedMemory();
-
-  static bp::object getNumpyType();
 
   static const PyTypeObject* getNumpyArrayType();
 

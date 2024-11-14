@@ -1,6 +1,6 @@
 /*
  * Copyright 2014-2019, CNRS
- * Copyright 2018-2023, INRIA
+ * Copyright 2018-2024, INRIA
  */
 
 #ifndef __eigenpy_details_hpp__
@@ -34,6 +34,24 @@ struct expose_eigen_type_impl<MatType, Eigen::MatrixBase<MatType>, Scalar> {
     EigenToPyConverter<Eigen::Ref<MatType> >::registration();
     EigenToPyConverter<const Eigen::Ref<const MatType> >::registration();
 #endif
+
+    // from-python
+    EigenFromPyConverter<MatType>::registration();
+  }
+};
+
+template <typename MatType, typename Scalar>
+struct expose_eigen_type_impl<MatType, Eigen::SparseMatrixBase<MatType>,
+                              Scalar> {
+  static void run() {
+    if (check_registration<MatType>()) return;
+
+    // to-python
+    EigenToPyConverter<MatType>::registration();
+    // #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
+    //     EigenToPyConverter<Eigen::Ref<MatType> >::registration();
+    //     EigenToPyConverter<const Eigen::Ref<const MatType> >::registration();
+    // #endif
 
     // from-python
     EigenFromPyConverter<MatType>::registration();

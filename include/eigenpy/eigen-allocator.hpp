@@ -198,6 +198,91 @@ struct cast<Scalar, NewScalar, EigenBase, false> {
       mat, NumpyMap<MatType, NewScalar>::map(                                 \
                pyArray, details::check_swap(pyArray, mat)))
 
+// Define specific cast for Windows and Mac
+#if defined _WIN32 || defined __CYGWIN__
+// Manage NPY_INT on Windows (NPY_INT32 is NPY_LONG).
+// See https://github.com/stack-of-tasks/eigenpy/pull/455
+#define EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH_OS_SPECIFIC( \
+    MatType, Scalar, pyArray, mat, CAST_MACRO)               \
+  case NPY_INT:                                              \
+    CAST_MACRO(MatType, int32_t, Scalar, pyArray, mat);      \
+    break;                                                   \
+  case NPY_UINT:                                             \
+    CAST_MACRO(MatType, uint32_t, Scalar, pyArray, mat);     \
+    break;
+#elif defined __APPLE__
+// Manage NPY_LONGLONG on Mac (NPY_INT64 is NPY_LONG).
+// long long and long are both the same type
+// but NPY_LONGLONG and NPY_LONG are different dtype.
+// See https://github.com/stack-of-tasks/eigenpy/pull/455
+#define EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH_OS_SPECIFIC( \
+    MatType, Scalar, pyArray, mat, CAST_MACRO)               \
+  case NPY_LONGLONG:                                         \
+    CAST_MACRO(MatType, int64_t, Scalar, pyArray, mat);      \
+    break;                                                   \
+  case NPY_ULONGLONG:                                        \
+    CAST_MACRO(MatType, uint64_t, Scalar, pyArray, mat);     \
+    break;
+#else
+#define EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH_OS_SPECIFIC( \
+    MatType, Scalar, pyArray, mat, CAST_MACRO)
+#endif
+
+/// Define casting between Numpy matrix type to Eigen type.
+#define EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH(                               \
+    pyArray_type_code, MatType, Scalar, pyArray, mat, CAST_MACRO)              \
+  switch (pyArray_type_code) {                                                 \
+    case NPY_BOOL:                                                             \
+      CAST_MACRO(MatType, bool, Scalar, pyArray, mat);                         \
+      break;                                                                   \
+    case NPY_INT8:                                                             \
+      CAST_MACRO(MatType, int8_t, Scalar, pyArray, mat);                       \
+      break;                                                                   \
+    case NPY_INT16:                                                            \
+      CAST_MACRO(MatType, int16_t, Scalar, pyArray, mat);                      \
+      break;                                                                   \
+    case NPY_INT32:                                                            \
+      CAST_MACRO(MatType, int32_t, Scalar, pyArray, mat);                      \
+      break;                                                                   \
+    case NPY_INT64:                                                            \
+      CAST_MACRO(MatType, int64_t, Scalar, pyArray, mat);                      \
+      break;                                                                   \
+    case NPY_UINT8:                                                            \
+      CAST_MACRO(MatType, uint8_t, Scalar, pyArray, mat);                      \
+      break;                                                                   \
+    case NPY_UINT16:                                                           \
+      CAST_MACRO(MatType, uint16_t, Scalar, pyArray, mat);                     \
+      break;                                                                   \
+    case NPY_UINT32:                                                           \
+      CAST_MACRO(MatType, uint32_t, Scalar, pyArray, mat);                     \
+      break;                                                                   \
+    case NPY_UINT64:                                                           \
+      CAST_MACRO(MatType, uint64_t, Scalar, pyArray, mat);                     \
+      break;                                                                   \
+    case NPY_FLOAT:                                                            \
+      CAST_MACRO(MatType, float, Scalar, pyArray, mat);                        \
+      break;                                                                   \
+    case NPY_CFLOAT:                                                           \
+      CAST_MACRO(MatType, std::complex<float>, Scalar, pyArray, mat);          \
+      break;                                                                   \
+    case NPY_DOUBLE:                                                           \
+      CAST_MACRO(MatType, double, Scalar, pyArray, mat);                       \
+      break;                                                                   \
+    case NPY_CDOUBLE:                                                          \
+      CAST_MACRO(MatType, std::complex<double>, Scalar, pyArray, mat);         \
+      break;                                                                   \
+    case NPY_LONGDOUBLE:                                                       \
+      CAST_MACRO(MatType, long double, Scalar, pyArray, mat);                  \
+      break;                                                                   \
+    case NPY_CLONGDOUBLE:                                                      \
+      CAST_MACRO(MatType, std::complex<long double>, Scalar, pyArray, mat);    \
+      break;                                                                   \
+      EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH_OS_SPECIFIC(                     \
+          MatType, Scalar, pyArray, mat, CAST_MACRO)                           \
+    default:                                                                   \
+      throw Exception("You asked for a conversion which is not implemented."); \
+  }
+
 template <typename EigenType>
 struct EigenAllocator;
 
@@ -247,43 +332,9 @@ struct eigen_allocator_impl_matrix {
           pyArray, details::check_swap(pyArray, mat));  // avoid useless cast
       return;
     }
-
-    switch (pyArray_type_code) {
-      case NPY_INT:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, int, Scalar, pyArray,
-                                                  mat);
-        break;
-      case NPY_LONG:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, long, Scalar,
-                                                  pyArray, mat);
-        break;
-      case NPY_FLOAT:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, float, Scalar,
-                                                  pyArray, mat);
-        break;
-      case NPY_CFLOAT:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, std::complex<float>,
-                                                  Scalar, pyArray, mat);
-        break;
-      case NPY_DOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, double, Scalar,
-                                                  pyArray, mat);
-        break;
-      case NPY_CDOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, std::complex<double>,
-                                                  Scalar, pyArray, mat);
-        break;
-      case NPY_LONGDOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(MatType, long double, Scalar,
-                                                  pyArray, mat);
-        break;
-      case NPY_CLONGDOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX(
-            MatType, std::complex<long double>, Scalar, pyArray, mat);
-        break;
-      default:
-        throw Exception("You asked for a conversion which is not implemented.");
-    }
+    EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH(
+        pyArray_type_code, MatType, Scalar, pyArray, mat,
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_MATRIX);
   }
 
   /// \brief Copy mat into the Python array using Eigen::Map
@@ -301,43 +352,8 @@ struct eigen_allocator_impl_matrix {
                                      details::check_swap(pyArray, mat)) = mat;
       return;
     }
-
-    switch (pyArray_type_code) {
-      case NPY_INT:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType, Scalar, int, mat,
-                                                  pyArray);
-        break;
-      case NPY_LONG:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType, Scalar, long, mat,
-                                                  pyArray);
-        break;
-      case NPY_FLOAT:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType, Scalar, float, mat,
-                                                  pyArray);
-        break;
-      case NPY_CFLOAT:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(
-            MatType, Scalar, std::complex<float>, mat, pyArray);
-        break;
-      case NPY_DOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType, Scalar, double, mat,
-                                                  pyArray);
-        break;
-      case NPY_CDOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(
-            MatType, Scalar, std::complex<double>, mat, pyArray);
-        break;
-      case NPY_LONGDOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(MatType, Scalar, long double,
-                                                  mat, pyArray);
-        break;
-      case NPY_CLONGDOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_MATRIX_TO_PYARRAY(
-            MatType, Scalar, std::complex<long double>, mat, pyArray);
-        break;
-      default:
-        throw Exception("You asked for a conversion which is not implemented.");
-    }
+    throw Exception(
+        "Scalar conversion from Eigen to Numpy is not implemented.");
   }
 };
 
@@ -394,42 +410,9 @@ struct eigen_allocator_impl_tensor {
       return;
     }
 
-    switch (pyArray_type_code) {
-      case NPY_INT:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, int, Scalar,
-                                                  pyArray, tensor);
-        break;
-      case NPY_LONG:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, long, Scalar,
-                                                  pyArray, tensor);
-        break;
-      case NPY_FLOAT:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, float, Scalar,
-                                                  pyArray, tensor);
-        break;
-      case NPY_CFLOAT:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(
-            TensorType, std::complex<float>, Scalar, pyArray, tensor);
-        break;
-      case NPY_DOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, double, Scalar,
-                                                  pyArray, tensor);
-        break;
-      case NPY_CDOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(
-            TensorType, std::complex<double>, Scalar, pyArray, tensor);
-        break;
-      case NPY_LONGDOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(TensorType, long double,
-                                                  Scalar, pyArray, tensor);
-        break;
-      case NPY_CLONGDOUBLE:
-        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR(
-            TensorType, std::complex<long double>, Scalar, pyArray, tensor);
-        break;
-      default:
-        throw Exception("You asked for a conversion which is not implemented.");
-    }
+    EIGENPY_CAST_FROM_NUMPY_TO_EIGEN_SWITCH(
+        pyArray_type_code, TensorType, Scalar, pyArray, tensor,
+        EIGENPY_CAST_FROM_PYARRAY_TO_EIGEN_TENSOR);
   }
 
 #define EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar,         \
@@ -454,42 +437,8 @@ struct eigen_allocator_impl_tensor {
       return;
     }
 
-    switch (pyArray_type_code) {
-      case NPY_INT:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, int,
-                                                  tensor, pyArray);
-        break;
-      case NPY_LONG:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, long,
-                                                  tensor, pyArray);
-        break;
-      case NPY_FLOAT:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, float,
-                                                  tensor, pyArray);
-        break;
-      case NPY_CFLOAT:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(
-            TensorType, Scalar, std::complex<float>, tensor, pyArray);
-        break;
-      case NPY_DOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar, double,
-                                                  tensor, pyArray);
-        break;
-      case NPY_CDOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(
-            TensorType, Scalar, std::complex<double>, tensor, pyArray);
-        break;
-      case NPY_LONGDOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(TensorType, Scalar,
-                                                  long double, tensor, pyArray);
-        break;
-      case NPY_CLONGDOUBLE:
-        EIGENPY_CAST_FROM_EIGEN_TENSOR_TO_PYARRAY(
-            TensorType, Scalar, std::complex<long double>, tensor, pyArray);
-        break;
-      default:
-        throw Exception("You asked for a conversion which is not implemented.");
-    }
+    throw Exception(
+        "Scalar conversion from Eigen to Numpy is not implemented.");
   }
 };
 #endif
