@@ -2,10 +2,11 @@
 
 
 // a placeholder for a library function that writes data into an existing matrix
-void set_to_ones(Eigen::Ref<Eigen::Matrix<mpfr_complex, Eigen::Dynamic, Eigen::Dynamic>>  M){
+template <typename T>
+void set_to_ones(Eigen::Ref<Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic>>  M){
   for (size_t ii=0; ii<M.rows(); ++ii){
     for (size_t jj=0; jj<M.cols(); ++jj){
-      M(ii,jj) = mpfr_complex(1);
+      M(ii,jj) = T(1);
     }
   }
 
@@ -40,7 +41,8 @@ void ExposeAll() {
   ExposeReal();
   ExposeComplex();
 
-  boost::python::def("set_to_ones", &set_to_ones, "set an array to all ones");
+  boost::python::def("set_to_ones", &set_to_ones<mpfr_float>, "set an array to all ones");
+  boost::python::def("set_to_ones", &set_to_ones<mpfr_complex>, "set an array to all ones");
 }
 
 void ExposeReal() {
