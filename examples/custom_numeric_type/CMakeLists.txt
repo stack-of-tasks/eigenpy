@@ -61,7 +61,7 @@ string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # If needed, fix CMake policy for APPLE systems
 apply_default_apple_configuration()
-check_minimal_cxx_standard(11 ENFORCE)
+check_minimal_cxx_standard(14 ENFORCE)
 
 if(WIN32)
   set(LINK copy_if_different)
@@ -113,9 +113,9 @@ include_directories(${MPC_INCLUDES})
 # ----------------------------------------------------
 # --- INCLUDE ----------------------------------------
 # ----------------------------------------------------
-set(${PROJECT_NAME}_HEADERS include/header.hpp)
+set(${PROJECT_NAME}_HEADERS include/header.hpp include/a_class.hpp)
 
-set(${PROJECT_NAME}_SOURCES src/src.cpp)
+set(${PROJECT_NAME}_SOURCES src/src.cpp src/a_class.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${${PROJECT_NAME}_SOURCES}
                                    ${${PROJECT_NAME}_HEADERS})

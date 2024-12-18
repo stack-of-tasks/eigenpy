@@ -25,6 +25,10 @@ using mpfr_complex =
                 bmp::et_off>;  // T is a variable-precision complex number with
                                // expression templates turned on.
 
+
+
+
+
 void ExposeAll();
 void ExposeReal();
 void ExposeComplex();
@@ -39,16 +43,19 @@ namespace internal {
 
 // a template specialization for complex numbers
 // derived directly from the example for Pinnochio
-template <>
-struct getitem<mpfr_float> {
+template <class Backend, bmp::expression_template_option ETO>
+struct getitem<bmp::number<Backend, ETO>> {
+
+    typedef bmp::number<Backend, ETO> Scalar;
+
   static PyObject *run(void *data, void * /* arr */) {
-    mpfr_float &mpfr_scalar = *static_cast<mpfr_float *>(data);
+
+    Scalar &mpfr_scalar = *static_cast<Scalar *>(data);
     auto &backend = mpfr_scalar.backend();
 
-    if (backend.data()[0]._mpfr_d ==
-        0)  // If the mpfr_scalar is not initialized, we have to init it.
+    if (backend.data()[0]._mpfr_d == 0)  // If the mpfr_scalar is not initialized, we have to init it.
     {
-      mpfr_scalar = mpfr_float(0);
+      mpfr_scalar = Scalar(0);
     }
     boost::python::object m(boost::ref(mpfr_scalar));
     Py_INCREF(m.ptr());
@@ -61,12 +68,13 @@ struct getitem<mpfr_float> {
 template <>
 struct getitem<mpfr_complex> {
   static PyObject *run(void *data, void * /* arr */) {
+    // std::cout << "getitem mpfr_complex" << std::endl;
     mpfr_complex &mpfr_scalar = *static_cast<mpfr_complex *>(data);
     auto &backend = mpfr_scalar.backend();
 
-    if (backend.data()[0].re->_mpfr_d == 0 ||
-        backend.data()[0].im->_mpfr_d ==
-            0)  // If the mpfr_scalar is not initialized, we have to init it.
+    if (backend.data()[0].re[0]._mpfr_d == 0 ||
+        backend.data()[0].im[0]._mpfr_d == 0)  
+        // If the mpfr_scalar is not initialized, we have to init it.
     {
       mpfr_scalar = mpfr_complex(0);
     }
@@ -158,10 +166,8 @@ struct BoostNumberPythonVisitor : public boost::python::def_visitor<
   template <class PyClass>
   void visit(PyClass &cl) const {
     cl.def(bp::init<>("Default constructor.", bp::arg("self")))
-        .def(bp::init<BoostNumber>("Copy constructor.",
-                                   bp::args("self", "value")))
-        //        .def(bp::init<bool>("Copy
-        //        constructor.",bp::args("self","value")))
+        .def(bp::init<BoostNumber>("Copy constructor.", bp::args("self", "value")))
+               .def(bp::init<int>("Copy constructor.",bp::args("self","value")))
         //        .def(bp::init<float>("Copy
         //        constructor.",bp::args("self","value")))
         //        .def(bp::init<double>("Copy
@@ -235,10 +241,11 @@ struct BoostNumberPythonVisitor : public boost::python::def_visitor<
   }
 
   static void expose(const std::string &type_name) {
-    bp::class_<BoostNumber>(type_name.c_str(), "", bp::no_init)
+    bp::class_<BoostNumber>(type_name.c_str(), "docstring here?", bp::no_init)
         .def(BoostNumberPythonVisitor<BoostNumber>());
 
-    eigenpy::registerNewType<BoostNumber>();
+    auto code = eigenpy::registerNewType<BoostNumber>();
+
     eigenpy::registerCommonUfunc<BoostNumber>();
 
 #define IMPLICITLY_CONVERTIBLE(T1, T2) bp::implicitly_convertible<T1, T2>();
@@ -381,5 +388,28 @@ struct BoostComplexPythonVisitor
     return precision;
   }
 };
+
+
+
+
+
+
+// showing we can write a function that returns an eigen vector, and then use it in Python via Eigenpy.
+template<typename T>
+Eigen::Matrix<T, Eigen::Dynamic, 1> make_a_vector_in_cpp(size_t length, T /* for type dispatch*/ )
+{
+  Eigen::Matrix<T, Eigen::Dynamic,1> a;
+  a.resize(length,1);
+  for (size_t ii(0); ii<length; ++ii)
+  {   
+    a(ii) = static_cast<T>(ii);
+
+  }
+
+  return a;
+}
+
+
+#include "a_class.hpp"
 
 #endif
