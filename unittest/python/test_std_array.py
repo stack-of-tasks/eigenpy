@@ -15,7 +15,7 @@ for el in _ints_slice:
 ref = [1, 2, 3]
 assert len(ref[1:2]) == 1  # sanity check
 
-assert len(_ints_slice) == 2, "Slice size should be 1, got %d" % len(_ints_slice)
+assert len(_ints_slice) == 2, f"Slice size should be 1, got {len(_ints_slice)}"
 assert _ints_slice[0] == 2
 assert _ints_slice[1] == 3
 
