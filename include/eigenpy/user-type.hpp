@@ -165,9 +165,6 @@ struct SpecialMethods<T, NPY_USERDEF> {
       }
 
       const T& src = extract_src_obj();
-      const T& src = extract_src_obj();
-      T& dest = *static_cast<T*>(dest_ptr);
-      const T& src = extract_src_obj();
       T& dest = *static_cast<T*>(dest_ptr);
       dest = src;
     }
