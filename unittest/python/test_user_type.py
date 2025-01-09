@@ -45,8 +45,8 @@ def test(dtype):
         assert np.isclose(mat2.astype(np.double), mat2_ref).all()
 
     vec = np.ones((rows,), dtype=dtype)
-    norm = np.norm(vec)
-    norm_ref = np.norm(vec.astype(np.double))
+    norm = np.linalg.norm(vec)
+    norm_ref = np.linalg.norm(vec.astype(np.double))
     assert norm == norm_ref
 
 
