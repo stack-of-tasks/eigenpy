@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020-2021 INRIA
+// Copyright (c) 2020-2025 INRIA
 // code aptapted from
 // https://github.com/numpy/numpy/blob/41977b24ae011a51f64faa75cb524c7350fdedd9/numpy/core/src/umath/_rational_tests.c.src
 //
@@ -151,6 +151,7 @@ EIGENPY_REGISTER_BINARY_OPERATOR(greater_equal, >=)
   }
 
 EIGENPY_REGISTER_UNARY_OPERATOR(negative, -)
+EIGENPY_REGISTER_UNARY_OPERATOR(square, x *)
 
 }  // namespace internal
 
@@ -258,6 +259,7 @@ void registerCommonUfunc() {
 
   // Unary operators
   EIGENPY_REGISTER_UNARY_UFUNC(negative, type_code, Scalar, Scalar);
+  EIGENPY_REGISTER_UNARY_UFUNC(square, type_code, Scalar, Scalar);
 
   Py_DECREF(numpy);
 }
