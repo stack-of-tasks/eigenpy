@@ -68,8 +68,17 @@ test_cast(np.int64, user_type.CustomDouble)
 test_cast(user_type.CustomDouble, np.int32)
 test_cast(np.int32, user_type.CustomDouble)
 
-test(user_type.CustomFloat)
-
 v = user_type.CustomDouble(1)
 a = np.array(v)
 assert type(v) is a.dtype.type
+
+test(user_type.CustomFloat)
+
+test_cast(user_type.CustomFloat, np.float32)
+test_cast(np.double, user_type.CustomFloat)
+
+test_cast(user_type.CustomFloat, np.int64)
+test_cast(np.int64, user_type.CustomFloat)
+
+test_cast(user_type.CustomFloat, np.int32)
+test_cast(np.int32, user_type.CustomFloat)
