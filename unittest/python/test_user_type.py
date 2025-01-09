@@ -44,6 +44,11 @@ def test(dtype):
         mat2 = np.matmul(mat, mat.T)
         assert np.isclose(mat2.astype(np.double), mat2_ref).all()
 
+    vec = np.ones((rows,), dtype=dtype)
+    norm = np.norm(vec)
+    norm_ref = np.norm(vec.astype(np.double))
+    assert norm == norm_ref
+
 
 def test_cast(from_dtype, to_dtype):
     np.can_cast(from_dtype, to_dtype)
