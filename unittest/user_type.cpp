@@ -201,14 +201,19 @@ BOOST_PYTHON_MODULE(user_type) {
 
   eigenpy::registerCast<DoubleType, double>(true);
   eigenpy::registerCast<double, DoubleType>(true);
+  eigenpy::registerCast<DoubleType, float>(false);
+  eigenpy::registerCast<float, DoubleType>(true);
   eigenpy::registerCast<DoubleType, int>(false);
   eigenpy::registerCast<int, DoubleType>(true);
   eigenpy::registerCast<DoubleType, long long>(false);
   eigenpy::registerCast<long long, DoubleType>(true);
   eigenpy::registerCast<DoubleType, long>(false);
   eigenpy::registerCast<long, DoubleType>(true);
+
   eigenpy::registerCast<FloatType, double>(true);
   eigenpy::registerCast<double, FloatType>(false);
+  eigenpy::registerCast<FloatType, float>(true);
+  eigenpy::registerCast<float, FloatType>(true);
   eigenpy::registerCast<FloatType, long long>(false);
   eigenpy::registerCast<long long, FloatType>(true);
   eigenpy::registerCast<FloatType, int>(false);

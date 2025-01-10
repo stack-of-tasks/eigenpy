@@ -9,7 +9,7 @@ cols = 20
 
 def test(dtype):
     rng = np.random.default_rng()
-    mat = np.array(np.ones((rows, cols)).astype(np.int32), dtype=dtype)
+    mat = np.ones((rows, cols), dtype=dtype)
     mat = rng.random((rows, cols)).astype(dtype)
     mat_copy = mat.copy()
     assert (mat == mat_copy).all()
@@ -44,6 +44,11 @@ def test(dtype):
         mat2 = np.matmul(mat, mat.T)
         assert np.isclose(mat2.astype(np.double), mat2_ref).all()
 
+    vec = np.ones((rows,), dtype=dtype)
+    norm = np.linalg.norm(vec)
+    norm_ref = np.linalg.norm(vec.astype(np.double))
+    assert norm == norm_ref
+
 
 def test_cast(from_dtype, to_dtype):
     np.can_cast(from_dtype, to_dtype)
@@ -63,8 +68,17 @@ test_cast(np.int64, user_type.CustomDouble)
 test_cast(user_type.CustomDouble, np.int32)
 test_cast(np.int32, user_type.CustomDouble)
 
-test(user_type.CustomFloat)
-
 v = user_type.CustomDouble(1)
 a = np.array(v)
 assert type(v) is a.dtype.type
+
+test(user_type.CustomFloat)
+
+test_cast(user_type.CustomFloat, np.float32)
+test_cast(np.double, user_type.CustomFloat)
+
+test_cast(user_type.CustomFloat, np.int64)
+test_cast(np.int64, user_type.CustomFloat)
+
+test_cast(user_type.CustomFloat, np.int32)
+test_cast(np.int32, user_type.CustomFloat)
