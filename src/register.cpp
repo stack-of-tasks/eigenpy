@@ -64,7 +64,6 @@ int Register::registerNewType(
   }
 
   PyArray_DescrProto* descr_ptr = new PyArray_DescrProto();
-  Py_SET_TYPE(descr_ptr, &PyArrayDescr_Type);
   PyArray_DescrProto& descr = *descr_ptr;
   descr.typeobj = py_type_ptr;
   descr.kind = 'V';
@@ -92,6 +91,7 @@ int Register::registerNewType(
   funcs.fill = fill;
   funcs.fillwithscalar = fillwithscalar;
   //      f->cast = cast;
+  Py_SET_TYPE(descr_ptr, &PyArrayDescr_Type);
 
   const int code = call_PyArray_RegisterDataType(descr_ptr);
   assert(code >= 0 && "The return code should be positive");

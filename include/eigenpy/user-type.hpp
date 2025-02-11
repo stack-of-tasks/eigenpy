@@ -132,33 +132,42 @@ struct SpecialMethods<T, NPY_USERDEF> {
       eigenpy::Exception("Cannot retrieve the type stored in the array.");
       return -1;
     }
+
     PyArrayObject* py_array = static_cast<PyArrayObject*>(array);
     PyArray_Descr* descr = PyArray_DTYPE(py_array);
     PyTypeObject* array_scalar_type = descr->typeobj;
     PyTypeObject* src_obj_type = Py_TYPE(src_obj);
 
-    if (array_scalar_type != src_obj_type) {
-      std::stringstream ss;
-      ss << "The input type is of wrong type. ";
-      ss << "The expected type is " << bp::type_info(typeid(T)).name()
-         << std::endl;
-      eigenpy::Exception(ss.str());
-      return -1;
-    }
-
-    bp::extract<T&> extract_src_obj(src_obj);
-    if (!extract_src_obj.check()) {
-      std::stringstream ss;
-      ss << "The input type is of wrong type. ";
-      ss << "The expected type is " << bp::type_info(typeid(T)).name()
-         << std::endl;
-      eigenpy::Exception(ss.str());
-      return -1;
-    }
-
-    const T& src = extract_src_obj();
     T& dest = *static_cast<T*>(dest_ptr);
-    dest = src;
+    if (array_scalar_type != src_obj_type) {
+      long long src_value = PyLong_AsLongLong(src_obj);
+      if (src_value == -1 && PyErr_Occurred()) {
+        std::stringstream ss;
+        ss << "The input type is of wrong type. ";
+        ss << "The expected type is " << bp::type_info(typeid(T)).name()
+           << std::endl;
+        eigenpy::Exception(ss.str());
+        return -1;
+      }
+
+      dest = T(src_value);
+
+    } else {
+      bp::extract<T&> extract_src_obj(src_obj);
+      if (!extract_src_obj.check()) {
+        std::cout << "if (!extract_src_obj.check())" << std::endl;
+        std::stringstream ss;
+        ss << "The input type is of wrong type. ";
+        ss << "The expected type is " << bp::type_info(typeid(T)).name()
+           << std::endl;
+        eigenpy::Exception(ss.str());
+        return -1;
+      }
+
+      const T& src = extract_src_obj();
+      T& dest = *static_cast<T*>(dest_ptr);
+      dest = src;
+    }
 
     return 0;
   }
