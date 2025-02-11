@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+- Add `BUILDING_ROS2_PACKAGE` to generate ament specific file ([#530](https://github.com/stack-of-tasks/eigenpy/pull/530))
+
+### Changed
+- Modernize doxygen documentation ([#533](https://github.com/stack-of-tasks/eigenpy/pull/533))
+
 ## [3.10.2] - 2025-01-13
 
 ### Fixed
