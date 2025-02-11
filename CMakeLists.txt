@@ -68,10 +68,26 @@ option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
 option(BUILD_TESTING_SCIPY
        "Build the SciPy tests (scipy should be installed on the machine)" ON)
 
+# ----------------------------------------------------
+# --- Policy -----------------------------------------
+# CMake Policy setup
+# ----------------------------------------------------
+# Policy can be removed when cmake_minimum_required is updated.
+
+# We also set CMAKE_POLICY_DEFAULT_CMPXXXX because CMake modules can reset
+# policy and redefine some macros like `find_dependency` that will not use our
+# policy.
+
 # Use BoostConfig module distributed by boost library instead of using FindBoost
-# module distributed by CMake
+# module distributed by CMake (to remove in 3.30).
 if(POLICY CMP0167)
   cmake_policy(SET CMP0167 NEW)
+  set(CMAKE_POLICY_DEFAULT_CMP0167 NEW)
+endif()
+# install() DESTINATION paths are normalized (to remove in 3.31).
+if(POLICY CMP0177)
+  cmake_policy(SET CMP0177 NEW)
+  set(CMAKE_POLICY_DEFAULT_CMP0177 NEW)
 endif()
 include("${JRL_CMAKE_MODULES}/base.cmake")
 compute_project_args(PROJECT_ARGS LANGUAGES CXX)
@@ -435,29 +451,6 @@ add_source_group(${PROJECT_NAME}_SOURCES)
 
 # Install package for ROS
 install(FILES package.xml DESTINATION share/eigenpy)
-# Allows Colcon to find non-Ament packages when using workspace underlays
-file(
-  WRITE
-  ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME}
-  "")
-install(
-  FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/share/ament_index/resource_index/packages/${PROJECT_NAME}
-  DESTINATION share/ament_index/resource_index/packages)
-file(
-  WRITE
-  ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv
-  "prepend-non-duplicate;AMENT_PREFIX_PATH;")
-install(
-  FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/ament_prefix_path.dsv
-  DESTINATION share/${PROJECT_NAME}/hook)
-file(WRITE
-     ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv
-     "prepend-non-duplicate;PYTHONPATH;${PYTHON_SITELIB}")
-install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/share/${PROJECT_NAME}/hook/python_path.dsv
-  DESTINATION share/${PROJECT_NAME}/hook)
 
 # ----------------------------------------------------
 # --- PYTHON LIBRARY ---------------------------------

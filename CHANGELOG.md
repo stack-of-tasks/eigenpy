@@ -6,6 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.10.3] - 2025-02-11
+
+### Added
+- Add `BUILDING_ROS2_PACKAGE` to generate ament specific file ([#530](https://github.com/stack-of-tasks/eigenpy/pull/530))
+
+### Changed
+- Modernize doxygen documentation ([#533](https://github.com/stack-of-tasks/eigenpy/pull/533))
+
+## [3.10.2] - 2025-01-13
+
+### Fixed
+
+- Fix Python library linkage for Debug build on Windows ([#514](https://github.com/stack-of-tasks/eigenpy/pull/514))
+- Fix np.ones when dtype is a custom user type ([#525](https://github.com/stack-of-tasks/eigenpy/pull/525))
+
 ## [3.10.1] - 2024-10-30
 
 ### Added
@@ -709,7 +724,9 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.1...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.3...HEAD
+[3.10.3]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.2...v3.10.3
+[3.10.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.1...v3.10.2
 [3.10.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.0...v3.10.1
 [3.10.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.1...v3.10.0
 [3.9.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.0...v3.9.1
