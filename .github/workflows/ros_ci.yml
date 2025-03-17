@@ -44,7 +44,7 @@ jobs:
         with:
           submodules: recursive
       # Run industrial_ci
-      - uses: 'ros-industrial/industrial_ci@875c2aebfd634eebaa84dbe5198f2fdb4c5f1b7e'
+      - uses: 'ros-industrial/industrial_ci@3e67ec54d63496e076267392148a26229740befc'
         env: ${{ matrix.env }}
 
   check:
