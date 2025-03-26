@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2024 INRIA
+// Copyright (c) 2024-2025 INRIA
 //
 
 #ifndef __eigenpy_sparse_eigen_from_python_hpp__
@@ -155,6 +155,10 @@ void eigen_sparse_matrix_from_py_construct(
       indices_ptr = indices.data();
     }
     MapMatOrRefType sparse_map(m, n, nnz, indptr.data(), indices_ptr, data_ptr);
+
+#if EIGEN_VERSION_AT_LEAST(3, 4, 90)
+    sparse_map.sortInnerIndices();
+#endif
 
     new (raw_ptr) MatOrRefType(sparse_map);
   }
