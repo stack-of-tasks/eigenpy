@@ -36,7 +36,7 @@ X_sparse = scipy.sparse.random(dim, 10, random_state=rng)
 B_sparse = A.dot(X_sparse)
 B_sparse = B_sparse.tocsc(True)
 
-if B_sparse.has_sorted_indices:
+if not B_sparse.has_sorted_indices:
     B_sparse.sort_indices()
 
 X_est = llt.solve(B_sparse)
