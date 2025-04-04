@@ -32,7 +32,7 @@ llt.analyzePattern(A)
 llt.factorize(A)
 permutation = llt.permutationP()
 
-X_sparse = scipy.sparse.random(dim, 10, random_state=rng)
+X_sparse = scipy.sparse.random(dim, 10)
 B_sparse = A.dot(X_sparse)
 B_sparse = B_sparse.tocsc(True)
 
