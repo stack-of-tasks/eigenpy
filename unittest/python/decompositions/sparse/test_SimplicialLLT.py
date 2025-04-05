@@ -1,4 +1,5 @@
 import numpy as np
+import scipy
 from scipy.sparse import csc_matrix
 
 import eigenpy
@@ -30,3 +31,14 @@ assert eigenpy.is_approx(A.dot(X_est), B)
 llt.analyzePattern(A)
 llt.factorize(A)
 permutation = llt.permutationP()
+
+X_sparse = scipy.sparse.random(dim, 10)
+B_sparse = A.dot(X_sparse)
+B_sparse = B_sparse.tocsc(True)
+
+if not B_sparse.has_sorted_indices:
+    B_sparse.sort_indices()
+
+X_est = llt.solve(B_sparse)
+assert eigenpy.is_approx(X_est.toarray(), X_sparse.toarray())
+assert eigenpy.is_approx(A.dot(X_est.toarray()), B_sparse.toarray())
