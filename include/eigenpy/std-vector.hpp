@@ -211,7 +211,7 @@ struct reference_arg_from_python<std::vector<Type, Allocator> &>
 
   result_type operator()() const {
     return ::boost::python::detail::void_ptr_to_reference(result(),
-                                                          (result_type(*)())0);
+                                                          (result_type (*)())0);
   }
 
   ~reference_arg_from_python() {
