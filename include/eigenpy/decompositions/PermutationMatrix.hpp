@@ -57,12 +57,12 @@ struct PermutationMatrixVisitor
              bp::return_self<>())
 
         .def("setIdentity",
-             (void(PermutationMatrix::*)()) & PermutationMatrix::setIdentity,
+             (void (PermutationMatrix::*)())&PermutationMatrix::setIdentity,
              bp::arg("self"),
              "Sets self to be the identity permutation matrix.")
         .def("setIdentity",
-             (void(PermutationMatrix::*)(Eigen::DenseIndex)) &
-                 PermutationMatrix::setIdentity,
+             (void (PermutationMatrix::*)(
+                 Eigen::DenseIndex))&PermutationMatrix::setIdentity,
              bp::args("self", "size"),
              "Sets self to be the identity permutation matrix of given size.")
 
