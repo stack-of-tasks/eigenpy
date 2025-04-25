@@ -12,7 +12,7 @@ namespace eigenpy {
 
 template <typename IterativeSolver>
 struct IterativeSolverVisitor : public boost::python::def_visitor<
-                                    IterativeSolverVisitor<IterativeSolver> > {
+                                    IterativeSolverVisitor<IterativeSolver>> {
   typedef typename IterativeSolver::MatrixType MatrixType;
   typedef typename IterativeSolver::Preconditioner Preconditioner;
   typedef Eigen::VectorXd VectorType;

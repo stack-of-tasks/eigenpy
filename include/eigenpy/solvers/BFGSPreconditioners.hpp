@@ -15,7 +15,7 @@ namespace eigenpy {
 
 template <typename Preconditioner>
 struct BFGSPreconditionerBaseVisitor
-    : public bp::def_visitor<BFGSPreconditionerBaseVisitor<Preconditioner> > {
+    : public bp::def_visitor<BFGSPreconditionerBaseVisitor<Preconditioner>> {
   typedef Eigen::VectorXd VectorType;
   template <class PyClass>
   void visit(PyClass& cl) const {
@@ -46,7 +46,7 @@ struct BFGSPreconditionerBaseVisitor
 template <typename Preconditioner>
 struct LimitedBFGSPreconditionerBaseVisitor
     : public bp::def_visitor<
-          LimitedBFGSPreconditionerBaseVisitor<Preconditioner> > {
+          LimitedBFGSPreconditionerBaseVisitor<Preconditioner>> {
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def(PreconditionerBaseVisitor<Preconditioner>())

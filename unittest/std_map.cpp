@@ -39,10 +39,10 @@ BOOST_PYTHON_MODULE(std_map) {
 
   eigenpy::StdMapPythonVisitor<
       std::string, double, std::less<std::string>,
-      std::allocator<std::pair<const std::string, double> >,
+      std::allocator<std::pair<const std::string, double>>,
       true>::expose("StdMap_Double");
 
-  eigenpy::GenericMapVisitor<boost::unordered_map<std::string, int> >::expose(
+  eigenpy::GenericMapVisitor<boost::unordered_map<std::string, int>>::expose(
       "boost_map_int");
 
   using StdMap_X = std::map<std::string, X>;

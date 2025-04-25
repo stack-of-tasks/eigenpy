@@ -16,7 +16,7 @@ namespace Eigen {
 /// @brief Eigen::NumTraits<> specialization for casadi::SX
 ///
 template <typename Scalar>
-struct NumTraits<CustomType<Scalar> > {
+struct NumTraits<CustomType<Scalar>> {
   typedef CustomType<Scalar> Real;
   typedef CustomType<Scalar> NonInteger;
   typedef CustomType<Scalar> Literal;

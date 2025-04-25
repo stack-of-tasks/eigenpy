@@ -74,7 +74,7 @@ struct VirtualClassWrapper : MyVirtualClass, bp::wrapper<MyVirtualClass> {
   shared_ptr<MyVirtualData> createData() const override {
     if (bp::override fo = this->get_override("createData")) {
       bp::object result = fo().as<bp::object>();
-      return bp::extract<shared_ptr<MyVirtualData> >(result);
+      return bp::extract<shared_ptr<MyVirtualData>>(result);
     }
     return default_createData();
   }
@@ -136,7 +136,7 @@ BOOST_PYTHON_MODULE(bind_virtual_factory) {
       .def("createData", &MyVirtualClass::createData,
            &VirtualClassWrapper::default_createData, bp::args("self"));
 
-  bp::register_ptr_to_python<shared_ptr<MyVirtualData> >();
+  bp::register_ptr_to_python<shared_ptr<MyVirtualData>>();
   /// Trampoline used as 1st argument
   /// otherwise if passed as "HeldType", we need to define
   /// the constructor and call initializer manually.

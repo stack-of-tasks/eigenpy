@@ -16,7 +16,7 @@ namespace eigenpy {
 template <typename SimplicialDerived>
 struct SimplicialCholeskyVisitor
     : public boost::python::def_visitor<
-          SimplicialCholeskyVisitor<SimplicialDerived> > {
+          SimplicialCholeskyVisitor<SimplicialDerived>> {
   typedef SimplicialDerived Solver;
 
   typedef typename SimplicialDerived::MatrixType MatrixType;

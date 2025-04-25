@@ -21,13 +21,13 @@ template <typename Container, bool NoProxy, class SliceAllocator>
 class final_array_derived_policies
     : public array_indexing_suite<
           Container, NoProxy, SliceAllocator,
-          final_array_derived_policies<Container, NoProxy, SliceAllocator> > {};
+          final_array_derived_policies<Container, NoProxy, SliceAllocator>> {};
 }  // namespace details
 
 template <typename Container, bool NoProxy = false,
           class SliceAllocator = std::allocator<typename Container::value_type>,
           class DerivedPolicies = details::final_array_derived_policies<
-              Container, NoProxy, SliceAllocator> >
+              Container, NoProxy, SliceAllocator>>
 class array_indexing_suite
     : public bp::vector_indexing_suite<Container, NoProxy, DerivedPolicies> {
  public:
@@ -108,7 +108,7 @@ class array_indexing_suite
 /// std::vector (dynamic size).
 template <typename array_type, bool NoProxy = false,
           class SliceAllocator =
-              std::allocator<typename array_type::value_type> >
+              std::allocator<typename array_type::value_type>>
 struct StdArrayPythonVisitor {
   typedef typename array_type::value_type value_type;
 
@@ -155,7 +155,7 @@ void exposeStdArrayEigenSpecificType(const char *name) {
   oss << Size << "_" << name;
   typedef std::array<MatrixType, Size> array_type;
   StdArrayPythonVisitor<array_type, false,
-                        Eigen::aligned_allocator<MatrixType> >::
+                        Eigen::aligned_allocator<MatrixType>>::
       expose(oss.str(),
              details::overload_base_get_item_for_std_vector<array_type>());
 }

@@ -31,11 +31,11 @@ struct is_python_complex : std::false_type {};
 
 /// From boost/python/converter/builtin_converters
 template <>
-struct is_python_complex<std::complex<float> > : std::true_type {};
+struct is_python_complex<std::complex<float>> : std::true_type {};
 template <>
-struct is_python_complex<std::complex<double> > : std::true_type {};
+struct is_python_complex<std::complex<double>> : std::true_type {};
 template <>
-struct is_python_complex<std::complex<long double> > : std::true_type {};
+struct is_python_complex<std::complex<long double>> : std::true_type {};
 
 template <typename T>
 struct is_python_primitive_type_helper

@@ -78,7 +78,7 @@ BOOST_PYTHON_MODULE(eigenpy_pywrap) {
   }
 
   exposeIsApprox<double>();
-  exposeIsApprox<std::complex<double> >();
+  exposeIsApprox<std::complex<double>>();
 
   exposeDecompositions();
 }

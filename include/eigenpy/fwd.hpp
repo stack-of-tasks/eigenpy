@@ -169,14 +169,14 @@ template <typename EigenType>
 struct get_eigen_plain_type;
 
 template <typename MatType, int Options, typename Stride>
-struct get_eigen_plain_type<Eigen::Ref<MatType, Options, Stride> > {
+struct get_eigen_plain_type<Eigen::Ref<MatType, Options, Stride>> {
   typedef typename Eigen::internal::traits<
-      Eigen::Ref<MatType, Options, Stride> >::PlainObjectType type;
+      Eigen::Ref<MatType, Options, Stride>>::PlainObjectType type;
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-struct get_eigen_plain_type<Eigen::TensorRef<TensorType> > {
+struct get_eigen_plain_type<Eigen::TensorRef<TensorType>> {
   typedef TensorType type;
 };
 #endif

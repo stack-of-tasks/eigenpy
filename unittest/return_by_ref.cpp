@@ -26,8 +26,7 @@ void expose_matrix_class(const std::string& name) {
   using namespace Eigen;
   namespace bp = boost::python;
 
-  bp::class_<Base<MatrixType> >(name.c_str(),
-                                bp::init<DenseIndex, DenseIndex>())
+  bp::class_<Base<MatrixType>>(name.c_str(), bp::init<DenseIndex, DenseIndex>())
       .def("show", &Base<MatrixType>::show)
       .def("ref", &Base<MatrixType>::ref, bp::return_internal_reference<>())
       .def("const_ref", &Base<MatrixType>::const_ref,

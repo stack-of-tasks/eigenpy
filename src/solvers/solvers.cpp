@@ -17,16 +17,15 @@ namespace eigenpy {
 void exposeSolvers() {
   using namespace Eigen;
   ConjugateGradientVisitor<
-      ConjugateGradient<MatrixXd, Lower | Upper> >::expose();
+      ConjugateGradient<MatrixXd, Lower | Upper>>::expose();
 #if EIGEN_VERSION_AT_LEAST(3, 3, 5)
   LeastSquaresConjugateGradientVisitor<LeastSquaresConjugateGradient<
-      MatrixXd,
-      LeastSquareDiagonalPreconditioner<MatrixXd::Scalar> > >::expose();
+      MatrixXd, LeastSquareDiagonalPreconditioner<MatrixXd::Scalar>>>::expose();
 #endif
 
   // Conjugate gradient with limited BFGS preconditioner
   ConjugateGradientVisitor<
-      ConjugateGradient<MatrixXd, Lower | Upper, IdentityPreconditioner> >::
+      ConjugateGradient<MatrixXd, Lower | Upper, IdentityPreconditioner>>::
       expose("IdentityConjugateGradient");
   //    ConjugateGradientVisitor<
   //    ConjugateGradient<MatrixXd,Lower|Upper,LimitedBFGSPreconditioner<double,Dynamic,Lower|Upper>

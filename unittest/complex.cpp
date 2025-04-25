@@ -56,7 +56,7 @@ template <typename Scalar, int Rows, int Cols, int Options>
 Eigen::Matrix<std::complex<Scalar>, Rows, Cols, Options> ascomplex(
     const Eigen::Matrix<Scalar, Rows, Cols, Options> &mat) {
   typedef Eigen::Matrix<std::complex<Scalar>, Rows, Cols, Options> ReturnType;
-  return ReturnType(mat.template cast<std::complex<Scalar> >());
+  return ReturnType(mat.template cast<std::complex<Scalar>>());
 }
 
 BOOST_PYTHON_MODULE(complex) {

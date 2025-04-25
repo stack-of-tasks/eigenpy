@@ -15,7 +15,7 @@ namespace eigenpy {
 /// exposed with Boost.Python
 ///
 template <class C>
-struct IdVisitor : public bp::def_visitor<IdVisitor<C> > {
+struct IdVisitor : public bp::def_visitor<IdVisitor<C>> {
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def("id", &id, bp::arg("self"),

@@ -14,8 +14,8 @@ namespace eigenpy {
 
 template <typename LeastSquaresConjugateGradient>
 struct LeastSquaresConjugateGradientVisitor
-    : public boost::python::def_visitor<LeastSquaresConjugateGradientVisitor<
-          LeastSquaresConjugateGradient> > {
+    : public boost::python::def_visitor<
+          LeastSquaresConjugateGradientVisitor<LeastSquaresConjugateGradient>> {
   typedef Eigen::MatrixXd MatrixType;
 
   template <class PyClass>

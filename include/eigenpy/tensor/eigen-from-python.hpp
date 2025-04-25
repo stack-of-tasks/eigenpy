@@ -13,7 +13,7 @@
 namespace eigenpy {
 
 template <typename TensorType>
-struct expected_pytype_for_arg<TensorType, Eigen::TensorBase<TensorType> > {
+struct expected_pytype_for_arg<TensorType, Eigen::TensorBase<TensorType>> {
   static PyTypeObject const *get_pytype() {
     PyTypeObject const *py_type = eigenpy::getPyArrayType();
     return py_type;
@@ -27,9 +27,9 @@ namespace python {
 namespace converter {
 
 template <typename Scalar, int Rank, int Options, typename IndexType>
-struct expected_pytype_for_arg<Eigen::Tensor<Scalar, Rank, Options, IndexType> >
+struct expected_pytype_for_arg<Eigen::Tensor<Scalar, Rank, Options, IndexType>>
     : eigenpy::expected_pytype_for_arg<
-          Eigen::Tensor<Scalar, Rank, Options, IndexType> > {};
+          Eigen::Tensor<Scalar, Rank, Options, IndexType>> {};
 
 template <typename Scalar, int Rank, int Options, typename IndexType>
 struct rvalue_from_python_data<
@@ -75,7 +75,7 @@ struct referent_storage<const Eigen::TensorRef<const TensorType> &> {
 namespace eigenpy {
 
 template <typename TensorType>
-struct eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType> > {
+struct eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType>> {
   typedef typename TensorType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
@@ -90,7 +90,7 @@ struct eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType> > {
 
 template <typename TensorType>
 void *
-eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType> >::convertible(
+eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType>>::convertible(
     PyObject *pyObj) {
   if (!call_PyArray_Check(reinterpret_cast<PyObject *>(pyObj))) return 0;
 
@@ -119,14 +119,14 @@ eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType> >::convertible(
 }
 
 template <typename TensorType>
-void eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType> >::construct(
+void eigen_from_py_impl<TensorType, Eigen::TensorBase<TensorType>>::construct(
     PyObject *pyObj, bp::converter::rvalue_from_python_stage1_data *memory) {
   eigen_from_py_construct<TensorType>(pyObj, memory);
 }
 
 template <typename TensorType>
 void eigen_from_py_impl<TensorType,
-                        Eigen::TensorBase<TensorType> >::registration() {
+                        Eigen::TensorBase<TensorType>>::registration() {
   bp::converter::registry::push_back(
       reinterpret_cast<void *(*)(_object *)>(&eigen_from_py_impl::convertible),
       &eigen_from_py_impl::construct, bp::type_id<TensorType>()
@@ -138,8 +138,7 @@ void eigen_from_py_impl<TensorType,
 }
 
 template <typename TensorType>
-struct eigen_from_py_converter_impl<TensorType,
-                                    Eigen::TensorBase<TensorType> > {
+struct eigen_from_py_converter_impl<TensorType, Eigen::TensorBase<TensorType>> {
   static void registration() {
     EigenFromPy<TensorType>::registration();
 
@@ -158,7 +157,7 @@ struct eigen_from_py_converter_impl<TensorType,
 };
 
 template <typename TensorType>
-struct EigenFromPy<Eigen::TensorBase<TensorType> > : EigenFromPy<TensorType> {
+struct EigenFromPy<Eigen::TensorBase<TensorType>> : EigenFromPy<TensorType> {
   typedef EigenFromPy<TensorType> EigenFromPyDerived;
   typedef Eigen::TensorBase<TensorType> Base;
 
@@ -175,7 +174,7 @@ struct EigenFromPy<Eigen::TensorBase<TensorType> > : EigenFromPy<TensorType> {
 };
 
 template <typename TensorType>
-struct EigenFromPy<Eigen::TensorRef<TensorType> > {
+struct EigenFromPy<Eigen::TensorRef<TensorType>> {
   typedef Eigen::TensorRef<TensorType> RefType;
   typedef typename TensorType::Scalar Scalar;
 
@@ -200,7 +199,7 @@ struct EigenFromPy<Eigen::TensorRef<TensorType> > {
 };
 
 template <typename TensorType>
-struct EigenFromPy<const Eigen::TensorRef<const TensorType> > {
+struct EigenFromPy<const Eigen::TensorRef<const TensorType>> {
   typedef const Eigen::TensorRef<const TensorType> ConstRefType;
   typedef typename TensorType::Scalar Scalar;
 

@@ -20,7 +20,7 @@ struct FromTypeToType
 
 /// FromTypeToType specialization to manage std::complex
 template <typename ScalarSource, typename ScalarTarget>
-struct FromTypeToType<std::complex<ScalarSource>, std::complex<ScalarTarget> >
+struct FromTypeToType<std::complex<ScalarSource>, std::complex<ScalarTarget>>
     : public boost::mpl::if_c<
           std::is_same<ScalarSource, ScalarTarget>::value, std::true_type,
           typename boost::numeric::conversion_traits<
