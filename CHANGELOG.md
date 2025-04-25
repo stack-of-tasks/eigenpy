@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Add user-defined literal ""_a for bp::arg ([#545)(https://github.com/stack-of-tasks/eigenpy/pull/545))
+
 ### Fixed
 
 - Fix handling of non sorted sparse matrix ([#538](https://github.com/stack-of-tasks/eigenpy/pull/538))
