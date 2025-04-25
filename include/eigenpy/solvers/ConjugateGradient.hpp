@@ -15,7 +15,7 @@ namespace eigenpy {
 template <typename ConjugateGradient>
 struct ConjugateGradientVisitor
     : public boost::python::def_visitor<
-          ConjugateGradientVisitor<ConjugateGradient> > {
+          ConjugateGradientVisitor<ConjugateGradient>> {
   typedef typename ConjugateGradient::MatrixType MatrixType;
 
   template <class PyClass>

@@ -15,7 +15,7 @@
 namespace eigenpy {
 template <typename _Solver>
 struct IterativeSolverBaseVisitor
-    : public boost::python::def_visitor<IterativeSolverBaseVisitor<_Solver> > {
+    : public boost::python::def_visitor<IterativeSolverBaseVisitor<_Solver>> {
   typedef _Solver Solver;
   typedef typename Solver::MatrixType MatrixType;
   typedef typename Solver::Preconditioner Preconditioner;
@@ -123,7 +123,7 @@ struct IterativeSolverBaseVisitor
 
 template <typename _MatrixType>
 struct MINRESSolverVisitor
-    : public boost::python::def_visitor<MINRESSolverVisitor<_MatrixType> > {
+    : public boost::python::def_visitor<MINRESSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;

@@ -14,7 +14,7 @@ template <int SizeAtCompileTime, int MaxSizeAtCompileTime = SizeAtCompileTime,
           typename StorageIndex_ = int>
 struct PermutationMatrixVisitor
     : public boost::python::def_visitor<PermutationMatrixVisitor<
-          SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_> > {
+          SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_>> {
   typedef StorageIndex_ StorageIndex;
   typedef Eigen::PermutationMatrix<SizeAtCompileTime, MaxSizeAtCompileTime,
                                    StorageIndex>

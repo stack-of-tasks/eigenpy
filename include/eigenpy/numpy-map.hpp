@@ -24,13 +24,13 @@ struct numpy_map_impl;
 template <typename MatType, typename InputScalar, int AlignmentValue,
           typename Stride>
 struct numpy_map_impl<MatType, InputScalar, AlignmentValue, Stride,
-                      Eigen::MatrixBase<MatType> >
+                      Eigen::MatrixBase<MatType>>
     : numpy_map_impl_matrix<MatType, InputScalar, AlignmentValue, Stride> {};
 
 template <typename MatType, typename InputScalar, int AlignmentValue,
           typename Stride>
 struct numpy_map_impl<const MatType, InputScalar, AlignmentValue, Stride,
-                      const Eigen::MatrixBase<MatType> >
+                      const Eigen::MatrixBase<MatType>>
     : numpy_map_impl_matrix<const MatType, InputScalar, AlignmentValue,
                             Stride> {};
 
@@ -183,13 +183,13 @@ struct numpy_map_impl_tensor;
 template <typename TensorType, typename InputScalar, int AlignmentValue,
           typename Stride>
 struct numpy_map_impl<TensorType, InputScalar, AlignmentValue, Stride,
-                      Eigen::TensorBase<TensorType> >
+                      Eigen::TensorBase<TensorType>>
     : numpy_map_impl_tensor<TensorType, InputScalar, AlignmentValue, Stride> {};
 
 template <typename TensorType, typename InputScalar, int AlignmentValue,
           typename Stride>
 struct numpy_map_impl<const TensorType, InputScalar, AlignmentValue, Stride,
-                      const Eigen::TensorBase<TensorType> >
+                      const Eigen::TensorBase<TensorType>>
     : numpy_map_impl_tensor<const TensorType, InputScalar, AlignmentValue,
                             Stride> {};
 

@@ -31,8 +31,8 @@ struct expose_eigen_type_impl<MatType, Eigen::MatrixBase<MatType>, Scalar> {
     // to-python
     EigenToPyConverter<MatType>::registration();
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
-    EigenToPyConverter<Eigen::Ref<MatType> >::registration();
-    EigenToPyConverter<const Eigen::Ref<const MatType> >::registration();
+    EigenToPyConverter<Eigen::Ref<MatType>>::registration();
+    EigenToPyConverter<const Eigen::Ref<const MatType>>::registration();
 #endif
 
     // from-python
@@ -67,9 +67,9 @@ struct expose_eigen_type_impl<TensorType, Eigen::TensorBase<TensorType>,
 
     // to-python
     EigenToPyConverter<TensorType>::registration();
-    EigenToPyConverter<Eigen::TensorRef<TensorType> >::registration();
+    EigenToPyConverter<Eigen::TensorRef<TensorType>>::registration();
     EigenToPyConverter<
-        const Eigen::TensorRef<const TensorType> >::registration();
+        const Eigen::TensorRef<const TensorType>>::registration();
 
     // from-python
     EigenFromPyConverter<TensorType>::registration();

@@ -14,7 +14,7 @@ namespace eigenpy {
 
 template <typename Preconditioner>
 struct PreconditionerBaseVisitor
-    : public bp::def_visitor<PreconditionerBaseVisitor<Preconditioner> > {
+    : public bp::def_visitor<PreconditionerBaseVisitor<Preconditioner>> {
   typedef Eigen::MatrixXd MatrixType;
   typedef Eigen::VectorXd VectorType;
 
@@ -51,7 +51,7 @@ struct PreconditionerBaseVisitor
 
 template <typename Scalar>
 struct DiagonalPreconditionerVisitor
-    : PreconditionerBaseVisitor<Eigen::DiagonalPreconditioner<Scalar> > {
+    : PreconditionerBaseVisitor<Eigen::DiagonalPreconditioner<Scalar>> {
   typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> MatrixType;
   typedef Eigen::DiagonalPreconditioner<Scalar> Preconditioner;
 
@@ -79,7 +79,7 @@ struct DiagonalPreconditionerVisitor
 template <typename Scalar>
 struct LeastSquareDiagonalPreconditionerVisitor
     : PreconditionerBaseVisitor<
-          Eigen::LeastSquareDiagonalPreconditioner<Scalar> > {
+          Eigen::LeastSquareDiagonalPreconditioner<Scalar>> {
   typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> MatrixType;
   typedef Eigen::LeastSquareDiagonalPreconditioner<Scalar> Preconditioner;
 

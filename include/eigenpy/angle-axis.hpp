@@ -13,7 +13,7 @@ template <typename AngleAxis>
 class AngleAxisVisitor;
 
 template <typename Scalar>
-struct call<Eigen::AngleAxis<Scalar> > {
+struct call<Eigen::AngleAxis<Scalar>> {
   typedef Eigen::AngleAxis<Scalar> AngleAxis;
 
   static inline void expose() { AngleAxisVisitor<AngleAxis>::expose(); }
@@ -26,7 +26,7 @@ struct call<Eigen::AngleAxis<Scalar> > {
 };
 
 template <typename AngleAxis>
-class AngleAxisVisitor : public bp::def_visitor<AngleAxisVisitor<AngleAxis> > {
+class AngleAxisVisitor : public bp::def_visitor<AngleAxisVisitor<AngleAxis>> {
   typedef typename AngleAxis::Scalar Scalar;
   typedef typename AngleAxis::Vector3 Vector3;
   typedef typename AngleAxis::Matrix3 Matrix3;

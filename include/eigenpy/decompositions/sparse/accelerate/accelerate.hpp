@@ -15,7 +15,7 @@ namespace eigenpy {
 
 template <typename AccelerateDerived>
 struct AccelerateImplVisitor : public boost::python::def_visitor<
-                                   AccelerateImplVisitor<AccelerateDerived> > {
+                                   AccelerateImplVisitor<AccelerateDerived>> {
   typedef AccelerateDerived Solver;
 
   typedef typename AccelerateDerived::MatrixType MatrixType;

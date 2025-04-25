@@ -21,13 +21,13 @@ struct scipy_allocator_impl_sparse_matrix;
 template <typename MatType>
 struct scipy_allocator_impl<
     MatType,
-    Eigen::SparseMatrixBase<typename remove_const_reference<MatType>::type> >
+    Eigen::SparseMatrixBase<typename remove_const_reference<MatType>::type>>
     : scipy_allocator_impl_sparse_matrix<MatType> {};
 
 template <typename MatType>
-struct scipy_allocator_impl<
-    const MatType, const Eigen::SparseMatrixBase<
-                       typename remove_const_reference<MatType>::type> >
+struct scipy_allocator_impl<const MatType,
+                            const Eigen::SparseMatrixBase<
+                                typename remove_const_reference<MatType>::type>>
     : scipy_allocator_impl_sparse_matrix<const MatType> {};
 
 // template <typename MatType>
@@ -37,7 +37,7 @@ struct scipy_allocator_impl<
 
 template <typename MatType>
 struct scipy_allocator_impl<const MatType &,
-                            const Eigen::SparseMatrixBase<MatType> >
+                            const Eigen::SparseMatrixBase<MatType>>
     : scipy_allocator_impl_sparse_matrix<const MatType &> {};
 
 template <typename EigenType,

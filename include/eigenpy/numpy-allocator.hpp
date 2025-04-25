@@ -20,13 +20,13 @@ struct numpy_allocator_impl_matrix;
 
 template <typename MatType>
 struct numpy_allocator_impl<
-    MatType, Eigen::MatrixBase<typename remove_const_reference<MatType>::type> >
+    MatType, Eigen::MatrixBase<typename remove_const_reference<MatType>::type>>
     : numpy_allocator_impl_matrix<MatType> {};
 
 template <typename MatType>
 struct numpy_allocator_impl<
     const MatType,
-    const Eigen::MatrixBase<typename remove_const_reference<MatType>::type> >
+    const Eigen::MatrixBase<typename remove_const_reference<MatType>::type>>
     : numpy_allocator_impl_matrix<const MatType> {};
 
 // template <typename MatType>
@@ -35,7 +35,7 @@ struct numpy_allocator_impl<
 //{};
 
 template <typename MatType>
-struct numpy_allocator_impl<const MatType &, const Eigen::MatrixBase<MatType> >
+struct numpy_allocator_impl<const MatType &, const Eigen::MatrixBase<MatType>>
     : numpy_allocator_impl_matrix<const MatType &> {};
 
 template <typename EigenType,
@@ -67,12 +67,12 @@ template <typename TensorType>
 struct numpy_allocator_impl_tensor;
 
 template <typename TensorType>
-struct numpy_allocator_impl<TensorType, Eigen::TensorBase<TensorType> >
+struct numpy_allocator_impl<TensorType, Eigen::TensorBase<TensorType>>
     : numpy_allocator_impl_tensor<TensorType> {};
 
 template <typename TensorType>
 struct numpy_allocator_impl<const TensorType,
-                            const Eigen::TensorBase<TensorType> >
+                            const Eigen::TensorBase<TensorType>>
     : numpy_allocator_impl_tensor<const TensorType> {};
 
 template <typename TensorType>
@@ -120,7 +120,7 @@ struct numpy_allocator_impl_matrix<MatType &> {
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
 
 template <typename MatType, int Options, typename Stride>
-struct numpy_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride> > {
+struct numpy_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
 
   static PyArrayObject *allocate(RefType &mat, npy_intp nd, npy_intp *shape) {
@@ -190,7 +190,7 @@ struct numpy_allocator_impl_matrix<const MatType &> {
 
 template <typename MatType, int Options, typename Stride>
 struct numpy_allocator_impl_matrix<
-    const Eigen::Ref<const MatType, Options, Stride> > {
+    const Eigen::Ref<const MatType, Options, Stride>> {
   typedef const Eigen::Ref<const MatType, Options, Stride> RefType;
 
   static PyArrayObject *allocate(RefType &mat, npy_intp nd, npy_intp *shape) {
@@ -233,7 +233,7 @@ struct numpy_allocator_impl_matrix<
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-struct numpy_allocator_impl_tensor<Eigen::TensorRef<TensorType> > {
+struct numpy_allocator_impl_tensor<Eigen::TensorRef<TensorType>> {
   typedef Eigen::TensorRef<TensorType> RefType;
 
   static PyArrayObject *allocate(RefType &tensor, npy_intp nd,
@@ -266,7 +266,7 @@ struct numpy_allocator_impl_tensor<Eigen::TensorRef<TensorType> > {
 };
 
 template <typename TensorType>
-struct numpy_allocator_impl_tensor<const Eigen::TensorRef<const TensorType> > {
+struct numpy_allocator_impl_tensor<const Eigen::TensorRef<const TensorType>> {
   typedef const Eigen::TensorRef<const TensorType> RefType;
 
   static PyArrayObject *allocate(RefType &tensor, npy_intp nd,

@@ -11,7 +11,7 @@ namespace eigenpy {
 
 template <typename SparseSolver>
 struct SparseSolverVisitor
-    : public bp::def_visitor<SparseSolverVisitor<SparseSolver> > {
+    : public bp::def_visitor<SparseSolverVisitor<SparseSolver>> {
   typedef Eigen::VectorXd VectorType;
 
   template <class PyClass>

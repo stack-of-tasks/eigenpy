@@ -14,7 +14,7 @@ namespace eigenpy {
 template <typename MatrixType_, int UpLo_ = Eigen::Lower>
 struct CholmodSimplicialLLTVisitor
     : public boost::python::def_visitor<
-          CholmodSimplicialLLTVisitor<MatrixType_, UpLo_> > {
+          CholmodSimplicialLLTVisitor<MatrixType_, UpLo_>> {
   typedef MatrixType_ MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;

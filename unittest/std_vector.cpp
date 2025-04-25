@@ -9,7 +9,7 @@
 
 template <typename MatType>
 void printVectorOfMatrix(
-    const std::vector<MatType, Eigen::aligned_allocator<MatType> > &Ms) {
+    const std::vector<MatType, Eigen::aligned_allocator<MatType>> &Ms) {
   const std::size_t n = Ms.size();
   for (std::size_t i = 0; i < n; i++) {
     std::cout << "el[" << i << "] =\n" << Ms[i] << '\n';
@@ -17,14 +17,14 @@ void printVectorOfMatrix(
 }
 
 template <typename MatType>
-std::vector<MatType, Eigen::aligned_allocator<MatType> > copy(
-    const std::vector<MatType, Eigen::aligned_allocator<MatType> > &Ms) {
-  std::vector<MatType, Eigen::aligned_allocator<MatType> > out = Ms;
+std::vector<MatType, Eigen::aligned_allocator<MatType>> copy(
+    const std::vector<MatType, Eigen::aligned_allocator<MatType>> &Ms) {
+  std::vector<MatType, Eigen::aligned_allocator<MatType>> out = Ms;
   return out;
 }
 
 template <typename MatType>
-void setZero(std::vector<MatType, Eigen::aligned_allocator<MatType> > &Ms) {
+void setZero(std::vector<MatType, Eigen::aligned_allocator<MatType>> &Ms) {
   for (std::size_t i = 0; i < Ms.size(); i++) {
     Ms[i].setZero();
   }
@@ -58,14 +58,14 @@ BOOST_PYTHON_MODULE(std_vector) {
   // Mat2d don't have tolist, reserve, mutable __getitem__ and from list
   // conversion
   // exposeStdVectorEigenSpecificType must add those methods to StdVec_Mat2d
-  bp::class_<std::vector<Eigen::Matrix2d> >("StdVec_Mat2d")
-      .def(boost::python::vector_indexing_suite<
-           std::vector<Eigen::Matrix2d> >());
+  bp::class_<std::vector<Eigen::Matrix2d>>("StdVec_Mat2d")
+      .def(
+          boost::python::vector_indexing_suite<std::vector<Eigen::Matrix2d>>());
   exposeStdVectorEigenSpecificType<Eigen::Matrix2d>("Mat2d");
 
   // Test API regression:
   // Exposing a `std::vector` with documentation doesn't clash with
   // exposing a `std::vector` with a visitor
-  StdVectorPythonVisitor<std::vector<CustomTestStruct> >::expose(
+  StdVectorPythonVisitor<std::vector<CustomTestStruct>>::expose(
       "StdVec_CustomTestStruct", "some documentation");
 }

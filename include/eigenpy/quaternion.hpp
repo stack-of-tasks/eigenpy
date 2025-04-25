@@ -21,7 +21,7 @@ struct rvalue_from_python_data<Eigen::QuaternionBase<Quaternion> const&>
 };
 
 template <class Quaternion>
-struct implicit<Quaternion, Eigen::QuaternionBase<Quaternion> > {
+struct implicit<Quaternion, Eigen::QuaternionBase<Quaternion>> {
   typedef Quaternion Source;
   typedef Eigen::QuaternionBase<Quaternion> Target;
 
@@ -69,7 +69,7 @@ template <typename QuaternionDerived>
 class QuaternionVisitor;
 
 template <typename Scalar, int Options>
-struct call<Eigen::Quaternion<Scalar, Options> > {
+struct call<Eigen::Quaternion<Scalar, Options>> {
   typedef Eigen::Quaternion<Scalar, Options> Quaternion;
   static inline void expose() { QuaternionVisitor<Quaternion>::expose(); }
 
@@ -82,7 +82,7 @@ struct call<Eigen::Quaternion<Scalar, Options> > {
 
 template <typename Quaternion>
 class QuaternionVisitor
-    : public bp::def_visitor<QuaternionVisitor<Quaternion> > {
+    : public bp::def_visitor<QuaternionVisitor<Quaternion>> {
   typedef Eigen::QuaternionBase<Quaternion> QuaternionBase;
 
   typedef typename QuaternionBase::Scalar Scalar;

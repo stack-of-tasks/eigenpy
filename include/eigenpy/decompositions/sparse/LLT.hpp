@@ -13,10 +13,10 @@ namespace eigenpy {
 
 template <typename _MatrixType, int _UpLo = Eigen::Lower,
           typename _Ordering =
-              Eigen::AMDOrdering<typename _MatrixType::StorageIndex> >
+              Eigen::AMDOrdering<typename _MatrixType::StorageIndex>>
 struct SimplicialLLTVisitor
     : public boost::python::def_visitor<
-          SimplicialLLTVisitor<_MatrixType, _UpLo, _Ordering> > {
+          SimplicialLLTVisitor<_MatrixType, _UpLo, _Ordering>> {
   typedef SimplicialLLTVisitor<_MatrixType, _UpLo, _Ordering> Visitor;
   typedef _MatrixType MatrixType;
 

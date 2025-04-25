@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Fix handling of non sorted sparse matrix ([#538](https://github.com/stack-of-tasks/eigenpy/pull/538))
 
+### Changed
+
+- Update clang-format standard to C++11, reformat code
+
 ## [3.10.3] - 2025-02-11
 
 ### Added
