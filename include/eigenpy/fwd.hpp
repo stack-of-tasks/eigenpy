@@ -196,6 +196,16 @@ struct has_operator_equal_impl {
 template <class T1, class T2 = T1>
 struct has_operator_equal : internal::has_operator_equal_impl<T1, T2>::type {};
 
+namespace literals {
+/// \brief A string literal returning a boost::python::arg.
+///
+/// Using-declare this operator or do `using namespace eigenpy::literals`. Then
+/// `bp::arg("matrix")` can be replaced by the literal `"matrix"_a`.
+inline boost::python::arg operator"" _a(const char *name, std::size_t) {
+  return boost::python::arg(name);
+}
+}  // namespace literals
+
 }  // namespace eigenpy
 
 #include "eigenpy/alignment.hpp"
