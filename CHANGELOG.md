@@ -6,11 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Change the default branch to `devel` ([#547](https://github.com/stack-of-tasks/eigenpy/pull/547))
+
 ## [3.11.0] - 2025-04-25
 
 ### Added
 
-- Add user-defined literal ""_a for bp::arg ([#545)(https://github.com/stack-of-tasks/eigenpy/pull/545))
+- Add user-defined literal ""_a for bp::arg ([#545](https://github.com/stack-of-tasks/eigenpy/pull/545))
 
 ### Fixed
 
