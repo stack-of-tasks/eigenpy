@@ -28,19 +28,19 @@ template <typename MatType>
 struct eigen_to_py_impl_matrix;
 
 template <typename MatType>
-struct eigen_to_py_impl<MatType, Eigen::MatrixBase<MatType> >
+struct eigen_to_py_impl<MatType, Eigen::MatrixBase<MatType>>
     : eigen_to_py_impl_matrix<MatType> {};
 
 template <typename MatType>
-struct eigen_to_py_impl<MatType&, Eigen::MatrixBase<MatType> >
+struct eigen_to_py_impl<MatType&, Eigen::MatrixBase<MatType>>
     : eigen_to_py_impl_matrix<MatType&> {};
 
 template <typename MatType>
-struct eigen_to_py_impl<const MatType, const Eigen::MatrixBase<MatType> >
+struct eigen_to_py_impl<const MatType, const Eigen::MatrixBase<MatType>>
     : eigen_to_py_impl_matrix<const MatType> {};
 
 template <typename MatType>
-struct eigen_to_py_impl<const MatType&, const Eigen::MatrixBase<MatType> >
+struct eigen_to_py_impl<const MatType&, const Eigen::MatrixBase<MatType>>
     : eigen_to_py_impl_matrix<const MatType&> {};
 
 template <typename MatType>
@@ -81,19 +81,19 @@ template <typename MatType>
 struct eigen_to_py_impl_sparse_matrix;
 
 template <typename MatType>
-struct eigen_to_py_impl<MatType, Eigen::SparseMatrixBase<MatType> >
+struct eigen_to_py_impl<MatType, Eigen::SparseMatrixBase<MatType>>
     : eigen_to_py_impl_sparse_matrix<MatType> {};
 
 template <typename MatType>
-struct eigen_to_py_impl<MatType&, Eigen::SparseMatrixBase<MatType> >
+struct eigen_to_py_impl<MatType&, Eigen::SparseMatrixBase<MatType>>
     : eigen_to_py_impl_sparse_matrix<MatType&> {};
 
 template <typename MatType>
-struct eigen_to_py_impl<const MatType, const Eigen::SparseMatrixBase<MatType> >
+struct eigen_to_py_impl<const MatType, const Eigen::SparseMatrixBase<MatType>>
     : eigen_to_py_impl_sparse_matrix<const MatType> {};
 
 template <typename MatType>
-struct eigen_to_py_impl<const MatType&, const Eigen::SparseMatrixBase<MatType> >
+struct eigen_to_py_impl<const MatType&, const Eigen::SparseMatrixBase<MatType>>
     : eigen_to_py_impl_sparse_matrix<const MatType&> {};
 
 template <typename MatType>
@@ -124,11 +124,11 @@ template <typename TensorType>
 struct eigen_to_py_impl_tensor;
 
 template <typename TensorType>
-struct eigen_to_py_impl<TensorType, Eigen::TensorBase<TensorType> >
+struct eigen_to_py_impl<TensorType, Eigen::TensorBase<TensorType>>
     : eigen_to_py_impl_tensor<TensorType> {};
 
 template <typename TensorType>
-struct eigen_to_py_impl<const TensorType, const Eigen::TensorBase<TensorType> >
+struct eigen_to_py_impl<const TensorType, const Eigen::TensorBase<TensorType>>
     : eigen_to_py_impl_tensor<const TensorType> {};
 
 template <typename TensorType>

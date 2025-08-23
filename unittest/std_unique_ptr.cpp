@@ -27,8 +27,8 @@ std::unique_ptr<std::string> make_unique_str() {
   return std::make_unique<std::string>("str");
 }
 
-std::unique_ptr<std::complex<double> > make_unique_complex() {
-  return std::make_unique<std::complex<double> >(1., 0.);
+std::unique_ptr<std::complex<double>> make_unique_complex() {
+  return std::make_unique<std::complex<double>>(1., 0.);
 }
 
 struct UniquePtrHolder {
@@ -36,13 +36,13 @@ struct UniquePtrHolder {
       : int_ptr(std::make_unique<int>(20)),
         v1_ptr(std::make_unique<V1>(200)),
         str_ptr(std::make_unique<std::string>("str")),
-        complex_ptr(std::make_unique<std::complex<double> >(1., 0.)) {}
+        complex_ptr(std::make_unique<std::complex<double>>(1., 0.)) {}
 
   std::unique_ptr<int> int_ptr;
   std::unique_ptr<V1> v1_ptr;
   std::unique_ptr<V1> null_ptr;
   std::unique_ptr<std::string> str_ptr;
-  std::unique_ptr<std::complex<double> > complex_ptr;
+  std::unique_ptr<std::complex<double>> complex_ptr;
 };
 
 BOOST_PYTHON_MODULE(std_unique_ptr) {

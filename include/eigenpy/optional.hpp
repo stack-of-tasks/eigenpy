@@ -25,12 +25,12 @@ namespace python {
 namespace converter {
 
 template <typename T>
-struct expected_pytype_for_arg<boost::optional<T> >
+struct expected_pytype_for_arg<boost::optional<T>>
     : expected_pytype_for_arg<T> {};
 
 #ifdef EIGENPY_WITH_CXX17_SUPPORT
 template <typename T>
-struct expected_pytype_for_arg<std::optional<T> > : expected_pytype_for_arg<T> {
+struct expected_pytype_for_arg<std::optional<T>> : expected_pytype_for_arg<T> {
 };
 #endif
 
@@ -88,7 +88,7 @@ struct OptionalToPython {
   }
 
   static void registration() {
-    if (!check_registration<OptionalTpl<T> >()) {
+    if (!check_registration<OptionalTpl<T>>()) {
       bp::to_python_converter<OptionalTpl<T>, OptionalToPython, true>();
     }
   }
@@ -122,7 +122,7 @@ void OptionalFromPython<T, OptionalTpl>::construct(
     PyObject *obj_ptr, bp::converter::rvalue_from_python_stage1_data *memory) {
   // create storage
   using rvalue_storage_t =
-      bp::converter::rvalue_from_python_storage<OptionalTpl<T> >;
+      bp::converter::rvalue_from_python_storage<OptionalTpl<T>>;
   void *storage =
       reinterpret_cast<rvalue_storage_t *>(reinterpret_cast<void *>(memory))
           ->storage.bytes;
@@ -140,8 +140,8 @@ void OptionalFromPython<T, OptionalTpl>::construct(
 template <typename T, template <typename> class OptionalTpl>
 void OptionalFromPython<T, OptionalTpl>::registration() {
   bp::converter::registry::push_back(
-      &convertible, &construct, bp::type_id<OptionalTpl<T> >(),
-      bp::converter::expected_pytype_for_arg<OptionalTpl<T> >::get_pytype);
+      &convertible, &construct, bp::type_id<OptionalTpl<T>>(),
+      bp::converter::expected_pytype_for_arg<OptionalTpl<T>>::get_pytype);
 }
 
 }  // namespace detail

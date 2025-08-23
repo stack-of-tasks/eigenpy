@@ -19,7 +19,7 @@ EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
 - full support Eigen::Ref avoiding memory allocation
 - full support of the Eigen::Tensor module
 - exposition of the Geometry module of Eigen for easy code prototyping
-- standard matrix decomposion routines of Eigen such as the Cholesky decomposition (SVD and QR decompositions [can be added](#contributing))
+- standard matrix decomposion routines of Eigen such as the Cholesky, SVD and QR decompositions
 - full support of SWIG objects
 - full support of runtime declaration of Numpy scalar types
 - extended API to expose several STL types and some of their Boost equivalents: `optional` types, `std::pair`, maps, variants...
@@ -42,17 +42,19 @@ You can easily install **EigenPy** from binaries.
 
 #### Add robotpkg apt repository
 
-1. Add robotpkg as source repository to apt:
+1. Register the authentication certificate of robotpkg:
 ```
-sudo sh -c "echo 'deb [arch=amd64] http://robotpkg.openrobots.org/packages/debian/pub $(lsb_release -cs) robotpkg' >> /etc/apt/sources.list.d/robotpkg.list"
+curl http://robotpkg.openrobots.org/packages/debian/robotpkg.asc | sudo tee /etc/apt/keyrings/robotpkg.asc
 ```
-2. Register the authentication certificate of robotpkg:
+2. Add robotpkg as source repository to apt:
 ```
-curl http://robotpkg.openrobots.org/packages/debian/robotpkg.key | sudo apt-key add -
+sudo tee /etc/apt/sources.list.d/robotpkg.list <<EOF
+deb [arch=amd64 signed-by=/etc/apt/keyrings/robotpkg.asc] http://robotpkg.openrobots.org/packages/debian/pub $(lsb_release -cs) robotpkg
+EOF
 ```
 3. You need to run at least one apt update to fetch the package descriptions:
 ```bash
-sudo apt-get update
+sudo apt update
 ```
 
 #### Install EigenPy
@@ -77,6 +79,12 @@ and then install **EigenPy** for Python 3.x with:
 brew install eigenpy
 ```
 
+### Docker
+
+```
+docker run --rm -it ghcr.io/stack-of-tasks/eigenpy:devel
+```
+
 ## Build
 
 Build instruction can be found [here](./development/build.md)
@@ -90,8 +98,9 @@ The following people have been involved in the development of **EigenPy**:
 - [Wolfgang Merkt](http://www.wolfgangmerkt.com/) (University of Edinburgh): ROS integration and support
 - [Sean Yen](https://www.linkedin.com/in/seanyentw) (Microsoft): Windows integration
 - [Loïc Estève](https://github.com/lesteve) (Inria): Conda integration
-- [Wilson Jallet](https://manifoldfr.github.io/) (Inria/LAAS-CNRS): core developer
+- [Wilson Jallet](https://manifoldfr.github.io/) (Inria): core developer
 - [Joris Vaillant](https://github.com/jorisv) (Inria): core developer and manager of the project
+- [Lucas Haubert](https://www.linkedin.com/in/lucas-haubert-b668a421a/) (Inria): core developer
 
 If you have taken part in the development of **EigenPy**, feel free to add your name and contribution here.
 

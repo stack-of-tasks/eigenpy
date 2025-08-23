@@ -1,6 +1,12 @@
 [build-system]
 build-backend = "cmeel"
-requires = ["cmeel-boost ~= 1.89.0", "cmeel-eigen >= 3.4.0.2", "cmeel[build]", "scipy"]
+requires = [
+  "cmeel-boost ~= 1.89.0",
+  "cmeel-eigen >= 3.4.0.2",
+  "cmeel[build]",
+  "jrl-cmakemodules",
+  "scipy"
+]
 
 [project]
 dependencies = ["cmeel-boost ~= 1.89.0"]

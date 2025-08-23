@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2024 INRIA
+// Copyright (c) 2024-2025 INRIA
 //
 
 #ifndef __eigenpy_sparse_eigen_from_python_hpp__
@@ -14,7 +14,7 @@ namespace eigenpy {
 
 template <typename SparseMatrixType>
 struct expected_pytype_for_arg<SparseMatrixType,
-                               Eigen::SparseMatrixBase<SparseMatrixType> > {
+                               Eigen::SparseMatrixBase<SparseMatrixType>> {
   static PyTypeObject const *get_pytype() {
     PyTypeObject const *py_type = ScipyType::get_pytype<SparseMatrixType>();
     return py_type;
@@ -29,9 +29,9 @@ namespace converter {
 
 template <typename Scalar, int Options, typename StorageIndex>
 struct expected_pytype_for_arg<
-    Eigen::SparseMatrix<Scalar, Options, StorageIndex> >
+    Eigen::SparseMatrix<Scalar, Options, StorageIndex>>
     : eigenpy::expected_pytype_for_arg<
-          Eigen::SparseMatrix<Scalar, Options, StorageIndex> > {};
+          Eigen::SparseMatrix<Scalar, Options, StorageIndex>> {};
 
 template <typename Scalar, int Options, typename StorageIndex>
 struct rvalue_from_python_data<
@@ -78,7 +78,7 @@ namespace eigenpy {
 
 template <typename SparseMatrixType>
 struct eigen_from_py_impl<SparseMatrixType,
-                          Eigen::SparseMatrixBase<SparseMatrixType> > {
+                          Eigen::SparseMatrixBase<SparseMatrixType>> {
   typedef typename SparseMatrixType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
@@ -94,7 +94,7 @@ struct eigen_from_py_impl<SparseMatrixType,
 template <typename SparseMatrixType>
 void *eigen_from_py_impl<
     SparseMatrixType,
-    Eigen::SparseMatrixBase<SparseMatrixType> >::convertible(PyObject *pyObj) {
+    Eigen::SparseMatrixBase<SparseMatrixType>>::convertible(PyObject *pyObj) {
   const PyTypeObject *type = Py_TYPE(pyObj);
   const PyTypeObject *sparse_matrix_py_type =
       ScipyType::get_pytype<SparseMatrixType>();
@@ -156,6 +156,10 @@ void eigen_sparse_matrix_from_py_construct(
     }
     MapMatOrRefType sparse_map(m, n, nnz, indptr.data(), indices_ptr, data_ptr);
 
+#if EIGEN_VERSION_AT_LEAST(3, 4, 90)
+    sparse_map.sortInnerIndices();
+#endif
+
     new (raw_ptr) MatOrRefType(sparse_map);
   }
 
@@ -164,7 +168,7 @@ void eigen_sparse_matrix_from_py_construct(
 
 template <typename SparseMatrixType>
 void eigen_from_py_impl<SparseMatrixType,
-                        Eigen::SparseMatrixBase<SparseMatrixType> >::
+                        Eigen::SparseMatrixBase<SparseMatrixType>>::
     construct(PyObject *pyObj,
               bp::converter::rvalue_from_python_stage1_data *memory) {
   eigen_sparse_matrix_from_py_construct<SparseMatrixType>(pyObj, memory);
@@ -173,7 +177,7 @@ void eigen_from_py_impl<SparseMatrixType,
 template <typename SparseMatrixType>
 void eigen_from_py_impl<
     SparseMatrixType,
-    Eigen::SparseMatrixBase<SparseMatrixType> >::registration() {
+    Eigen::SparseMatrixBase<SparseMatrixType>>::registration() {
   bp::converter::registry::push_back(
       reinterpret_cast<void *(*)(_object *)>(&eigen_from_py_impl::convertible),
       &eigen_from_py_impl::construct, bp::type_id<SparseMatrixType>()
@@ -185,8 +189,8 @@ void eigen_from_py_impl<
 }
 
 template <typename SparseMatrixType>
-struct eigen_from_py_converter_impl<
-    SparseMatrixType, Eigen::SparseMatrixBase<SparseMatrixType> > {
+struct eigen_from_py_converter_impl<SparseMatrixType,
+                                    Eigen::SparseMatrixBase<SparseMatrixType>> {
   static void registration() {
     EigenFromPy<SparseMatrixType>::registration();
 
@@ -205,7 +209,7 @@ struct eigen_from_py_converter_impl<
 };
 
 template <typename SparseMatrixType>
-struct EigenFromPy<Eigen::SparseMatrixBase<SparseMatrixType> >
+struct EigenFromPy<Eigen::SparseMatrixBase<SparseMatrixType>>
     : EigenFromPy<SparseMatrixType> {
   typedef EigenFromPy<SparseMatrixType> EigenFromPyDerived;
   typedef Eigen::SparseMatrixBase<SparseMatrixType> Base;

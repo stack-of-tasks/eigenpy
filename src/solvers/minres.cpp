@@ -1,11 +1,11 @@
 /*
- * Copyright 2024 INRIA
+ * Copyright 2025 INRIA
  */
 
-#include "eigenpy/decompositions/minres.hpp"
+#include "eigenpy/solvers/MINRES.hpp"
 
 namespace eigenpy {
-void exposeMINRESSolver() {
+void exposeMINRES() {
   using namespace Eigen;
   MINRESSolverVisitor<MatrixXd>::expose("MINRES");
 }

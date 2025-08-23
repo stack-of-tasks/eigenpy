@@ -1,9 +1,10 @@
 /*
  * Copyright 2017 CNRS
+ * Copyright 2025 INRIA
  */
 
-#ifndef __eigenpy_iterative_solver_base_hpp__
-#define __eigenpy_iterative_solver_base_hpp__
+#ifndef __eigenpy_solvers_iterative_solver_base_hpp__
+#define __eigenpy_solvers_iterative_solver_base_hpp__
 
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/solvers/SparseSolverBase.hpp"
@@ -12,7 +13,7 @@ namespace eigenpy {
 
 template <typename IterativeSolver>
 struct IterativeSolverVisitor : public boost::python::def_visitor<
-                                    IterativeSolverVisitor<IterativeSolver> > {
+                                    IterativeSolverVisitor<IterativeSolver>> {
   typedef typename IterativeSolver::MatrixType MatrixType;
   typedef typename IterativeSolver::Preconditioner Preconditioner;
   typedef Eigen::VectorXd VectorType;
@@ -103,4 +104,4 @@ struct IterativeSolverVisitor : public boost::python::def_visitor<
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_iterative_solver_base_hpp__
+#endif  // ifndef __eigenpy_solvers_iterative_solver_base_hpp__

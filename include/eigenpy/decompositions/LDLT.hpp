@@ -16,7 +16,7 @@ namespace eigenpy {
 
 template <typename _MatrixType>
 struct LDLTSolverVisitor
-    : public boost::python::def_visitor<LDLTSolverVisitor<_MatrixType> > {
+    : public boost::python::def_visitor<LDLTSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;

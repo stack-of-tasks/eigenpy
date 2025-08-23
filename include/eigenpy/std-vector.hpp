@@ -77,7 +77,7 @@ struct build_list<vector_type, true> {
 template <typename Container>
 struct overload_base_get_item_for_std_vector
     : public boost::python::def_visitor<
-          overload_base_get_item_for_std_vector<Container> > {
+          overload_base_get_item_for_std_vector<Container>> {
   typedef typename Container::value_type value_type;
   typedef typename Container::value_type data_type;
   typedef size_t index_type;
@@ -129,7 +129,7 @@ namespace python {
 
 template <typename MatrixType>
 struct extract_to_eigen_ref
-    : converter::extract_rvalue<Eigen::Ref<MatrixType> > {
+    : converter::extract_rvalue<Eigen::Ref<MatrixType>> {
   typedef Eigen::Ref<MatrixType> RefType;
 
  protected:
@@ -150,7 +150,7 @@ template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
     : extract_to_eigen_ref<
-          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> > {
+          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>> {
   typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>
       MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
@@ -160,7 +160,7 @@ struct extract<Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &>
 
 template <typename Derived>
 struct extract<Eigen::MatrixBase<Derived> &>
-    : extract_to_eigen_ref<Eigen::MatrixBase<Derived> > {
+    : extract_to_eigen_ref<Eigen::MatrixBase<Derived>> {
   typedef Eigen::MatrixBase<Derived> MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
   extract(PyObject *o) : base(o) {}
@@ -169,7 +169,7 @@ struct extract<Eigen::MatrixBase<Derived> &>
 
 template <typename Derived>
 struct extract<Eigen::RefBase<Derived> &>
-    : extract_to_eigen_ref<Eigen::RefBase<Derived> > {
+    : extract_to_eigen_ref<Eigen::RefBase<Derived>> {
   typedef Eigen::RefBase<Derived> MatrixType;
   typedef extract_to_eigen_ref<MatrixType> base;
   extract(PyObject *o) : base(o) {}
@@ -211,7 +211,7 @@ struct reference_arg_from_python<std::vector<Type, Allocator> &>
 
   result_type operator()() const {
     return ::boost::python::detail::void_ptr_to_reference(result(),
-                                                          (result_type(*)())0);
+                                                          (result_type (*)())0);
   }
 
   ~reference_arg_from_python() {
@@ -247,7 +247,7 @@ struct container_traits {
 };
 
 template <typename _Tp, std::size_t Size>
-struct container_traits<std::array<_Tp, Size> > {
+struct container_traits<std::array<_Tp, Size>> {
   typedef void Allocator;
 };
 };  // namespace details
@@ -322,7 +322,7 @@ namespace internal {
 
 template <typename T,
           bool has_operator_equal_value =
-              std::is_base_of<std::true_type, has_operator_equal<T> >::value>
+              std::is_base_of<std::true_type, has_operator_equal<T>>::value>
 struct contains_algo;
 
 template <typename T>
@@ -349,7 +349,7 @@ template <class Container, bool NoProxy>
 struct contains_vector_derived_policies
     : public ::boost::python::vector_indexing_suite<
           Container, NoProxy,
-          contains_vector_derived_policies<Container, NoProxy> > {
+          contains_vector_derived_policies<Container, NoProxy>> {
   typedef typename Container::value_type key_type;
 
   static bool contains(Container &container, key_type const &key) {
@@ -365,7 +365,7 @@ struct contains_vector_derived_policies
 template <typename Container, bool NoProxy, typename CoVisitor>
 struct ExposeStdMethodToStdVector
     : public boost::python::def_visitor<
-          ExposeStdMethodToStdVector<Container, NoProxy, CoVisitor> > {
+          ExposeStdMethodToStdVector<Container, NoProxy, CoVisitor>> {
   typedef StdContainerFromPythonList<Container, NoProxy>
       FromPythonListConverter;
 
@@ -454,7 +454,7 @@ struct StdVectorPythonVisitor {
       // Standard vector indexing definition
       boost::python::vector_indexing_suite<
           vector_type, NoProxy,
-          internal::contains_vector_derived_policies<vector_type, NoProxy> >
+          internal::contains_vector_derived_policies<vector_type, NoProxy>>
           vector_indexing;
 
       cl.def(bp::init<size_t, const value_type &>(
@@ -480,7 +480,7 @@ struct StdVectorPythonVisitor {
  */
 void EIGENPY_DLLAPI exposeStdVector();
 
-template <typename MatType, typename Alloc = Eigen::aligned_allocator<MatType> >
+template <typename MatType, typename Alloc = Eigen::aligned_allocator<MatType>>
 void exposeStdVectorEigenSpecificType(const char *name) {
   typedef std::vector<MatType, Alloc> VecMatType;
   std::string full_name = "StdVec_";

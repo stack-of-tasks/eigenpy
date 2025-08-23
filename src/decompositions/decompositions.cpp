@@ -3,30 +3,60 @@
  */
 
 #include "eigenpy/decompositions/decompositions.hpp"
+#include "eigenpy/solvers/MINRES.hpp"
 
 #include "eigenpy/fwd.hpp"
 
 namespace eigenpy {
 
 void exposeEigenSolver();
+void exposeGeneralizedEigenSolver();
 void exposeSelfAdjointEigenSolver();
+void exposeGeneralizedSelfAdjointEigenSolver();
+void exposeHessenbergDecomposition();
+void exposeRealQZ();
+void exposeRealSchur();
+void exposeTridiagonalization();
+void exposeComplexEigenSolver();
+void exposeComplexSchur();
 void exposeLLTSolver();
 void exposeLDLTSolver();
+void exposeFullPivLUSolver();
+void exposePartialPivLUSolver();
 void exposeQRSolvers();
-void exposeMINRESSolver();
 void exposeSimplicialLLTSolver();
 void exposeSimplicialLDLTSolver();
+void exposeSparseLUSolver();
+void exposeSparseQRSolver();
 void exposePermutationMatrix();
+void exposeBDCSVDSolver();
+void exposeJacobiSVDSolver();
+
+void exposeBackwardCompatibilityAliases() {
+  typedef Eigen::MatrixXd MatrixXd;
+  MINRESSolverVisitor<MatrixXd>::expose("MINRES");
+}
 
 void exposeDecompositions() {
   using namespace Eigen;
 
   exposeEigenSolver();
+  exposeGeneralizedEigenSolver();
   exposeSelfAdjointEigenSolver();
+  exposeGeneralizedSelfAdjointEigenSolver();
+  exposeHessenbergDecomposition();
+  exposeRealQZ();
+  exposeRealSchur();
+  exposeTridiagonalization();
+  exposeComplexEigenSolver();
+  exposeComplexSchur();
   exposeLLTSolver();
   exposeLDLTSolver();
+  exposeFullPivLUSolver();
+  exposePartialPivLUSolver();
   exposeQRSolvers();
-  exposeMINRESSolver();
+  exposeBDCSVDSolver();
+  exposeJacobiSVDSolver();
 
   {
     bp::enum_<DecompositionOptions>("DecompositionOptions")
@@ -44,6 +74,8 @@ void exposeDecompositions() {
   // Expose sparse decompositions
   exposeSimplicialLLTSolver();
   exposeSimplicialLDLTSolver();
+  exposeSparseLUSolver();
+  exposeSparseQRSolver();
 
   exposePermutationMatrix();
 
@@ -54,5 +86,7 @@ void exposeDecompositions() {
 #ifdef EIGENPY_WITH_ACCELERATE_SUPPORT
   exposeAccelerate();
 #endif
+
+  exposeBackwardCompatibilityAliases();
 }
 }  // namespace eigenpy

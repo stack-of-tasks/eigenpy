@@ -14,7 +14,7 @@ template <int SizeAtCompileTime, int MaxSizeAtCompileTime = SizeAtCompileTime,
           typename StorageIndex_ = int>
 struct PermutationMatrixVisitor
     : public boost::python::def_visitor<PermutationMatrixVisitor<
-          SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_> > {
+          SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_>> {
   typedef StorageIndex_ StorageIndex;
   typedef Eigen::PermutationMatrix<SizeAtCompileTime, MaxSizeAtCompileTime,
                                    StorageIndex>
@@ -57,12 +57,12 @@ struct PermutationMatrixVisitor
              bp::return_self<>())
 
         .def("setIdentity",
-             (void(PermutationMatrix::*)()) & PermutationMatrix::setIdentity,
+             (void (PermutationMatrix::*)())&PermutationMatrix::setIdentity,
              bp::arg("self"),
              "Sets self to be the identity permutation matrix.")
         .def("setIdentity",
-             (void(PermutationMatrix::*)(Eigen::DenseIndex)) &
-                 PermutationMatrix::setIdentity,
+             (void (PermutationMatrix::*)(
+                 Eigen::DenseIndex))&PermutationMatrix::setIdentity,
              bp::args("self", "size"),
              "Sets self to be the identity permutation matrix of given size.")
 

@@ -1,0 +1,7 @@
+[jrl-cmakemodules]
+url = "github:jrl-umi3218"
+
+[eigenpy]
+url = "."
+apt_deps = ["libboost-all-dev", "libeigen3-dev", "python3-numpy", "python3-scipy"]
+src_deps = ["jrl-cmakemodules"]

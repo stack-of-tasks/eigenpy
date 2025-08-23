@@ -108,8 +108,8 @@ namespace objects {
 
 // Force alignment of instance with value_holder
 template <typename Derived>
-struct instance<value_holder<Derived> >
-    : ::eigenpy::aligned_instance<value_holder<Derived> > {};
+struct instance<value_holder<Derived>>
+    : ::eigenpy::aligned_instance<value_holder<Derived>> {};
 
 }  // namespace objects
 }  // namespace python

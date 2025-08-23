@@ -30,9 +30,9 @@ jobs:
     strategy:
       matrix:
         python: [3]
-        ubuntu: [20, 22]
+        ubuntu: [22, 24]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'true'
       - run: |

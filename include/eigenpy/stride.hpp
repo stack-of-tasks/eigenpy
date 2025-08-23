@@ -27,7 +27,7 @@ struct stride_type;
 
 template <typename MatrixType, int InnerStride, int OuterStride>
 struct stride_type<MatrixType, InnerStride, OuterStride,
-                   Eigen::MatrixBase<MatrixType> > {
+                   Eigen::MatrixBase<MatrixType>> {
   typedef
       typename stride_type_matrix<MatrixType, InnerStride, OuterStride>::type
           type;
@@ -35,7 +35,7 @@ struct stride_type<MatrixType, InnerStride, OuterStride,
 
 template <typename MatrixType, int InnerStride, int OuterStride>
 struct stride_type<const MatrixType, InnerStride, OuterStride,
-                   const Eigen::MatrixBase<MatrixType> > {
+                   const Eigen::MatrixBase<MatrixType>> {
   typedef typename stride_type_matrix<const MatrixType, InnerStride,
                                       OuterStride>::type type;
 };
@@ -43,13 +43,13 @@ struct stride_type<const MatrixType, InnerStride, OuterStride,
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType, int InnerStride, int OuterStride>
 struct stride_type<TensorType, InnerStride, OuterStride,
-                   Eigen::TensorBase<TensorType> > {
+                   Eigen::TensorBase<TensorType>> {
   typedef Eigen::Stride<OuterStride, InnerStride> type;
 };
 
 template <typename TensorType, int InnerStride, int OuterStride>
 struct stride_type<const TensorType, InnerStride, OuterStride,
-                   const Eigen::TensorBase<TensorType> > {
+                   const Eigen::TensorBase<TensorType>> {
   typedef Eigen::Stride<OuterStride, InnerStride> type;
 };
 #endif

@@ -32,10 +32,6 @@ jobs:
     strategy:
       matrix:
         env:
-          # ROS1
-          - {ROS_DISTRO: noetic}
-          # ROS2
-          - {ROS_DISTRO: iron}
           - {ROS_DISTRO: humble}
           - {ROS_DISTRO: jazzy}
           - {ROS_DISTRO: rolling}
@@ -48,7 +44,7 @@ jobs:
         with:
           submodules: recursive
       # Run industrial_ci
-      - uses: 'ros-industrial/industrial_ci@875c2aebfd634eebaa84dbe5198f2fdb4c5f1b7e'
+      - uses: 'ros-industrial/industrial_ci@e3d16c224caf4832cf68e74093eb70f3a979b4cc'
         env: ${{ matrix.env }}
 
   check:

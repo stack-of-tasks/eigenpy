@@ -16,7 +16,7 @@ namespace eigenpy {
 
 template <typename _MatrixType>
 struct LLTSolverVisitor
-    : public boost::python::def_visitor<LLTSolverVisitor<_MatrixType> > {
+    : public boost::python::def_visitor<LLTSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;
@@ -54,7 +54,7 @@ struct LLTSolverVisitor
              bp::args("self", "vector", "sigma"), bp::return_self<>())
 #else
         .def("rankUpdate",
-             (Solver(Solver::*)(
+             (Solver (Solver::*)(
                  const VectorXs &,
                  const RealScalar &))&Solver::template rankUpdate<VectorXs>,
              bp::args("self", "vector", "sigma"))

@@ -1,9 +1,10 @@
 /*
  * Copyright 2017-2018 CNRS
+ * Copyright 2025 INRIA
  */
 
-#ifndef __eigenpy_least_square_conjugate_gradient_hpp__
-#define __eigenpy_least_square_conjugate_gradient_hpp__
+#ifndef __eigenpy_solvers_least_square_conjugate_gradient_hpp__
+#define __eigenpy_solvers_least_square_conjugate_gradient_hpp__
 
 #include <Eigen/IterativeLinearSolvers>
 
@@ -14,9 +15,9 @@ namespace eigenpy {
 
 template <typename LeastSquaresConjugateGradient>
 struct LeastSquaresConjugateGradientVisitor
-    : public boost::python::def_visitor<LeastSquaresConjugateGradientVisitor<
-          LeastSquaresConjugateGradient> > {
-  typedef Eigen::MatrixXd MatrixType;
+    : public boost::python::def_visitor<
+          LeastSquaresConjugateGradientVisitor<LeastSquaresConjugateGradient>> {
+  typedef typename LeastSquaresConjugateGradient::MatrixType MatrixType;
 
   template <class PyClass>
   void visit(PyClass& cl) const {
@@ -29,9 +30,10 @@ struct LeastSquaresConjugateGradientVisitor
             "followed by a call to compute()."));
   }
 
-  static void expose() {
-    bp::class_<LeastSquaresConjugateGradient, boost::noncopyable>(
-        "LeastSquaresConjugateGradient", bp::no_init)
+  static void expose(
+      const std::string& name = "LeastSquaresConjugateGradient") {
+    bp::class_<LeastSquaresConjugateGradient, boost::noncopyable>(name.c_str(),
+                                                                  bp::no_init)
         .def(IterativeSolverVisitor<LeastSquaresConjugateGradient>())
         .def(LeastSquaresConjugateGradientVisitor<
              LeastSquaresConjugateGradient>())
@@ -41,4 +43,4 @@ struct LeastSquaresConjugateGradientVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_least_square_conjugate_gradient_hpp__
+#endif  // ifndef __eigenpy_solvers_least_square_conjugate_gradient_hpp__

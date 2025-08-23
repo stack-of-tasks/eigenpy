@@ -15,7 +15,7 @@ namespace eigenpy {
 template <typename SimplicialDerived>
 struct SparseSolverBaseVisitor
     : public boost::python::def_visitor<
-          SparseSolverBaseVisitor<SimplicialDerived> > {
+          SparseSolverBaseVisitor<SimplicialDerived>> {
   typedef SimplicialDerived Solver;
 
   typedef typename SimplicialDerived::MatrixType MatrixType;

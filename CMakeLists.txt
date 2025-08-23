@@ -2,7 +2,7 @@
 # Copyright (c) 2014-2019 CNRS Copyright (c) 2018-2023 INRIA
 #
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.22)
 
 set(PROJECT_NAME eigenpy)
 set(PROJECT_DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python")
@@ -28,14 +28,6 @@ else()
       TARGET jrl-cmakemodules::jrl-cmakemodules
       PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
     message(STATUS "JRL cmakemodules found on system at ${JRL_CMAKE_MODULES}")
-  elseif(${CMAKE_VERSION} VERSION_LESS "3.14.0")
-    message(
-      FATAL_ERROR
-        "\nCan't find jrl-cmakemodules. Please either:\n"
-        "  - use git submodule: 'git submodule update --init'\n"
-        "  - or install https://github.com/jrl-umi3218/jrl-cmakemodules\n"
-        "  - or upgrade your CMake version to >= 3.14 to allow automatic fetching\n"
-    )
   else()
     message(STATUS "JRL cmakemodules not found. Let's fetch it.")
     include(FetchContent)
@@ -198,10 +190,14 @@ set(${PROJECT_NAME}_SOLVERS_HEADERS
     include/eigenpy/solvers/preconditioners.hpp
     include/eigenpy/solvers/IterativeSolverBase.hpp
     include/eigenpy/solvers/LeastSquaresConjugateGradient.hpp
+    include/eigenpy/solvers/BiCGSTAB.hpp
+    include/eigenpy/solvers/MINRES.hpp
     include/eigenpy/solvers/ConjugateGradient.hpp
     include/eigenpy/solvers/SparseSolverBase.hpp
     include/eigenpy/solvers/BasicPreconditioners.hpp
-    include/eigenpy/solvers/BFGSPreconditioners.hpp)
+    include/eigenpy/solvers/BFGSPreconditioners.hpp
+    include/eigenpy/solvers/IncompleteCholesky.hpp
+    include/eigenpy/solvers/IncompleteLUT.hpp)
 
 set(${PROJECT_NAME}_EIGEN_HEADERS include/eigenpy/eigen/EigenBase.hpp)
 
@@ -213,13 +209,18 @@ set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_CHOLMOD_HEADERS
     include/eigenpy/decompositions/sparse/cholmod/CholmodSupernodalLLT.hpp)
 
 set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_ACCELERATE_HEADERS
+    include/eigenpy/decompositions/sparse/accelerate/Accelerate.hpp
     include/eigenpy/decompositions/sparse/accelerate/accelerate.hpp)
 
 set(${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
-    include/eigenpy/decompositions/sparse/LLT.hpp
-    include/eigenpy/decompositions/sparse/LDLT.hpp
+    include/eigenpy/decompositions/sparse/SimplicialLLT.hpp
+    include/eigenpy/decompositions/sparse/SimplicialLDLT.hpp
+    include/eigenpy/decompositions/sparse/SparseLU.hpp
+    include/eigenpy/decompositions/sparse/SparseQR.hpp
     include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
-    include/eigenpy/decompositions/sparse/SparseSolverBase.hpp)
+    include/eigenpy/decompositions/sparse/SparseSolverBase.hpp
+    include/eigenpy/decompositions/sparse/LDLT.hpp
+    include/eigenpy/decompositions/sparse/LLT.hpp)
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
   list(APPEND ${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS
@@ -235,6 +236,16 @@ set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
     ${${PROJECT_NAME}_DECOMPOSITIONS_SPARSE_HEADERS}
     include/eigenpy/decompositions/decompositions.hpp
     include/eigenpy/decompositions/EigenSolver.hpp
+    include/eigenpy/decompositions/GeneralizedEigenSolver.hpp
+    include/eigenpy/decompositions/GeneralizedSelfAdjointEigenSolver.hpp
+    include/eigenpy/decompositions/HessenbergDecomposition.hpp
+    include/eigenpy/decompositions/RealQZ.hpp
+    include/eigenpy/decompositions/Tridiagonalization.hpp
+    include/eigenpy/decompositions/RealSchur.hpp
+    include/eigenpy/decompositions/ComplexEigenSolver.hpp
+    include/eigenpy/decompositions/ComplexSchur.hpp
+    include/eigenpy/decompositions/FullPivLU.hpp
+    include/eigenpy/decompositions/PartialPivLU.hpp
     include/eigenpy/decompositions/PermutationMatrix.hpp
     include/eigenpy/decompositions/LDLT.hpp
     include/eigenpy/decompositions/LLT.hpp
@@ -244,6 +255,9 @@ set(${PROJECT_NAME}_DECOMPOSITIONS_HEADERS
     include/eigenpy/decompositions/CompleteOrthogonalDecomposition.hpp
     include/eigenpy/decompositions/FullPivHouseholderQR.hpp
     include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
+    include/eigenpy/decompositions/SVDBase.hpp
+    include/eigenpy/decompositions/BDCSVD.hpp
+    include/eigenpy/decompositions/JacobiSVD.hpp
     include/eigenpy/decompositions/minres.hpp)
 
 set(${PROJECT_NAME}_HEADERS
@@ -308,17 +322,36 @@ list(
 # ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
-set(${PROJECT_NAME}_SOLVERS_SOURCES src/solvers/preconditioners.cpp
-                                    src/solvers/solvers.cpp)
+set(${PROJECT_NAME}_SOLVERS_SOURCES
+    src/solvers/preconditioners.cpp
+    src/solvers/solvers.cpp
+    src/solvers/minres.cpp
+    src/solvers/bicgstab.cpp
+    src/solvers/conjugate-gradient.cpp
+    src/solvers/least-squares-conjugate-gradient.cpp
+    src/solvers/incomplete-cholesky.cpp
+    src/solvers/incomplete-lut.cpp)
 
 set(${PROJECT_NAME}_DECOMPOSITIONS_SOURCES
     src/decompositions/decompositions.cpp
     src/decompositions/eigen-solver.cpp
+    src/decompositions/generalized-eigen-solver.cpp
+    src/decompositions/generalized-self-adjoint-eigen-solver.cpp
+    src/decompositions/complex-eigen-solver.cpp
+    src/decompositions/complex-schur.cpp
     src/decompositions/llt-solver.cpp
     src/decompositions/ldlt-solver.cpp
-    src/decompositions/minres-solver.cpp
+    src/decompositions/bdcsvd-solver.cpp
+    src/decompositions/jacobisvd-solver.cpp
+    src/decompositions/fullpivlu-solver.cpp
+    src/decompositions/hessenberg-decomposition.cpp
+    src/decompositions/real-qz.cpp
+    src/decompositions/tridiagonalization.cpp
+    src/decompositions/real-schur.cpp
+    src/decompositions/partialpivlu-solver.cpp
+    src/decompositions/sparse-lu-solver.cpp
+    src/decompositions/sparse-qr-solver.cpp
     src/decompositions/qr-solvers.cpp
-    src/decompositions/eigen-solver.cpp
     src/decompositions/self-adjoint-eigen-solver.cpp
     src/decompositions/permutation-matrix.cpp
     src/decompositions/simplicial-llt-solver.cpp
@@ -448,9 +481,6 @@ install(
 
 add_header_group(${PROJECT_NAME}_HEADERS)
 add_source_group(${PROJECT_NAME}_SOURCES)
-
-# Install package for ROS
-install(FILES package.xml DESTINATION share/eigenpy)
 
 # ----------------------------------------------------
 # --- PYTHON LIBRARY ---------------------------------
