@@ -12,7 +12,7 @@ on:
 
 env:
   CMEEL_LOG_LEVEL: DEBUG
-  DEPS: cmeel-boost cmeel-eigen numpy scipy
+  DEPS: cmeel-boost cmeel-eigen jrl-cmakemodules numpy scipy
   PROJECT: eigenpy
 
 jobs:
