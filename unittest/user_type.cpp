@@ -16,7 +16,7 @@ namespace Eigen {
 /// @brief Eigen::NumTraits<> specialization for casadi::SX
 ///
 template <typename Scalar>
-struct NumTraits<CustomType<Scalar> > {
+struct NumTraits<CustomType<Scalar>> {
   typedef CustomType<Scalar> Real;
   typedef CustomType<Scalar> NonInteger;
   typedef CustomType<Scalar> Literal;
@@ -150,12 +150,13 @@ Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> build_matrix(int rows,
 template <typename Scalar>
 void expose_custom_type(const std::string& name) {
   using namespace Eigen;
+  using eigenpy::literals::operator"" _a;
   namespace bp = boost::python;
 
   typedef CustomType<Scalar> Type;
 
-  bp::class_<Type>(name.c_str(), bp::init<Scalar>(bp::arg("value")))
-
+  // use ""_a literal
+  bp::class_<Type>(name.c_str(), bp::init<Scalar>("value"_a))
       .def(bp::self + bp::self)
       .def(bp::self - bp::self)
       .def(bp::self * bp::self)

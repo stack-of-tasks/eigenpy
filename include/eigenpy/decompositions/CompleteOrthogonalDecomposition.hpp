@@ -15,7 +15,7 @@ namespace eigenpy {
 template <typename _MatrixType>
 struct CompleteOrthogonalDecompositionSolverVisitor
     : public boost::python::def_visitor<
-          CompleteOrthogonalDecompositionSolverVisitor<_MatrixType> > {
+          CompleteOrthogonalDecompositionSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;

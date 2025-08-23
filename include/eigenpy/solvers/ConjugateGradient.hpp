@@ -1,9 +1,10 @@
 /*
  * Copyright 2017 CNRS
+ * Copyright 2025 INRIA
  */
 
-#ifndef __eigenpy_conjugate_gradient_hpp__
-#define __eigenpy_conjugate_gradient_hpp__
+#ifndef __eigenpy_solvers_conjugate_gradient_hpp__
+#define __eigenpy_solvers_conjugate_gradient_hpp__
 
 #include <Eigen/IterativeLinearSolvers>
 
@@ -15,7 +16,7 @@ namespace eigenpy {
 template <typename ConjugateGradient>
 struct ConjugateGradientVisitor
     : public boost::python::def_visitor<
-          ConjugateGradientVisitor<ConjugateGradient> > {
+          ConjugateGradientVisitor<ConjugateGradient>> {
   typedef typename ConjugateGradient::MatrixType MatrixType;
 
   template <class PyClass>
@@ -38,4 +39,4 @@ struct ConjugateGradientVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_conjugate_gradient_hpp__
+#endif  // ifndef __eigenpy_solvers_conjugate_gradient_hpp__

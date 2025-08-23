@@ -15,7 +15,7 @@ namespace eigenpy {
 
 template <typename CholdmodDerived>
 struct CholmodBaseVisitor
-    : public boost::python::def_visitor<CholmodBaseVisitor<CholdmodDerived> > {
+    : public boost::python::def_visitor<CholmodBaseVisitor<CholdmodDerived>> {
   typedef CholdmodDerived Solver;
 
   typedef typename CholdmodDerived::MatrixType MatrixType;

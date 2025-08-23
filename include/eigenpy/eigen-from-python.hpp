@@ -17,7 +17,7 @@ template <typename EigenType,
 struct expected_pytype_for_arg {};
 
 template <typename MatType>
-struct expected_pytype_for_arg<MatType, Eigen::MatrixBase<MatType> > {
+struct expected_pytype_for_arg<MatType, Eigen::MatrixBase<MatType>> {
   static PyTypeObject const *get_pytype() {
     PyTypeObject const *py_type = eigenpy::getPyArrayType();
     return py_type;
@@ -33,9 +33,9 @@ namespace converter {
 template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct expected_pytype_for_arg<
-    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> >
+    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>>
     : eigenpy::expected_pytype_for_arg<
-          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> > {};
+          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>> {};
 
 }  // namespace converter
 }  // namespace python
@@ -277,7 +277,7 @@ struct eigen_from_py_impl {
 };
 
 template <typename MatType>
-struct eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> > {
+struct eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>> {
   typedef typename MatType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
@@ -296,7 +296,7 @@ template <typename EigenType,
 struct EigenFromPy : eigen_from_py_impl<EigenType> {};
 
 template <typename MatType>
-void *eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> >::convertible(
+void *eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::convertible(
     PyObject *pyObj) {
   if (!call_PyArray_Check(reinterpret_cast<PyObject *>(pyObj))) return 0;
 
@@ -398,13 +398,13 @@ void *eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> >::convertible(
 }
 
 template <typename MatType>
-void eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> >::construct(
+void eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::construct(
     PyObject *pyObj, bp::converter::rvalue_from_python_stage1_data *memory) {
   eigen_from_py_construct<MatType>(pyObj, memory);
 }
 
 template <typename MatType>
-void eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType> >::registration() {
+void eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::registration() {
   bp::converter::registry::push_back(
       reinterpret_cast<void *(*)(_object *)>(&eigen_from_py_impl::convertible),
       &eigen_from_py_impl::construct, bp::type_id<MatType>()
@@ -423,7 +423,7 @@ template <typename EigenType>
 struct EigenFromPyConverter : eigen_from_py_converter_impl<EigenType> {};
 
 template <typename MatType>
-struct eigen_from_py_converter_impl<MatType, Eigen::MatrixBase<MatType> > {
+struct eigen_from_py_converter_impl<MatType, Eigen::MatrixBase<MatType>> {
   static void registration() {
     EigenFromPy<MatType>::registration();
 
@@ -452,7 +452,7 @@ struct eigen_from_py_converter_impl<MatType, Eigen::MatrixBase<MatType> > {
 };
 
 template <typename MatType>
-struct EigenFromPy<Eigen::MatrixBase<MatType> > : EigenFromPy<MatType> {
+struct EigenFromPy<Eigen::MatrixBase<MatType>> : EigenFromPy<MatType> {
   typedef EigenFromPy<MatType> EigenFromPyDerived;
   typedef Eigen::MatrixBase<MatType> Base;
 
@@ -487,7 +487,7 @@ struct EigenFromPy<Eigen::EigenBase<MatType>, typename MatType::Scalar>
 };
 
 template <typename MatType>
-struct EigenFromPy<Eigen::PlainObjectBase<MatType> > : EigenFromPy<MatType> {
+struct EigenFromPy<Eigen::PlainObjectBase<MatType>> : EigenFromPy<MatType> {
   typedef EigenFromPy<MatType> EigenFromPyDerived;
   typedef Eigen::PlainObjectBase<MatType> Base;
 
@@ -506,7 +506,7 @@ struct EigenFromPy<Eigen::PlainObjectBase<MatType> > : EigenFromPy<MatType> {
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
 
 template <typename MatType, int Options, typename Stride>
-struct EigenFromPy<Eigen::Ref<MatType, Options, Stride> > {
+struct EigenFromPy<Eigen::Ref<MatType, Options, Stride>> {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
   typedef typename MatType::Scalar Scalar;
 
@@ -531,7 +531,7 @@ struct EigenFromPy<Eigen::Ref<MatType, Options, Stride> > {
 };
 
 template <typename MatType, int Options, typename Stride>
-struct EigenFromPy<const Eigen::Ref<const MatType, Options, Stride> > {
+struct EigenFromPy<const Eigen::Ref<const MatType, Options, Stride>> {
   typedef const Eigen::Ref<const MatType, Options, Stride> ConstRefType;
   typedef typename MatType::Scalar Scalar;
 

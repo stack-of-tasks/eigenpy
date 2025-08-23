@@ -137,7 +137,7 @@ namespace python {
 template <typename T>
 struct to_python_value<const std::unique_ptr<T>&>
     : eigenpy::details::StdUniquePtrResultConverter::apply<
-          std::unique_ptr<T> >::type {};
+          std::unique_ptr<T>>::type {};
 
 }  // namespace python
 }  // namespace boost

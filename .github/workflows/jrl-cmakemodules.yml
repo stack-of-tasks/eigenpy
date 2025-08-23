@@ -28,7 +28,7 @@ jobs:
     name: Check configuration with git submodules
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - run: sudo apt install libboost-all-dev libeigen3-dev python3-numpy python3-scipy
@@ -39,7 +39,7 @@ jobs:
     name: Check configuration without git submodules
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: false
           path: eigenpy

@@ -15,7 +15,7 @@ namespace eigenpy {
 template <typename _MatrixType>
 struct ColPivHouseholderQRSolverVisitor
     : public boost::python::def_visitor<
-          ColPivHouseholderQRSolverVisitor<_MatrixType> > {
+          ColPivHouseholderQRSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;

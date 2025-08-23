@@ -1,10 +1,10 @@
 /*
  * Copyright 2017 CNRS
- * Copyright 2024 Inria
+ * Copyright 2024-2025 INRIA
  */
 
-#ifndef __eigenpy_basic_preconditioners_hpp__
-#define __eigenpy_basic_preconditioners_hpp__
+#ifndef __eigenpy_solvers_basic_preconditioners_hpp__
+#define __eigenpy_solvers_basic_preconditioners_hpp__
 
 #include <Eigen/IterativeLinearSolvers>
 
@@ -14,7 +14,7 @@ namespace eigenpy {
 
 template <typename Preconditioner>
 struct PreconditionerBaseVisitor
-    : public bp::def_visitor<PreconditionerBaseVisitor<Preconditioner> > {
+    : public bp::def_visitor<PreconditionerBaseVisitor<Preconditioner>> {
   typedef Eigen::MatrixXd MatrixType;
   typedef Eigen::VectorXd VectorType;
 
@@ -51,7 +51,7 @@ struct PreconditionerBaseVisitor
 
 template <typename Scalar>
 struct DiagonalPreconditionerVisitor
-    : PreconditionerBaseVisitor<Eigen::DiagonalPreconditioner<Scalar> > {
+    : PreconditionerBaseVisitor<Eigen::DiagonalPreconditioner<Scalar>> {
   typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> MatrixType;
   typedef Eigen::DiagonalPreconditioner<Scalar> Preconditioner;
 
@@ -79,7 +79,7 @@ struct DiagonalPreconditionerVisitor
 template <typename Scalar>
 struct LeastSquareDiagonalPreconditionerVisitor
     : PreconditionerBaseVisitor<
-          Eigen::LeastSquareDiagonalPreconditioner<Scalar> > {
+          Eigen::LeastSquareDiagonalPreconditioner<Scalar>> {
   typedef Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> MatrixType;
   typedef Eigen::LeastSquareDiagonalPreconditioner<Scalar> Preconditioner;
 
@@ -115,4 +115,4 @@ struct IdentityPreconditionerVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_basic_preconditioners_hpp__
+#endif  // ifndef __eigenpy_solvers_basic_preconditioners_hpp__

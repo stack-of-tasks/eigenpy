@@ -5,7 +5,7 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/decompositions/decompositions.hpp"
 
-#include "eigenpy/decompositions/sparse/accelerate/accelerate.hpp"
+#include "eigenpy/decompositions/sparse/accelerate/Accelerate.hpp"
 
 namespace eigenpy {
 
@@ -21,8 +21,8 @@ void exposeAccelerate() {
       .value("SparseOrderMetis", SparseOrderMetis)
       .value("SparseOrderCOLAMD", SparseOrderCOLAMD);
 
-#define EXPOSE_ACCELERATE_DECOMPOSITION(name, doc)            \
-  AccelerateImplVisitor<name<ColMajorSparseMatrix> >::expose( \
+#define EXPOSE_ACCELERATE_DECOMPOSITION(name, doc)           \
+  AccelerateImplVisitor<name<ColMajorSparseMatrix>>::expose( \
       EIGENPY_STRINGIZE(name), doc)
 
   EXPOSE_ACCELERATE_DECOMPOSITION(

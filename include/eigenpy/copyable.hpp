@@ -15,7 +15,7 @@ namespace eigenpy {
 /// copy constructor.
 ///
 template <class C>
-struct CopyableVisitor : public bp::def_visitor<CopyableVisitor<C> > {
+struct CopyableVisitor : public bp::def_visitor<CopyableVisitor<C>> {
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def("copy", &copy, bp::arg("self"), "Returns a copy of *this.");
