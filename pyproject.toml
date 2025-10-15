@@ -2,7 +2,7 @@
 build-backend = "cmeel"
 requires = [
   "cmeel-boost ~= 1.89.0",
-  "cmeel-eigen >= 3.4.0.2",
+  "cmeel-eigen >= 3.4.1",
   "cmeel[build]",
   "jrl-cmakemodules",
   "scipy"
@@ -22,6 +22,7 @@ homepage = "https://github.com/cmake-wheel/eigenpy"
 upstream = "https://github.com/stack-of-tasks/eigenpy"
 
 [tool.cmeel]
+build-number = 1
 run-tests = false
 
 [tool.ruff]
