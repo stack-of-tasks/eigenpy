@@ -64,8 +64,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
-      with:
-        submodules: recursive
 
     - uses: actions/cache@v6
       with:
@@ -105,8 +103,6 @@ jobs:
 
   #   steps:
   #   - uses: actions/checkout@v7
-  #     with:
-  #       submodules: recursive
 
   #   - uses: prefix-dev/setup-pixi@v0.10.0
   #     env:
