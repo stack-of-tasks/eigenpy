@@ -199,7 +199,7 @@ namespace literals {
 ///
 /// Using-declare this operator or do `using namespace eigenpy::literals`. Then
 /// `bp::arg("matrix")` can be replaced by the literal `"matrix"_a`.
-inline boost::python::arg operator"" _a(const char* name, std::size_t) {
+inline boost::python::arg operator""_a(const char* name, std::size_t) {
   return boost::python::arg(name);
 }
 }  // namespace literals
