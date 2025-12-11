@@ -34,6 +34,7 @@
       + [Mac OS X](#mac-os-x)
       + [Docker](#docker)
    * [Build](#build)
+   * [Porting guides](#porting-guides)
    * [Contribution](#contribution)
    * [Core-dev team](#core-dev-team)
    * [Credits](#credits)
@@ -102,6 +103,14 @@ docker run --rm -it ghcr.io/stack-of-tasks/eigenpy:devel
 ## Build
 
 Build instruction can be found [here](./development/build.md)
+
+## Porting guides
+
+If you are upgrading **EigenPy** from a previous major version, follow the dedicated porting guide:
+
+- [Porting from EigenPy 3 to EigenPy 4](./doc/_porting/porting-3-to-4.md)
+
+The complete list of porting guides can be found [here](./doc/_porting/porting.md).
 
 ## Contribution
 
