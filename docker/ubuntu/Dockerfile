@@ -13,7 +13,7 @@ RUN apt-get update -y && DEBIAN_FRONTEND=noninteractive apt-get install -qqy \
     python3-numpy
 
 WORKDIR /src
-RUN git clone --recursive -j2 -b devel https://github.com/stack-of-tasks/eigenpy
+RUN git clone -j2 -b devel https://github.com/stack-of-tasks/eigenpy
 
 ENV CTEST_OUTPUT_ON_FAILURE=ON
 ENV CTEST_PROGRESS_OUTPUT=ON
