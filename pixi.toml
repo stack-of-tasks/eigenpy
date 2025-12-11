@@ -92,18 +92,40 @@ configure = { cmd = [
   "build",
   "-S",
   ".",
-  # Don't use standard layout because it's not well implemented on Windows
-  "-DPYTHON_STANDARD_LAYOUT=OFF",
+  "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
+  "--profiling-output=cmake-profiling.json",
+  "--profiling-format=google-trace",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$EIGENPY_BUILD_TYPE",
+  # Don't use standard layout because it's not well implemented on Windows
+  "-DPYTHON_STANDARD_LAYOUT=OFF",
+  "-DBUILD_TESTING=ON",
+  "-DBUILD_TESTING_SCIPY=ON",
   "-DGENERATE_PYTHON_STUBS=$EIGENPY_PYTHON_STUBS",
   "-DBUILD_WITH_CHOLMOD_SUPPORT=$EIGENPY_CHOLMOD_SUPPORT",
   "-DBUILD_WITH_ACCELERATE_SUPPORT=$EIGENPY_ACCELERATE_SUPPORT",
 ] }
-build = { cmd = "cmake --build build --target all", depends-on = ["configure"] }
+build = { cmd = "cmake --build build", depends-on = [
+  "configure",
+] }
 clean = { cmd = "rm -rf build" }
 test = { cmd = "ctest --test-dir build --output-on-failure", depends-on = [
   "build",
+] }
+install = { cmd = "cmake --build build --target install", depends-on = [
+  "build",
+] }
+test-packaging = { cmd = [
+  "cmake",
+  "-G",
+  "Ninja",
+  "-B",
+  "build/unittest_packaging",
+  "-S",
+  "unittest/packaging/cmake",
+  "-DCMAKE_PREFIX_PATH=$CONDA_PREFIX",
+], depends-on = [
+  "install",
 ] }
 
 [feature.lint]
@@ -124,8 +146,6 @@ configure-new-version = { cmd = [
   "build_new_version",
   "-S",
   ".",
-  # Don't use standard layout because it's not well implemented on Windows
-  "-DPYTHON_STANDARD_LAYOUT=OFF",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$EIGENPY_BUILD_TYPE",
   "-DGENERATE_PYTHON_STUBS=ON",
@@ -161,8 +181,8 @@ dependencies = { clangxx = "*", lld = "*" }
 
 # Absolute path is needed to avoid using system clang-cl
 [feature.clang-cl.activation.env]
-CC = "%CONDA_PREFIX%\\Library\\bin\\clang-cl"
-CXX = "%CONDA_PREFIX%\\Library\\bin\\clang-cl"
+CC = "%CONDA_PREFIX%/Library/bin/clang-cl"
+CXX = "%CONDA_PREFIX%/Library/bin/clang-cl"
 
 # Use clang on GNU/Linux
 [feature.clang]
