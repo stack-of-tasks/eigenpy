@@ -63,6 +63,16 @@ BOOST_PYTHON_MODULE(std_vector) {
           boost::python::vector_indexing_suite<std::vector<Eigen::Matrix2d>>());
   exposeStdVectorEigenSpecificType<Eigen::Matrix2d>("Mat2d");
 
+  bp::class_<std::vector<Eigen::VectorXd>>("StdVec_VectorXd")
+      .def(
+          boost::python::vector_indexing_suite<std::vector<Eigen::VectorXd>>());
+  exposeStdVectorEigenSpecificType<Eigen::VectorXd>("VectorXd");
+
+  bp::class_<std::vector<Eigen::MatrixXd>>("StdVec_MatrixXd")
+      .def(
+          boost::python::vector_indexing_suite<std::vector<Eigen::MatrixXd>>());
+  exposeStdVectorEigenSpecificType<Eigen::MatrixXd>("MatrixXd");
+
   // Test API regression:
   // Exposing a `std::vector` with documentation doesn't clash with
   // exposing a `std::vector` with a visitor

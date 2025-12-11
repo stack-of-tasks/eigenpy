@@ -1,11 +1,11 @@
 import importlib
 
-bind_optional = importlib.import_module("@MODNAME@")
+optional = importlib.import_module("std_optional")
 
 
 def test_none_if_zero():
-    x = bind_optional.none_if_zero(0)
-    y = bind_optional.none_if_zero(-1)
+    x = optional.none_if_zero(0)
+    y = optional.none_if_zero(-1)
     assert x is None
     assert y == -1
 
@@ -13,23 +13,23 @@ def test_none_if_zero():
 def test_struct_ctors():
     # test struct ctors
 
-    struct = bind_optional.mystruct()
+    struct = optional.mystruct()
     assert struct.a is None
     assert struct.b is None
     assert struct.msg == "i am struct"
 
     ## no 2nd arg automatic overload using bp::optional
-    struct = bind_optional.mystruct(2)
+    struct = optional.mystruct(2)
     assert struct.a == 2
     assert struct.b is None
 
-    struct = bind_optional.mystruct(13, -1.0)
+    struct = optional.mystruct(13, -1.0)
     assert struct.a == 13
     assert struct.b == -1.0
 
 
 def test_struct_setters():
-    struct = bind_optional.mystruct()
+    struct = optional.mystruct()
     struct.a = 1
     assert struct.a == 1
 
@@ -46,17 +46,17 @@ def test_struct_setters():
 
 
 def test_factory():
-    struct = bind_optional.create_if_true(False, None)
+    struct = optional.create_if_true(False, None)
     assert struct is None
-    struct = bind_optional.create_if_true(True, None)
+    struct = optional.create_if_true(True, None)
     assert struct.a == 0
     assert struct.b is None
 
 
 def test_random_mat():
-    M = bind_optional.random_mat_if_true(False)
+    M = optional.random_mat_if_true(False)
     assert M is None
-    M = bind_optional.random_mat_if_true(True)
+    M = optional.random_mat_if_true(True)
     assert M.shape == (4, 4)
 
 
