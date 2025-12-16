@@ -26,6 +26,7 @@ install(
   FILES_MATCHING
   PATTERN "*.py"
   PATTERN "*.pyc"
+  PATTERN "*.pyi"
   PATTERN "*.typed"
   PATTERN "*.so"
   PATTERN "*.pyd"
