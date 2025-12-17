@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - Project is now tested with Python 3.10 and 3.14
   - Python 3.10 is the minimal supported Python version
 - Nix: switch to flakoboros
+- Switch to [JRL CMake modules v2](https://github.com/jrl-umi3218/jrl-cmakemodules/pull/798) ([#28](https://github.com/Simple-Robotics/nanoeigenpy/pull/28))
 
 ### Added
 - Support for Python slice, tuple and list indexing for `std::vector` bindings ([#592](https://github.com/stack-of-tasks/eigenpy/pull/592))
