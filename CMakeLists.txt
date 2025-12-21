@@ -1,4 +1,5 @@
-# Copyright 2025-2026 Inria
+# Copyright 2018-2026 Inria
+# Copyright 2014-2019 CNRS
 
 cmake_minimum_required(VERSION 3.22...4.2)
 
