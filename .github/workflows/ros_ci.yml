@@ -30,7 +30,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  CI:
+  ros_ci:
+    name: ROS ${{ matrix.env.ROS_DISTRO }}
     strategy:
       fail-fast: false
       matrix:
@@ -44,19 +45,18 @@ jobs:
       BUILDER: colcon
       VERBOSE_OUTPUT: true
       VERBOSE_TESTS: true
+      ROS_DISTRO: ${{ matrix.env.ROS_DISTRO }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      # Run industrial_ci
       - uses: 'ros-industrial/industrial_ci@125164b9f1883cdf1858897a7146d1bebf2be5c6'
-        env: ${{ matrix.env }}
 
   check:
     if: always()
-    name: check-ros-ci
+    name: ROS CI check
 
     needs:
-    - CI
+    - ros_ci
 
     runs-on: Ubuntu-latest
 

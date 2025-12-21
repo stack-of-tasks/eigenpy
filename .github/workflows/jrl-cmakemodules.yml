@@ -26,25 +26,25 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  with-submodules:
-    name: Check configuration with git submodules
+  with-fetchcontent:
+    name: Check standard configuration (fetchcontent)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-        with:
-          submodules: true
       - run: sudo apt install libboost-all-dev libeigen3-dev python3-numpy python3-scipy
-      - run: cmake .
+      - run: cmake -B build -S .
 
 
-  without-submodules:
-    name: Check configuration without git submodules
+  with-local-jrl:
+    name: Check configuration with jrl dir passed in the cmake command line
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
         with:
-          submodules: false
+          repository: ahoarau/jrl-cmakemodules
+          ref: jrl-next
+      - uses: actions/checkout@v7
+        with:
           path: eigenpy
       - run: sudo apt install libboost-all-dev libeigen3-dev python3-numpy python3-scipy
-      - run: cmake -B build -S eigenpy
-      - run: grep -qvz CMAKE_PROJECT_VERSION:STATIC=0.0 build/CMakeCache.txt
+      - run: cmake -B build -S eigenpy -DJRL_CMAKEMODULES_DIR="$(pwd)/jrl-cmakemodules"

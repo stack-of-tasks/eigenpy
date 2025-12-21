@@ -27,7 +27,7 @@ concurrency:
 
 jobs:
   eigenpy-pixi:
-    name: Standard - ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }} ${{ matrix.compiler }}
+    name: Pixi - ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
       CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
@@ -73,18 +73,27 @@ jobs:
 
     - uses: prefix-dev/setup-pixi@v0.10.0
       with:
-        cache: true
+        cache: false # ⚠️ Disabling cache for testing ⚠️
         environments: ${{ matrix.environment }}
 
     - name: Clear ccache statistics [MacOS/Linux/Windows]
       run: |
         pixi run -e ${{ matrix.environment }} ccache -z
 
+    - name: Configure EigenPy [MacOS/Linux/Windows]
+      env:
+        EIGENPY_BUILD_TYPE: ${{ matrix.build_type }}
+        EIGENPY_CXX_FLAGS: ${{ matrix.cxx_options }}
+      run: |
+        pixi run -e ${{ matrix.environment }} configure
+
     - name: Build EigenPy [MacOS/Linux/Windows]
       env:
         CMAKE_BUILD_PARALLEL_LEVEL: 2
-        EIGENPY_BUILD_TYPE: ${{ matrix.build_type }}
-        EIGENPY_CXX_FLAGS: ${{ matrix.cxx_options }}
+      run: |
+        pixi run -e ${{ matrix.environment }} build
+
+    - name: Test EigenPy [MacOS/Linux/Windows]
       run: |
         pixi run -e ${{ matrix.environment }} test
 
@@ -108,7 +117,7 @@ jobs:
   #     env:
   #       CMAKE_BUILD_PARALLEL_LEVEL: 2
   #     with:
-  #       cache: true
+  #       cache: false # ⚠️ Disabling cache for testing ⚠️
   #       environments: test-pixi-build
 
   #   - name: Test package [MacOS/Linux/Windows]
