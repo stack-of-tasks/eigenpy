@@ -48,7 +48,7 @@ jobs:
       - name: Setup ccache
         uses: actions/cache@v6
         with:
-          path: ${{ github.workspace }}/.ccache
+          path: ${{ env.CCACHE_DIR }}
           key: ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
             ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-
