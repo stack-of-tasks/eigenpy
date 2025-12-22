@@ -30,8 +30,8 @@ jobs:
     name: Pixi - ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
-      CCACHE_DIR: "${GITHUB_WORKSPACE}/.ccache"
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_COMPRESS: true
       CCACHE_COMPRESSLEVEL: 6
       # Since pixi will install a compiler, the compiler mtime will be changed.
@@ -67,7 +67,7 @@ jobs:
 
     - uses: actions/cache@v6
       with:
-        path: .ccache
+        path: ${{ env.CCACHE_DIR }}
         key: ccache-macos-linux-windows-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-${{ github.sha }}
         restore-keys: ccache-macos-linux-windows-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-
 
@@ -78,7 +78,7 @@ jobs:
 
     - name: Clear ccache statistics [MacOS/Linux/Windows]
       run: |
-        pixi run -e ${{ matrix.environment }} ccache -z
+        pixi run -e ${{ matrix.environment }} ccache --show-stats --zero-stats --verbose
 
     - name: Configure EigenPy [MacOS/Linux/Windows]
       env:
@@ -99,7 +99,7 @@ jobs:
 
     - name: Show ccache statistics [MacOS/Linux/Windows]
       run: |
-        pixi run -e ${{ matrix.environment }} ccache -sv
+        pixi run -e ${{ matrix.environment }} ccache --show-stats --verbose
 
   # eigenpy-pixi-build:
   #   name: Pixi build - ${{ matrix.os }}
