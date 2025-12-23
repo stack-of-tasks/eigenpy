@@ -42,11 +42,12 @@ jobs:
         with:
           repository: ahoarau/jrl-cmakemodules
           ref: jrl-next
+          path: ${{ github.workspace }}/jrl-cmakemodules
       - uses: actions/checkout@v7
         with:
-          path: eigenpy
+          path: ${{ github.workspace }}/eigenpy
       - run: sudo apt install libboost-all-dev libeigen3-dev python3-numpy python3-scipy
-      - run: cmake -B build -S eigenpy -DJRL_CMAKEMODULES_SOURCE_DIR="$(pwd)/jrl-cmakemodules"
+      - run: cmake -B build -S ${{ github.workspace }}/eigenpy -DJRL_CMAKEMODULES_SOURCE_DIR="${{ github.workspace }}/jrl-cmakemodules"
 
   check:
     if: always()
