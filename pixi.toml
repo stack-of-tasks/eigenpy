@@ -92,8 +92,6 @@ configure = { cmd = [
   "-S",
   ".",
   "-DJRL_CMAKEMODULES_SOURCE_DIR=$JRL_CMAKEMODULES_SOURCE_DIR",
-  "--profiling-output=cmake-profiling.json",
-  "--profiling-format=google-trace",
   "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
   "-DCMAKE_BUILD_TYPE=$EIGENPY_BUILD_TYPE",
   "-DBUILD_TESTING=ON",
