@@ -47,12 +47,30 @@ if(NOT WIN32)
 endif()
 
 if(BUILD_TESTING_SCIPY)
-  eigenpy_python_add_test(SimplicialLLT SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SimplicialLLT.py)
-  eigenpy_python_add_test(SimplicialLDLT SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SimplicialLDLT.py)
-  eigenpy_python_add_test(IncompleteCholesky SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/solvers/test_IncompleteCholesky.py)
-  eigenpy_python_add_test(IncompleteLUT SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/solvers/test_IncompleteLUT.py)
-  eigenpy_python_add_test(SparseLU SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SparseLU.py)
-  eigenpy_python_add_test(SparseQR SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SparseQR.py)
+  eigenpy_python_add_test(
+    SimplicialLLT
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SimplicialLLT.py
+  )
+  eigenpy_python_add_test(
+    SimplicialLDLT
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SimplicialLDLT.py
+  )
+  eigenpy_python_add_test(
+    IncompleteCholesky
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/solvers/test_IncompleteCholesky.py
+  )
+  eigenpy_python_add_test(
+    IncompleteLUT
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/solvers/test_IncompleteLUT.py
+  )
+  eigenpy_python_add_test(
+    SparseLU
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SparseLU.py
+  )
+  eigenpy_python_add_test(
+    SparseQR
+    SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_SparseQR.py
+  )
 
   if(BUILD_WITH_CHOLMOD_SUPPORT)
     eigenpy_python_add_test(
@@ -72,6 +90,9 @@ if(BUILD_TESTING_SCIPY)
   endif()
 
   if(BUILD_WITH_ACCELERATE_SUPPORT)
-    eigenpy_python_add_test(Accelerate SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_Accelerate.py)
+    eigenpy_python_add_test(
+      Accelerate
+      SCRIPT ${CMAKE_CURRENT_SOURCE_DIR}/decompositions/sparse/test_Accelerate.py
+    )
   endif()
 endif()
