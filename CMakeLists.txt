@@ -118,6 +118,8 @@ set(
   include/eigenpy/decompositions/BDCSVD.hpp
   include/eigenpy/decompositions/JacobiSVD.hpp
   include/eigenpy/decompositions/minres.hpp
+  # Eigen
+  include/eigenpy/eigen/EigenBase.hpp
   # Core
   include/eigenpy/alignment.hpp
   include/eigenpy/computation-info.hpp
