@@ -47,10 +47,8 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ${{ env.CCACHE_DIR }}
-          key: ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-
-            ${{ runner.os }}-ccache-
+          key: ccache-${{ matrix.os }}-${{ matrix.build_type }}-${{ github.sha }}
+          restore-keys: ccache-${{ matrix.os }}-${{ matrix.build_type }}-
 
       - name: Update APT repositories
         run: sudo apt-get update
