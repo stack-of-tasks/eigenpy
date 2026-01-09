@@ -73,7 +73,6 @@ jobs:
 
     - uses: prefix-dev/setup-pixi@v0.10.0
       with:
-        cache: false # ⚠️ Disabling cache for testing ⚠️
         environments: ${{ matrix.environment }}
 
     - name: Clear ccache statistics [MacOS/Linux/Windows]
