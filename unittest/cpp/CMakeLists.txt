@@ -23,12 +23,9 @@ function(eigenpy_add_test name)
     NAME ${test_name}
     COMMAND $<TARGET_FILE:Python::Interpreter> ${CMAKE_CURRENT_SOURCE_DIR}/test_${name}.py
   )
-  set_property(
-    TEST ${test_name}
-    PROPERTY
-      ENVIRONMENT_MODIFICATION
-        "PYTHONPATH=path_list_prepend:$<TARGET_FILE_DIR:eigenpy>/.."
-        "PYTHONPATH=path_list_prepend:$<TARGET_FILE_DIR:${name}>/.."
+  set_tests_properties(
+    ${test_name}
+    PROPERTIES ENVIRONMENT "PYTHONPATH=$<TARGET_FILE_DIR:${name}>/.."
   )
 endfunction()
 
