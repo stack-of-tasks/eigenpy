@@ -1,4 +1,4 @@
-name: CI - Linux via APT
+name: CI - Linux (APT)
 
 on:
   push:
@@ -27,23 +27,21 @@ concurrency:
 
 jobs:
   ubuntu:
-    name: "Ubuntu ${{ matrix.ubuntu }}.04"
-    runs-on: "ubuntu-${{ matrix.ubuntu }}.04"
+    name: CI - ${{ matrix.os }} - ${{ matrix.build_type }} (APT)
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        ubuntu: [22, 24]
+        os: [ubuntu-22.04, ubuntu-24.04]
+        build_type: [Release, Debug]
     env:
       CCACHE_BASEDIR: ${{ github.workspace }}
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_COMPRESS: true
       CCACHE_COMPRESSLEVEL: 6
-      CMAKE_BUILD_PARALLEL_LEVEL: 2
       CMAKE_C_COMPILER_LAUNCHER: ccache
       CMAKE_CXX_COMPILER_LAUNCHER: ccache
     steps:
-      - run: sudo apt-get update
-      - run: sudo apt-get install -y cmake ninja-build ccache libboost-all-dev libeigen3-dev python3-numpy python3-dev python3-scipy
       - uses: actions/checkout@v7
       - name: Setup ccache
         uses: actions/cache@v6
@@ -53,6 +51,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-ccache-${{ matrix.ubuntu }}-
             ${{ runner.os }}-ccache-
+
+      - name: Update APT repositories
+        run: sudo apt-get update
+
+      - name: Install dependencies via APT
+        run: sudo apt-get install -y cmake ninja-build ccache libboost-all-dev libeigen3-dev python3-numpy python3-dev python3-scipy
 
       - name: Clear ccache stats
         run: ccache --show-stats --zero-stats --verbose
