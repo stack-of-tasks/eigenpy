@@ -56,7 +56,7 @@ if(BUILD_WITH_ACCELERATE_SUPPORT AND APPLE)
 endif()
 
 if(BUILD_TESTING AND BUILD_TESTING_SCIPY)
-  jrl_find_package(Scipy REQUIRED)
+  jrl_check_python_module(scipy REQUIRED)
 endif()
 
 # ----------------------------------------------------
