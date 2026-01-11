@@ -1,7 +1,16 @@
 # Add test that depends on the eigenpy library
-# import eigenpy is not authorized in those tests
+# NOTE: "import eigenpy" is not authorized in those tests
 function(eigenpy_add_test name)
-  jrl_boostpy_add_module(${name} ${name}.cpp)
+  cmake_parse_arguments(arg "" "SOURCE_DIR" "" ${ARGN})
+
+  if(arg_SOURCE_DIR)
+    set(source_dir ${arg_SOURCE_DIR})
+  else()
+    set(source_dir ${CMAKE_CURRENT_SOURCE_DIR})
+  endif()
+
+  jrl_boostpy_add_module(${name} ${source_dir}/${name}.cpp)
+  jrl_check_python_module_name(${name})
   target_link_libraries(${name} PRIVATE eigenpy)
   jrl_target_set_default_compile_options(${name} PRIVATE)
   jrl_target_enforce_msvc_conformance(${name} PRIVATE)
@@ -14,14 +23,14 @@ function(eigenpy_add_test name)
   )
 
   add_test(
-    NAME "Eigenpy: import ${name}"
+    NAME "eigenpy: import ${name}"
     COMMAND $<TARGET_FILE:Python::Interpreter> -c "import ${name}"
   )
 
-  set(test_name "Eigenpy: test_${name}.py")
+  set(test_name "eigenpy: test_${name}.py")
   add_test(
     NAME ${test_name}
-    COMMAND $<TARGET_FILE:Python::Interpreter> ${CMAKE_CURRENT_SOURCE_DIR}/test_${name}.py
+    COMMAND $<TARGET_FILE:Python::Interpreter> ${source_dir}/test_${name}.py
   )
   set_tests_properties(
     ${test_name}
@@ -53,20 +62,24 @@ eigenpy_add_test(virtual_factory)
 
 set(TEST_TYPE "boost::optional")
 set(MODNAME boost_optional)
-configure_file(optional.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/boost_optional.cpp)
-eigenpy_add_test(boost_optional)
+configure_file(optional.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/boost_optional.cpp)
+configure_file(test_optional.py.in ${CMAKE_CURRENT_BINARY_DIR}/test_boost_optional.py)
+eigenpy_add_test(boost_optional SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 set(TEST_TYPE "std::optional")
 set(MODNAME std_optional)
-configure_file(optional.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/std_optional.cpp)
-eigenpy_add_test(std_optional)
+configure_file(optional.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/std_optional.cpp)
+configure_file(test_optional.py.in ${CMAKE_CURRENT_BINARY_DIR}/test_std_optional.py)
+eigenpy_add_test(std_optional SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 set(TEST_TYPE "boost::variant")
 set(MODNAME boost_variant)
-configure_file(variant.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/boost_variant.cpp)
-eigenpy_add_test(boost_variant)
+configure_file(variant.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/boost_variant.cpp)
+configure_file(test_variant.py.in ${CMAKE_CURRENT_BINARY_DIR}/test_boost_variant.py)
+eigenpy_add_test(boost_variant SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 set(TEST_TYPE "std::variant")
 set(MODNAME std_variant)
-configure_file(variant.cpp.in ${CMAKE_CURRENT_SOURCE_DIR}/std_variant.cpp)
-eigenpy_add_test(std_variant)
+configure_file(variant.cpp.in ${CMAKE_CURRENT_BINARY_DIR}/std_variant.cpp)
+configure_file(test_variant.py.in ${CMAKE_CURRENT_BINARY_DIR}/test_std_variant.py)
+eigenpy_add_test(std_variant SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR})
