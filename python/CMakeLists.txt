@@ -12,7 +12,7 @@ if(GENERATE_PYTHON_STUBS)
   jrl_boostpy_add_stubs(
     eigenpy_pywrap_stubs
     MODULE eigenpy.eigenpy_pywrap
-    OUTPUT ${CMAKE_BINARY_DIR}/lib/site-packages
+    OUTPUT_PATH ${CMAKE_BINARY_DIR}/lib/site-packages
     PYTHON_PATH ${CMAKE_BINARY_DIR}/lib/site-packages
     DEPENDS eigenpy_pywrap
     VERBOSE
