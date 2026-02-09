@@ -52,7 +52,6 @@ jobs:
           - ROS_DISTRO: rolling
             os: Ubuntu 24.04 (Noble)
     env:
-      PRERELEASE: true
       VERBOSE_OUTPUT: true
       VERBOSE_TESTS: true
       ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
