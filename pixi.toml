@@ -19,7 +19,7 @@ libboost-devel = ">=1.80.0"
 libboost-python-devel = ">=1.80.0"
 eigen = ">=3.4.0"
 numpy = ">=1.22.0"
-python = ">=3.9.0"
+python = ">=3.10"
 scipy = ">=1.10.0"
 pyproject-metadata = ">=0.11.0"
 
@@ -55,7 +55,7 @@ eigen = ">=3.4.0"
 eigen-abi-devel = ">=3.4.0"
 numpy = ">=1.22.0"
 scipy = ">=1.10.0"
-python = ">=3.9.0"
+python = ">=3.10"
 
 [package.run-dependencies]
 scipy = ">=1.10.0"
