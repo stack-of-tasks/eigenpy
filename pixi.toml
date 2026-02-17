@@ -188,11 +188,12 @@ dependencies = { clangxx = "*" }
 # [feature.test-pixi-build.dependencies]
 # eigenpy = { path = "." }
 # cmake = ">=3.22"
-# python = "*"
+# cxx-compiler = ">=1.7.0"
+# python = ">=3.10"
 
 # [feature.test-pixi-build.tasks]
-# test-cmake = "cmake -S unittest/packaging/cmake -B build_test_pixi_build"
-# test-python = "python -c 'import eigenpy'"
+# test-cmake = "cmake -S unittest/packaging/cmake -B build/test_pixi_build"
+# test-python = "python -c 'import eigenpy; print(eigenpy.__version__)'"
 # test = { depends-on = ["test-cmake", "test-python"] }
 
 [environments]
