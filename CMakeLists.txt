@@ -267,9 +267,7 @@ add_library(eigenpy::eigenpy ALIAS eigenpy)
 jrl_target_enforce_msvc_conformance(eigenpy PRIVATE)
 target_compile_features(eigenpy PUBLIC cxx_std_17)
 
-set_target_properties(eigenpy PROPERTIES VERSION ${PROJECT_VERSION})
-
-jrl_target_generate_config_header(eigenpy PUBLIC)
+jrl_target_generate_config_header(eigenpy PUBLIC VERSION ${PROJECT_VERSION})
 jrl_target_generate_warning_header(eigenpy PUBLIC)
 jrl_target_generate_deprecated_header(eigenpy PUBLIC)
 
