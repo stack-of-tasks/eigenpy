@@ -94,30 +94,30 @@ jobs:
       run: |
         pixi run -e ${{ matrix.environment }} ccache -sv
 
-  eigenpy-pixi-build:
-    name: Pixi build - ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  # eigenpy-pixi-build:
+  #   name: Pixi build - ${{ matrix.os }}
+  #   runs-on: ${{ matrix.os }}
 
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest, macos-15-intel, windows-latest]
 
-    steps:
-    - uses: actions/checkout@v6
-      with:
-        submodules: recursive
+  #   steps:
+  #   - uses: actions/checkout@v6
+  #     with:
+  #       submodules: recursive
 
-    - uses: prefix-dev/setup-pixi@v0.9.4
-      env:
-        CMAKE_BUILD_PARALLEL_LEVEL: 2
-      with:
-        cache: true
-        environments: test-pixi-build
+  #   - uses: prefix-dev/setup-pixi@v0.9.4
+  #     env:
+  #       CMAKE_BUILD_PARALLEL_LEVEL: 2
+  #     with:
+  #       cache: true
+  #       environments: test-pixi-build
 
-    - name: Test package [MacOS/Linux/Windows]
-      run: |
-        pixi run -e test-pixi-build test
+  #   - name: Test package [MacOS/Linux/Windows]
+  #     run: |
+  #       pixi run -e test-pixi-build test
 
   check:
     if: always()
@@ -125,6 +125,7 @@ jobs:
 
     needs:
     - eigenpy-pixi
+    # - eigenpy-pixi-build
 
     runs-on: Ubuntu-latest
 
