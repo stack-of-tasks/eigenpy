@@ -125,7 +125,7 @@ jobs:
 
     needs:
     - eigenpy-pixi
-    - eigenpy-pixi-build
+    # - eigenpy-pixi-build
 
     runs-on: Ubuntu-latest
 
