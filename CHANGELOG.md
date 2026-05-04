@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Python version update ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
   - Project is now tested with Python 3.10 and 3.14
   - Python 3.10 is the minimal supported Python version
+- Nix: switch to flakoboros
 
 ### Added
 - Support for Python slice, tuple and list indexing for `std::vector` bindings ([#592](https://github.com/stack-of-tasks/eigenpy/pull/592))
