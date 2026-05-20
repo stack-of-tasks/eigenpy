@@ -63,7 +63,7 @@ struct nullopt_helper<std::optional> {
 
 template <typename NoneType>
 struct NoneToPython {
-  static PyObject *convert(const NoneType &) { Py_RETURN_NONE; }
+  static PyObject* convert(const NoneType&) { Py_RETURN_NONE; }
 
   static void registration() {
     if (!check_registration<NoneType>()) {
@@ -75,7 +75,7 @@ struct NoneToPython {
 template <typename T,
           template <typename> class OptionalTpl = EIGENPY_DEFAULT_OPTIONAL>
 struct OptionalToPython {
-  static PyObject *convert(const OptionalTpl<T> &obj) {
+  static PyObject* convert(const OptionalTpl<T>& obj) {
     if (obj)
       return bp::incref(bp::object(*obj).ptr());
     else {
@@ -83,7 +83,7 @@ struct OptionalToPython {
     }
   }
 
-  static PyTypeObject const *get_pytype() {
+  static PyTypeObject const* get_pytype() {
     return bp::converter::registered_pytype<T>::get_pytype();
   }
 
@@ -97,16 +97,16 @@ struct OptionalToPython {
 template <typename T,
           template <typename> class OptionalTpl = EIGENPY_DEFAULT_OPTIONAL>
 struct OptionalFromPython {
-  static void *convertible(PyObject *obj_ptr);
+  static void* convertible(PyObject* obj_ptr);
 
-  static void construct(PyObject *obj_ptr,
-                        bp::converter::rvalue_from_python_stage1_data *memory);
+  static void construct(PyObject* obj_ptr,
+                        bp::converter::rvalue_from_python_stage1_data* memory);
 
   static void registration();
 };
 
 template <typename T, template <typename> class OptionalTpl>
-void *OptionalFromPython<T, OptionalTpl>::convertible(PyObject *obj_ptr) {
+void* OptionalFromPython<T, OptionalTpl>::convertible(PyObject* obj_ptr) {
   if (obj_ptr == Py_None) {
     return obj_ptr;
   }
@@ -119,12 +119,12 @@ void *OptionalFromPython<T, OptionalTpl>::convertible(PyObject *obj_ptr) {
 
 template <typename T, template <typename> class OptionalTpl>
 void OptionalFromPython<T, OptionalTpl>::construct(
-    PyObject *obj_ptr, bp::converter::rvalue_from_python_stage1_data *memory) {
+    PyObject* obj_ptr, bp::converter::rvalue_from_python_stage1_data* memory) {
   // create storage
   using rvalue_storage_t =
       bp::converter::rvalue_from_python_storage<OptionalTpl<T>>;
-  void *storage =
-      reinterpret_cast<rvalue_storage_t *>(reinterpret_cast<void *>(memory))
+  void* storage =
+      reinterpret_cast<rvalue_storage_t*>(reinterpret_cast<void*>(memory))
           ->storage.bytes;
 
   if (obj_ptr == Py_None) {

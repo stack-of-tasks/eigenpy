@@ -13,7 +13,7 @@ template <typename Derived>
 struct EigenBaseVisitor
     : public boost::python::def_visitor<EigenBaseVisitor<Derived>> {
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def("cols", &Derived::cols, bp::arg("self"),
            "Returns the number of columns.")
         .def("rows", &Derived::rows, bp::arg("self"),

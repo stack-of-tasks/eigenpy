@@ -30,7 +30,7 @@ struct SimplicialCholeskyVisitor
       DenseMatrixXs;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def("analyzePattern", &Solver::analyzePattern,
            bp::args("self", "matrix"),
            "Performs a symbolic decomposition on the sparcity of matrix.\n"
@@ -46,7 +46,7 @@ struct SimplicialCholeskyVisitor
              "Returns the upper triangular matrix U.")
 
         .def("compute",
-             (Solver & (Solver::*)(const MatrixType &matrix)) & Solver::compute,
+             (Solver & (Solver::*)(const MatrixType& matrix)) & Solver::compute,
              bp::args("self", "matrix"),
              "Computes the sparse Cholesky decomposition of a given matrix.",
              bp::return_self<>())
@@ -85,8 +85,8 @@ struct SimplicialCholeskyVisitor
   }
 
  private:
-  static MatrixType matrixL(const Solver &self) { return self.matrixL(); }
-  static MatrixType matrixU(const Solver &self) { return self.matrixU(); }
+  static MatrixType matrixL(const Solver& self) { return self.matrixL(); }
+  static MatrixType matrixU(const Solver& self) { return self.matrixU(); }
 };
 
 }  // namespace eigenpy

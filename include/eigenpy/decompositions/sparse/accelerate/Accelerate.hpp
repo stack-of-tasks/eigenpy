@@ -25,7 +25,7 @@ struct AccelerateImplVisitor : public boost::python::def_visitor<
   typedef typename MatrixType::StorageIndex StorageIndex;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl
 
         .def("analyzePattern", &Solver::analyzePattern,
@@ -38,7 +38,7 @@ struct AccelerateImplVisitor : public boost::python::def_visitor<
         .def(SparseSolverBaseVisitor<Solver>())
 
         .def("compute",
-             (Solver & (Solver::*)(const MatrixType &matrix)) & Solver::compute,
+             (Solver & (Solver::*)(const MatrixType& matrix)) & Solver::compute,
              bp::args("self", "matrix"),
              "Computes the sparse Cholesky decomposition of a given matrix.",
              bp::return_self<>())
@@ -56,7 +56,7 @@ struct AccelerateImplVisitor : public boost::python::def_visitor<
         .def("setOrder", &Solver::setOrder, bp::arg("self"), "Set order");
   }
 
-  static void expose(const std::string &name, const std::string &doc = "") {
+  static void expose(const std::string& name, const std::string& doc = "") {
     bp::class_<Solver, boost::noncopyable>(name.c_str(), doc.c_str(),
                                            bp::no_init)
         .def(AccelerateImplVisitor())

@@ -28,7 +28,7 @@ struct LDLTSolverVisitor
   typedef Eigen::LDLT<MatrixType> Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
             bp::args("self", "size"),
@@ -58,8 +58,8 @@ struct LDLTSolverVisitor
              bp::return_internal_reference<>())
 
         .def("rankUpdate",
-             (Solver & (Solver::*)(const Eigen::MatrixBase<VectorXs> &,
-                                   const RealScalar &)) &
+             (Solver & (Solver::*)(const Eigen::MatrixBase<VectorXs>&,
+                                   const RealScalar&)) &
                  Solver::template rankUpdate<VectorXs>,
              bp::args("self", "vector", "sigma"), bp::return_self<>())
 
@@ -72,7 +72,7 @@ struct LDLTSolverVisitor
 
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"), "Computes the LDLT of given matrix.",
             bp::return_self<>())
@@ -107,7 +107,7 @@ struct LDLTSolverVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(
         name.c_str(),
         "Robust Cholesky decomposition of a matrix with pivoting.\n\n"
@@ -124,17 +124,17 @@ struct LDLTSolverVisitor
   }
 
  private:
-  static MatrixType matrixL(const Solver &self) { return self.matrixL(); }
-  static MatrixType matrixU(const Solver &self) { return self.matrixU(); }
-  static VectorXs vectorD(const Solver &self) { return self.vectorD(); }
+  static MatrixType matrixL(const Solver& self) { return self.matrixL(); }
+  static MatrixType matrixU(const Solver& self) { return self.matrixU(); }
+  static VectorXs vectorD(const Solver& self) { return self.vectorD(); }
 
-  static MatrixType transpositionsP(const Solver &self) {
+  static MatrixType transpositionsP(const Solver& self) {
     return self.transpositionsP() *
            MatrixType::Identity(self.matrixL().rows(), self.matrixL().rows());
   }
 
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };

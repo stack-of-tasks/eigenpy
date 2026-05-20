@@ -1,19 +1,20 @@
 <?xml version="1.0"?>
 <package format="3">
   <name>eigenpy</name>
-  <version>3.12.0</version>
+  <version>3.13.0</version>
   <description>Bindings between Numpy and Eigen using Boost.Python</description>
   <maintainer email="justin.carpentier@inria.fr">Justin Carpentier</maintainer>
   <maintainer email="opensource@wolfgangmerkt.com">Wolfgang Merkt</maintainer>
   <maintainer email="guilhem.saurel@laas.fr">Guilhem Saurel</maintainer>
   <author>Justin Carpentier</author>
   <author>Nicolas Mansard</author>
-  <license>BSD</license>
+  <license>BSD-2-Clause</license>
 
   <url type="website">https://github.com/stack-of-tasks/eigenpy</url>
 
   <build_depend>git</build_depend>
   <build_depend>doxygen</build_depend>
+  <build_depend>jrl_cmakemodules</build_depend>
 
   <depend>python3</depend>
   <depend>python3-numpy</depend>

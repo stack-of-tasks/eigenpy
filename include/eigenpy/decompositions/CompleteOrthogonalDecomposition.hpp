@@ -28,7 +28,7 @@ struct CompleteOrthogonalDecompositionSolverVisitor
   typedef Solver Self;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"),
                       "Default constructor.\n"
                       "The default constructor is useful in cases in which the "
@@ -117,7 +117,7 @@ struct CompleteOrthogonalDecompositionSolverVisitor
              "you can control by calling setThreshold(threshold).")
 
         .def("setThreshold",
-             (Self & (Self::*)(const RealScalar &)) & Self::setThreshold,
+             (Self & (Self::*)(const RealScalar&)) & Self::setThreshold,
              bp::args("self", "threshold"),
              "Allows to prescribe a threshold to be used by certain methods, "
              "such as rank(), who need to determine when pivots are to be "
@@ -152,7 +152,7 @@ struct CompleteOrthogonalDecompositionSolverVisitor
 
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"),
             "Computes the complete orthogonal factorization of given matrix.",
@@ -174,7 +174,7 @@ struct CompleteOrthogonalDecompositionSolverVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(
         name.c_str(),
         "This class performs a rank-revealing complete orthogonal "
@@ -190,10 +190,10 @@ struct CompleteOrthogonalDecompositionSolverVisitor
 
  private:
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
-  static MatrixXs pseudoInverse(const Self &self) {
+  static MatrixXs pseudoInverse(const Self& self) {
     return self.pseudoInverse();
   }
 };

@@ -108,7 +108,7 @@ namespace bp = boost::python;
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
-#define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type *)(NULL))
+#define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type*)(NULL))
 #ifndef NDEBUG
 #define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var)
 #else
@@ -185,7 +185,7 @@ namespace internal {
 template <class T1, class T2>
 struct has_operator_equal_impl {
   template <class U, class V>
-  static auto check(U *) -> decltype(std::declval<U>() == std::declval<V>());
+  static auto check(U*) -> decltype(std::declval<U>() == std::declval<V>());
   template <typename, typename>
   static auto check(...) -> std::false_type;
 
@@ -201,7 +201,7 @@ namespace literals {
 ///
 /// Using-declare this operator or do `using namespace eigenpy::literals`. Then
 /// `bp::arg("matrix")` can be replaced by the literal `"matrix"_a`.
-inline boost::python::arg operator"" _a(const char *name, std::size_t) {
+inline boost::python::arg operator"" _a(const char* name, std::size_t) {
   return boost::python::arg(name);
 }
 }  // namespace literals

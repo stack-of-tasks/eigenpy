@@ -30,7 +30,7 @@ struct SimplicialLDLTVisitor
       DenseMatrixXs;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<MatrixType>(bp::args("self", "matrix"),
                                   "Constructs and performs the LDLT "
@@ -47,7 +47,7 @@ struct SimplicialLDLTVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver, boost::noncopyable>(
         name.c_str(),
         "A direct sparse LDLT Cholesky factorizations.\n\n"
@@ -64,7 +64,7 @@ struct SimplicialLDLTVisitor
   }
 
  private:
-  static DenseVectorXs vectorD(const Solver &self) { return self.vectorD(); }
+  static DenseVectorXs vectorD(const Solver& self) { return self.vectorD(); }
 };
 
 }  // namespace eigenpy

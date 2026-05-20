@@ -25,13 +25,13 @@ struct SparseLUMatrixLReturnTypeVisitor
       MatrixXs;
 
   template <typename MatrixOrVector>
-  static void solveInPlace(const LType &self,
+  static void solveInPlace(const LType& self,
                            Eigen::Ref<MatrixOrVector> mat_vec) {
     self.solveInPlace(mat_vec);
   }
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<MappedSupernodalType>(bp::args("self", "mapL")))
 
         .def("rows", &LType::rows)
@@ -41,7 +41,7 @@ struct SparseLUMatrixLReturnTypeVisitor
         .def("solveInPlace", &solveInPlace<VectorXs>, bp::args("self", "x"));
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<LType>(name.c_str(), "Eigen SparseLUMatrixLReturnType",
                       bp::no_init)
         .def(SparseLUMatrixLReturnTypeVisitor())
@@ -60,13 +60,13 @@ struct SparseLUMatrixUReturnTypeVisitor
       MatrixXs;
 
   template <typename MatrixOrVector>
-  static void solveInPlace(const UType &self,
+  static void solveInPlace(const UType& self,
                            Eigen::Ref<MatrixOrVector> mat_vec) {
     self.solveInPlace(mat_vec);
   }
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<MatrixLType, MatrixUType>(bp::args("self", "mapL", "mapU")))
 
         .def("rows", &UType::rows)
@@ -76,7 +76,7 @@ struct SparseLUMatrixUReturnTypeVisitor
         .def("solveInPlace", &solveInPlace<VectorXs>, bp::args("self", "x"));
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<UType>(name.c_str(), "Eigen SparseLUMatrixUReturnType",
                       bp::no_init)
         .def(SparseLUMatrixUReturnTypeVisitor())
@@ -98,13 +98,19 @@ struct SparseLUVisitor : public boost::python::def_visitor<
 
   typedef typename Solver::SCMatrix SCMatrix;
   typedef typename MatrixType::StorageIndex StorageIndex;
+
+#if EIGEN_VERSION_AT_LEAST(3, 4, 90)
+  typedef Eigen::Map<Eigen::SparseMatrix<Scalar, Eigen::ColMajor, StorageIndex>>
+      MappedSparseMatrix;
+#else
   typedef Eigen::MappedSparseMatrix<Scalar, Eigen::ColMajor, StorageIndex>
       MappedSparseMatrix;
+#endif
   typedef Eigen::SparseLUMatrixLReturnType<SCMatrix> LType;
   typedef Eigen::SparseLUMatrixUReturnType<SCMatrix, MappedSparseMatrix> UType;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<MatrixType>(bp::args("self", "matrix"),
                                   "Constructs and performs the LU "
@@ -133,11 +139,11 @@ struct SparseLUVisitor : public boost::python::def_visitor<
 
         .def(
             "matrixL",
-            +[](const Solver &self) -> LType { return self.matrixL(); },
+            +[](const Solver& self) -> LType { return self.matrixL(); },
             "Returns an expression of the matrix L.")
         .def(
             "matrixU",
-            +[](const Solver &self) -> UType { return self.matrixU(); },
+            +[](const Solver& self) -> UType { return self.matrixU(); },
             "Returns an expression of the matrix U.")
 
         .def("colsPermutation", &Solver::colsPermutation, bp::arg("self"),
@@ -185,7 +191,7 @@ struct SparseLUVisitor : public boost::python::def_visitor<
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver, boost::noncopyable>(
         name.c_str(),
         "Sparse supernodal LU factorization for general matrices. \n\n"

@@ -26,7 +26,7 @@ struct PermutationMatrixVisitor
       VectorIndex;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<const Eigen::DenseIndex>(bp::args("self", "size"),
                                              "Default constructor"))
         .def(bp::init<VectorIndex>(
@@ -40,7 +40,7 @@ struct PermutationMatrixVisitor
 
         .def(
             "indices",
-            +[](const PermutationMatrix &self) {
+            +[](const PermutationMatrix& self) {
               return VectorIndex(self.indices());
             },
             bp::arg("self"), "The stored array representing the permutation.")
@@ -73,13 +73,13 @@ struct PermutationMatrixVisitor
 
         .def(
             "transpose",
-            +[](const PermutationMatrix &self) -> PermutationMatrix {
+            +[](const PermutationMatrix& self) -> PermutationMatrix {
               return self.transpose();
             },
             bp::arg("self"), "Returns the tranpose permutation matrix.")
         .def(
             "inverse",
-            +[](const PermutationMatrix &self) -> PermutationMatrix {
+            +[](const PermutationMatrix& self) -> PermutationMatrix {
               return self.inverse();
             },
             bp::arg("self"), "Returns the inverse permutation matrix.")
@@ -91,7 +91,7 @@ struct PermutationMatrixVisitor
         .def(EigenBaseVisitor<Self>());
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<PermutationMatrix>(name.c_str(),
                                   "Permutation matrix.\n"
                                   "This class represents a permutation matrix, "

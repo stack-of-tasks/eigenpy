@@ -23,7 +23,7 @@ struct TridiagonalizationVisitor : public boost::python::def_visitor<
   typedef Eigen::VectorXd VectorType;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(
           bp::init<Eigen::DenseIndex>(bp::arg("size"), "Default constructor. "))
         .def(bp::init<MatrixType>(bp::arg("matrix"),
@@ -32,7 +32,7 @@ struct TridiagonalizationVisitor : public boost::python::def_visitor<
 
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"),
             "Computes tridiagonal decomposition of given matrix. ",
@@ -46,24 +46,24 @@ struct TridiagonalizationVisitor : public boost::python::def_visitor<
 
         .def(
             "matrixQ",
-            +[](const Solver &c) -> MatrixType { return c.matrixQ(); },
+            +[](const Solver& c) -> MatrixType { return c.matrixQ(); },
             "Returns the unitary matrix Q in the decomposition.")
         .def(
             "matrixT",
-            +[](const Solver &c) -> MatrixType { return c.matrixT(); },
+            +[](const Solver& c) -> MatrixType { return c.matrixT(); },
             "Returns an expression of the tridiagonal matrix T in the "
             "decomposition.")
 
         .def(
             "diagonal",
-            +[](const Solver &c) -> VectorType { return c.diagonal(); },
+            +[](const Solver& c) -> VectorType { return c.diagonal(); },
             bp::arg("self"),
             "Returns the diagonal of the tridiagonal matrix T in the "
             "decomposition. ")
 
         .def(
             "subDiagonal",
-            +[](const Solver &c) -> VectorType { return c.subDiagonal(); },
+            +[](const Solver& c) -> VectorType { return c.subDiagonal(); },
             bp::arg("self"),
             "Returns the subdiagonal of the tridiagonal matrix T in the "
             "decomposition.");
@@ -75,7 +75,7 @@ struct TridiagonalizationVisitor : public boost::python::def_visitor<
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(name.c_str(), bp::no_init)
         .def(TridiagonalizationVisitor())
         .def(IdVisitor<Solver>());

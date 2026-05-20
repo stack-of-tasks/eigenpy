@@ -15,8 +15,14 @@ void exposeSparseLUSolver() {
 
   typedef typename SparseLUType::Scalar Scalar;
   typedef typename SparseLUType::SCMatrix SCMatrix;
-  typedef Eigen::MappedSparseMatrix<Scalar, ColMajor, StorageIndex>
+
+#if EIGEN_VERSION_AT_LEAST(3, 4, 90)
+  typedef Eigen::Map<Eigen::SparseMatrix<Scalar, Eigen::ColMajor, StorageIndex>>
       MappedSparseMatrix;
+#else
+  typedef Eigen::MappedSparseMatrix<Scalar, Eigen::ColMajor, StorageIndex>
+      MappedSparseMatrix;
+#endif
 
   SparseLUMatrixLReturnTypeVisitor<SCMatrix>::expose(
       ("SparseLUMatrixLReturnType"));

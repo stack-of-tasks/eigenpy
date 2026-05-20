@@ -2,6 +2,8 @@ name: CI - Linux via APT
 
 on:
   push:
+    branches:
+      - devel
     paths-ignore:
       - 'doc/**'
       - '.gitlab-ci.yml'
@@ -28,11 +30,12 @@ jobs:
     name: "Test python ${{ matrix.python }} on ${{ matrix.ubuntu }}.04"
     runs-on: "ubuntu-${{ matrix.ubuntu }}.04"
     strategy:
+      fail-fast: false
       matrix:
         python: [3]
         ubuntu: [22, 24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: 'true'
       - run: |

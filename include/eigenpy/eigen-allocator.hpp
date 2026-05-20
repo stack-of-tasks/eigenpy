@@ -17,14 +17,14 @@ namespace details {
 template <typename MatType,
           bool IsVectorAtCompileTime = MatType::IsVectorAtCompileTime>
 struct init_matrix_or_array {
-  static MatType *run(int rows, int cols, void *storage) {
+  static MatType* run(int rows, int cols, void* storage) {
     if (storage)
       return new (storage) MatType(rows, cols);
     else
       return new MatType(rows, cols);
   }
 
-  static MatType *run(PyArrayObject *pyArray, void *storage = NULL) {
+  static MatType* run(PyArrayObject* pyArray, void* storage = NULL) {
     assert(PyArray_NDIM(pyArray) == 1 || PyArray_NDIM(pyArray) == 2);
 
     int rows = -1, cols = -1;
@@ -43,21 +43,21 @@ struct init_matrix_or_array {
 
 template <typename MatType>
 struct init_matrix_or_array<MatType, true> {
-  static MatType *run(int rows, int cols, void *storage) {
+  static MatType* run(int rows, int cols, void* storage) {
     if (storage)
       return new (storage) MatType(rows, cols);
     else
       return new MatType(rows, cols);
   }
 
-  static MatType *run(int size, void *storage) {
+  static MatType* run(int size, void* storage) {
     if (storage)
       return new (storage) MatType(size);
     else
       return new MatType(size);
   }
 
-  static MatType *run(PyArrayObject *pyArray, void *storage = NULL) {
+  static MatType* run(PyArrayObject* pyArray, void* storage = NULL) {
     const int ndim = PyArray_NDIM(pyArray);
     if (ndim == 1) {
       const int size = (int)PyArray_DIMS(pyArray)[0];
@@ -73,7 +73,7 @@ struct init_matrix_or_array<MatType, true> {
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename Tensor>
 struct init_tensor {
-  static Tensor *run(PyArrayObject *pyArray, void *storage = NULL) {
+  static Tensor* run(PyArrayObject* pyArray, void* storage = NULL) {
     enum { Rank = Tensor::NumDimensions };
     assert(PyArray_NDIM(pyArray) == Rank);
     typedef typename Tensor::Index Index;
@@ -103,8 +103,8 @@ struct check_swap_impl<MatType, Eigen::MatrixBase<MatType>>
 
 template <typename MatType>
 struct check_swap_impl_matrix {
-  static bool run(PyArrayObject *pyArray,
-                  const Eigen::MatrixBase<MatType> &mat) {
+  static bool run(PyArrayObject* pyArray,
+                  const Eigen::MatrixBase<MatType>& mat) {
     if (PyArray_NDIM(pyArray) == 0) return false;
     if (mat.rows() == PyArray_DIMS(pyArray)[0])
       return false;
@@ -114,14 +114,14 @@ struct check_swap_impl_matrix {
 };
 
 template <typename EigenType>
-bool check_swap(PyArrayObject *pyArray, const EigenType &mat) {
+bool check_swap(PyArrayObject* pyArray, const EigenType& mat) {
   return check_swap_impl<EigenType>::run(pyArray, mat);
 }
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
 struct check_swap_impl_tensor {
-  static bool run(PyArrayObject * /*pyArray*/, const TensorType & /*tensor*/) {
+  static bool run(PyArrayObject* /*pyArray*/, const TensorType& /*tensor*/) {
     return false;
   }
 };
@@ -157,8 +157,8 @@ template <typename Scalar, typename NewScalar,
           bool cast_is_valid = FromTypeToType<Scalar, NewScalar>::value>
 struct cast {
   template <typename MatrixIn, typename MatrixOut>
-  static void run(const Eigen::MatrixBase<MatrixIn> &input,
-                  const Eigen::MatrixBase<MatrixOut> &dest) {
+  static void run(const Eigen::MatrixBase<MatrixIn>& input,
+                  const Eigen::MatrixBase<MatrixOut>& dest) {
     dest.const_cast_derived() = input.template cast<NewScalar>();
   }
 };
@@ -167,7 +167,7 @@ struct cast {
 template <typename Scalar, typename NewScalar>
 struct cast<Scalar, NewScalar, Eigen::TensorRef, true> {
   template <typename TensorIn, typename TensorOut>
-  static void run(const TensorIn &input, TensorOut &dest) {
+  static void run(const TensorIn& input, TensorOut& dest) {
     dest = input.template cast<NewScalar>();
   }
 };
@@ -307,23 +307,23 @@ struct eigen_allocator_impl_matrix {
   typedef typename MatType::Scalar Scalar;
 
   static void allocate(
-      PyArrayObject *pyArray,
-      boost::python::converter::rvalue_from_python_storage<MatType> *storage) {
-    void *raw_ptr = storage->storage.bytes;
+      PyArrayObject* pyArray,
+      boost::python::converter::rvalue_from_python_storage<MatType>* storage) {
+    void* raw_ptr = storage->storage.bytes;
     assert(is_aligned(raw_ptr, EIGENPY_DEFAULT_ALIGN_BYTES) &&
            "The pointer is not aligned.");
 
-    Type *mat_ptr = details::init_matrix_or_array<Type>::run(pyArray, raw_ptr);
-    Type &mat = *mat_ptr;
+    Type* mat_ptr = details::init_matrix_or_array<Type>::run(pyArray, raw_ptr);
+    Type& mat = *mat_ptr;
 
     copy(pyArray, mat);
   }
 
   /// \brief Copy Python array into the input matrix mat.
   template <typename MatrixDerived>
-  static void copy(PyArrayObject *pyArray,
-                   const Eigen::MatrixBase<MatrixDerived> &mat_) {
-    MatrixDerived &mat = mat_.const_cast_derived();
+  static void copy(PyArrayObject* pyArray,
+                   const Eigen::MatrixBase<MatrixDerived>& mat_) {
+    MatrixDerived& mat = mat_.const_cast_derived();
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
@@ -339,10 +339,9 @@ struct eigen_allocator_impl_matrix {
 
   /// \brief Copy mat into the Python array using Eigen::Map
   template <typename MatrixDerived>
-  static void copy(const Eigen::MatrixBase<MatrixDerived> &mat_,
-                   PyArrayObject *pyArray) {
-    const MatrixDerived &mat =
-        const_cast<const MatrixDerived &>(mat_.derived());
+  static void copy(const Eigen::MatrixBase<MatrixDerived>& mat_,
+                   PyArrayObject* pyArray) {
+    const MatrixDerived& mat = const_cast<const MatrixDerived&>(mat_.derived());
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
@@ -374,16 +373,16 @@ template <typename TensorType>
 struct eigen_allocator_impl_tensor {
   typedef typename TensorType::Scalar Scalar;
   static void allocate(
-      PyArrayObject *pyArray,
-      boost::python::converter::rvalue_from_python_storage<TensorType>
-          *storage) {
-    void *raw_ptr = storage->storage.bytes;
+      PyArrayObject* pyArray,
+      boost::python::converter::rvalue_from_python_storage<TensorType>*
+          storage) {
+    void* raw_ptr = storage->storage.bytes;
     assert(is_aligned(raw_ptr, EIGENPY_DEFAULT_ALIGN_BYTES) &&
            "The pointer is not aligned.");
 
-    TensorType *tensor_ptr =
+    TensorType* tensor_ptr =
         details::init_tensor<TensorType>::run(pyArray, raw_ptr);
-    TensorType &tensor = *tensor_ptr;
+    TensorType& tensor = *tensor_ptr;
 
     copy(pyArray, tensor);
   }
@@ -400,7 +399,7 @@ struct eigen_allocator_impl_tensor {
 
   /// \brief Copy Python array into the input matrix mat.
   template <typename TensorDerived>
-  static void copy(PyArrayObject *pyArray, TensorDerived &tensor) {
+  static void copy(PyArrayObject* pyArray, TensorDerived& tensor) {
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
@@ -426,7 +425,7 @@ struct eigen_allocator_impl_tensor {
   }
 
   /// \brief Copy mat into the Python array using Eigen::Map
-  static void copy(const TensorType &tensor, PyArrayObject *pyArray) {
+  static void copy(const TensorType& tensor, PyArrayObject* pyArray) {
     const int pyArray_type_code = EIGENPY_GET_PY_ARRAY_TYPE(pyArray);
     const int Scalar_type_code = Register::getTypeCode<Scalar>();
 
@@ -452,7 +451,7 @@ struct eigen_allocator_impl_tensor {
 /// you want a compile-time vector
 /// in these cases, data layout fits desired view layout
 template <typename MatType>
-inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject *pyArray) {
+inline bool is_arr_layout_compatible_with_mat_type(PyArrayObject* pyArray) {
   bool is_array_C_cont = PyArray_IS_C_CONTIGUOUS(pyArray);
   bool is_array_F_cont = PyArray_IS_F_CONTIGUOUS(pyArray);
   return (MatType::IsRowMajor && is_array_C_cont) ||
@@ -467,13 +466,13 @@ struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
   typedef typename MatType::Scalar Scalar;
 
   typedef
-      typename ::boost::python::detail::referent_storage<RefType &>::StorageType
+      typename ::boost::python::detail::referent_storage<RefType&>::StorageType
           StorageType;
 
   static void allocate(
-      PyArrayObject *pyArray,
-      ::boost::python::converter::rvalue_from_python_storage<RefType>
-          *storage) {
+      PyArrayObject* pyArray,
+      ::boost::python::converter::rvalue_from_python_storage<RefType>*
+          storage) {
     typedef typename StrideType<
         MatType,
         Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime,
@@ -491,20 +490,20 @@ struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
         Eigen::Unaligned)  // we need to check whether the memory is correctly
                            // aligned and composed of a continuous segment
     {
-      void *data_ptr = PyArray_DATA(pyArray);
+      void* data_ptr = PyArray_DATA(pyArray);
       if (!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr, Options))
         need_to_allocate |= true;
     }
 
-    void *raw_ptr = storage->storage.bytes;
+    void* raw_ptr = storage->storage.bytes;
     if (need_to_allocate) {
-      MatType *mat_ptr;
+      MatType* mat_ptr;
       mat_ptr = details::init_matrix_or_array<MatType>::run(pyArray);
       RefType mat_ref(*mat_ptr);
 
       new (raw_ptr) StorageType(mat_ref, pyArray, mat_ptr);
 
-      RefType &mat = *reinterpret_cast<RefType *>(raw_ptr);
+      RefType& mat = *reinterpret_cast<RefType*>(raw_ptr);
       EigenAllocator<MatType>::copy(pyArray, mat);
     } else {
       assert(pyArray_type_code == Scalar_type_code);
@@ -516,7 +515,7 @@ struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
     }
   }
 
-  static void copy(RefType const &ref, PyArrayObject *pyArray) {
+  static void copy(RefType const& ref, PyArrayObject* pyArray) {
     EigenAllocator<MatType>::copy(ref, pyArray);
   }
 };
@@ -528,13 +527,13 @@ struct eigen_allocator_impl_matrix<
   typedef typename MatType::Scalar Scalar;
 
   typedef
-      typename ::boost::python::detail::referent_storage<RefType &>::StorageType
+      typename ::boost::python::detail::referent_storage<RefType&>::StorageType
           StorageType;
 
   static void allocate(
-      PyArrayObject *pyArray,
-      ::boost::python::converter::rvalue_from_python_storage<RefType>
-          *storage) {
+      PyArrayObject* pyArray,
+      ::boost::python::converter::rvalue_from_python_storage<RefType>*
+          storage) {
     typedef typename StrideType<
         MatType,
         Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime,
@@ -553,20 +552,20 @@ struct eigen_allocator_impl_matrix<
         Eigen::Unaligned)  // we need to check whether the memory is correctly
                            // aligned and composed of a continuous segment
     {
-      void *data_ptr = PyArray_DATA(pyArray);
+      void* data_ptr = PyArray_DATA(pyArray);
       if (!PyArray_ISONESEGMENT(pyArray) || !is_aligned(data_ptr, Options))
         need_to_allocate |= true;
     }
 
-    void *raw_ptr = storage->storage.bytes;
+    void* raw_ptr = storage->storage.bytes;
     if (need_to_allocate) {
-      MatType *mat_ptr;
+      MatType* mat_ptr;
       mat_ptr = details::init_matrix_or_array<MatType>::run(pyArray);
       RefType mat_ref(*mat_ptr);
 
       new (raw_ptr) StorageType(mat_ref, pyArray, mat_ptr);
 
-      MatType &mat = *mat_ptr;
+      MatType& mat = *mat_ptr;
       EigenAllocator<MatType>::copy(pyArray, mat);
     } else {
       assert(pyArray_type_code == Scalar_type_code);
@@ -578,7 +577,7 @@ struct eigen_allocator_impl_matrix<
     }
   }
 
-  static void copy(RefType const &ref, PyArrayObject *pyArray) {
+  static void copy(RefType const& ref, PyArrayObject* pyArray) {
     EigenAllocator<MatType>::copy(ref, pyArray);
   }
 };
@@ -604,13 +603,13 @@ struct eigen_allocator_impl_tensor_ref {
   typedef typename TensorType::Scalar Scalar;
 
   typedef
-      typename ::boost::python::detail::referent_storage<RefType &>::StorageType
+      typename ::boost::python::detail::referent_storage<RefType&>::StorageType
           StorageType;
 
   static void allocate(
-      PyArrayObject *pyArray,
-      ::boost::python::converter::rvalue_from_python_storage<RefType>
-          *storage) {
+      PyArrayObject* pyArray,
+      ::boost::python::converter::rvalue_from_python_storage<RefType>*
+          storage) {
     //    typedef typename StrideType<
     //        MatType,
     //        Eigen::internal::traits<RefType>::StrideType::InnerStrideAtCompileTime,
@@ -637,16 +636,16 @@ struct eigen_allocator_impl_tensor_ref {
     //        need_to_allocate |= true;
     //    }
 
-    void *raw_ptr = storage->storage.bytes;
+    void* raw_ptr = storage->storage.bytes;
     if (need_to_allocate) {
       typedef typename boost::remove_const<TensorType>::type TensorTypeNonConst;
-      TensorTypeNonConst *tensor_ptr;
+      TensorTypeNonConst* tensor_ptr;
       tensor_ptr = details::init_tensor<TensorTypeNonConst>::run(pyArray);
       RefType tensor_ref(*tensor_ptr);
 
       new (raw_ptr) StorageType(tensor_ref, pyArray, tensor_ptr);
 
-      TensorTypeNonConst &tensor = *tensor_ptr;
+      TensorTypeNonConst& tensor = *tensor_ptr;
       EigenAllocator<TensorTypeNonConst>::copy(pyArray, tensor);
     } else {
       assert(pyArray_type_code == Scalar_type_code);
@@ -657,7 +656,7 @@ struct eigen_allocator_impl_tensor_ref {
     }
   }
 
-  static void copy(RefType const &ref, PyArrayObject *pyArray) {
+  static void copy(RefType const& ref, PyArrayObject* pyArray) {
     EigenAllocator<TensorType>::copy(ref, pyArray);
   }
 };

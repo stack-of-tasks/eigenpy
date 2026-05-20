@@ -28,7 +28,7 @@ struct LLTSolverVisitor
   typedef Eigen::LLT<MatrixType> Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
             bp::args("self", "size"),
@@ -49,14 +49,14 @@ struct LLTSolverVisitor
 
 #if EIGEN_VERSION_AT_LEAST(3, 3, 90)
         .def("rankUpdate",
-             (Solver & (Solver::*)(const VectorXs &, const RealScalar &)) &
+             (Solver & (Solver::*)(const VectorXs&, const RealScalar&)) &
                  Solver::template rankUpdate<VectorXs>,
              bp::args("self", "vector", "sigma"), bp::return_self<>())
 #else
         .def("rankUpdate",
              (Solver (Solver::*)(
-                 const VectorXs &,
-                 const RealScalar &))&Solver::template rankUpdate<VectorXs>,
+                 const VectorXs&,
+                 const RealScalar&))&Solver::template rankUpdate<VectorXs>,
              bp::args("self", "vector", "sigma"))
 #endif
 
@@ -69,7 +69,7 @@ struct LLTSolverVisitor
 
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"), "Computes the LLT of given matrix.",
             bp::return_self<>())
@@ -101,7 +101,7 @@ struct LLTSolverVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(
         name.c_str(),
         "Standard Cholesky decomposition (LL^T) of a matrix and associated "
@@ -121,11 +121,11 @@ struct LLTSolverVisitor
   }
 
  private:
-  static MatrixType matrixL(const Solver &self) { return self.matrixL(); }
-  static MatrixType matrixU(const Solver &self) { return self.matrixU(); }
+  static MatrixType matrixL(const Solver& self) { return self.matrixL(); }
+  static MatrixType matrixU(const Solver& self) { return self.matrixU(); }
 
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };

@@ -36,9 +36,9 @@ struct scipy_allocator_impl<const MatType,
 //{};
 
 template <typename MatType>
-struct scipy_allocator_impl<const MatType &,
+struct scipy_allocator_impl<const MatType&,
                             const Eigen::SparseMatrixBase<MatType>>
-    : scipy_allocator_impl_sparse_matrix<const MatType &> {};
+    : scipy_allocator_impl_sparse_matrix<const MatType&> {};
 
 template <typename EigenType,
           typename BaseType = typename get_eigen_base_type<EigenType>::type>
@@ -47,8 +47,8 @@ struct ScipyAllocator : scipy_allocator_impl<EigenType, BaseType> {};
 template <typename MatType>
 struct scipy_allocator_impl_sparse_matrix {
   template <typename SimilarMatrixType>
-  static PyObject *allocate(
-      const Eigen::SparseCompressedBase<SimilarMatrixType> &mat_,
+  static PyObject* allocate(
+      const Eigen::SparseCompressedBase<SimilarMatrixType>& mat_,
       bool copy = false) {
     EIGENPY_UNUSED_VARIABLE(copy);
     typedef typename SimilarMatrixType::Scalar Scalar;
@@ -62,7 +62,7 @@ struct scipy_allocator_impl_sparse_matrix {
     typedef Eigen::Matrix<int32_t, Eigen::Dynamic, 1> ScipyStorageIndexVector;
     typedef const Eigen::Map<const StorageIndexVector> MapStorageIndexVector;
 
-    SimilarMatrixType &mat = mat_.const_cast_derived();
+    SimilarMatrixType& mat = mat_.const_cast_derived();
     bp::object scipy_sparse_matrix_type =
         ScipyType::get_pytype_object<SimilarMatrixType>();
 

@@ -29,7 +29,7 @@ struct SparseSolverBaseVisitor
       DenseMatrixXs;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def("solve", &solve<DenseVectorXs>, bp::args("self", "b"),
            "Returns the solution x of A x = b using the current "
            "decomposition of A.")
@@ -44,7 +44,7 @@ struct SparseSolverBaseVisitor
 
  private:
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };

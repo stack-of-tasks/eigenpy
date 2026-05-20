@@ -30,7 +30,7 @@ struct SVDBaseVisitor
       MatrixXs;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
 
         .def("computeU", &Solver::computeU, bp::arg("self"),
@@ -53,7 +53,7 @@ struct SVDBaseVisitor
              "the rank of the matrix of which *this is the SVD. ")
 
         .def("setThreshold",
-             (Solver & (Solver::*)(const RealScalar &)) & Solver::setThreshold,
+             (Solver & (Solver::*)(const RealScalar&)) & Solver::setThreshold,
              bp::args("self", "threshold"),
              "Allows to prescribe a threshold to be used by certain methods, "
              "such as "
@@ -69,7 +69,7 @@ struct SVDBaseVisitor
              bp::return_self<>())
         .def(
             "setThreshold",
-            +[](Solver &self) -> Solver & {
+            +[](Solver& self) -> Solver& {
               return self.setThreshold(Eigen::Default);
             },
             bp::arg("self"),
@@ -94,11 +94,11 @@ struct SVDBaseVisitor
   }
 
  private:
-  static MatrixXs matrixU(const Solver &self) { return self.matrixU(); }
-  static MatrixXs matrixV(const Solver &self) { return self.matrixV(); }
+  static MatrixXs matrixU(const Solver& self) { return self.matrixU(); }
+  static MatrixXs matrixV(const Solver& self) { return self.matrixV(); }
 
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };

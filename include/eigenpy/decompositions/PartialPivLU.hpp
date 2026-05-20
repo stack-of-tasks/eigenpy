@@ -28,7 +28,7 @@ struct PartialPivLUSolverVisitor : public boost::python::def_visitor<
   typedef Eigen::PartialPivLU<MatrixType> Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
             bp::args("self", "size"),
@@ -44,14 +44,14 @@ struct PartialPivLUSolverVisitor : public boost::python::def_visitor<
              "decomposition.")
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"),
             "Computes the LU factorization of given matrix.",
             bp::return_self<>())
         .def(
             "inverse",
-            +[](const Solver &self) -> MatrixType { return self.inverse(); },
+            +[](const Solver& self) -> MatrixType { return self.inverse(); },
             bp::arg("self"),
             "Returns the inverse of the matrix of which *this is the LU "
             "decomposition.")
@@ -86,7 +86,7 @@ struct PartialPivLUSolverVisitor : public boost::python::def_visitor<
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(
         name.c_str(),
         "LU decomposition of a matrix with partial pivoting, "
@@ -128,7 +128,7 @@ struct PartialPivLUSolverVisitor : public boost::python::def_visitor<
 
  private:
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };

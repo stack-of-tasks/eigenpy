@@ -22,7 +22,7 @@ struct CholmodSupernodalLLTVisitor
   typedef Eigen::CholmodSupernodalLLT<MatrixType_, UpLo_> Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl
 
         .def(CholmodBaseVisitor<Solver>())
@@ -40,7 +40,7 @@ struct CholmodSupernodalLLTVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver, boost::noncopyable>(
         name.c_str(),
         "A supernodal direct Cholesky (LLT) factorization and solver based on "

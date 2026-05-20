@@ -14,9 +14,9 @@ struct MyVirtualClass {
   virtual ~MyVirtualClass() {}
 
   // polymorphic fn taking arg by shared_ptr
-  virtual void doSomethingPtr(shared_ptr<MyVirtualData> const &data) const = 0;
+  virtual void doSomethingPtr(shared_ptr<MyVirtualData> const& data) const = 0;
   // polymorphic fn taking arg by reference
-  virtual void doSomethingRef(MyVirtualData &data) const = 0;
+  virtual void doSomethingRef(MyVirtualData& data) const = 0;
 
   virtual shared_ptr<MyVirtualData> createData() const {
     return std::make_shared<MyVirtualData>(*this);
@@ -24,20 +24,20 @@ struct MyVirtualClass {
 };
 
 struct MyVirtualData {
-  MyVirtualData(MyVirtualClass const &) {}
+  MyVirtualData(MyVirtualClass const&) {}
   virtual ~MyVirtualData() {}  // virtual dtor to mark class as polymorphic
 };
 
-shared_ptr<MyVirtualData> callDoSomethingPtr(const MyVirtualClass &obj) {
+shared_ptr<MyVirtualData> callDoSomethingPtr(const MyVirtualClass& obj) {
   auto d = obj.createData();
-  printf("Created MyVirtualData with address %p\n", (void *)d.get());
+  printf("Created MyVirtualData with address %p\n", (void*)d.get());
   obj.doSomethingPtr(d);
   return d;
 }
 
-shared_ptr<MyVirtualData> callDoSomethingRef(const MyVirtualClass &obj) {
+shared_ptr<MyVirtualData> callDoSomethingRef(const MyVirtualClass& obj) {
   auto d = obj.createData();
-  printf("Created MyVirtualData with address %p\n", (void *)d.get());
+  printf("Created MyVirtualData with address %p\n", (void*)d.get());
   obj.doSomethingRef(*d);
   return d;
 }
@@ -48,7 +48,7 @@ void throw_virtual_not_implemented_error() {
 
 /// Wrapper classes
 struct VirtualClassWrapper : MyVirtualClass, bp::wrapper<MyVirtualClass> {
-  void doSomethingPtr(shared_ptr<MyVirtualData> const &data) const override {
+  void doSomethingPtr(shared_ptr<MyVirtualData> const& data) const override {
     if (bp::override fo = this->get_override("doSomethingPtr")) {
       /// shared_ptr HAS to be passed by value.
       /// Boost.Python's argument converter has the wrong behaviour for
@@ -63,7 +63,7 @@ struct VirtualClassWrapper : MyVirtualClass, bp::wrapper<MyVirtualClass> {
   /// and wrapped in a @c boost::reference_wrapper when passed to the override.
   /// Otherwise, Boost.Python's argument converter will convert to Python by
   /// value and create a copy.
-  void doSomethingRef(MyVirtualData &data) const override {
+  void doSomethingRef(MyVirtualData& data) const override {
     if (bp::override fo = this->get_override("doSomethingRef")) {
       fo(boost::ref(data));
       return;
@@ -98,25 +98,25 @@ struct DataWrapper : MyVirtualData, bp::wrapper<MyVirtualData> {
 };
 
 /// Take and return a const reference
-const MyVirtualData &iden_ref(const MyVirtualData &d) {
+const MyVirtualData& iden_ref(const MyVirtualData& d) {
   // try cast to holder
   return d;
 }
 
 /// Take a shared_ptr (by const reference or value, doesn't matter), return by
 /// const reference
-const MyVirtualData &iden_shared(const shared_ptr<MyVirtualData> &d) {
+const MyVirtualData& iden_shared(const shared_ptr<MyVirtualData>& d) {
   // get boost.python's custom deleter
   // boost.python hides the handle to the original object in there
   // dter being nonzero indicates shared_ptr was wrapped by Boost.Python
-  auto *dter = std::get_deleter<bp::converter::shared_ptr_deleter>(d);
+  auto* dter = std::get_deleter<bp::converter::shared_ptr_deleter>(d);
   if (dter != 0) printf("> input shared_ptr has a deleter\n");
   return *d;
 }
 
 /// Take and return a shared_ptr
-shared_ptr<MyVirtualData> copy_shared(const shared_ptr<MyVirtualData> &d) {
-  auto *dter = std::get_deleter<bp::converter::shared_ptr_deleter>(d);
+shared_ptr<MyVirtualData> copy_shared(const shared_ptr<MyVirtualData>& d) {
+  auto* dter = std::get_deleter<bp::converter::shared_ptr_deleter>(d);
   if (dter != 0) printf("> input shared_ptr has a deleter\n");
   return d;
 }
@@ -141,7 +141,7 @@ BOOST_PYTHON_MODULE(bind_virtual_factory) {
   /// otherwise if passed as "HeldType", we need to define
   /// the constructor and call initializer manually.
   bp::class_<DataWrapper, boost::noncopyable>("MyVirtualData", bp::no_init)
-      .def(bp::init<MyVirtualClass const &>(bp::args("self", "model")));
+      .def(bp::init<MyVirtualClass const&>(bp::args("self", "model")));
 
   bp::def("callDoSomethingPtr", callDoSomethingPtr, bp::args("obj"));
   bp::def("callDoSomethingRef", callDoSomethingRef, bp::args("obj"));

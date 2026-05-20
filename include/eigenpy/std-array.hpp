@@ -40,24 +40,24 @@ class array_indexing_suite
   static constexpr std::size_t Size = std::tuple_size<Container>{};
 
   template <class Class>
-  static void extension_def(Class &) {}
+  static void extension_def(Class&) {}
 
   // throws exception
-  static void delete_item(Container &, index_type) {
+  static void delete_item(Container&, index_type) {
     PyErr_SetString(PyExc_NotImplementedError,
                     "Cannot delete item from std::array type.");
     bp::throw_error_already_set();
   }
 
   // throws exception
-  static void delete_slice(Container &, index_type, index_type) {
+  static void delete_slice(Container&, index_type, index_type) {
     PyErr_SetString(PyExc_NotImplementedError,
                     "Cannot delete slice from std::array type.");
     bp::throw_error_already_set();
   }
 
-  static void set_slice(Container &container, index_type from, index_type to,
-                        data_type const &v) {
+  static void set_slice(Container& container, index_type from, index_type to,
+                        data_type const& v) {
     if (from >= to) {
       PyErr_SetString(PyExc_NotImplementedError,
                       "Setting this slice would insert into an std::array, "
@@ -69,7 +69,7 @@ class array_indexing_suite
   }
 
   template <class Iter>
-  static void set_slice(Container &container, index_type from, index_type to,
+  static void set_slice(Container& container, index_type from, index_type to,
                         Iter first, Iter last) {
     if (from >= to) {
       PyErr_SetString(PyExc_NotImplementedError,
@@ -88,7 +88,7 @@ class array_indexing_suite
     }
   }
 
-  static bp::object get_slice(Container &container, index_type from,
+  static bp::object get_slice(Container& container, index_type from,
                               index_type to) {
     if (from > to) return bp::object(slice_vector_type());
     slice_vector_type out;
@@ -112,29 +112,29 @@ template <typename array_type, bool NoProxy = false,
 struct StdArrayPythonVisitor {
   typedef typename array_type::value_type value_type;
 
-  static ::boost::python::list tolist(array_type &self, const bool deep_copy) {
+  static ::boost::python::list tolist(array_type& self, const bool deep_copy) {
     return details::build_list<array_type, NoProxy>::run(self, deep_copy);
   }
 
-  static void expose(const std::string &class_name,
-                     const std::string &doc_string = "") {
+  static void expose(const std::string& class_name,
+                     const std::string& doc_string = "") {
     expose(class_name, doc_string, EmptyPythonVisitor());
   }
 
   template <typename DerivedVisitor>
-  static void expose(const std::string &class_name,
-                     const bp::def_visitor<DerivedVisitor> &visitor) {
+  static void expose(const std::string& class_name,
+                     const bp::def_visitor<DerivedVisitor>& visitor) {
     expose(class_name, "", visitor);
   }
 
   template <typename DerivedVisitor>
-  static void expose(const std::string &class_name,
-                     const std::string &doc_string,
-                     const bp::def_visitor<DerivedVisitor> &visitor) {
+  static void expose(const std::string& class_name,
+                     const std::string& doc_string,
+                     const bp::def_visitor<DerivedVisitor>& visitor) {
     if (!register_symbolic_link_to_registered_type<array_type>()) {
       bp::class_<array_type> cl(class_name.c_str(), doc_string.c_str());
-      cl.def(bp::init<const array_type &>(bp::args("self", "other"),
-                                          "Copy constructor"));
+      cl.def(bp::init<const array_type&>(bp::args("self", "other"),
+                                         "Copy constructor"));
       cl.def(IdVisitor<array_type>());
 
       array_indexing_suite<array_type, NoProxy, SliceAllocator> indexing_suite;
@@ -149,7 +149,7 @@ struct StdArrayPythonVisitor {
 
 /// Exposes std::array<MatrixType, Size>
 template <typename MatrixType, std::size_t Size>
-void exposeStdArrayEigenSpecificType(const char *name) {
+void exposeStdArrayEigenSpecificType(const char* name) {
   std::ostringstream oss;
   oss << "StdArr";
   oss << Size << "_" << name;

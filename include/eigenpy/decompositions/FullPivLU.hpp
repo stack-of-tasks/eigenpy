@@ -28,7 +28,7 @@ struct FullPivLUSolverVisitor
   typedef Eigen::FullPivLU<MatrixType> Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"), "Default constructor"))
         .def(bp::init<Eigen::DenseIndex, Eigen::DenseIndex>(
             bp::args("self", "rows", "cols"),
@@ -41,7 +41,7 @@ struct FullPivLUSolverVisitor
 
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"),
             "Computes the LU decomposition of the given matrix.",
@@ -55,7 +55,7 @@ struct FullPivLUSolverVisitor
              "is the LU decomposition.")
         .def(
             "image",
-            +[](Solver &self, const MatrixType &mat) -> MatrixType {
+            +[](Solver& self, const MatrixType& mat) -> MatrixType {
               return self.image(mat);
             },
             bp::args("self", "originalMatrix"),
@@ -64,7 +64,7 @@ struct FullPivLUSolverVisitor
             "image (column-space).")
         .def(
             "inverse",
-            +[](Solver &self) -> MatrixType { return self.inverse(); },
+            +[](Solver& self) -> MatrixType { return self.inverse(); },
             bp::arg("self"),
             "Returns the inverse of the matrix of which *this is the LU "
             "decomposition.")
@@ -74,7 +74,7 @@ struct FullPivLUSolverVisitor
         .def("isSurjective", &Solver::isSurjective, bp::arg("self"))
 
         .def(
-            "kernel", +[](Solver &self) -> MatrixType { return self.kernel(); },
+            "kernel", +[](Solver& self) -> MatrixType { return self.kernel(); },
             bp::arg("self"),
             "Returns the kernel of the matrix, also called its null-space. "
             "The columns of the returned matrix will form a basis of the "
@@ -107,7 +107,7 @@ struct FullPivLUSolverVisitor
              "purpose.")
 
         .def("setThreshold",
-             (Solver & (Solver::*)(const RealScalar &)) & Solver::setThreshold,
+             (Solver & (Solver::*)(const RealScalar&)) & Solver::setThreshold,
              bp::args("self", "threshold"),
              "Allows to prescribe a threshold to be used by certain methods, "
              "such as rank(), who need to determine when pivots are to be "
@@ -126,7 +126,7 @@ struct FullPivLUSolverVisitor
              bp::return_self<>())
         .def(
             "setThreshold",
-            +[](Solver &self) -> Solver & {
+            +[](Solver& self) -> Solver& {
               return self.setThreshold(Eigen::Default);
             },
             bp::arg("self"),
@@ -152,7 +152,7 @@ struct FullPivLUSolverVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(
         name.c_str(),
         "LU decomposition of a matrix with complete pivoting, and related "
@@ -182,7 +182,7 @@ struct FullPivLUSolverVisitor
 
  private:
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };

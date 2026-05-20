@@ -14,7 +14,7 @@ description = "Bindings between Numpy and Eigen using Boost.Python"
 license = "BSD-2-Clause"
 name = "eigenpy"
 requires-python = ">= 3.10"
-version = "3.12.0"
+version = "3.13.0"
 
 [project.urls]
 changelog = "https://github.com/stack-of-tasks/eigenpy/blob/master/CHANGELOG.md"
@@ -22,7 +22,6 @@ homepage = "https://github.com/cmake-wheel/eigenpy"
 upstream = "https://github.com/stack-of-tasks/eigenpy"
 
 [tool.cmeel]
-build-number = 1
 run-tests = false
 
 [tool.ruff]

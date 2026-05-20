@@ -21,12 +21,12 @@ namespace internal {
 #endif
 
 template <typename T>
-void matrix_multiply(char **args, npy_intp const *dimensions,
-                     npy_intp const *steps) {
+void matrix_multiply(char** args, npy_intp const* dimensions,
+                     npy_intp const* steps) {
   /* pointers to data for input and output arrays */
-  char *ip1 = args[0];
-  char *ip2 = args[1];
-  char *op = args[2];
+  char* ip1 = args[0];
+  char* ip2 = args[1];
+  char* op = args[2];
 
   /* lengths of core dimensions */
   npy_intp dm = dimensions[0];
@@ -65,10 +65,10 @@ void matrix_multiply(char **args, npy_intp const *dimensions,
 }
 
 template <typename T>
-void gufunc_matrix_multiply(char **args,
-                            npy_intp EIGENPY_NPY_CONST_UFUNC_ARG *dimensions,
-                            npy_intp EIGENPY_NPY_CONST_UFUNC_ARG *steps,
-                            void *NPY_UNUSED(func)) {
+void gufunc_matrix_multiply(char** args,
+                            npy_intp EIGENPY_NPY_CONST_UFUNC_ARG* dimensions,
+                            npy_intp EIGENPY_NPY_CONST_UFUNC_ARG* steps,
+                            void* NPY_UNUSED(func)) {
   /* outer dimensions counter */
   npy_intp N_;
 
@@ -92,15 +92,15 @@ void gufunc_matrix_multiply(char **args,
 #define EIGENPY_REGISTER_BINARY_OPERATOR(name, op)                           \
   template <typename T1, typename T2, typename R>                            \
   void binary_op_##name(                                                     \
-      char **args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *dimensions,         \
-      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *steps, void * /*data*/) {        \
+      char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* dimensions,         \
+      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* steps, void* /*data*/) {         \
     npy_intp is0 = steps[0], is1 = steps[1], os = steps[2], n = *dimensions; \
     char *i0 = args[0], *i1 = args[1], *o = args[2];                         \
     int k;                                                                   \
     for (k = 0; k < n; k++) {                                                \
-      T1 &x = *static_cast<T1 *>(static_cast<void *>(i0));                   \
-      T2 &y = *static_cast<T2 *>(static_cast<void *>(i1));                   \
-      R &res = *static_cast<R *>(static_cast<void *>(o));                    \
+      T1& x = *static_cast<T1*>(static_cast<void*>(i0));                     \
+      T2& y = *static_cast<T2*>(static_cast<void*>(i1));                     \
+      R& res = *static_cast<R*>(static_cast<void*>(o));                      \
       res = x op y;                                                          \
       i0 += is0;                                                             \
       i1 += is1;                                                             \
@@ -110,8 +110,8 @@ void gufunc_matrix_multiply(char **args,
                                                                              \
   template <typename T>                                                      \
   void binary_op_##name(                                                     \
-      char **args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *dimensions,         \
-      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *steps, void *data) {             \
+      char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* dimensions,         \
+      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* steps, void* data) {             \
     binary_op_##name<T, T, T>(args, dimensions, steps, data);                \
   }
 
@@ -126,39 +126,39 @@ EIGENPY_REGISTER_BINARY_OPERATOR(greater, >)
 EIGENPY_REGISTER_BINARY_OPERATOR(less_equal, <=)
 EIGENPY_REGISTER_BINARY_OPERATOR(greater_equal, >=)
 
-#define EIGENPY_REGISTER_UNARY_OPERATOR(name, op)                     \
-  template <typename T, typename R>                                   \
-  void unary_op_##name(                                               \
-      char **args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *dimensions,  \
-      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *steps, void * /*data*/) { \
-    npy_intp is = steps[0], os = steps[1], n = *dimensions;           \
-    char *i = args[0], *o = args[1];                                  \
-    int k;                                                            \
-    for (k = 0; k < n; k++) {                                         \
-      T &x = *static_cast<T *>(static_cast<void *>(i));               \
-      R &res = *static_cast<R *>(static_cast<void *>(o));             \
-      res = op x;                                                     \
-      i += is;                                                        \
-      o += os;                                                        \
-    }                                                                 \
-  }                                                                   \
-                                                                      \
-  template <typename T>                                               \
-  void unary_op_##name(                                               \
-      char **args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *dimensions,  \
-      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp *steps, void *data) {      \
-    unary_op_##name<T, T>(args, dimensions, steps, data);             \
+#define EIGENPY_REGISTER_UNARY_OPERATOR(name, op)                    \
+  template <typename T, typename R>                                  \
+  void unary_op_##name(                                              \
+      char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* dimensions, \
+      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* steps, void* /*data*/) { \
+    npy_intp is = steps[0], os = steps[1], n = *dimensions;          \
+    char *i = args[0], *o = args[1];                                 \
+    int k;                                                           \
+    for (k = 0; k < n; k++) {                                        \
+      T& x = *static_cast<T*>(static_cast<void*>(i));                \
+      R& res = *static_cast<R*>(static_cast<void*>(o));              \
+      res = op x;                                                    \
+      i += is;                                                       \
+      o += os;                                                       \
+    }                                                                \
+  }                                                                  \
+                                                                     \
+  template <typename T>                                              \
+  void unary_op_##name(                                              \
+      char** args, EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* dimensions, \
+      EIGENPY_NPY_CONST_UFUNC_ARG npy_intp* steps, void* data) {     \
+    unary_op_##name<T, T>(args, dimensions, steps, data);            \
   }
 
 EIGENPY_REGISTER_UNARY_OPERATOR(negative, -)
-EIGENPY_REGISTER_UNARY_OPERATOR(square, x *)
+EIGENPY_REGISTER_UNARY_OPERATOR(square, x*)
 
 }  // namespace internal
 
 #define EIGENPY_REGISTER_BINARY_UFUNC(name, code, T1, T2, R)                   \
   {                                                                            \
-    PyUFuncObject *ufunc =                                                     \
-        (PyUFuncObject *)PyObject_GetAttrString(numpy, #name);                 \
+    PyUFuncObject* ufunc =                                                     \
+        (PyUFuncObject*)PyObject_GetAttrString(numpy, #name);                  \
     int _types[3] = {Register::getTypeCode<T1>(), Register::getTypeCode<T2>(), \
                      Register::getTypeCode<R>()};                              \
     if (!ufunc) {                                                              \
@@ -171,7 +171,7 @@ EIGENPY_REGISTER_UNARY_OPERATOR(square, x *)
                    (unsigned long)(sizeof(_types) / sizeof(int)));             \
       Py_DECREF(ufunc);                                                        \
     }                                                                          \
-    if (PyUFunc_RegisterLoopForType((PyUFuncObject *)ufunc, code,              \
+    if (PyUFunc_RegisterLoopForType((PyUFuncObject*)ufunc, code,               \
                                     internal::binary_op_##name<T1, T2, R>,     \
                                     _types, 0) < 0) {                          \
       /*Py_DECREF(ufunc);*/                                                    \
@@ -182,8 +182,8 @@ EIGENPY_REGISTER_UNARY_OPERATOR(square, x *)
 
 #define EIGENPY_REGISTER_UNARY_UFUNC(name, code, T, R)                        \
   {                                                                           \
-    PyUFuncObject *ufunc =                                                    \
-        (PyUFuncObject *)PyObject_GetAttrString(numpy, #name);                \
+    PyUFuncObject* ufunc =                                                    \
+        (PyUFuncObject*)PyObject_GetAttrString(numpy, #name);                 \
     int _types[2] = {Register::getTypeCode<T>(), Register::getTypeCode<R>()}; \
     if (!ufunc) {                                                             \
       /*goto fail; \*/                                                        \
@@ -195,7 +195,7 @@ EIGENPY_REGISTER_UNARY_OPERATOR(square, x *)
                    (unsigned long)(sizeof(_types) / sizeof(int)));            \
       Py_DECREF(ufunc);                                                       \
     }                                                                         \
-    if (PyUFunc_RegisterLoopForType((PyUFuncObject *)ufunc, code,             \
+    if (PyUFunc_RegisterLoopForType((PyUFuncObject*)ufunc, code,              \
                                     internal::unary_op_##name<T, R>, _types,  \
                                     0) < 0) {                                 \
       /*Py_DECREF(ufunc);*/                                                   \
@@ -208,9 +208,9 @@ template <typename Scalar>
 void registerCommonUfunc() {
   const int type_code = Register::getTypeCode<Scalar>();
 
-  PyObject *numpy_str;
+  PyObject* numpy_str;
   numpy_str = PyStr_FromString("numpy");
-  PyObject *numpy;
+  PyObject* numpy;
   numpy = PyImport_Import(numpy_str);
   Py_DECREF(numpy_str);
 
@@ -223,15 +223,15 @@ void registerCommonUfunc() {
     std::stringstream ss;
     ss << "return result of multiplying two matrices of ";
     ss << bp::type_info(typeid(Scalar)).name();
-    PyUFuncObject *ufunc =
-        (PyUFuncObject *)PyObject_GetAttrString(numpy, "matmul");
+    PyUFuncObject* ufunc =
+        (PyUFuncObject*)PyObject_GetAttrString(numpy, "matmul");
     if (!ufunc) {
       std::stringstream ss;
       ss << "Impossible to define matrix_multiply for given type "
          << bp::type_info(typeid(Scalar)).name() << std::endl;
       eigenpy::Exception(ss.str());
     }
-    if (PyUFunc_RegisterLoopForType((PyUFuncObject *)ufunc, type_code,
+    if (PyUFunc_RegisterLoopForType((PyUFuncObject*)ufunc, type_code,
                                     &internal::gufunc_matrix_multiply<Scalar>,
                                     types, 0) < 0) {
       std::stringstream ss;

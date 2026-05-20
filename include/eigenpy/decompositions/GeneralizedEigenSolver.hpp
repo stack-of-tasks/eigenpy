@@ -40,9 +40,11 @@ struct GeneralizedEigenSolverVisitor
             "Returns the computed generalized eigenvalues.")
 
         .def("alphas", &Solver::alphas, bp::arg("self"),
-             "Returns the vectors containing the alpha values. ")
+             "Returns the vectors containing the alpha values. ",
+             bp::return_value_policy<bp::return_by_value>())
         .def("betas", &Solver::betas, bp::arg("self"),
-             "Returns the vectors containing the beta values. ")
+             "Returns the vectors containing the beta values. ",
+             bp::return_value_policy<bp::return_by_value>())
 
         .def("compute",
              &GeneralizedEigenSolverVisitor::compute_proxy<MatrixType>,

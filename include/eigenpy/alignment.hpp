@@ -23,23 +23,23 @@ struct aligned_storage {
 
 template <class Data>
 struct aligned_instance {
-  PyObject_VAR_HEAD PyObject *dict;
-  PyObject *weakrefs;
-  boost::python::instance_holder *objects;
+  PyObject_VAR_HEAD PyObject* dict;
+  PyObject* weakrefs;
+  boost::python::instance_holder* objects;
 
   typename aligned_storage<sizeof(Data)>::type storage;
 };
 
-inline void *aligned_malloc(
+inline void* aligned_malloc(
     std::size_t size, std::size_t alignment = EIGENPY_DEFAULT_ALIGN_BYTES) {
-  void *original = std::malloc(size + alignment);
+  void* original = std::malloc(size + alignment);
   if (original == 0) return 0;
   if (is_aligned(original, alignment)) return original;
-  void *aligned =
-      reinterpret_cast<void *>((reinterpret_cast<std::size_t>(original) &
-                                ~(std::size_t(alignment - 1))) +
-                               alignment);
-  *(reinterpret_cast<void **>(aligned) - 1) = original;
+  void* aligned =
+      reinterpret_cast<void*>((reinterpret_cast<std::size_t>(original) &
+                               ~(std::size_t(alignment - 1))) +
+                              alignment);
+  *(reinterpret_cast<void**>(aligned) - 1) = original;
   return aligned;
 }
 
@@ -52,50 +52,50 @@ namespace detail {
 template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct referent_storage<
-    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &> {
+    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>&> {
   typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> T;
   typedef
-      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+      typename eigenpy::aligned_storage<referent_size<T&>::value>::type type;
 };
 
 template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct referent_storage<
-    const Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> &> {
+    const Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols>&> {
   typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> T;
   typedef
-      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+      typename eigenpy::aligned_storage<referent_size<T&>::value>::type type;
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename Scalar, int Rank, int Options, typename IndexType>
-struct referent_storage<Eigen::Tensor<Scalar, Rank, Options, IndexType> &> {
+struct referent_storage<Eigen::Tensor<Scalar, Rank, Options, IndexType>&> {
   typedef Eigen::Tensor<Scalar, Rank, Options, IndexType> T;
   typedef
-      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+      typename eigenpy::aligned_storage<referent_size<T&>::value>::type type;
 };
 
 template <typename Scalar, int Rank, int Options, typename IndexType>
 struct referent_storage<
-    const Eigen::Tensor<Scalar, Rank, Options, IndexType> &> {
+    const Eigen::Tensor<Scalar, Rank, Options, IndexType>&> {
   typedef Eigen::Tensor<Scalar, Rank, Options, IndexType> T;
   typedef
-      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+      typename eigenpy::aligned_storage<referent_size<T&>::value>::type type;
 };
 #endif
 
 template <typename Scalar, int Options>
-struct referent_storage<Eigen::Quaternion<Scalar, Options> &> {
+struct referent_storage<Eigen::Quaternion<Scalar, Options>&> {
   typedef Eigen::Quaternion<Scalar, Options> T;
   typedef
-      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+      typename eigenpy::aligned_storage<referent_size<T&>::value>::type type;
 };
 
 template <typename Scalar, int Options>
-struct referent_storage<const Eigen::Quaternion<Scalar, Options> &> {
+struct referent_storage<const Eigen::Quaternion<Scalar, Options>&> {
   typedef Eigen::Quaternion<Scalar, Options> T;
   typedef
-      typename eigenpy::aligned_storage<referent_size<T &>::value>::type type;
+      typename eigenpy::aligned_storage<referent_size<T&>::value>::type type;
 };
 
 }  // namespace detail
@@ -119,10 +119,10 @@ namespace eigenpy {
 
 template <class T>
 struct call_destructor {
-  static void run(void *bytes) {
+  static void run(void* bytes) {
     typedef typename boost::remove_const<
         typename boost::remove_reference<T>::type>::type T_;
-    static_cast<T_ *>((void *)bytes)->~T_();
+    static_cast<T_*>((void*)bytes)->~T_();
   }
 };
 
@@ -143,22 +143,22 @@ struct rvalue_from_python_data
 
   // The usual constructor
   rvalue_from_python_data(
-      ::boost::python::converter::rvalue_from_python_stage1_data const
-          &_stage1) {
+      ::boost::python::converter::rvalue_from_python_stage1_data const&
+          _stage1) {
     this->stage1 = _stage1;
   }
 
   // This constructor just sets m_convertible -- used by
   // implicitly_convertible<> to perform the final step of the
   // conversion, where the construct() function is already known.
-  rvalue_from_python_data(void *convertible) {
+  rvalue_from_python_data(void* convertible) {
     this->stage1.convertible = convertible;
   }
 
   // Destroys any object constructed in the storage.
   ~rvalue_from_python_data() {
     if (this->stage1.convertible == this->storage.bytes) {
-      void *storage = reinterpret_cast<void *>(this->storage.bytes);
+      void* storage = reinterpret_cast<void*>(this->storage.bytes);
       call_destructor<T>::run(storage);
     }
   }

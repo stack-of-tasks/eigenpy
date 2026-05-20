@@ -9,7 +9,7 @@
 
 template <typename MatType>
 void printVectorOfMatrix(
-    const std::vector<MatType, Eigen::aligned_allocator<MatType>> &Ms) {
+    const std::vector<MatType, Eigen::aligned_allocator<MatType>>& Ms) {
   const std::size_t n = Ms.size();
   for (std::size_t i = 0; i < n; i++) {
     std::cout << "el[" << i << "] =\n" << Ms[i] << '\n';
@@ -18,20 +18,20 @@ void printVectorOfMatrix(
 
 template <typename MatType>
 std::vector<MatType, Eigen::aligned_allocator<MatType>> copy(
-    const std::vector<MatType, Eigen::aligned_allocator<MatType>> &Ms) {
+    const std::vector<MatType, Eigen::aligned_allocator<MatType>>& Ms) {
   std::vector<MatType, Eigen::aligned_allocator<MatType>> out = Ms;
   return out;
 }
 
 template <typename MatType>
-void setZero(std::vector<MatType, Eigen::aligned_allocator<MatType>> &Ms) {
+void setZero(std::vector<MatType, Eigen::aligned_allocator<MatType>>& Ms) {
   for (std::size_t i = 0; i < Ms.size(); i++) {
     Ms[i].setZero();
   }
 }
 
 struct CustomTestStruct {
-  bool operator==(const CustomTestStruct &) const { return true; }
+  bool operator==(const CustomTestStruct&) const { return true; }
 };
 
 BOOST_PYTHON_MODULE(std_vector) {

@@ -18,8 +18,8 @@ struct expected_pytype_for_arg {};
 
 template <typename MatType>
 struct expected_pytype_for_arg<MatType, Eigen::MatrixBase<MatType>> {
-  static PyTypeObject const *get_pytype() {
-    PyTypeObject const *py_type = eigenpy::getPyArrayType();
+  static PyTypeObject const* get_pytype() {
+    PyTypeObject const* py_type = eigenpy::getPyArrayType();
     return py_type;
   }
 };
@@ -45,16 +45,16 @@ namespace eigenpy {
 namespace details {
 template <typename MatType, bool is_const = boost::is_const<MatType>::value>
 struct copy_if_non_const {
-  static void run(const Eigen::MatrixBase<MatType> &input,
-                  PyArrayObject *pyArray) {
+  static void run(const Eigen::MatrixBase<MatType>& input,
+                  PyArrayObject* pyArray) {
     EigenAllocator<MatType>::copy(input, pyArray);
   }
 };
 
 template <typename MatType>
 struct copy_if_non_const<const MatType, true> {
-  static void run(const Eigen::MatrixBase<MatType> & /*input*/,
-                  PyArrayObject * /*pyArray*/) {}
+  static void run(const Eigen::MatrixBase<MatType>& /*input*/,
+                  PyArrayObject* /*pyArray*/) {}
 };
 
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
@@ -64,19 +64,19 @@ struct referent_storage_eigen_ref {
   typedef _RefType RefType;
   typedef typename get_eigen_plain_type<RefType>::type PlainObjectType;
   typedef typename ::eigenpy::aligned_storage<
-      ::boost::python::detail::referent_size<RefType &>::value>::type
+      ::boost::python::detail::referent_size<RefType&>::value>::type
       AlignedStorage;
 
   referent_storage_eigen_ref()
       : pyArray(NULL),
         plain_ptr(NULL),
-        ref_ptr(reinterpret_cast<RefType *>(ref_storage.bytes)) {}
+        ref_ptr(reinterpret_cast<RefType*>(ref_storage.bytes)) {}
 
-  referent_storage_eigen_ref(const RefType &ref, PyArrayObject *pyArray,
-                             PlainObjectType *plain_ptr = NULL)
+  referent_storage_eigen_ref(const RefType& ref, PyArrayObject* pyArray,
+                             PlainObjectType* plain_ptr = NULL)
       : pyArray(pyArray),
         plain_ptr(plain_ptr),
-        ref_ptr(reinterpret_cast<RefType *>(ref_storage.bytes)) {
+        ref_ptr(reinterpret_cast<RefType*>(ref_storage.bytes)) {
     Py_INCREF(pyArray);
     new (ref_storage.bytes) RefType(ref);
   }
@@ -93,9 +93,9 @@ struct referent_storage_eigen_ref {
   }
 
   AlignedStorage ref_storage;
-  PyArrayObject *pyArray;
-  PlainObjectType *plain_ptr;
-  RefType *ref_ptr;
+  PyArrayObject* pyArray;
+  PlainObjectType* plain_ptr;
+  RefType* ref_ptr;
 };
 #endif
 
@@ -107,19 +107,19 @@ namespace python {
 namespace detail {
 #if EIGEN_VERSION_AT_LEAST(3, 2, 0)
 template <typename MatType, int Options, typename Stride>
-struct referent_storage<Eigen::Ref<MatType, Options, Stride> &> {
+struct referent_storage<Eigen::Ref<MatType, Options, Stride>&> {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
   typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
   typedef typename ::eigenpy::aligned_storage<
-      referent_size<StorageType &>::value>::type type;
+      referent_size<StorageType&>::value>::type type;
 };
 
 template <typename MatType, int Options, typename Stride>
-struct referent_storage<const Eigen::Ref<const MatType, Options, Stride> &> {
+struct referent_storage<const Eigen::Ref<const MatType, Options, Stride>&> {
   typedef Eigen::Ref<const MatType, Options, Stride> RefType;
   typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
   typedef typename ::eigenpy::aligned_storage<
-      referent_size<StorageType &>::value>::type type;
+      referent_size<StorageType&>::value>::type type;
 };
 #endif
 }  // namespace detail
@@ -133,42 +133,42 @@ namespace converter {
 #define EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(type)                       \
   typedef ::eigenpy::rvalue_from_python_data<type> Base;                 \
                                                                          \
-  rvalue_from_python_data(rvalue_from_python_stage1_data const &_stage1) \
+  rvalue_from_python_data(rvalue_from_python_stage1_data const& _stage1) \
       : Base(_stage1) {}                                                 \
                                                                          \
-  rvalue_from_python_data(void *convertible) : Base(convertible){};
+  rvalue_from_python_data(void* convertible) : Base(convertible){};
 
 template <typename Scalar, int Rows, int Cols, int Options, int MaxRows,
           int MaxCols>
 struct rvalue_from_python_data<
-    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> const &>
-    : ::eigenpy::rvalue_from_python_data<Eigen::Matrix<
-          Scalar, Rows, Cols, Options, MaxRows, MaxCols> const &> {
+    Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> const&>
+    : ::eigenpy::rvalue_from_python_data<
+          Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> const&> {
   typedef Eigen::Matrix<Scalar, Rows, Cols, Options, MaxRows, MaxCols> T;
-  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(T const &)
+  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(T const&)
 };
 
 template <typename Derived>
-struct rvalue_from_python_data<Eigen::MatrixBase<Derived> const &>
-    : ::eigenpy::rvalue_from_python_data<Derived const &> {
-  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
+struct rvalue_from_python_data<Eigen::MatrixBase<Derived> const&>
+    : ::eigenpy::rvalue_from_python_data<Derived const&> {
+  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const&)
 };
 
 template <typename Derived>
-struct rvalue_from_python_data<Eigen::EigenBase<Derived> const &>
-    : ::eigenpy::rvalue_from_python_data<Derived const &> {
-  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
+struct rvalue_from_python_data<Eigen::EigenBase<Derived> const&>
+    : ::eigenpy::rvalue_from_python_data<Derived const&> {
+  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const&)
 };
 
 template <typename Derived>
-struct rvalue_from_python_data<Eigen::PlainObjectBase<Derived> const &>
-    : ::eigenpy::rvalue_from_python_data<Derived const &> {
-  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const &)
+struct rvalue_from_python_data<Eigen::PlainObjectBase<Derived> const&>
+    : ::eigenpy::rvalue_from_python_data<Derived const&> {
+  EIGENPY_RVALUE_FROM_PYTHON_DATA_INIT(Derived const&)
 };
 
 template <typename MatType, int Options, typename Stride>
-struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride> &>
-    : rvalue_from_python_storage<Eigen::Ref<MatType, Options, Stride> &> {
+struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride>&>
+    : rvalue_from_python_storage<Eigen::Ref<MatType, Options, Stride>&> {
   typedef Eigen::Ref<MatType, Options, Stride> RefType;
 
 #if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) &&                        \
@@ -182,14 +182,14 @@ struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride> &>
 #endif
 
   // The usual constructor
-  rvalue_from_python_data(rvalue_from_python_stage1_data const &_stage1) {
+  rvalue_from_python_data(rvalue_from_python_stage1_data const& _stage1) {
     this->stage1 = _stage1;
   }
 
   // This constructor just sets m_convertible -- used by
   // implicitly_convertible<> to perform the final step of the
   // conversion, where the construct() function is already known.
-  rvalue_from_python_data(void *convertible) {
+  rvalue_from_python_data(void* convertible) {
     this->stage1.convertible = convertible;
   }
 
@@ -197,15 +197,15 @@ struct rvalue_from_python_data<Eigen::Ref<MatType, Options, Stride> &>
   ~rvalue_from_python_data() {
     typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
     if (this->stage1.convertible == this->storage.bytes)
-      static_cast<StorageType *>((void *)this->storage.bytes)->~StorageType();
+      static_cast<StorageType*>((void*)this->storage.bytes)->~StorageType();
   }
 };
 
 template <typename MatType, int Options, typename Stride>
 struct rvalue_from_python_data<
-    const Eigen::Ref<const MatType, Options, Stride> &>
+    const Eigen::Ref<const MatType, Options, Stride>&>
     : rvalue_from_python_storage<
-          const Eigen::Ref<const MatType, Options, Stride> &> {
+          const Eigen::Ref<const MatType, Options, Stride>&> {
   typedef Eigen::Ref<const MatType, Options, Stride> RefType;
 
 #if (!defined(__MWERKS__) || __MWERKS__ >= 0x3000) &&                        \
@@ -219,14 +219,14 @@ struct rvalue_from_python_data<
 #endif
 
   // The usual constructor
-  rvalue_from_python_data(rvalue_from_python_stage1_data const &_stage1) {
+  rvalue_from_python_data(rvalue_from_python_stage1_data const& _stage1) {
     this->stage1 = _stage1;
   }
 
   // This constructor just sets m_convertible -- used by
   // implicitly_convertible<> to perform the final step of the
   // conversion, where the construct() function is already known.
-  rvalue_from_python_data(void *convertible) {
+  rvalue_from_python_data(void* convertible) {
     this->stage1.convertible = convertible;
   }
 
@@ -234,7 +234,7 @@ struct rvalue_from_python_data<
   ~rvalue_from_python_data() {
     typedef ::eigenpy::details::referent_storage_eigen_ref<RefType> StorageType;
     if (this->stage1.convertible == this->storage.bytes)
-      static_cast<StorageType *>((void *)this->storage.bytes)->~StorageType();
+      static_cast<StorageType*>((void*)this->storage.bytes)->~StorageType();
   }
 };
 
@@ -246,15 +246,15 @@ namespace eigenpy {
 
 template <typename MatOrRefType>
 void eigen_from_py_construct(
-    PyObject *pyObj, bp::converter::rvalue_from_python_stage1_data *memory) {
-  PyArrayObject *pyArray = reinterpret_cast<PyArrayObject *>(pyObj);
+    PyObject* pyObj, bp::converter::rvalue_from_python_stage1_data* memory) {
+  PyArrayObject* pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
   assert((PyArray_DIMS(pyArray)[0] < INT_MAX) &&
          (PyArray_DIMS(pyArray)[1] < INT_MAX));
 
-  bp::converter::rvalue_from_python_storage<MatOrRefType> *storage =
+  bp::converter::rvalue_from_python_storage<MatOrRefType>* storage =
       reinterpret_cast<
-          bp::converter::rvalue_from_python_storage<MatOrRefType> *>(
-          reinterpret_cast<void *>(memory));
+          bp::converter::rvalue_from_python_storage<MatOrRefType>*>(
+          reinterpret_cast<void*>(memory));
 
   EigenAllocator<MatOrRefType>::allocate(pyArray, storage);
 
@@ -267,11 +267,11 @@ struct eigen_from_py_impl {
   typedef typename EigenType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
-  static void *convertible(PyObject *pyObj);
+  static void* convertible(PyObject* pyObj);
 
   /// \brief Allocate memory and copy pyObj in the new storage
-  static void construct(PyObject *pyObj,
-                        bp::converter::rvalue_from_python_stage1_data *memory);
+  static void construct(PyObject* pyObj,
+                        bp::converter::rvalue_from_python_stage1_data* memory);
 
   static void registration();
 };
@@ -281,11 +281,11 @@ struct eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>> {
   typedef typename MatType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
-  static void *convertible(PyObject *pyObj);
+  static void* convertible(PyObject* pyObj);
 
   /// \brief Allocate memory and copy pyObj in the new storage
-  static void construct(PyObject *pyObj,
-                        bp::converter::rvalue_from_python_stage1_data *memory);
+  static void construct(PyObject* pyObj,
+                        bp::converter::rvalue_from_python_stage1_data* memory);
 
   static void registration();
 };
@@ -296,11 +296,11 @@ template <typename EigenType,
 struct EigenFromPy : eigen_from_py_impl<EigenType> {};
 
 template <typename MatType>
-void *eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::convertible(
-    PyObject *pyObj) {
-  if (!call_PyArray_Check(reinterpret_cast<PyObject *>(pyObj))) return 0;
+void* eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::convertible(
+    PyObject* pyObj) {
+  if (!call_PyArray_Check(reinterpret_cast<PyObject*>(pyObj))) return 0;
 
-  PyArrayObject *pyArray = reinterpret_cast<PyArrayObject *>(pyObj);
+  PyArrayObject* pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
 
   if (!np_type_is_convertible_into_scalar<Scalar>(
           EIGENPY_GET_PY_ARRAY_TYPE(pyArray)))
@@ -399,14 +399,14 @@ void *eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::convertible(
 
 template <typename MatType>
 void eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::construct(
-    PyObject *pyObj, bp::converter::rvalue_from_python_stage1_data *memory) {
+    PyObject* pyObj, bp::converter::rvalue_from_python_stage1_data* memory) {
   eigen_from_py_construct<MatType>(pyObj, memory);
 }
 
 template <typename MatType>
 void eigen_from_py_impl<MatType, Eigen::MatrixBase<MatType>>::registration() {
   bp::converter::registry::push_back(
-      reinterpret_cast<void *(*)(_object *)>(&eigen_from_py_impl::convertible),
+      reinterpret_cast<void* (*)(_object*)>(&eigen_from_py_impl::convertible),
       &eigen_from_py_impl::construct, bp::type_id<MatType>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
                                           ,
@@ -458,7 +458,7 @@ struct EigenFromPy<Eigen::MatrixBase<MatType>> : EigenFromPy<MatType> {
 
   static void registration() {
     bp::converter::registry::push_back(
-        reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+        reinterpret_cast<void* (*)(_object*)>(&EigenFromPy::convertible),
         &EigenFromPy::construct, bp::type_id<Base>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
                                      ,
@@ -476,7 +476,7 @@ struct EigenFromPy<Eigen::EigenBase<MatType>, typename MatType::Scalar>
 
   static void registration() {
     bp::converter::registry::push_back(
-        reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+        reinterpret_cast<void* (*)(_object*)>(&EigenFromPy::convertible),
         &EigenFromPy::construct, bp::type_id<Base>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
                                      ,
@@ -493,7 +493,7 @@ struct EigenFromPy<Eigen::PlainObjectBase<MatType>> : EigenFromPy<MatType> {
 
   static void registration() {
     bp::converter::registry::push_back(
-        reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+        reinterpret_cast<void* (*)(_object*)>(&EigenFromPy::convertible),
         &EigenFromPy::construct, bp::type_id<Base>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
                                      ,
@@ -511,16 +511,16 @@ struct EigenFromPy<Eigen::Ref<MatType, Options, Stride>> {
   typedef typename MatType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
-  static void *convertible(PyObject *pyObj) {
+  static void* convertible(PyObject* pyObj) {
     if (!call_PyArray_Check(pyObj)) return 0;
-    PyArrayObject *pyArray = reinterpret_cast<PyArrayObject *>(pyObj);
+    PyArrayObject* pyArray = reinterpret_cast<PyArrayObject*>(pyObj);
     if (!PyArray_ISWRITEABLE(pyArray)) return 0;
     return EigenFromPy<MatType>::convertible(pyObj);
   }
 
   static void registration() {
     bp::converter::registry::push_back(
-        reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+        reinterpret_cast<void* (*)(_object*)>(&EigenFromPy::convertible),
         &eigen_from_py_construct<RefType>, bp::type_id<RefType>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
                                                ,
@@ -536,13 +536,13 @@ struct EigenFromPy<const Eigen::Ref<const MatType, Options, Stride>> {
   typedef typename MatType::Scalar Scalar;
 
   /// \brief Determine if pyObj can be converted into a MatType object
-  static void *convertible(PyObject *pyObj) {
+  static void* convertible(PyObject* pyObj) {
     return EigenFromPy<MatType>::convertible(pyObj);
   }
 
   static void registration() {
     bp::converter::registry::push_back(
-        reinterpret_cast<void *(*)(_object *)>(&EigenFromPy::convertible),
+        reinterpret_cast<void* (*)(_object*)>(&EigenFromPy::convertible),
         &eigen_from_py_construct<ConstRefType>, bp::type_id<ConstRefType>()
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
                                                     ,

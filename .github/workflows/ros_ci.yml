@@ -6,6 +6,8 @@ name: CI - Linux via ROS
 # This determines when this workflow is run
 on:
   push:
+    branches:
+      - devel
     paths-ignore:
       - 'doc/**'
       - '.gitlab-ci.yml'
@@ -30,21 +32,23 @@ concurrency:
 jobs:
   CI:
     strategy:
+      fail-fast: false
       matrix:
         env:
           - {ROS_DISTRO: humble}
           - {ROS_DISTRO: jazzy}
+          - {ROS_DISTRO: kilted}
           - {ROS_DISTRO: rolling}
     env:
       # PRERELEASE: true  # Fails due to issues in the underlying Docker image
       BUILDER: colcon
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
       # Run industrial_ci
-      - uses: 'ros-industrial/industrial_ci@e3d16c224caf4832cf68e74093eb70f3a979b4cc'
+      - uses: 'ros-industrial/industrial_ci@f3c2dc8b4a9e6215f9c00f83e86ca0692970f81d'
         env: ${{ matrix.env }}
 
   check:

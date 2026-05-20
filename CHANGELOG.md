@@ -6,14 +6,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.13.0] - 2026-05-19
+
+### Changed
+- Remove `accelerate.hpp` header that clash with Accelerate.hpp in non case sensitive OS ([#593](https://github.com/stack-of-tasks/eigenpy/pull/593)
+  We don't consider it an API break since this header was rarely used.
+- Python version update ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
+  - Project is now tested with Python 3.10 and 3.14
+  - Python 3.10 is the minimal supported Python version
+- Nix: switch to flakoboros
+
+### Added
+- Support for Python slice, tuple and list indexing for `std::vector` bindings ([#592](https://github.com/stack-of-tasks/eigenpy/pull/592))
+- ROS: jrl_cmakmodules dependency + kilted CI ([#602](https://github.com/stack-of-tasks/eigenpy/pull/602))
+- Add pixi-build support ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
+
+### Fixed
+- Fix partly the support of the change of API of GeneralizedEigenSolver in Eigen 5+ ([#594](https://github.com/stack-of-tasks/eigenpy/pull/594))
+- Fix Eigen decompositions and solvers for Eigen 5 ([#596](https://github.com/stack-of-tasks/eigenpy/pull/596))
+- Remove pixi 0.57 warnings ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
+
 ## [3.12.0] - 2025-08-12
 
 ### Added
 
 - Add additional decompositions and solvers from Eigen ([#571](https://github.com/stack-of-tasks/eigenpy/pull/571))
-
-### Added
-
 - Docker images `ghcr.io/stack-of-tasks/eigenpy` ([#575](https://github.com/stack-of-tasks/eigenpy/pull/575))
 
 ### Changed
@@ -752,7 +769,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.12.0...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.13.0...HEAD
+[3.13.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.12.0...v3.13.0
 [3.12.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.11.0...v3.12.0
 [3.11.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.3...v3.11.0
 [3.10.3]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.2...v3.10.3

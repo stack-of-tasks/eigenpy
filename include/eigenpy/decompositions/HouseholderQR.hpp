@@ -28,7 +28,7 @@ struct HouseholderQRSolverVisitor
   typedef Solver Self;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>(bp::arg("self"),
                       "Default constructor.\n"
                       "The default constructor is useful in cases in which the "
@@ -69,7 +69,7 @@ struct HouseholderQRSolverVisitor
 
         .def(
             "compute",
-            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType> &matrix)) &
+            (Solver & (Solver::*)(const Eigen::EigenBase<MatrixType>& matrix)) &
                 Solver::compute,
             bp::args("self", "matrix"),
             "Computes the QR factorization of given matrix.",
@@ -86,7 +86,7 @@ struct HouseholderQRSolverVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver>(
         name.c_str(),
         "This class performs a QR decomposition of a matrix A into matrices Q "
@@ -108,7 +108,7 @@ struct HouseholderQRSolverVisitor
 
  private:
   template <typename MatrixOrVector>
-  static MatrixOrVector solve(const Solver &self, const MatrixOrVector &vec) {
+  static MatrixOrVector solve(const Solver& self, const MatrixOrVector& vec) {
     return self.solve(vec);
   }
 };
