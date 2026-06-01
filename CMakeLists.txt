@@ -490,4 +490,6 @@ pkg_config_append_cflags("-I${PYTHON_INCLUDE_DIRS}")
 pkg_config_append_cflags("-I${NUMPY_INCLUDE_DIRS}")
 pkg_config_append_boost_libs(${BOOST_COMPONENTS})
 
+generate_pyproject_metadata()
+
 setup_project_finalize()
