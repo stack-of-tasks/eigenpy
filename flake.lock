@@ -258,6 +258,26 @@
         "type": "github"
       }
     },
+    "jrl-cmakemodules": {
+      "inputs": {
+        "gepetto": [
+          "gepetto"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779806325,
+        "narHash": "sha256-fTXnyBrwu7yGaeTC2aEL17q92QXCQtH84UHT/yXAF9Q=",
+        "owner": "jrl-umi3218",
+        "repo": "jrl-cmakemodules",
+        "rev": "6facf32996100c86276f61dada4d10f0993851be",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jrl-umi3218",
+        "repo": "jrl-cmakemodules",
+        "type": "github"
+      }
+    },
     "nix-ros-overlay": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -416,7 +436,8 @@
     },
     "root": {
       "inputs": {
-        "gepetto": "gepetto"
+        "gepetto": "gepetto",
+        "jrl-cmakemodules": "jrl-cmakemodules"
       }
     },
     "system-manager": {
