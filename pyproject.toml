@@ -1,3 +1,18 @@
+# [build-system]
+# to build this package for pip, ref. https://github.com/cmake-wheel/eigenpy/
+
+[project]
+description = "Bindings between Numpy and Eigen using Boost.Python"
+license = "BSD-2-Clause"
+name = "eigenpy"
+requires-python = ">= 3.10"
+version = "3.13.0"
+
+[project.urls]
+changelog = "https://github.com/stack-of-tasks/eigenpy/blob/devel/CHANGELOG.md"
+homepage = "https://github.com/cmake-wheel/eigenpy"
+upstream = "https://github.com/stack-of-tasks/eigenpy"
+
 [tool.ruff]
 extend-exclude = ["cmake"]
 
