@@ -21,6 +21,7 @@ eigen = ">=3.4.0"
 numpy = ">=1.22.0"
 python = ">=3.9.0"
 scipy = ">=1.10.0"
+pyproject-metadata = ">=0.11.0"
 
 [package]
 name = { workspace = true }
@@ -46,6 +47,7 @@ extra-args = [
 
 [package.build-dependencies]
 pkg-config = ">=0.29.2"
+pyproject-metadata = ">=0.11.0"
 
 [package.host-dependencies]
 libboost-devel = ">=1.80.0,<1.90.0"
