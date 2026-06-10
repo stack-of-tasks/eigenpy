@@ -16,7 +16,7 @@ namespace Eigen {
 /// @brief Eigen::NumTraits<> specialization for casadi::SX
 ///
 template <typename Scalar>
-struct NumTraits<CustomType<Scalar> > {
+struct NumTraits<CustomType<Scalar>> {
   typedef CustomType<Scalar> Real;
   typedef CustomType<Scalar> NonInteger;
   typedef CustomType<Scalar> Literal;
@@ -150,12 +150,13 @@ Eigen::Matrix<Scalar, Eigen::Dynamic, Eigen::Dynamic> build_matrix(int rows,
 template <typename Scalar>
 void expose_custom_type(const std::string& name) {
   using namespace Eigen;
+  using eigenpy::literals::operator"" _a;
   namespace bp = boost::python;
 
   typedef CustomType<Scalar> Type;
 
-  bp::class_<Type>(name.c_str(), bp::init<Scalar>(bp::arg("value")))
-
+  // use ""_a literal
+  bp::class_<Type>(name.c_str(), bp::init<Scalar>("value"_a))
       .def(bp::self + bp::self)
       .def(bp::self - bp::self)
       .def(bp::self * bp::self)
@@ -201,14 +202,19 @@ BOOST_PYTHON_MODULE(user_type) {
 
   eigenpy::registerCast<DoubleType, double>(true);
   eigenpy::registerCast<double, DoubleType>(true);
+  eigenpy::registerCast<DoubleType, float>(false);
+  eigenpy::registerCast<float, DoubleType>(true);
   eigenpy::registerCast<DoubleType, int>(false);
   eigenpy::registerCast<int, DoubleType>(true);
   eigenpy::registerCast<DoubleType, long long>(false);
   eigenpy::registerCast<long long, DoubleType>(true);
   eigenpy::registerCast<DoubleType, long>(false);
   eigenpy::registerCast<long, DoubleType>(true);
+
   eigenpy::registerCast<FloatType, double>(true);
   eigenpy::registerCast<double, FloatType>(false);
+  eigenpy::registerCast<FloatType, float>(true);
+  eigenpy::registerCast<float, FloatType>(true);
   eigenpy::registerCast<FloatType, long long>(false);
   eigenpy::registerCast<long long, FloatType>(true);
   eigenpy::registerCast<FloatType, int>(false);

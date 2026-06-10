@@ -16,7 +16,7 @@ namespace eigenpy {
 
 template <typename _MatrixType>
 struct EigenSolverVisitor
-    : public boost::python::def_visitor<EigenSolverVisitor<_MatrixType> > {
+    : public boost::python::def_visitor<EigenSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef Eigen::EigenSolver<MatrixType> Solver;
@@ -26,7 +26,7 @@ struct EigenSolverVisitor
     cl.def(bp::init<>("Default constructor"))
         .def(bp::init<Eigen::DenseIndex>(
             bp::arg("size"), "Default constructor with memory preallocation"))
-        .def(bp::init<MatrixType, bp::optional<bool> >(
+        .def(bp::init<MatrixType, bp::optional<bool>>(
             bp::args("matrix", "compute_eigen_vectors"),
             "Computes eigendecomposition of given matrix"))
 

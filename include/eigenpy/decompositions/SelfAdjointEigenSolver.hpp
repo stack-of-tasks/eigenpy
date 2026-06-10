@@ -17,10 +17,11 @@ namespace eigenpy {
 template <typename _MatrixType>
 struct SelfAdjointEigenSolverVisitor
     : public boost::python::def_visitor<
-          SelfAdjointEigenSolverVisitor<_MatrixType> > {
+          SelfAdjointEigenSolverVisitor<_MatrixType>> {
   typedef _MatrixType MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef Eigen::SelfAdjointEigenSolver<MatrixType> Solver;
+  typedef Eigen::Matrix<Scalar, Eigen::Dynamic, 1> VectorType;
 
   template <class PyClass>
   void visit(PyClass& cl) const {
@@ -28,16 +29,24 @@ struct SelfAdjointEigenSolverVisitor
         .def(bp::init<Eigen::DenseIndex>(
             bp::args("self", "size"),
             "Default constructor with memory preallocation"))
-        .def(bp::init<MatrixType, bp::optional<int> >(
+        .def(bp::init<MatrixType, bp::optional<int>>(
             bp::args("self", "matrix", "options"),
             "Computes eigendecomposition of given matrix"))
 
-        .def("eigenvalues", &Solver::eigenvalues, bp::arg("self"),
-             "Returns the eigenvalues of given matrix.",
-             bp::return_internal_reference<>())
-        .def("eigenvectors", &Solver::eigenvectors, bp::arg("self"),
-             "Returns the eigenvectors of given matrix.",
-             bp::return_internal_reference<>())
+        .def(
+            "eigenvalues",
+            +[](const Solver& c) -> const VectorType& {
+              return c.eigenvalues();
+            },
+            "Returns the eigenvalues of given matrix.",
+            bp::return_internal_reference<>())
+        .def(
+            "eigenvectors",
+            +[](const Solver& c) -> const MatrixType& {
+              return c.eigenvectors();
+            },
+            "Returns the eigenvectors of given matrix.",
+            bp::return_internal_reference<>())
 
         .def("compute",
              &SelfAdjointEigenSolverVisitor::compute_proxy<MatrixType>,

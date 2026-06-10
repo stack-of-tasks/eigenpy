@@ -2,7 +2,7 @@
  * Copyright 2024 INRIA
  */
 
-#include "eigenpy/decompositions/sparse/LDLT.hpp"
+#include "eigenpy/decompositions/sparse/SimplicialLDLT.hpp"
 
 namespace eigenpy {
 void exposeSimplicialLDLTSolver() {

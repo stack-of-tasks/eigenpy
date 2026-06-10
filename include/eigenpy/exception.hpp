@@ -19,10 +19,10 @@ namespace eigenpy {
 class Exception : public std::exception {
  public:
   Exception() : message() {}
-  Exception(const std::string &msg) : message(msg) {}
-  const char *what() const throw() { return this->getMessage().c_str(); }
+  Exception(const std::string& msg) : message(msg) {}
+  const char* what() const throw() { return this->getMessage().c_str(); }
   ~Exception() throw() {}
-  virtual const std::string &getMessage() const { return message; }
+  virtual const std::string& getMessage() const { return message; }
   std::string copyMessage() const { return getMessage(); }
 
   /* Call this static function to "enable" the translation of this C++ exception
@@ -30,8 +30,8 @@ class Exception : public std::exception {
   static void registerException();
 
  private:
-  static void translateException(Exception const &e);
-  static PyObject *pyType;
+  static void translateException(Exception const& e);
+  static PyObject* pyType;
 
  protected:
   std::string message;

@@ -6,9 +6,67 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+- Generate metadata from pyproject.toml. Requires jrl-cmakemodules > 1.1.2 ([#648])(https://github.com/stack-of-tasks/eigenpy/pull/648))
+
+## [3.13.0] - 2026-05-19
+
+### Changed
+- Remove `accelerate.hpp` header that clash with Accelerate.hpp in non case sensitive OS ([#593](https://github.com/stack-of-tasks/eigenpy/pull/593)
+  We don't consider it an API break since this header was rarely used.
+- Python version update ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
+  - Project is now tested with Python 3.10 and 3.14
+  - Python 3.10 is the minimal supported Python version
+- Nix: switch to flakoboros
+
+### Added
+- Support for Python slice, tuple and list indexing for `std::vector` bindings ([#592](https://github.com/stack-of-tasks/eigenpy/pull/592))
+- ROS: jrl_cmakmodules dependency + kilted CI ([#602](https://github.com/stack-of-tasks/eigenpy/pull/602))
+- Add pixi-build support ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
+
+### Fixed
+- Fix partly the support of the change of API of GeneralizedEigenSolver in Eigen 5+ ([#594](https://github.com/stack-of-tasks/eigenpy/pull/594))
+- Fix Eigen decompositions and solvers for Eigen 5 ([#596](https://github.com/stack-of-tasks/eigenpy/pull/596))
+- Remove pixi 0.57 warnings ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
+
+## [3.12.0] - 2025-08-12
+
+### Added
+
+- Add additional decompositions and solvers from Eigen ([#571](https://github.com/stack-of-tasks/eigenpy/pull/571))
+- Docker images `ghcr.io/stack-of-tasks/eigenpy` ([#575](https://github.com/stack-of-tasks/eigenpy/pull/575))
+
+### Changed
+
+- Change the default branch to `devel` ([#547](https://github.com/stack-of-tasks/eigenpy/pull/547))
+
+## [3.11.0] - 2025-04-25
+
+### Added
+
+- Add user-defined literal ""_a for bp::arg ([#545](https://github.com/stack-of-tasks/eigenpy/pull/545))
+
+### Fixed
+
+- Fix handling of non sorted sparse matrix ([#538](https://github.com/stack-of-tasks/eigenpy/pull/538))
+
+### Changed
+
+- Update clang-format standard to C++11, reformat code
+
+## [3.10.3] - 2025-02-11
+
+### Added
+- Add `BUILDING_ROS2_PACKAGE` to generate ament specific file ([#530](https://github.com/stack-of-tasks/eigenpy/pull/530))
+
+### Changed
+- Modernize doxygen documentation ([#533](https://github.com/stack-of-tasks/eigenpy/pull/533))
+
+## [3.10.2] - 2025-01-13
+
 ### Fixed
 
 - Fix Python library linkage for Debug build on Windows ([#514](https://github.com/stack-of-tasks/eigenpy/pull/514))
+- Fix np.ones when dtype is a custom user type ([#525](https://github.com/stack-of-tasks/eigenpy/pull/525))
 
 ## [3.10.1] - 2024-10-30
 
@@ -713,7 +771,12 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.1...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.13.0...HEAD
+[3.13.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.12.0...v3.13.0
+[3.12.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.11.0...v3.12.0
+[3.11.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.3...v3.11.0
+[3.10.3]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.2...v3.10.3
+[3.10.2]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.1...v3.10.2
 [3.10.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.0...v3.10.1
 [3.10.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.1...v3.10.0
 [3.9.1]: https://github.com/stack-of-tasks/eigenpy/compare/v3.9.0...v3.9.1

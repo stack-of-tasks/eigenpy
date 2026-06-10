@@ -98,3 +98,20 @@ checkAllValues(l5, l5_py)
 # Test mutable __getitem__
 l5[0][:] = 0.0
 assert np.allclose(l5[0], 0.0)
+
+# Test slicing
+l6 = eigenpy.StdVec_VectorXd()
+for _ in range(4):
+    l6.append(rng.random(3))
+checkAllValues(l6[:1], l6.tolist()[:1])
+checkAllValues(l6[1:], l6.tolist()[1:])
+checkAllValues(l6[:-1], l6.tolist()[:-1])
+checkAllValues(l6[::2], l6.tolist()[::2])
+L = [0, 2]
+L6_copy = l6[L]
+for k, i in enumerate(L):
+    checkAllValues(L6_copy[k], l6[i])
+T = (0, 2)
+L6_copy = l6[T]
+for k, i in enumerate(L):
+    checkAllValues(L6_copy[k], l6[i])

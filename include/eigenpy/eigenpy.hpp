@@ -66,9 +66,9 @@ EIGEN_DONT_INLINE void exposeType() {
   exposeType<Scalar, 0>();
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
-  enableEigenPySpecific<Eigen::Tensor<Scalar, 1> >();
-  enableEigenPySpecific<Eigen::Tensor<Scalar, 2> >();
-  enableEigenPySpecific<Eigen::Tensor<Scalar, 3> >();
+  enableEigenPySpecific<Eigen::Tensor<Scalar, 1>>();
+  enableEigenPySpecific<Eigen::Tensor<Scalar, 2>>();
+  enableEigenPySpecific<Eigen::Tensor<Scalar, 3>>();
 #endif
 }
 

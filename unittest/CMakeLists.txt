@@ -117,7 +117,7 @@ add_python_lib_unit_test("py-multiple-registration"
                          "unittest/python/test_multiple_registration.py")
 
 add_python_lib_unit_test("py-tensor" "unittest/python/test_tensor.py")
-add_python_lib_unit_test("py-geometry" "unittest/python/test_geometry.py")
+add_python_lib_unit_test("py-Geometry" "unittest/python/test_Geometry.py")
 add_python_lib_unit_test("py-complex" "unittest/python/test_complex.py")
 add_python_lib_unit_test("py-deprecation-policy"
                          "unittest/python/test_deprecation_policy.py")
@@ -134,20 +134,55 @@ add_python_eigenpy_lib_unit_test("py-dimensions"
 
 add_python_eigenpy_lib_unit_test("py-version" "unittest/python/test_version.py")
 
-add_python_eigenpy_lib_unit_test("py-eigen-solver"
-                                 "unittest/python/test_eigen_solver.py")
+add_python_eigenpy_lib_unit_test("py-EigenSolver"
+                                 "unittest/python/test_EigenSolver.py")
 
 add_python_eigenpy_lib_unit_test(
-  "py-self-adjoint-eigen-solver"
-  "unittest/python/test_self_adjoint_eigen_solver.py")
+  "py-GeneralizedEigenSolver" "unittest/python/test_GeneralizedEigenSolver.py")
+
+add_python_eigenpy_lib_unit_test(
+  "py-GeneralizedSelfAdjointEigenSolver"
+  "unittest/python/test_GeneralizedSelfAdjointEigenSolver.py")
+
+add_python_eigenpy_lib_unit_test("py-ComplexEigenSolver"
+                                 "unittest/python/test_ComplexEigenSolver.py")
+
+add_python_eigenpy_lib_unit_test("py-ComplexSchur"
+                                 "unittest/python/test_ComplexSchur.py")
+
+add_python_eigenpy_lib_unit_test(
+  "py-SelfAdjointEigenSolver" "unittest/python/test_SelfAdjointEigenSolver.py")
+
+add_python_eigenpy_lib_unit_test(
+  "py-HessenbergDecomposition"
+  "unittest/python/test_HessenbergDecomposition.py")
+
+add_python_eigenpy_lib_unit_test("py-RealQZ" "unittest/python/test_RealQZ.py")
+
+add_python_eigenpy_lib_unit_test("py-RealSchur"
+                                 "unittest/python/test_RealSchur.py")
+
+add_python_eigenpy_lib_unit_test("py-Tridiagonalization"
+                                 "unittest/python/test_Tridiagonalization.py")
 
 add_python_eigenpy_lib_unit_test("py-LLT" "unittest/python/test_LLT.py")
 
 add_python_eigenpy_lib_unit_test("py-LDLT" "unittest/python/test_LDLT.py")
 
+add_python_eigenpy_lib_unit_test("py-FullPivLU"
+                                 "unittest/python/test_FullPivLU.py")
+
+add_python_eigenpy_lib_unit_test("py-PartialPivLU"
+                                 "unittest/python/test_PartialPivLU.py")
+
 add_python_eigenpy_lib_unit_test("py-id" "unittest/python/test_id.py")
 
 add_python_eigenpy_lib_unit_test("py-QR" "unittest/python/test_QR.py")
+
+add_python_eigenpy_lib_unit_test("py-BDCSVD" "unittest/python/test_BDCSVD.py")
+
+add_python_eigenpy_lib_unit_test("py-JacobiSVD"
+                                 "unittest/python/test_JacobiSVD.py")
 
 if(NOT WIN32)
   add_python_eigenpy_lib_unit_test("py-MINRES" "unittest/python/test_MINRES.py")
@@ -182,6 +217,14 @@ if(BUILD_TESTING_SCIPY)
   add_python_eigenpy_unit_test(
     "py-SimplicialLDLT"
     "unittest/python/decompositions/sparse/test_SimplicialLDLT.py")
+  add_python_eigenpy_unit_test("py-IncompleteCholesky"
+                               "unittest/python/test_IncompleteCholesky.py")
+  add_python_eigenpy_unit_test("py-IncompleteLUT"
+                               "unittest/python/test_IncompleteLUT.py")
+  add_python_eigenpy_unit_test(
+    "py-SparseLU" "unittest/python/decompositions/sparse/test_SparseLU.py")
+  add_python_eigenpy_unit_test(
+    "py-SparseQR" "unittest/python/decompositions/sparse/test_SparseQR.py")
 
   if(BUILD_WITH_CHOLMOD_SUPPORT)
     add_python_eigenpy_unit_test(

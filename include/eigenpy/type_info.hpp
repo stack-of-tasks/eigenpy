@@ -51,7 +51,7 @@ void expose_std_type_info() {
 /// \brief Add the Python method type_info to query information of a type.
 ///
 template <class C>
-struct TypeInfoVisitor : public bp::def_visitor<TypeInfoVisitor<C> > {
+struct TypeInfoVisitor : public bp::def_visitor<TypeInfoVisitor<C>> {
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def("type_info", &boost_type_info, bp::arg("self"),

@@ -38,12 +38,12 @@ void print(const Tensor& tensor) {
 
 template <typename Tensor>
 void print_ref(const Eigen::TensorRef<const Tensor> tensor) {
-  print(tensor);
+  ::print(tensor);
 }
 
 template <typename Tensor>
 void print_base(const Eigen::TensorBase<Tensor>& tensor) {
-  print(tensor);
+  ::print(tensor);
 }
 
 template <typename Tensor>

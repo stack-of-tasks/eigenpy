@@ -14,7 +14,7 @@ template <int SizeAtCompileTime, int MaxSizeAtCompileTime = SizeAtCompileTime,
           typename StorageIndex_ = int>
 struct PermutationMatrixVisitor
     : public boost::python::def_visitor<PermutationMatrixVisitor<
-          SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_> > {
+          SizeAtCompileTime, MaxSizeAtCompileTime, StorageIndex_>> {
   typedef StorageIndex_ StorageIndex;
   typedef Eigen::PermutationMatrix<SizeAtCompileTime, MaxSizeAtCompileTime,
                                    StorageIndex>
@@ -26,7 +26,7 @@ struct PermutationMatrixVisitor
       VectorIndex;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<const Eigen::DenseIndex>(bp::args("self", "size"),
                                              "Default constructor"))
         .def(bp::init<VectorIndex>(
@@ -40,7 +40,7 @@ struct PermutationMatrixVisitor
 
         .def(
             "indices",
-            +[](const PermutationMatrix &self) {
+            +[](const PermutationMatrix& self) {
               return VectorIndex(self.indices());
             },
             bp::arg("self"), "The stored array representing the permutation.")
@@ -57,12 +57,12 @@ struct PermutationMatrixVisitor
              bp::return_self<>())
 
         .def("setIdentity",
-             (void(PermutationMatrix::*)()) & PermutationMatrix::setIdentity,
+             (void (PermutationMatrix::*)())&PermutationMatrix::setIdentity,
              bp::arg("self"),
              "Sets self to be the identity permutation matrix.")
         .def("setIdentity",
-             (void(PermutationMatrix::*)(Eigen::DenseIndex)) &
-                 PermutationMatrix::setIdentity,
+             (void (PermutationMatrix::*)(
+                 Eigen::DenseIndex))&PermutationMatrix::setIdentity,
              bp::args("self", "size"),
              "Sets self to be the identity permutation matrix of given size.")
 
@@ -73,13 +73,13 @@ struct PermutationMatrixVisitor
 
         .def(
             "transpose",
-            +[](const PermutationMatrix &self) -> PermutationMatrix {
+            +[](const PermutationMatrix& self) -> PermutationMatrix {
               return self.transpose();
             },
             bp::arg("self"), "Returns the tranpose permutation matrix.")
         .def(
             "inverse",
-            +[](const PermutationMatrix &self) -> PermutationMatrix {
+            +[](const PermutationMatrix& self) -> PermutationMatrix {
               return self.inverse();
             },
             bp::arg("self"), "Returns the inverse permutation matrix.")
@@ -91,7 +91,7 @@ struct PermutationMatrixVisitor
         .def(EigenBaseVisitor<Self>());
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<PermutationMatrix>(name.c_str(),
                                   "Permutation matrix.\n"
                                   "This class represents a permutation matrix, "

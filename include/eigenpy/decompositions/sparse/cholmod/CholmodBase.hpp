@@ -15,7 +15,7 @@ namespace eigenpy {
 
 template <typename CholdmodDerived>
 struct CholmodBaseVisitor
-    : public boost::python::def_visitor<CholmodBaseVisitor<CholdmodDerived> > {
+    : public boost::python::def_visitor<CholmodBaseVisitor<CholdmodDerived>> {
   typedef CholdmodDerived Solver;
 
   typedef typename CholdmodDerived::MatrixType MatrixType;
@@ -25,7 +25,7 @@ struct CholmodBaseVisitor
   typedef typename MatrixType::StorageIndex StorageIndex;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def("analyzePattern", &Solver::analyzePattern,
            bp::args("self", "matrix"),
            "Performs a symbolic decomposition on the sparcity of matrix.\n"
@@ -36,7 +36,7 @@ struct CholmodBaseVisitor
         .def(SparseSolverBaseVisitor<Solver>())
 
         .def("compute",
-             (Solver & (Solver::*)(const MatrixType &matrix)) & Solver::compute,
+             (Solver & (Solver::*)(const MatrixType& matrix)) & Solver::compute,
              bp::args("self", "matrix"),
              "Computes the sparse Cholesky decomposition of a given matrix.",
              bp::return_self<>())

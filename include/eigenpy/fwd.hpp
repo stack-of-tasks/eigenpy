@@ -36,11 +36,11 @@
 #if defined(EIGENPY_CLANG_COMPILER) || defined(EIGENPY_GCC_COMPILER)
 #define EIGENPY_PRAGMA(x) _Pragma(#x)
 #define EIGENPY_PRAGMA_MESSAGE(the_message) \
-  EIGENPY_PRAGMA(GCC message the_message)
+  EIGENPY_PRAGMA(GCC message #the_message)
 #define EIGENPY_PRAGMA_WARNING(the_message) \
-  EIGENPY_PRAGMA(GCC warning the_message)
+  EIGENPY_PRAGMA(GCC warning #the_message)
 #define EIGENPY_PRAGMA_DEPRECATED(the_message) \
-  EIGENPY_PRAGMA_WARNING(Deprecated : the_message)
+  EIGENPY_PRAGMA_WARNING(Deprecated : #the_message)
 #define EIGENPY_PRAGMA_DEPRECATED_HEADER(old_header, new_header) \
   EIGENPY_PRAGMA_WARNING(                                        \
       Deprecated header file : #old_header has been replaced     \
@@ -108,7 +108,7 @@ namespace bp = boost::python;
 #define EIGENPY_NO_ALIGNMENT_VALUE Eigen::Unaligned
 
 #define EIGENPY_UNUSED_VARIABLE(var) (void)(var)
-#define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type *)(NULL))
+#define EIGENPY_UNUSED_TYPE(type) EIGENPY_UNUSED_VARIABLE((type*)(NULL))
 #ifndef NDEBUG
 #define EIGENPY_USED_VARIABLE_ONLY_IN_DEBUG_MODE(var)
 #else
@@ -169,14 +169,14 @@ template <typename EigenType>
 struct get_eigen_plain_type;
 
 template <typename MatType, int Options, typename Stride>
-struct get_eigen_plain_type<Eigen::Ref<MatType, Options, Stride> > {
+struct get_eigen_plain_type<Eigen::Ref<MatType, Options, Stride>> {
   typedef typename Eigen::internal::traits<
-      Eigen::Ref<MatType, Options, Stride> >::PlainObjectType type;
+      Eigen::Ref<MatType, Options, Stride>>::PlainObjectType type;
 };
 
 #ifdef EIGENPY_WITH_TENSOR_SUPPORT
 template <typename TensorType>
-struct get_eigen_plain_type<Eigen::TensorRef<TensorType> > {
+struct get_eigen_plain_type<Eigen::TensorRef<TensorType>> {
   typedef TensorType type;
 };
 #endif
@@ -185,7 +185,7 @@ namespace internal {
 template <class T1, class T2>
 struct has_operator_equal_impl {
   template <class U, class V>
-  static auto check(U *) -> decltype(std::declval<U>() == std::declval<V>());
+  static auto check(U*) -> decltype(std::declval<U>() == std::declval<V>());
   template <typename, typename>
   static auto check(...) -> std::false_type;
 
@@ -195,6 +195,16 @@ struct has_operator_equal_impl {
 
 template <class T1, class T2 = T1>
 struct has_operator_equal : internal::has_operator_equal_impl<T1, T2>::type {};
+
+namespace literals {
+/// \brief A string literal returning a boost::python::arg.
+///
+/// Using-declare this operator or do `using namespace eigenpy::literals`. Then
+/// `bp::arg("matrix")` can be replaced by the literal `"matrix"_a`.
+inline boost::python::arg operator"" _a(const char* name, std::size_t) {
+  return boost::python::arg(name);
+}
+}  // namespace literals
 
 }  // namespace eigenpy
 

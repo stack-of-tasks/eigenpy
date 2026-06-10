@@ -40,7 +40,7 @@ void exposeStdTypeIndex() {
            "and change between invocations of the same program.")
       .def(
           "pretty_name",
-          +[](const Self &value) -> std::string {
+          +[](const Self& value) -> std::string {
             return boost::core::demangle(value.name());
           },
           bp::arg("self"), "Human readible name.");

@@ -14,7 +14,7 @@ namespace eigenpy {
 template <typename MatrixType_, int UpLo_ = Eigen::Lower>
 struct CholmodSimplicialLDLTVisitor
     : public boost::python::def_visitor<
-          CholmodSimplicialLDLTVisitor<MatrixType_, UpLo_> > {
+          CholmodSimplicialLDLTVisitor<MatrixType_, UpLo_>> {
   typedef MatrixType_ MatrixType;
   typedef typename MatrixType::Scalar Scalar;
   typedef typename MatrixType::RealScalar RealScalar;
@@ -22,7 +22,7 @@ struct CholmodSimplicialLDLTVisitor
   typedef Eigen::CholmodSimplicialLDLT<MatrixType_, UpLo_> Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl
 
         .def(CholmodBaseVisitor<Solver>())
@@ -40,7 +40,7 @@ struct CholmodSimplicialLDLTVisitor
     expose(classname);
   }
 
-  static void expose(const std::string &name) {
+  static void expose(const std::string& name) {
     bp::class_<Solver, boost::noncopyable>(
         name.c_str(),
         "A simplicial direct Cholesky (LDLT) factorization and solver based on "

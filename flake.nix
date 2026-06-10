@@ -2,39 +2,44 @@
   description = "Bindings between Numpy and Eigen using Boost.Python";
 
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    gepetto.url = "github:gepetto/nix";
+    jrl-cmakemodules = {
+      url = "github:jrl-umi3218/jrl-cmakemodules";
+      inputs.gepetto.follows = "gepetto";
+    };
   };
 
   outputs =
     inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      systems = inputs.nixpkgs.lib.systems.flakeExposed;
-      perSystem =
-        { pkgs, self', ... }:
-        {
-          apps.default = {
-            type = "app";
-            program = pkgs.python3.withPackages (_: [ self'.packages.default ]);
-          };
-          devShells.default = pkgs.mkShell { inputsFrom = [ self'.packages.default ]; };
-          packages = {
-            default = self'.packages.eigenpy;
-            eigenpy = pkgs.python3Packages.eigenpy.overrideAttrs (_: {
-              src = pkgs.lib.fileset.toSource {
-                root = ./.;
-                fileset = pkgs.lib.fileset.unions [
-                  ./CMakeLists.txt
-                  ./doc
-                  ./include
-                  ./package.xml
-                  ./python
-                  ./src
-                  ./unittest
-                ];
-              };
-            });
+    inputs.gepetto.lib.mkFlakoboros inputs (
+      { lib, ... }:
+      {
+        overlays = [ inputs.jrl-cmakemodules.overlays.flakoboros ];
+        pyOverrideAttrs.eigenpy = {
+          src = lib.fileset.toSource {
+            root = ./.;
+            fileset = lib.fileset.unions [
+              ./CMakeLists.txt
+              ./doc
+              ./include
+              ./package.xml
+              ./python
+              ./src
+              ./unittest
+            ];
           };
         };
-    };
+        extends.eigen5 = final: prev: {
+          eigen = final.eigen_5;
+          pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+            (_python-final: python-prev: {
+              scipy = python-prev.scipy.overrideAttrs {
+                # broken on linux arm
+                doInstallCheck = false;
+              };
+            })
+          ];
+        };
+      }
+    );
 }

@@ -1,7 +1,34 @@
-INPUT                  = @PROJECT_SOURCE_DIR@/src \
-                         @PROJECT_SOURCE_DIR@/doc/additionalDoc
-IMAGE_PATH             = @PROJECT_SOURCE_DIR@/doc/pictures
+INPUT                 = @PROJECT_SOURCE_DIR@/doc \
+                        @PROJECT_SOURCE_DIR@/include \
+                        @PROJECT_SOURCE_DIR@/README.md
 
-FILE_PATTERNS          = *.cc *.cpp *.h *.hpp *.hxx
+RECURSIVE               = YES
 
-TAGFILES               = \
+FILE_PATTERNS          = *.cpp *.h *.hpp *.hxx
+
+EXTRACT_ALL             = NO
+EXTRACT_ANON_NSPACES    = NO
+
+ENABLE_PREPROCESSING    = YES
+MACRO_EXPANSION         = YES
+
+FULL_PATH_NAMES         = YES
+EXCLUDE_SYMBOLS         = std, *::internal, internal::*, *::internal::*
+
+INCLUDE_PATH            = @PROJECT_SOURCE_DIR@/include
+
+GENERATE_TREEVIEW       = YES
+
+VERBATIM_HEADERS        = YES
+
+SHOW_FILES              = YES
+SHOW_NAMESPACES         = YES
+
+SOURCE_BROWSER          = YES
+
+ALPHABETICAL_INDEX      = YES
+
+USE_MDFILE_AS_MAINPAGE  = README.md
+BUILTIN_STL_SUPPORT     = YES
+HAVE_DOT                = YES
+DOT_IMAGE_FORMAT        = SVG

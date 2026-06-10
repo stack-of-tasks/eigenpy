@@ -187,15 +187,15 @@ struct NumpyEquivalentType<long double> {
 };
 
 template <>
-struct NumpyEquivalentType<std::complex<float> > {
+struct NumpyEquivalentType<std::complex<float>> {
   enum { type_code = NPY_CFLOAT };
 };
 template <>
-struct NumpyEquivalentType<std::complex<double> > {
+struct NumpyEquivalentType<std::complex<double>> {
   enum { type_code = NPY_CDOUBLE };
 };
 template <>
-struct NumpyEquivalentType<std::complex<long double> > {
+struct NumpyEquivalentType<std::complex<long double>> {
   enum { type_code = NPY_CLONGDOUBLE };
 };
 

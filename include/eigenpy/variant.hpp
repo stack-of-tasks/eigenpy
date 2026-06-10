@@ -42,7 +42,7 @@ struct is_empty_variant : std::false_type {};
 
 /// std::variant implementation
 template <typename ResultType, typename... Alternatives>
-struct VariantVisitorType<ResultType, std::variant<Alternatives...> > {
+struct VariantVisitorType<ResultType, std::variant<Alternatives...>> {
   typedef std::variant<Alternatives...> variant_type;
   typedef ResultType result_type;
 
@@ -58,12 +58,12 @@ struct VariantVisitorType<ResultType, std::variant<Alternatives...> > {
 };
 
 template <typename... Alternatives>
-struct VariantAlternatives<std::variant<Alternatives...> > {
+struct VariantAlternatives<std::variant<Alternatives...>> {
   typedef boost::mpl::vector<Alternatives...> types;
 };
 
 template <typename... Alternatives>
-struct empty_variant<std::variant<Alternatives...> > {
+struct empty_variant<std::variant<Alternatives...>> {
   typedef std::monostate type;
 };
 
@@ -74,7 +74,7 @@ struct is_empty_variant<std::monostate> : std::true_type {};
 
 /// boost::variant implementation
 template <typename ResultType, typename... Alternatives>
-struct VariantVisitorType<ResultType, boost::variant<Alternatives...> >
+struct VariantVisitorType<ResultType, boost::variant<Alternatives...>>
     : boost::static_visitor<ResultType> {
   typedef boost::variant<Alternatives...> variant_type;
   typedef ResultType result_type;
@@ -90,12 +90,12 @@ struct VariantVisitorType<ResultType, boost::variant<Alternatives...> >
 };
 
 template <typename... Alternatives>
-struct VariantAlternatives<boost::variant<Alternatives...> > {
+struct VariantAlternatives<boost::variant<Alternatives...>> {
   typedef typename boost::variant<Alternatives...>::types types;
 };
 
 template <typename... Alternatives>
-struct empty_variant<boost::variant<Alternatives...> > {
+struct empty_variant<boost::variant<Alternatives...>> {
   typedef boost::blank type;
 };
 

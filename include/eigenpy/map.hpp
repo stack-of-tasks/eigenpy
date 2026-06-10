@@ -23,7 +23,7 @@ namespace eigenpy {
 template <typename Container>
 struct overload_base_get_item_for_map
     : public boost::python::def_visitor<
-          overload_base_get_item_for_map<Container> > {
+          overload_base_get_item_for_map<Container>> {
   typedef typename Container::value_type value_type;
   typedef typename Container::value_type::second_type data_type;
   typedef typename Container::key_type key_type;
@@ -165,9 +165,8 @@ struct dict_to_map {
 /// and set_item() using emplace().
 template <class Container, bool NoProxy>
 struct emplace_set_derived_policies
-    : bp::map_indexing_suite<
-          Container, NoProxy,
-          emplace_set_derived_policies<Container, NoProxy> > {
+    : bp::map_indexing_suite<Container, NoProxy,
+                             emplace_set_derived_policies<Container, NoProxy>> {
   typedef typename Container::key_type index_type;
   typedef typename Container::value_type::second_type data_type;
   typedef typename Container::value_type value_type;
@@ -185,7 +184,7 @@ struct emplace_set_derived_policies
     namespace mpl = boost::mpl;
 
     typedef typename mpl::if_<
-        mpl::and_<boost::is_class<data_type>, mpl::bool_<!NoProxy> >,
+        mpl::and_<boost::is_class<data_type>, mpl::bool_<!NoProxy>>,
         bp::return_internal_reference<>, bp::default_call_policies>::type
         get_data_return_policy;
 

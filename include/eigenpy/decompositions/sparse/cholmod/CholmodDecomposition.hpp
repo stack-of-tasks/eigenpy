@@ -13,11 +13,11 @@ namespace eigenpy {
 template <typename CholdmodDerived>
 struct CholmodDecompositionVisitor
     : public boost::python::def_visitor<
-          CholmodDecompositionVisitor<CholdmodDerived> > {
+          CholmodDecompositionVisitor<CholdmodDerived>> {
   typedef CholdmodDerived Solver;
 
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl
 
         .def(CholmodBaseVisitor<Solver>())

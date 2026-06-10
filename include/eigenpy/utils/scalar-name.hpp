@@ -30,7 +30,7 @@ struct scalar_name<long double> {
 };
 
 template <typename Scalar>
-struct scalar_name<std::complex<Scalar> > {
+struct scalar_name<std::complex<Scalar>> {
   static std::string shortname() { return "c" + scalar_name<Scalar>(); };
 };
 }  // namespace eigenpy

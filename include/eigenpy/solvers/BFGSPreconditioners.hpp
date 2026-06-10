@@ -1,10 +1,10 @@
 /*
  * Copyright 2017 CNRS
- * Copyright 2024 Inria
+ * Copyright 2024-2025 INRIA
  */
 
-#ifndef __eigenpy_bfgs_preconditioners_hpp__
-#define __eigenpy_bfgs_preconditioners_hpp__
+#ifndef __eigenpy_solvers_bfgs_preconditioners_hpp__
+#define __eigenpy_solvers_bfgs_preconditioners_hpp__
 
 #include <Eigen/IterativeLinearSolvers>
 
@@ -15,7 +15,7 @@ namespace eigenpy {
 
 template <typename Preconditioner>
 struct BFGSPreconditionerBaseVisitor
-    : public bp::def_visitor<BFGSPreconditionerBaseVisitor<Preconditioner> > {
+    : public bp::def_visitor<BFGSPreconditionerBaseVisitor<Preconditioner>> {
   typedef Eigen::VectorXd VectorType;
   template <class PyClass>
   void visit(PyClass& cl) const {
@@ -46,7 +46,7 @@ struct BFGSPreconditionerBaseVisitor
 template <typename Preconditioner>
 struct LimitedBFGSPreconditionerBaseVisitor
     : public bp::def_visitor<
-          LimitedBFGSPreconditionerBaseVisitor<Preconditioner> > {
+          LimitedBFGSPreconditionerBaseVisitor<Preconditioner>> {
   template <class PyClass>
   void visit(PyClass& cl) const {
     cl.def(PreconditionerBaseVisitor<Preconditioner>())
@@ -65,4 +65,4 @@ struct LimitedBFGSPreconditionerBaseVisitor
 
 }  // namespace eigenpy
 
-#endif  // ifndef __eigenpy_bfgs_preconditioners_hpp__
+#endif  // ifndef __eigenpy_solvers_bfgs_preconditioners_hpp__
