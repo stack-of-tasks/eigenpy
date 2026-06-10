@@ -1,6 +1,6 @@
 # derived from eigenpy/CMakeLists.txt for this example
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.22)
 
 set(PROJECT_NAME eigenpy_example_custom_numeric_type)
 set(PROJECT_DESCRIPTION
@@ -141,7 +141,8 @@ modernize_target_link_libraries(
   ${NUMPY_INCLUDE_DIRS}
   ${PYTHON_INCLUDE_DIR})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC eigenpy::eigenpy ${MPC_LIBRARIES} ${MPFR_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC eigenpy::eigenpy ${MPC_LIBRARIES}
+                                             ${MPFR_LIBRARIES})
 
 if(SUFFIX_SO_VERSION)
   set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${PROJECT_VERSION})

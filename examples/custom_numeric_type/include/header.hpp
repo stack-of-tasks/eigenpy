@@ -25,66 +25,40 @@ using mpfr_complex =
                 bmp::et_off>;  // T is a variable-precision complex number with
                                // expression templates turned on.
 
-
-
-
-
 void ExposeAll();
 void ExposeReal();
 void ExposeComplex();
 
-// this code derived from
-// https://github.com/stack-of-tasks/eigenpy/issues/365
-// where I asked about using custom types, and @jcarpent responded with a
-// discussion of an application of this in Pinnochio, a library for rigid body
-// dynamics.
+// An mpfr/mpc number whose bytes are all zero is Boost.Multiprecision's
+// *uninitialized* state (null _mpfr_d limb pointer), not a valid zero. numpy
+// zero-fills fresh buffers (np.zeros, np.empty, ufunc outputs) without
+// running a C++ constructor, so we must tell eigenpy that such slots need
+// guarding. eigenpy then treats them as an exact 0 on read and initializes
+// them before write, in every dtype slot function and ufunc loop.
+// See https://github.com/stack-of-tasks/eigenpy/issues/365 for the original
+// discussion of binding custom numeric types.
 namespace eigenpy {
-namespace internal {
 
-// a template specialization for complex numbers
-// derived directly from the example for Pinnochio
 template <class Backend, bmp::expression_template_option ETO>
-struct getitem<bmp::number<Backend, ETO>> {
+struct user_type_traits<bmp::number<Backend, ETO>> {
+  typedef bmp::number<Backend, ETO> Scalar;
 
-    typedef bmp::number<Backend, ETO> Scalar;
+  enum { requires_initialization = true };
 
-  static PyObject *run(void *data, void * /* arr */) {
-
-    Scalar &mpfr_scalar = *static_cast<Scalar *>(data);
-    auto &backend = mpfr_scalar.backend();
-
-    if (backend.data()[0]._mpfr_d == 0)  // If the mpfr_scalar is not initialized, we have to init it.
-    {
-      mpfr_scalar = Scalar(0);
-    }
-    boost::python::object m(boost::ref(mpfr_scalar));
-    Py_INCREF(m.ptr());
-    return m.ptr();
+  static bool is_uninitialized(const Scalar& x) {
+    return x.backend().data()[0]._mpfr_d == 0;
   }
 };
 
-// a template specialization for complex numbers
-// derived directly from the example for Pinnochio
 template <>
-struct getitem<mpfr_complex> {
-  static PyObject *run(void *data, void * /* arr */) {
-    // std::cout << "getitem mpfr_complex" << std::endl;
-    mpfr_complex &mpfr_scalar = *static_cast<mpfr_complex *>(data);
-    auto &backend = mpfr_scalar.backend();
+struct user_type_traits<mpfr_complex> {
+  enum { requires_initialization = true };
 
-    if (backend.data()[0].re[0]._mpfr_d == 0 ||
-        backend.data()[0].im[0]._mpfr_d == 0)  
-        // If the mpfr_scalar is not initialized, we have to init it.
-    {
-      mpfr_scalar = mpfr_complex(0);
-    }
-    boost::python::object m(boost::ref(mpfr_scalar));
-    Py_INCREF(m.ptr());
-    return m.ptr();
+  static bool is_uninitialized(const mpfr_complex& x) {
+    return x.backend().data()[0].re[0]._mpfr_d == 0 ||
+           x.backend().data()[0].im[0]._mpfr_d == 0;
   }
 };
-
-}  // namespace internal
 
 // i lifted this from EigenPy and adapted it, basically removing the calls for
 // the comparitors.
@@ -92,13 +66,13 @@ template <typename Scalar>
 void registerUfunct_without_comparitors() {
   const int type_code = Register::getTypeCode<Scalar>();
 
-  PyObject *numpy_str;
+  PyObject* numpy_str;
 #if PY_MAJOR_VERSION >= 3
   numpy_str = PyUnicode_FromString("numpy");
 #else
   numpy_str = PyString_FromString("numpy");
 #endif
-  PyObject *numpy;
+  PyObject* numpy;
   numpy = PyImport_Import(numpy_str);
   Py_DECREF(numpy_str);
 
@@ -111,15 +85,15 @@ void registerUfunct_without_comparitors() {
     std::stringstream ss;
     ss << "return result of multiplying two matrices of ";
     ss << bp::type_info(typeid(Scalar)).name();
-    PyUFuncObject *ufunc =
-        (PyUFuncObject *)PyObject_GetAttrString(numpy, "matmul");
+    PyUFuncObject* ufunc =
+        (PyUFuncObject*)PyObject_GetAttrString(numpy, "matmul");
     if (!ufunc) {
       std::stringstream ss;
       ss << "Impossible to define matrix_multiply for given type "
          << bp::type_info(typeid(Scalar)).name() << std::endl;
       eigenpy::Exception(ss.str());
     }
-    if (PyUFunc_RegisterLoopForType((PyUFuncObject *)ufunc, type_code,
+    if (PyUFunc_RegisterLoopForType((PyUFuncObject*)ufunc, type_code,
                                     &internal::gufunc_matrix_multiply<Scalar>,
                                     types, 0) < 0) {
       std::stringstream ss;
@@ -160,14 +134,15 @@ void registerUfunct_without_comparitors() {
 namespace bp = boost::python;
 
 template <typename BoostNumber>
-struct BoostNumberPythonVisitor : public boost::python::def_visitor<
-                                      BoostNumberPythonVisitor<BoostNumber> > {
+struct BoostNumberPythonVisitor
+    : public boost::python::def_visitor<BoostNumberPythonVisitor<BoostNumber>> {
  public:
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>("Default constructor.", bp::arg("self")))
-        .def(bp::init<BoostNumber>("Copy constructor.", bp::args("self", "value")))
-               .def(bp::init<int>("Copy constructor.",bp::args("self","value")))
+        .def(bp::init<BoostNumber>("Copy constructor.",
+                                   bp::args("self", "value")))
+        .def(bp::init<int>("Copy constructor.", bp::args("self", "value")))
         //        .def(bp::init<float>("Copy
         //        constructor.",bp::args("self","value")))
         //        .def(bp::init<double>("Copy
@@ -240,7 +215,7 @@ struct BoostNumberPythonVisitor : public boost::python::def_visitor<
         ;
   }
 
-  static void expose(const std::string &type_name) {
+  static void expose(const std::string& type_name) {
     bp::class_<BoostNumber>(type_name.c_str(), "docstring here?", bp::no_init)
         .def(BoostNumberPythonVisitor<BoostNumber>());
 
@@ -277,11 +252,11 @@ struct BoostNumberPythonVisitor : public boost::python::def_visitor<
 
  private:
   template <typename T>
-  static T cast(const BoostNumber &self) {
+  static T cast(const BoostNumber& self) {
     return static_cast<T>(self);
   }
 
-  static std::string print(const BoostNumber &self) {
+  static std::string print(const BoostNumber& self) {
     return self.str(get_display_precision(), std::ios_base::dec);
   }
 
@@ -289,7 +264,7 @@ struct BoostNumberPythonVisitor : public boost::python::def_visitor<
     get_display_precision() = digit;
   }
 
-  static int &get_display_precision() {
+  static int& get_display_precision() {
     static int precision = BoostNumber::default_precision();
     return precision;
   }
@@ -300,12 +275,11 @@ struct BoostNumberPythonVisitor : public boost::python::def_visitor<
 // was requested
 
 template <typename BoostNumber>
-struct BoostComplexPythonVisitor
-    : public boost::python::def_visitor<
-          BoostComplexPythonVisitor<BoostNumber> > {
+struct BoostComplexPythonVisitor : public boost::python::def_visitor<
+                                       BoostComplexPythonVisitor<BoostNumber>> {
  public:
   template <class PyClass>
-  void visit(PyClass &cl) const {
+  void visit(PyClass& cl) const {
     cl.def(bp::init<>("Default constructor.", bp::arg("self")))
         .def(bp::init<BoostNumber>("Copy constructor.",
                                    bp::args("self", "value")))
@@ -369,13 +343,13 @@ struct BoostComplexPythonVisitor
         ;
   }
 
-  static void set_real(BoostNumber &c, mpfr_float const &r) { c.real(r); }
-  static mpfr_float get_real(BoostNumber const &c) { return c.real(); }
+  static void set_real(BoostNumber& c, mpfr_float const& r) { c.real(r); }
+  static mpfr_float get_real(BoostNumber const& c) { return c.real(); }
 
-  static void set_imag(BoostNumber &c, mpfr_float const &r) { c.imag(r); }
-  static mpfr_float get_imag(BoostNumber const &c) { return c.imag(); }
+  static void set_imag(BoostNumber& c, mpfr_float const& r) { c.imag(r); }
+  static mpfr_float get_imag(BoostNumber const& c) { return c.imag(); }
 
-  static std::string print(const BoostNumber &self) {
+  static std::string print(const BoostNumber& self) {
     return self.str(get_display_precision(), std::ios_base::dec);
   }
 
@@ -383,32 +357,25 @@ struct BoostComplexPythonVisitor
     get_display_precision() = digit;
   }
 
-  static int &get_display_precision() {
+  static int& get_display_precision() {
     static int precision = BoostNumber::default_precision();
     return precision;
   }
 };
 
-
-
-
-
-
-// showing we can write a function that returns an eigen vector, and then use it in Python via Eigenpy.
-template<typename T>
-Eigen::Matrix<T, Eigen::Dynamic, 1> make_a_vector_in_cpp(size_t length, T /* for type dispatch*/ )
-{
-  Eigen::Matrix<T, Eigen::Dynamic,1> a;
-  a.resize(length,1);
-  for (size_t ii(0); ii<length; ++ii)
-  {   
+// showing we can write a function that returns an eigen vector, and then use it
+// in Python via Eigenpy.
+template <typename T>
+Eigen::Matrix<T, Eigen::Dynamic, 1> make_a_vector_in_cpp(
+    size_t length, T /* for type dispatch*/) {
+  Eigen::Matrix<T, Eigen::Dynamic, 1> a;
+  a.resize(length, 1);
+  for (size_t ii(0); ii < length; ++ii) {
     a(ii) = static_cast<T>(ii);
-
   }
 
   return a;
 }
-
 
 #include "a_class.hpp"
 
