@@ -10,6 +10,7 @@
 #include "eigenpy/fwd.hpp"
 #include "eigenpy/numpy-type.hpp"
 #include "eigenpy/register.hpp"
+#include "eigenpy/user-type-traits.hpp"
 
 namespace eigenpy {
 /// \brief Default cast algo to cast a From to To. Can be specialized for any
@@ -33,8 +34,15 @@ static void cast(void* from_, void* to_, npy_intp n, void* /*fromarr*/,
   //      std::cout << "cast::run" << std::endl;
   const From* from = static_cast<From*>(from_);
   To* to = static_cast<To*>(to_);
-  for (npy_intp i = 0; i < n; i++) {
-    to[i] = eigenpy::cast<From, To>::run(from[i]);
+  if (user_type_traits<From>::requires_initialization) {
+    const From zero(0);
+    for (npy_intp i = 0; i < n; i++) {
+      to[i] = eigenpy::cast<From, To>::run(value_or_zero(from[i], zero));
+    }
+  } else {
+    for (npy_intp i = 0; i < n; i++) {
+      to[i] = eigenpy::cast<From, To>::run(from[i]);
+    }
   }
 }
 
@@ -53,6 +61,12 @@ struct getitem {
   static PyObject* run(void* data, void* /* arr */) {
     //    std::cout << "getitem" << std::endl;
     T* elt_ptr = static_cast<T*>(data);
+    if (user_type_traits<T>::requires_initialization &&
+        user_type_traits<T>::is_uninitialized(*elt_ptr)) {
+      // Heal the never-constructed (zero-filled) slot before handing it to
+      // Python, which may keep a reference to it.
+      *elt_ptr = T(0);
+    }
     bp::object m(boost::ref(*elt_ptr));
     Py_INCREF(m.ptr());
     return m.ptr();
@@ -94,16 +108,36 @@ template <typename T>
 struct SpecialMethods<T, NPY_USERDEF> {
   static void copyswap(void* dst, void* src, int swap, void* /*arr*/) {
     //    std::cout << "copyswap" << std::endl;
-    if (src != NULL) {
-      T& t1 = *static_cast<T*>(dst);
-      T& t2 = *static_cast<T*>(src);
-      t1 = t2;
-    }
+    if (user_type_traits<T>::requires_initialization) {
+      // Slots may be zero-filled but never constructed: heal them before
+      // they are read (assignment into such a slot is fine by the
+      // user_type_traits contract).
+      if (src != NULL) {
+        T& t2 = *static_cast<T*>(src);
+        if (user_type_traits<T>::is_uninitialized(t2)) t2 = T(0);
+        T& t1 = *static_cast<T*>(dst);
+        t1 = t2;
+      }
 
-    if (swap) {
-      T& t1 = *static_cast<T*>(dst);
-      T& t2 = *static_cast<T*>(src);
-      std::swap(t1, t2);
+      if (swap) {
+        T& t1 = *static_cast<T*>(dst);
+        T& t2 = *static_cast<T*>(src);
+        if (user_type_traits<T>::is_uninitialized(t1)) t1 = T(0);
+        if (user_type_traits<T>::is_uninitialized(t2)) t2 = T(0);
+        std::swap(t1, t2);
+      }
+    } else {
+      if (src != NULL) {
+        T& t1 = *static_cast<T*>(dst);
+        T& t2 = *static_cast<T*>(src);
+        t1 = t2;
+      }
+
+      if (swap) {
+        T& t1 = *static_cast<T*>(dst);
+        T& t2 = *static_cast<T*>(src);
+        std::swap(t1, t2);
+      }
     }
   }
 
@@ -137,6 +171,13 @@ struct SpecialMethods<T, NPY_USERDEF> {
     PyArray_Descr* descr = PyArray_DTYPE(py_array);
     PyTypeObject* array_scalar_type = descr->typeobj;
     PyTypeObject* src_obj_type = Py_TYPE(src_obj);
+
+    // For types whose all-zero pattern is the "never constructed" state,
+    // zero the destination first so that T::operator= takes its
+    // init-before-set path even if the slot holds garbage. Note that numpy
+    // never destructs user-dtype elements, so overwriting a previously
+    // constructed element this way trades a crash for a bounded leak.
+    prepare_destination<T>(dest_ptr);
 
     T& dest = *static_cast<T*>(dest_ptr);
     if (array_scalar_type != src_obj_type) {
@@ -195,7 +236,7 @@ struct SpecialMethods<T, NPY_USERDEF> {
     static const T ZeroValue = T(0);
     PyArrayObject* py_array = static_cast<PyArrayObject*>(array);
     if (py_array == NULL || PyArray_ISBEHAVED_RO(py_array)) {
-      const T& value = *static_cast<T*>(ip);
+      const T& value = value_or_zero(*static_cast<T*>(ip), ZeroValue);
       return (npy_bool)(value != ZeroValue);
     } else {
       T tmp_value;
@@ -208,26 +249,56 @@ struct SpecialMethods<T, NPY_USERDEF> {
   inline static void dotfunc(void* ip0_, npy_intp is0, void* ip1_, npy_intp is1,
                              void* op, npy_intp n, void* /*arr*/) {
     //    std::cout << "dotfunc" << std::endl;
-    typedef Eigen::Matrix<T, Eigen::Dynamic, 1> VectorT;
-    typedef Eigen::InnerStride<Eigen::Dynamic> InputStride;
-    typedef const Eigen::Map<const VectorT, 0, InputStride> ConstMapType;
+    if (user_type_traits<T>::requires_initialization) {
+      // Same conjugating semantics as Eigen's dot below, but reading each
+      // operand through value_or_zero so that never-constructed (zero-filled)
+      // slots are treated as an exact T(0) instead of being handed to the
+      // scalar's operators.
+      const T zero(0);
+      T acc(0);
+      const char* p0 = static_cast<const char*>(ip0_);
+      const char* p1 = static_cast<const char*>(ip1_);
+      for (npy_intp i = 0; i < n; ++i) {
+        const T& x = *reinterpret_cast<const T*>(p0);
+        const T& y = *reinterpret_cast<const T*>(p1);
+        acc += Eigen::numext::conj(value_or_zero(x, zero)) *
+               value_or_zero(y, zero);
+        p0 += is0;
+        p1 += is1;
+      }
+      *static_cast<T*>(op) = acc;
+    } else {
+      typedef Eigen::Matrix<T, Eigen::Dynamic, 1> VectorT;
+      typedef Eigen::InnerStride<Eigen::Dynamic> InputStride;
+      typedef const Eigen::Map<const VectorT, 0, InputStride> ConstMapType;
 
-    ConstMapType v0(static_cast<T*>(ip0_), n,
-                    InputStride(is0 / (Eigen::DenseIndex)sizeof(T))),
-        v1(static_cast<T*>(ip1_), n,
-           InputStride(is1 / (Eigen::DenseIndex)sizeof(T)));
+      ConstMapType v0(static_cast<T*>(ip0_), n,
+                      InputStride(is0 / (Eigen::DenseIndex)sizeof(T))),
+          v1(static_cast<T*>(ip1_), n,
+             InputStride(is1 / (Eigen::DenseIndex)sizeof(T)));
 
-    *static_cast<T*>(op) = v0.dot(v1);
+      *static_cast<T*>(op) = v0.dot(v1);
+    }
   }
 
   inline static int fillwithscalar(void* buffer_, npy_intp length, void* value,
                                    void* /*arr*/) {
     //    std::cout << "fillwithscalar" << std::endl;
-    T r = *static_cast<T*>(value);
-    T* buffer = static_cast<T*>(buffer_);
-    npy_intp i;
-    for (i = 0; i < length; i++) {
-      buffer[i] = r;
+    if (user_type_traits<T>::requires_initialization) {
+      const T zero(0);
+      T r = value_or_zero(*static_cast<T*>(value), zero);
+      T* buffer = static_cast<T*>(buffer_);
+      npy_intp i;
+      for (i = 0; i < length; i++) {
+        buffer[i] = r;
+      }
+    } else {
+      T r = *static_cast<T*>(value);
+      T* buffer = static_cast<T*>(buffer_);
+      npy_intp i;
+      for (i = 0; i < length; i++) {
+        buffer[i] = r;
+      }
     }
     return 0;
   }
@@ -235,12 +306,25 @@ struct SpecialMethods<T, NPY_USERDEF> {
   static int fill(void* data_, npy_intp length, void* /*arr*/) {
     //    std::cout << "fill" << std::endl;
     T* data = static_cast<T*>(data_);
-    const T delta = data[1] - data[0];
-    T r = data[1];
-    npy_intp i;
-    for (i = 2; i < length; i++) {
-      r = r + delta;
-      data[i] = r;
+    if (user_type_traits<T>::requires_initialization) {
+      const T zero(0);
+      const T& first = value_or_zero(data[0], zero);
+      const T& second = value_or_zero(data[1], zero);
+      const T delta = second - first;
+      T r = second;
+      npy_intp i;
+      for (i = 2; i < length; i++) {
+        r = r + delta;
+        data[i] = r;
+      }
+    } else {
+      const T delta = data[1] - data[0];
+      T r = data[1];
+      npy_intp i;
+      for (i = 2; i < length; i++) {
+        r = r + delta;
+        data[i] = r;
+      }
     }
     return 0;
   }

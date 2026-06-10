@@ -292,6 +292,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/angle-axis.hpp
     include/eigenpy/quaternion.hpp
     include/eigenpy/user-type.hpp
+    include/eigenpy/user-type-traits.hpp
     include/eigenpy/ufunc.hpp
     include/eigenpy/register.hpp
     include/eigenpy/std-array.hpp
