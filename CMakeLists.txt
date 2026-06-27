@@ -330,8 +330,8 @@ endif()
 # --- ROS2 Support -----------------------------------
 # ----------------------------------------------------
 jrl_generate_ros2_package_files(
-  INSTALL_CPP_PACKAGE_FILES [[NOT BUILD_STANDALONE_PYTHON_INTERFACE]]
-  INSTALL_PYTHON_PACKAGE_FILES [[BUILD_PYTHON_INTERFACE]]
+  INSTALL_CPP_PACKAGE_FILES ON
+  INSTALL_PYTHON_PACKAGE_FILES ON
 )
 
 # ----------------------------------------------------
