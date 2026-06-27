@@ -87,14 +87,16 @@ jobs:
         pixi run -e ${{ matrix.environment }} configure
 
     - name: Build EigenPy [MacOS/Linux/Windows]
-      env:
-        CMAKE_BUILD_PARALLEL_LEVEL: 2
       run: |
-        pixi run -e ${{ matrix.environment }} build --verbose --parallel 2
+        pixi run -e ${{ matrix.environment }} --skip-deps build --verbose --parallel 2
 
     - name: Test EigenPy [MacOS/Linux/Windows]
       run: |
-        pixi run -e ${{ matrix.environment }} test
+        pixi run -e ${{ matrix.environment }} --skip-deps test
+
+    - name: Install EigenPy [MacOS/Linux/Windows]
+      run: |
+        pixi run -e ${{ matrix.environment }} --skip-deps install
 
     - name: Show ccache statistics [MacOS/Linux/Windows]
       run: |
