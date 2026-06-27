@@ -16,7 +16,9 @@ function(eigenpy_python_add_test name)
   add_test(NAME ${test_name} COMMAND $<TARGET_FILE:Python::Interpreter> ${script_path})
   set_tests_properties(
     ${test_name}
-    PROPERTIES ENVIRONMENT PYTHONPATH=$<TARGET_FILE_DIR:eigenpy_pywrap>/.. DEPENDS eigenpy_pywrap
+    PROPERTIES
+      ENVIRONMENT_MODIFICATION PYTHONPATH=path_list_prepend:$<TARGET_FILE_DIR:eigenpy_pywrap>/..
+      DEPENDS eigenpy_pywrap
   )
 endfunction()
 
