@@ -4,7 +4,7 @@ ci:
   autoupdate_schedule: quarterly
 repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.9
+  rev: v0.15.20
   hooks:
   - id: ruff
     args:
@@ -23,7 +23,7 @@ repos:
   - id: toml-sort-fix
     exclude: pixi.toml|dockgen.toml
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v22.1.2
+  rev: v22.1.5
   hooks:
   - id: clang-format
 - repo: https://github.com/pre-commit/pre-commit-hooks
