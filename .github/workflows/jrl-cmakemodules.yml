@@ -40,8 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          repository: ahoarau/jrl-cmakemodules
-          ref: jrl-next
+          repository: jrl-umi3218/jrl-cmakemodules
           path: ${{ github.workspace }}/jrl-cmakemodules
       - uses: actions/checkout@v7
         with:
