@@ -18,7 +18,6 @@ function(eigenpy_python_add_test name)
     ${test_name}
     PROPERTIES
       ENVIRONMENT_MODIFICATION PYTHONPATH=path_list_prepend:$<TARGET_FILE_DIR:eigenpy_pywrap>/..
-      DEPENDS eigenpy_pywrap
   )
 endfunction()
 
