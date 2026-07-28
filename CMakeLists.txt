@@ -45,7 +45,7 @@ endif()
 jrl_find_package(Eigen3 CONFIG REQUIRED)
 
 jrl_find_python(3.10 REQUIRED COMPONENTS Interpreter Development.Module NumPy)
-jrl_find_package(Boost CONFIG REQUIRED COMPONENTS python numpy)
+jrl_find_package(Boost CONFIG REQUIRED COMPONENTS python3 numpy)
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
   jrl_find_package(CHOLMOD REQUIRED)
