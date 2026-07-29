@@ -42,13 +42,13 @@ endif()
 # ----------------------------------------------------
 # --- DEPENDENCIES -----------------------------------
 # ----------------------------------------------------
-jrl_find_package(Eigen3 CONFIG REQUIRED)
+jrl_find_package(Eigen3 CONFIG REQUIRED EXPECTED_TARGETS Eigen3::Eigen)
 
-jrl_find_python(3.10 REQUIRED COMPONENTS Interpreter Development.Module NumPy)
-jrl_find_package(Boost CONFIG REQUIRED COMPONENTS python3 numpy)
+jrl_find_python(3.10 REQUIRED COMPONENTS Interpreter Development.Module NumPy EXPECTED_TARGETS Python::Module Python::NumPy)
+jrl_find_package(Boost CONFIG REQUIRED COMPONENTS python3 numpy EXPECTED_TARGETS Boost::python Boost::numpy)
 
 if(BUILD_WITH_CHOLMOD_SUPPORT)
-  jrl_find_package(CHOLMOD REQUIRED)
+  jrl_find_package(CHOLMOD REQUIRED EXPECTED_TARGETS SuiteSparse::CHOLMOD)
 endif()
 
 if(BUILD_WITH_ACCELERATE_SUPPORT AND APPLE)
