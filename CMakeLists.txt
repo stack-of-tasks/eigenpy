@@ -271,7 +271,7 @@ set(
 
 add_library(eigenpy SHARED ${eigenpy_SOURCES} ${eigenpy_HEADERS})
 add_library(eigenpy::eigenpy ALIAS eigenpy)
-jrl_target_enforce_msvc_conformance(eigenpy PRIVATE)
+jrl_target_enforce_msvc_conformance(eigenpy PUBLIC)
 target_compile_features(eigenpy PUBLIC cxx_std_17)
 
 jrl_target_generate_config_header(eigenpy PUBLIC VERSION ${PROJECT_VERSION})
