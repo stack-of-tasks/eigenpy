@@ -27,7 +27,7 @@ jrl_option(
 )
 
 jrl_option(BUILD_WITH_ACCELERATE_SUPPORT
-           "Build Accelerate support (Apple only)" OFF
+           "Build Accelerate support (Apple only)" OFF CONDITION APPLE FALLBACK OFF
 )
 
 jrl_option(BUILD_TESTING "Build unit tests" OFF)
