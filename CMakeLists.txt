@@ -67,210 +67,86 @@ if(BUILD_DOCUMENTATION)
 endif()
 
 # ----------------------------------------------------
-# --- INCLUDE ----------------------------------------
-# ----------------------------------------------------
-set(
-  eigenpy_HEADERS
-  # Utils
-  include/eigenpy/utils/scalar-name.hpp
-  include/eigenpy/utils/is-approx.hpp
-  include/eigenpy/utils/is-aligned.hpp
-  include/eigenpy/utils/traits.hpp
-  include/eigenpy/utils/python-compat.hpp
-  include/eigenpy/utils/empty-visitor.hpp
-  # Solvers
-  include/eigenpy/solvers/solvers.hpp
-  include/eigenpy/solvers/preconditioners.hpp
-  include/eigenpy/solvers/IterativeSolverBase.hpp
-  include/eigenpy/solvers/LeastSquaresConjugateGradient.hpp
-  include/eigenpy/solvers/BiCGSTAB.hpp
-  include/eigenpy/solvers/MINRES.hpp
-  include/eigenpy/solvers/ConjugateGradient.hpp
-  include/eigenpy/solvers/SparseSolverBase.hpp
-  include/eigenpy/solvers/BasicPreconditioners.hpp
-  include/eigenpy/solvers/BFGSPreconditioners.hpp
-  include/eigenpy/solvers/IncompleteCholesky.hpp
-  include/eigenpy/solvers/IncompleteLUT.hpp
-  # Decompositions
-  include/eigenpy/decompositions/sparse/SimplicialLLT.hpp
-  include/eigenpy/decompositions/sparse/SimplicialLDLT.hpp
-  include/eigenpy/decompositions/sparse/SparseLU.hpp
-  include/eigenpy/decompositions/sparse/SparseQR.hpp
-  include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
-  include/eigenpy/decompositions/sparse/SparseSolverBase.hpp
-  include/eigenpy/decompositions/sparse/LDLT.hpp
-  include/eigenpy/decompositions/sparse/LLT.hpp
-  include/eigenpy/decompositions/decompositions.hpp
-  include/eigenpy/decompositions/EigenSolver.hpp
-  include/eigenpy/decompositions/GeneralizedEigenSolver.hpp
-  include/eigenpy/decompositions/GeneralizedSelfAdjointEigenSolver.hpp
-  include/eigenpy/decompositions/HessenbergDecomposition.hpp
-  include/eigenpy/decompositions/RealQZ.hpp
-  include/eigenpy/decompositions/Tridiagonalization.hpp
-  include/eigenpy/decompositions/RealSchur.hpp
-  include/eigenpy/decompositions/ComplexEigenSolver.hpp
-  include/eigenpy/decompositions/ComplexSchur.hpp
-  include/eigenpy/decompositions/FullPivLU.hpp
-  include/eigenpy/decompositions/PartialPivLU.hpp
-  include/eigenpy/decompositions/PermutationMatrix.hpp
-  include/eigenpy/decompositions/LDLT.hpp
-  include/eigenpy/decompositions/LLT.hpp
-  include/eigenpy/decompositions/QR.hpp
-  include/eigenpy/decompositions/HouseholderQR.hpp
-  include/eigenpy/decompositions/ColPivHouseholderQR.hpp
-  include/eigenpy/decompositions/CompleteOrthogonalDecomposition.hpp
-  include/eigenpy/decompositions/FullPivHouseholderQR.hpp
-  include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
-  include/eigenpy/decompositions/SVDBase.hpp
-  include/eigenpy/decompositions/BDCSVD.hpp
-  include/eigenpy/decompositions/JacobiSVD.hpp
-  include/eigenpy/decompositions/minres.hpp
-  # Eigen
-  include/eigenpy/eigen/EigenBase.hpp
-  # Core
-  include/eigenpy/alignment.hpp
-  include/eigenpy/computation-info.hpp
-  include/eigenpy/deprecation-policy.hpp
-  include/eigenpy/eigenpy.hpp
-  include/eigenpy/exception.hpp
-  include/eigenpy/scalar-conversion.hpp
-  include/eigenpy/expose.hpp
-  include/eigenpy/copyable.hpp
-  include/eigenpy/details.hpp
-  include/eigenpy/fwd.hpp
-  include/eigenpy/eigen-allocator.hpp
-  include/eigenpy/eigen-to-python.hpp
-  include/eigenpy/eigen-from-python.hpp
-  include/eigenpy/eigen-typedef.hpp
-  include/eigenpy/id.hpp
-  include/eigenpy/numpy-map.hpp
-  include/eigenpy/geometry.hpp
-  include/eigenpy/geometry-conversion.hpp
-  include/eigenpy/map.hpp
-  include/eigenpy/memory.hpp
-  include/eigenpy/numpy.hpp
-  include/eigenpy/numpy-allocator.hpp
-  include/eigenpy/numpy-type.hpp
-  include/eigenpy/registration.hpp
-  include/eigenpy/registration_class.hpp
-  include/eigenpy/angle-axis.hpp
-  include/eigenpy/quaternion.hpp
-  include/eigenpy/user-type.hpp
-  include/eigenpy/ufunc.hpp
-  include/eigenpy/register.hpp
-  include/eigenpy/std-array.hpp
-  include/eigenpy/std-map.hpp
-  include/eigenpy/std-pair.hpp
-  include/eigenpy/std-vector.hpp
-  include/eigenpy/optional.hpp
-  include/eigenpy/pickle-vector.hpp
-  include/eigenpy/stride.hpp
-  include/eigenpy/tensor/eigen-from-python.hpp
-  include/eigenpy/sparse/eigen-from-python.hpp
-  include/eigenpy/scipy-allocator.hpp
-  include/eigenpy/scipy-type.hpp
-  include/eigenpy/variant.hpp
-  include/eigenpy/std-unique-ptr.hpp
-  include/eigenpy/swig.hpp
-  include/eigenpy/type_info.hpp
-  include/eigenpy/version.hpp
-)
-
-if(BUILD_WITH_CHOLMOD_SUPPORT)
-  list(
-    APPEND eigenpy_HEADERS
-    include/eigenpy/decompositions/sparse/cholmod/CholmodBase.hpp
-    include/eigenpy/decompositions/sparse/cholmod/CholmodDecomposition.hpp
-    include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLDLT.hpp
-    include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLLT.hpp
-    include/eigenpy/decompositions/sparse/cholmod/CholmodSupernodalLLT.hpp
-  )
-endif()
-
-if(BUILD_WITH_ACCELERATE_SUPPORT)
-  list(APPEND eigenpy_HEADERS include/eigenpy/decompositions/sparse/accelerate/Accelerate.hpp)
-endif()
-
-# ----------------------------------------------------
 # --- TARGETS ----------------------------------------
 # ----------------------------------------------------
-set(
-  eigenpy_SOURCES
-  # Solvers
-  src/solvers/preconditioners.cpp
-  src/solvers/solvers.cpp
-  src/solvers/minres.cpp
-  src/solvers/bicgstab.cpp
-  src/solvers/conjugate-gradient.cpp
-  src/solvers/least-squares-conjugate-gradient.cpp
-  src/solvers/incomplete-cholesky.cpp
-  src/solvers/incomplete-lut.cpp
-  # Decompositions
-  src/decompositions/decompositions.cpp
-  src/decompositions/eigen-solver.cpp
-  src/decompositions/generalized-eigen-solver.cpp
-  src/decompositions/generalized-self-adjoint-eigen-solver.cpp
-  src/decompositions/complex-eigen-solver.cpp
-  src/decompositions/complex-schur.cpp
-  src/decompositions/llt-solver.cpp
-  src/decompositions/ldlt-solver.cpp
-  src/decompositions/bdcsvd-solver.cpp
-  src/decompositions/jacobisvd-solver.cpp
-  src/decompositions/fullpivlu-solver.cpp
-  src/decompositions/hessenberg-decomposition.cpp
-  src/decompositions/real-qz.cpp
-  src/decompositions/tridiagonalization.cpp
-  src/decompositions/real-schur.cpp
-  src/decompositions/partialpivlu-solver.cpp
-  src/decompositions/sparse-lu-solver.cpp
-  src/decompositions/sparse-qr-solver.cpp
-  src/decompositions/qr-solvers.cpp
-  src/decompositions/self-adjoint-eigen-solver.cpp
-  src/decompositions/permutation-matrix.cpp
-  src/decompositions/simplicial-llt-solver.cpp
-  src/decompositions/simplicial-ldlt-solver.cpp
-  $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:src/decompositions/cholmod.cpp>
-  $<$<BOOL:${BUILD_WITH_ACCELERATE_SUPPORT}>:src/decompositions/accelerate.cpp>
-  # Core
-  src/exception.cpp
-  src/eigenpy.cpp
-  src/numpy.cpp
-  src/numpy-type.cpp
-  src/matrix-float.cpp
-  src/matrix-complex-float.cpp
-  src/matrix-complex-double.cpp
-  src/register.cpp
-  src/matrix-double.cpp
-  src/matrix-long-double.cpp
-  src/matrix-complex-long-double.cpp
-  src/matrix-bool.cpp
-  src/matrix-char.cpp
-  src/matrix-int8.cpp
-  src/matrix-uint8.cpp
-  src/matrix-int16.cpp
-  src/matrix-uint16.cpp
-  src/matrix-int32.cpp
-  src/matrix-uint32.cpp
-  src/matrix-windows-long.cpp
-  src/matrix-windows-ulong.cpp
-  src/matrix-mac-long.cpp
-  src/matrix-mac-ulong.cpp
-  src/matrix-int64.cpp
-  src/matrix-uint64.cpp
-  src/matrix-linux-long-long.cpp
-  src/matrix-linux-ulong-long.cpp
-  src/angle-axis.cpp
-  src/quaternion.cpp
-  src/geometry-conversion.cpp
-  src/scipy-type.cpp
-  src/std-vector.cpp
-  src/optional.cpp
-  src/type_info.cpp
-  src/version.cpp
-)
 
-add_library(eigenpy SHARED ${eigenpy_SOURCES} ${eigenpy_HEADERS})
+add_library(eigenpy SHARED)
 add_library(eigenpy::eigenpy ALIAS eigenpy)
+target_sources(
+  eigenpy
+  PRIVATE
+    # Solvers
+    src/solvers/preconditioners.cpp
+    src/solvers/solvers.cpp
+    src/solvers/minres.cpp
+    src/solvers/bicgstab.cpp
+    src/solvers/conjugate-gradient.cpp
+    src/solvers/least-squares-conjugate-gradient.cpp
+    src/solvers/incomplete-cholesky.cpp
+    src/solvers/incomplete-lut.cpp
+    # Decompositions
+    src/decompositions/decompositions.cpp
+    src/decompositions/eigen-solver.cpp
+    src/decompositions/generalized-eigen-solver.cpp
+    src/decompositions/generalized-self-adjoint-eigen-solver.cpp
+    src/decompositions/complex-eigen-solver.cpp
+    src/decompositions/complex-schur.cpp
+    src/decompositions/llt-solver.cpp
+    src/decompositions/ldlt-solver.cpp
+    src/decompositions/bdcsvd-solver.cpp
+    src/decompositions/jacobisvd-solver.cpp
+    src/decompositions/fullpivlu-solver.cpp
+    src/decompositions/hessenberg-decomposition.cpp
+    src/decompositions/real-qz.cpp
+    src/decompositions/tridiagonalization.cpp
+    src/decompositions/real-schur.cpp
+    src/decompositions/partialpivlu-solver.cpp
+    src/decompositions/sparse-lu-solver.cpp
+    src/decompositions/sparse-qr-solver.cpp
+    src/decompositions/qr-solvers.cpp
+    src/decompositions/self-adjoint-eigen-solver.cpp
+    src/decompositions/permutation-matrix.cpp
+    src/decompositions/simplicial-llt-solver.cpp
+    src/decompositions/simplicial-ldlt-solver.cpp
+    $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:src/decompositions/cholmod.cpp>
+    $<$<BOOL:${BUILD_WITH_ACCELERATE_SUPPORT}>:src/decompositions/accelerate.cpp>
+    # Core
+    src/exception.cpp
+    src/eigenpy.cpp
+    src/numpy.cpp
+    src/numpy-type.cpp
+    src/matrix-float.cpp
+    src/matrix-complex-float.cpp
+    src/matrix-complex-double.cpp
+    src/register.cpp
+    src/matrix-double.cpp
+    src/matrix-long-double.cpp
+    src/matrix-complex-long-double.cpp
+    src/matrix-bool.cpp
+    src/matrix-char.cpp
+    src/matrix-int8.cpp
+    src/matrix-uint8.cpp
+    src/matrix-int16.cpp
+    src/matrix-uint16.cpp
+    src/matrix-int32.cpp
+    src/matrix-uint32.cpp
+    src/matrix-windows-long.cpp
+    src/matrix-windows-ulong.cpp
+    src/matrix-mac-long.cpp
+    src/matrix-mac-ulong.cpp
+    src/matrix-int64.cpp
+    src/matrix-uint64.cpp
+    src/matrix-linux-long-long.cpp
+    src/matrix-linux-ulong-long.cpp
+    src/angle-axis.cpp
+    src/quaternion.cpp
+    src/geometry-conversion.cpp
+    src/scipy-type.cpp
+    src/std-vector.cpp
+    src/optional.cpp
+    src/type_info.cpp
+    src/version.cpp
+)
 jrl_target_set_default_compile_options(eigenpy PRIVATE)
 jrl_target_enforce_msvc_conformance(eigenpy PUBLIC)
 target_compile_features(eigenpy PUBLIC cxx_std_17)
@@ -312,7 +188,121 @@ if(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
   target_compile_options(eigenpy PRIVATE -Wno-conversion)
 endif()
 
-jrl_target_headers(eigenpy PUBLIC HEADERS ${eigenpy_HEADERS} BASE_DIRS include)
+jrl_target_headers(
+  eigenpy
+  PUBLIC
+    HEADERS
+    # Utils
+    include/eigenpy/utils/scalar-name.hpp
+    include/eigenpy/utils/is-approx.hpp
+    include/eigenpy/utils/is-aligned.hpp
+    include/eigenpy/utils/traits.hpp
+    include/eigenpy/utils/python-compat.hpp
+    include/eigenpy/utils/empty-visitor.hpp
+    # Solvers
+    include/eigenpy/solvers/solvers.hpp
+    include/eigenpy/solvers/preconditioners.hpp
+    include/eigenpy/solvers/IterativeSolverBase.hpp
+    include/eigenpy/solvers/LeastSquaresConjugateGradient.hpp
+    include/eigenpy/solvers/BiCGSTAB.hpp
+    include/eigenpy/solvers/MINRES.hpp
+    include/eigenpy/solvers/ConjugateGradient.hpp
+    include/eigenpy/solvers/SparseSolverBase.hpp
+    include/eigenpy/solvers/BasicPreconditioners.hpp
+    include/eigenpy/solvers/BFGSPreconditioners.hpp
+    include/eigenpy/solvers/IncompleteCholesky.hpp
+    include/eigenpy/solvers/IncompleteLUT.hpp
+    # Decompositions
+    include/eigenpy/decompositions/sparse/SimplicialLLT.hpp
+    include/eigenpy/decompositions/sparse/SimplicialLDLT.hpp
+    include/eigenpy/decompositions/sparse/SparseLU.hpp
+    include/eigenpy/decompositions/sparse/SparseQR.hpp
+    include/eigenpy/decompositions/sparse/SimplicialCholesky.hpp
+    include/eigenpy/decompositions/sparse/SparseSolverBase.hpp
+    include/eigenpy/decompositions/sparse/LDLT.hpp
+    include/eigenpy/decompositions/sparse/LLT.hpp
+    include/eigenpy/decompositions/decompositions.hpp
+    include/eigenpy/decompositions/EigenSolver.hpp
+    include/eigenpy/decompositions/GeneralizedEigenSolver.hpp
+    include/eigenpy/decompositions/GeneralizedSelfAdjointEigenSolver.hpp
+    include/eigenpy/decompositions/HessenbergDecomposition.hpp
+    include/eigenpy/decompositions/RealQZ.hpp
+    include/eigenpy/decompositions/Tridiagonalization.hpp
+    include/eigenpy/decompositions/RealSchur.hpp
+    include/eigenpy/decompositions/ComplexEigenSolver.hpp
+    include/eigenpy/decompositions/ComplexSchur.hpp
+    include/eigenpy/decompositions/FullPivLU.hpp
+    include/eigenpy/decompositions/PartialPivLU.hpp
+    include/eigenpy/decompositions/PermutationMatrix.hpp
+    include/eigenpy/decompositions/LDLT.hpp
+    include/eigenpy/decompositions/LLT.hpp
+    include/eigenpy/decompositions/QR.hpp
+    include/eigenpy/decompositions/HouseholderQR.hpp
+    include/eigenpy/decompositions/ColPivHouseholderQR.hpp
+    include/eigenpy/decompositions/CompleteOrthogonalDecomposition.hpp
+    include/eigenpy/decompositions/FullPivHouseholderQR.hpp
+    include/eigenpy/decompositions/SelfAdjointEigenSolver.hpp
+    include/eigenpy/decompositions/SVDBase.hpp
+    include/eigenpy/decompositions/BDCSVD.hpp
+    include/eigenpy/decompositions/JacobiSVD.hpp
+    include/eigenpy/decompositions/minres.hpp
+    # Eigen
+    include/eigenpy/eigen/EigenBase.hpp
+    # Core
+    include/eigenpy/alignment.hpp
+    include/eigenpy/computation-info.hpp
+    include/eigenpy/deprecation-policy.hpp
+    include/eigenpy/eigenpy.hpp
+    include/eigenpy/exception.hpp
+    include/eigenpy/scalar-conversion.hpp
+    include/eigenpy/expose.hpp
+    include/eigenpy/copyable.hpp
+    include/eigenpy/details.hpp
+    include/eigenpy/fwd.hpp
+    include/eigenpy/eigen-allocator.hpp
+    include/eigenpy/eigen-to-python.hpp
+    include/eigenpy/eigen-from-python.hpp
+    include/eigenpy/eigen-typedef.hpp
+    include/eigenpy/id.hpp
+    include/eigenpy/numpy-map.hpp
+    include/eigenpy/geometry.hpp
+    include/eigenpy/geometry-conversion.hpp
+    include/eigenpy/map.hpp
+    include/eigenpy/memory.hpp
+    include/eigenpy/numpy.hpp
+    include/eigenpy/numpy-allocator.hpp
+    include/eigenpy/numpy-type.hpp
+    include/eigenpy/registration.hpp
+    include/eigenpy/registration_class.hpp
+    include/eigenpy/angle-axis.hpp
+    include/eigenpy/quaternion.hpp
+    include/eigenpy/user-type.hpp
+    include/eigenpy/ufunc.hpp
+    include/eigenpy/register.hpp
+    include/eigenpy/std-array.hpp
+    include/eigenpy/std-map.hpp
+    include/eigenpy/std-pair.hpp
+    include/eigenpy/std-vector.hpp
+    include/eigenpy/optional.hpp
+    include/eigenpy/pickle-vector.hpp
+    include/eigenpy/stride.hpp
+    include/eigenpy/tensor/eigen-from-python.hpp
+    include/eigenpy/sparse/eigen-from-python.hpp
+    include/eigenpy/scipy-allocator.hpp
+    include/eigenpy/scipy-type.hpp
+    include/eigenpy/variant.hpp
+    include/eigenpy/std-unique-ptr.hpp
+    include/eigenpy/swig.hpp
+    include/eigenpy/type_info.hpp
+    include/eigenpy/version.hpp
+    $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:include/eigenpy/decompositions/sparse/cholmod/CholmodBase.hpp>
+    $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:include/eigenpy/decompositions/sparse/cholmod/CholmodDecomposition.hpp>
+    $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLDLT.hpp>
+    $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:include/eigenpy/decompositions/sparse/cholmod/CholmodSimplicialLLT.hpp>
+    $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:include/eigenpy/decompositions/sparse/cholmod/CholmodSupernodalLLT.hpp>
+    $<$<BOOL:${BUILD_WITH_ACCELERATE_SUPPORT}>:include/eigenpy/decompositions/sparse/accelerate/Accelerate.hpp>
+  BASE_DIRS include
+)
 
 # ----------------------------------------------------
 # --- EXPORT -----------------------------------------
