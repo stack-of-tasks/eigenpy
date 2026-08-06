@@ -22,16 +22,18 @@ jrl_option(
 
 jrl_option(
   BUILD_WITH_CHOLMOD_SUPPORT
-  "Build EigenPy with the Cholmod (LGPL) support. See CHOLMOD/Doc/License.txt for further details."
+  "Build with the Cholmod (LGPL) support. See CHOLMOD/Doc/License.txt for further details."
   OFF
 )
 
 jrl_option(BUILD_WITH_ACCELERATE_SUPPORT
-           "Build EigenPy with the Accelerate support (Apple only)" OFF
+           "Build Accelerate support (Apple only)" OFF
 )
 
-jrl_option(BUILD_TESTING "Build the EigenPy unit tests" OFF)
-jrl_option(BUILD_TESTING_SCIPY "Build the eigenpy unit tests with scipy" OFF)
+jrl_option(BUILD_TESTING "Build unit tests" OFF)
+jrl_option(BUILD_TESTING_SCIPY "Build unit tests with scipy" OFF)
+jrl_option(BUILD_DOCUMENTATION "Build the documentation" ON)
+jrl_option(INSTALL_DOCUMENTATION "Install the documentation" ON CONDITION BUILD_DOCUMENTATION FALLBACK OFF)
 
 if(BUILD_WITH_ACCELERATE_SUPPORT)
   if(NOT APPLE)
@@ -57,6 +59,10 @@ endif()
 
 if(BUILD_TESTING AND BUILD_TESTING_SCIPY)
   jrl_check_python_module(scipy REQUIRED)
+endif()
+
+if(BUILD_DOCUMENTATION)
+  jrl_find_package(Doxygen REQUIRED COMPONENTS dot)
 endif()
 
 # ----------------------------------------------------
@@ -324,6 +330,13 @@ add_subdirectory(python)
 if(BUILD_TESTING)
   enable_testing()
   add_subdirectory(unittest)
+endif()
+
+# ----------------------------------------------------
+# --- DOCUMENTATION ----------------------------------
+# ----------------------------------------------------
+if(BUILD_DOCUMENTATION)
+  add_subdirectory(doc)
 endif()
 
 # ----------------------------------------------------
