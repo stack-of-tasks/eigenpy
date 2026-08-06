@@ -293,7 +293,6 @@ target_link_libraries(
     Python::Module
     Python::NumPy
     Boost::python
-    Boost::numpy
     $<$<BOOL:${BUILD_WITH_CHOLMOD_SUPPORT}>:SuiteSparse::CHOLMOD>
     $<$<BOOL:${BUILD_WITH_ACCELERATE_SUPPORT}>:Accelerate>
 )
