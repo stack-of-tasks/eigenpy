@@ -53,7 +53,7 @@ set(DOXYGEN_DOT_IMAGE_FORMAT SVG)
 
 # Configure Doxygen
 doxygen_add_docs(
-  doc
+  eigenpy-doc
   ALL
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/include
