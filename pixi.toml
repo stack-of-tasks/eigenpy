@@ -104,9 +104,7 @@ configure = { cmd = [
   "-DBUILD_WITH_CHOLMOD_SUPPORT=$EIGENPY_CHOLMOD_SUPPORT",
   "-DBUILD_WITH_ACCELERATE_SUPPORT=$EIGENPY_ACCELERATE_SUPPORT",
 ] }
-build = { cmd = "cmake --build build", depends-on = [
-  "configure",
-] }
+build = { cmd = "cmake --build build", depends-on = ["configure"] }
 clean = { cmd = "rm -rf build" }
 test = { cmd = "ctest --test-dir build --output-on-failure", depends-on = [
   "build",
@@ -131,29 +129,8 @@ test-packaging = { cmd = [
 dependencies = { pre-commit = ">=3.6.2" }
 tasks = { lint = { cmd = "pre-commit run --all" } }
 
-# Increment the version number with EIGENPY_VERSION variable
-[feature.new-version.dependencies]
-tomlkit = ">=0.13.2"
-
-[feature.new-version.tasks]
-configure-new-version = { cmd = [
-  "CXXFLAGS=$EIGENPY_CXX_FLAGS",
-  "cmake",
-  "-G",
-  "Ninja",
-  "-B",
-  "build_new_version",
-  "-S",
-  ".",
-  "-DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX",
-  "-DCMAKE_BUILD_TYPE=$EIGENPY_BUILD_TYPE",
-  "-DGENERATE_PYTHON_STUBS=ON",
-  "-DBUILD_WITH_CHOLMOD_SUPPORT=ON",
-  "-DBUILD_WITH_ACCELERATE_SUPPORT=OFF",
-] }
-release-new-version = { cmd = "VERSION=$EIGENPY_VERSION cmake --build build_new_version --target release", depends-on = [
-  "configure-new-version",
-] }
+[feature.new-version]
+dependencies = { jrl-cmakemodules-scripts = "*" }
 
 # Cholmod support
 [feature.cholmod]
@@ -203,7 +180,8 @@ dependencies = { clangxx = "*" }
 [environments]
 default = { features = ["python-latest"], solve-group = "python-latest" }
 clang = { features = ["clang", "python-latest"] }
-lint = { features = ["lint"], solve-group = "python-latest" }
+lint = { features = ["lint"], no-default-feature = true }
+new-version = { features = ["new-version"], no-default-feature = true }
 cholmod = { features = [
   "cholmod",
   "python-latest",
@@ -222,12 +200,6 @@ all-python-oldest = { features = [
 all-clang-cl = { features = [
   "cholmod",
   "clang-cl",
-  "python-latest",
-], solve-group = "python-latest" }
-# Release a new software version
-new-version = { features = [
-  "new-version",
-  "cholmod",
   "python-latest",
 ], solve-group = "python-latest" }
 # test-pixi-build = { features = ["test-pixi-build"], no-default-feature = true }
