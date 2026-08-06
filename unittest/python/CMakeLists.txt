@@ -12,7 +12,7 @@ function(eigenpy_python_add_test name)
     set(script_path ${CMAKE_CURRENT_SOURCE_DIR}/test_${name}.py)
   endif()
 
-  set(test_name "eigenpy: test_${name}.py")
+  set(test_name "eigenpy-test-py-bind-${name}")
   add_test(NAME ${test_name} COMMAND $<TARGET_FILE:Python::Interpreter> ${script_path})
   set_tests_properties(
     ${test_name}

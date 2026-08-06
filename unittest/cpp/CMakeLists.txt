@@ -23,11 +23,11 @@ function(eigenpy_add_test name)
   )
 
   add_test(
-    NAME "eigenpy: import ${name}"
+    NAME "eigenpy-test-cpp-import-${name}"
     COMMAND $<TARGET_FILE:Python::Interpreter> -c "import ${name}"
   )
 
-  set(test_name "eigenpy: test_${name}.py")
+  set(test_name "eigenpy-test-cpp-${name}.py")
   add_test(
     NAME ${test_name}
     COMMAND $<TARGET_FILE:Python::Interpreter> ${source_dir}/test_${name}.py
