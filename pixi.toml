@@ -22,6 +22,8 @@ python = ">=3.10"
 scipy = ">=1.10.0"
 pyproject-metadata = ">=0.11.0"
 jrl-cmakemodules = ">=2"
+doxygen = "*"
+graphviz = "*"
 
 [package]
 name = { workspace = true }
@@ -35,6 +37,7 @@ extra-args = [
   "-DGENERATE_PYTHON_STUBS=ON",
   "-DBUILD_TESTING=OFF",
   "-DBUILD_TESTING_SCIPY=OFF",
+  "-DBUILD_DOCUMENTATION=OFF",
 ]
 
 [package.build.target.win-64.config]
@@ -42,6 +45,7 @@ extra-args = [
   "-DGENERATE_PYTHON_STUBS=ON",
   "-DBUILD_TESTING=OFF",
   "-DBUILD_TESTING_SCIPY=OFF",
+  "-DBUILD_DOCUMENTATION=OFF",
 ]
 
 [package.build-dependencies]
