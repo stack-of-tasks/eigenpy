@@ -22,6 +22,7 @@ endif()
 jrl_python_compile_all(DIRECTORY ${CMAKE_BINARY_DIR}/lib/site-packages/eigenpy)
 
 jrl_python_compute_install_dir(python_install_dir)
+install(TARGETS eigenpy_pywrap DESTINATION ${python_install_dir}/eigenpy)
 install(
   DIRECTORY ${CMAKE_BINARY_DIR}/lib/site-packages/eigenpy
   DESTINATION ${python_install_dir}
@@ -30,6 +31,4 @@ install(
   PATTERN "*.pyc"
   PATTERN "*.pyi"
   PATTERN "*.typed"
-  PATTERN "*.so"
-  PATTERN "*.pyd"
 )
