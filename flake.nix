@@ -1,20 +1,13 @@
 {
   description = "Bindings between Numpy and Eigen using Boost.Python";
 
-  inputs = {
-    gepetto.url = "github:gepetto/nix";
-    jrl-cmakemodules = {
-      url = "github:jrl-umi3218/jrl-cmakemodules";
-      inputs.gepetto.follows = "gepetto";
-    };
-  };
+  inputs.gepetto.url = "github:gepetto/nix";
 
   outputs =
     inputs:
     inputs.gepetto.lib.mkFlakoboros inputs (
       { lib, ... }:
       {
-        overlays = [ inputs.jrl-cmakemodules.overlays.flakoboros ];
         pyOverrideAttrs.eigenpy = {
           src = lib.fileset.toSource {
             root = ./.;
