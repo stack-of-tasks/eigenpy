@@ -121,7 +121,7 @@ shared_ptr<MyVirtualData> copy_shared(const shared_ptr<MyVirtualData>& d) {
   return d;
 }
 
-BOOST_PYTHON_MODULE(bind_virtual_factory) {
+BOOST_PYTHON_MODULE(virtual_factory) {
   assert(std::is_polymorphic<MyVirtualClass>::value &&
          "MyVirtualClass should be polymorphic!");
   assert(std::is_polymorphic<MyVirtualData>::value &&

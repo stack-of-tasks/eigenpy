@@ -6,27 +6,27 @@ repos:
 - repo: https://github.com/astral-sh/ruff-pre-commit
   rev: v0.15.20
   hooks:
-  - id: ruff
+  - id: ruff-check
     args:
     - --fix
     - --exit-non-zero-on-fix
     - --ignore
     - UP036
   - id: ruff-format
-- repo: https://github.com/cheshirekow/cmake-format-precommit
-  rev: v0.6.13
-  hooks:
-  - id: cmake-format
 - repo: https://github.com/pappasam/toml-sort
   rev: v0.24.4
   hooks:
   - id: toml-sort-fix
     exclude: pixi.toml|dockgen.toml
 - repo: https://github.com/pre-commit/mirrors-clang-format
-  rev: v22.1.5
+  rev: v22.1.8
   hooks:
   - id: clang-format
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
   hooks:
   - id: trailing-whitespace
+- repo: https://github.com/BlankSpruce/gersemi-pre-commit
+  rev: 0.28.0
+  hooks:
+  - id: gersemi

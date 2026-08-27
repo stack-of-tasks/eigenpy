@@ -27,11 +27,11 @@ concurrency:
 
 jobs:
   eigenpy-pixi:
-    name: Standard - ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }} ${{ matrix.compiler }}
+    name: Pixi - ${{ matrix.os }} - Env ${{ matrix.environment }} ${{ matrix.build_type }} ${{ matrix.cxx_options }}
     runs-on: ${{ matrix.os }}
     env:
-      CCACHE_BASEDIR: "${GITHUB_WORKSPACE}"
-      CCACHE_DIR: "${GITHUB_WORKSPACE}/.ccache"
+      CCACHE_BASEDIR: ${{ github.workspace }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_COMPRESS: true
       CCACHE_COMPRESSLEVEL: 6
       # Since pixi will install a compiler, the compiler mtime will be changed.
@@ -64,35 +64,43 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
-      with:
-        submodules: recursive
 
     - uses: actions/cache@v6
       with:
-        path: .ccache
-        key: ccache-macos-linux-windows-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-${{ github.sha }}
-        restore-keys: ccache-macos-linux-windows-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-
+        path: ${{ env.CCACHE_DIR }}
+        key: ccache-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-${{ github.sha }}
+        restore-keys: ccache-pixi-${{ matrix.os }}-${{ matrix.build_type }}-${{ matrix.cxx_options }}-${{ matrix.environment }}-
 
     - uses: prefix-dev/setup-pixi@v0.10.0
       with:
-        cache: true
         environments: ${{ matrix.environment }}
 
     - name: Clear ccache statistics [MacOS/Linux/Windows]
       run: |
-        pixi run -e ${{ matrix.environment }} ccache -z
+        pixi run -e ${{ matrix.environment }} ccache --show-stats --zero-stats --verbose
 
-    - name: Build EigenPy [MacOS/Linux/Windows]
+    - name: Configure EigenPy [MacOS/Linux/Windows]
       env:
-        CMAKE_BUILD_PARALLEL_LEVEL: 2
         EIGENPY_BUILD_TYPE: ${{ matrix.build_type }}
         EIGENPY_CXX_FLAGS: ${{ matrix.cxx_options }}
       run: |
-        pixi run -e ${{ matrix.environment }} test
+        pixi run -e ${{ matrix.environment }} configure
+
+    - name: Build EigenPy [MacOS/Linux/Windows]
+      run: |
+        pixi run -e ${{ matrix.environment }} --skip-deps build --verbose --parallel 2
+
+    - name: Test EigenPy [MacOS/Linux/Windows]
+      run: |
+        pixi run -e ${{ matrix.environment }} --skip-deps test
+
+    - name: Install EigenPy [MacOS/Linux/Windows]
+      run: |
+        pixi run -e ${{ matrix.environment }} --skip-deps install
 
     - name: Show ccache statistics [MacOS/Linux/Windows]
       run: |
-        pixi run -e ${{ matrix.environment }} ccache -sv
+        pixi run -e ${{ matrix.environment }} ccache --show-stats --verbose
 
   # eigenpy-pixi-build:
   #   name: Pixi build - ${{ matrix.os }}
@@ -105,14 +113,12 @@ jobs:
 
   #   steps:
   #   - uses: actions/checkout@v7
-  #     with:
-  #       submodules: recursive
 
   #   - uses: prefix-dev/setup-pixi@v0.10.0
   #     env:
   #       CMAKE_BUILD_PARALLEL_LEVEL: 2
   #     with:
-  #       cache: true
+  #       cache: false # ⚠️ Disabling cache for testing ⚠️
   #       environments: test-pixi-build
 
   #   - name: Test package [MacOS/Linux/Windows]

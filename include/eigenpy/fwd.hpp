@@ -25,8 +25,6 @@
 #define EIGENPY_WITH_CXX11_SUPPORT
 #endif
 
-#define EIGENPY_STRING_LITERAL(string) #string
-#define EIGENPY_STRINGIZE(string) EIGENPY_STRING_LITERAL(string)
 #define _EIGENPY_PPCAT(A, B) A##B
 #define EIGENPY_PPCAT(A, B) _EIGENPY_PPCAT(A, B)
 #define EIGENPY_STRINGCAT(A, B) A B
@@ -201,7 +199,7 @@ namespace literals {
 ///
 /// Using-declare this operator or do `using namespace eigenpy::literals`. Then
 /// `bp::arg("matrix")` can be replaced by the literal `"matrix"_a`.
-inline boost::python::arg operator"" _a(const char* name, std::size_t) {
+inline boost::python::arg operator""_a(const char* name, std::size_t) {
   return boost::python::arg(name);
 }
 }  // namespace literals
