@@ -1,5 +1,4 @@
-EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
-======
+# EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
 
 <p align="center">
   <a href="https://opensource.org/licenses/BSD-2-Clause"><img src="https://img.shields.io/badge/License-BSD%202--Clause-green.svg" alt="License"/></a>
@@ -24,6 +23,21 @@ EigenPy — Versatile and efficient Python bindings between Numpy and Eigen
 - full support of runtime declaration of Numpy scalar types
 - extended API to expose several STL types and some of their Boost equivalents: `optional` types, `std::pair`, maps, variants...
 - full support of vectorization between C++ and Python (all the hold objects are properly aligned in memory)
+
+## Table of contents
+- [EigenPy — Versatile and efficient Python bindings between Numpy and Eigen](#eigenpy--versatile-and-efficient-python-bindings-between-numpy-and-eigen)
+   * [Installation](#installation)
+      + [Conda](#conda)
+      + [Ubuntu](#ubuntu)
+         - [Add robotpkg apt repository](#add-robotpkg-apt-repository)
+         - [Install EigenPy](#install-eigenpy)
+      + [Mac OS X](#mac-os-x)
+      + [Docker](#docker)
+   * [Build](#build)
+   * [Contribution](#contribution)
+   * [Core-dev team](#core-dev-team)
+   * [Credits](#credits)
+   * [Acknowledgments](#acknowledgments)
 
 ## Installation
 
@@ -89,20 +103,29 @@ docker run --rm -it ghcr.io/stack-of-tasks/eigenpy:devel
 
 Build instruction can be found [here](./development/build.md)
 
+## Contribution
+
+If you want to ask a question, report a bug, request a new feature or contributing with a pull requests please, follow the [contribution guideline](./development/contributing.md).
+
+## Core-dev team
+
+The currently active core developers of **EigenPy** are:
+
+* [Justin Carpentier](https://jcarpent.github.io) (Inria): main developer and manager of the project
+* [Guilhem Saurel](https://github.com/nim65s) (LAAS-CNRS): core maintainer
+* [Joris Vailant](https://github.com/jorisv) (Inria): core developer and manager of the project
+* [Lucas Haubert](https://www.linkedin.com/in/lucas-haubert-b668a421a/) (Inria): core developer
+* [Jeanne Matheron](https://github.com/j-matheron) (Inria): core developer
+
+
 ## Credits
 
-The following people have been involved in the development of **EigenPy**:
-
-- [Justin Carpentier](https://jcarpent.github.io) (Inria): main developer and manager of the project
+In addition to the core dev team, the following people have also been involved in the development of **EigenPy** and are warmly thanked for their contributions:
 - [Nicolas Mansard](http://projects.laas.fr/gepetto/index.php/Members/NicolasMansard) (LAAS-CNRS): initial project instructor
 - [Wolfgang Merkt](http://www.wolfgangmerkt.com/) (University of Edinburgh): ROS integration and support
 - [Sean Yen](https://www.linkedin.com/in/seanyentw) (Microsoft): Windows integration
 - [Loïc Estève](https://github.com/lesteve) (Inria): Conda integration
 - [Wilson Jallet](https://manifoldfr.github.io/) (Inria): core developer
-- [Joris Vaillant](https://github.com/jorisv) (Inria): core developer and manager of the project
-- [Lucas Haubert](https://www.linkedin.com/in/lucas-haubert-b668a421a/) (Inria): core developer
-
-If you have taken part in the development of **EigenPy**, feel free to add your name and contribution here.
 
 ## Acknowledgments
 

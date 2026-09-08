@@ -1,10 +1,10 @@
-# Build and install from source with Pixi
+# Build and develop with pixi
 
-To build **EigenPy** from source the easiest way is to use [Pixi](https://pixi.sh/latest/#installation).
+The easiest way to set up a development environment is to use [pixi](https://pixi.sh/latest/#installation).
 
-[Pixi](https://pixi.sh/latest/) is a cross-platform package management tool for developers that
-will install all required dependencies in `.pixi` directory.
-It's used by our CI agent so you have the guarantee to get the right dependencies.
+[pixi](https://pixi.sh/latest/) is a cross-platform package manager for developers.
+It installs all required dependencies in the `.pixi` directory.
+It's used by our CI, so you get the same stable and tested dependencies.
 
 Run the following command to install dependencies, configure, build and test the project:
 
@@ -12,6 +12,47 @@ Run the following command to install dependencies, configure, build and test the
 pixi run test
 ```
 
-The project will be built in the `build` directory.
-You can run `pixi shell` and build the project with `cmake` and `ninja` manually.
+The project is built in the `build` directory.
 
+The typical workflow is:
+
+```bash
+pixi shell
+pixi run configure
+ninja -C build
+```
+
+After `pixi run configure`, use `cmake` and `ninja` manually to reconfigure and build the project.
+
+## Environments
+
+The pixi manifest contains many environments. The most common ones are:
+
+- **default**: core eigenpy
+- **all**: all eigenpy features
+
+To activate a specific environment, run:
+
+```bash
+pixi shell -e all
+```
+
+Using **all** makes it easy to choose which features to build.
+In this case, use the following CMake options:
+- `GENERATE_PYTHON_STUBS` : Generate the Python stubs associated to the Python library
+- `BUILD_WITH_CHOLMOD_SUPPORT` : Build EigenPy with the Cholmod support
+
+With the **all** environment, all these options are ON.
+To turn one off, pass the corresponding `-D` flag to `cmake`:
+
+```bash
+cmake -B build -DGENERATE_PYTHON_STUBS=OFF
+```
+
+## Faster build
+
+When you work on a single feature with one associated test,build and run the corresponding test:
+```bash
+ninja -C build eigenpy-test-cpp-<name>
+ctest --test-dir build --output-on-failure -R eigenpy-test-cpp-<name>
+```
