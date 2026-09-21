@@ -495,6 +495,15 @@ struct eigen_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
         need_to_allocate |= true;
     }
 
+    // The rvalue converter storage must be able to hold the full
+    // StorageType (Ref + bookkeeping), not just the Ref: see the
+    // referent_storage specializations in eigen-from-python.hpp. A
+    // parameter form not covered there gets Boost.Python's generic,
+    // Ref-sized storage and the placement-new below would overrun it.
+    static_assert(
+        sizeof(storage->storage) >= sizeof(StorageType),
+        "rvalue converter storage too small for Eigen::Ref bookkeeping");
+
     void* raw_ptr = storage->storage.bytes;
     if (need_to_allocate) {
       MatType* mat_ptr;

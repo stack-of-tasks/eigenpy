@@ -63,6 +63,33 @@ void fill(Eigen::Ref<MatType> mat, const typename MatType::Scalar& value) {
   mat.fill(value);
 }
 
+/// Probes for the rvalue-converter storage of writable Eigen::Ref
+/// parameters: the converter must not overrun its storage and corrupt the
+/// adjacent arguments (a, b), and write-back to the numpy array must work.
+/// The by-value and by-const-reference forms use different converter
+/// storage; the const-reference form used to fall back to an undersized
+/// generic storage.
+template <typename VecType>
+bp::tuple probeWritableRefByValue(Eigen::Ref<VecType> out,
+                                  const typename VecType::Scalar& a,
+                                  const typename VecType::Scalar& b) {
+  out[0] = a;
+  out[1] = b;
+  return bp::make_tuple(a, b);
+}
+
+template <typename VecType>
+bp::tuple probeWritableRefByConstRef(const Eigen::Ref<VecType>& out,
+                                     const typename VecType::Scalar& a,
+                                     const typename VecType::Scalar& b) {
+  // Eigen::Ref<non-const> only exposes non-const write access, but the
+  // referenced data is writable: const_cast is fine here.
+  Eigen::Ref<VecType>& out_ = const_cast<Eigen::Ref<VecType>&>(out);
+  out_[0] = a;
+  out_[1] = b;
+  return bp::make_tuple(a, b);
+}
+
 /// Get ref to a static matrix of size ( @p rows, @p cols )
 template <typename MatType>
 Eigen::Ref<MatType> getRefToStatic(const int rows, const int cols) {
@@ -118,6 +145,12 @@ BOOST_PYTHON_MODULE(eigen_ref) {
   bp::def("fillVec3", fill<Vector3d>);
   bp::def("fillVec", fill<VectorXd>);
   bp::def("fill", fill<MatrixXd>);
+
+  bp::def("probeWritableRefByValue", probeWritableRefByValue<VectorXd>);
+  bp::def("probeWritableRefByValueComplex", probeWritableRefByValue<VectorXcd>);
+  bp::def("probeWritableRefByConstRef", probeWritableRefByConstRef<VectorXd>);
+  bp::def("probeWritableRefByConstRefComplex",
+          probeWritableRefByConstRef<VectorXcd>);
 
   bp::def("getRefToStatic", getRefToStatic<MatrixXd>);
   bp::def("asRef", asRef<MatrixXd>);
