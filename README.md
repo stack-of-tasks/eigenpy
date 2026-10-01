@@ -105,7 +105,7 @@ Build instruction can be found [here](./development/build.md)
 
 ## Contribution
 
-If you want to ask a question, report a bug, request a new feature or contributing with a pull requests please, follow the [contribution guideline](./development/contributing.md).
+If you want to ask a question, report a bug, request a new feature or contributing with a pull requests please, follow the [contribution guideline](./CONTRIBUTING.md).
 
 ## Core-dev team
 
