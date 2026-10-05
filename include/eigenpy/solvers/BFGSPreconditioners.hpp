@@ -27,9 +27,8 @@ struct BFGSPreconditionerBaseVisitor
         .def("dim", &Preconditioner::dim,
              "Returns the dimension of the BFGS preconditioner")
         .def("update",
-             (const Preconditioner& (Preconditioner::*)(const VectorType&,
-                                                        const VectorType&)
-                  const) &
+             (const Preconditioner& (Preconditioner::*)(
+                 const VectorType&, const VectorType&) const) &
                  Preconditioner::update,
              bp::args("s", "y"), "Update the BFGS estimate of the matrix A.",
              bp::return_value_policy<bp::reference_existing_object>())
