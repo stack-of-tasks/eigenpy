@@ -38,7 +38,7 @@ assert isapprox(qv.coeffs(), v)
 verbose and print("[Quaternion] AngleAxis initialisation")
 r = AngleAxis(q)
 q2 = Quaternion(r)
-assert q == q
+assert q == q  # noqa: PLR0124
 assert isapprox(q.coeffs(), q2.coeffs())
 assert q2.isApprox(q2)
 assert q2.isApprox(q2, 1e-2)
