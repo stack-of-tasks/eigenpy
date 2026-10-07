@@ -86,17 +86,19 @@ def test_bdcsvd(options):
 
     if compute_u:
         matrixU = bdcsvd.matrixU()
-        if options & eigenpy.DecompositionOptions.ComputeFullU:
-            assert matrixU.shape == (dim, dim)
-        elif options & eigenpy.DecompositionOptions.ComputeThinU:
+        if (
+            options & eigenpy.DecompositionOptions.ComputeFullU
+            or options & eigenpy.DecompositionOptions.ComputeThinU
+        ):
             assert matrixU.shape == (dim, dim)
         assert eigenpy.is_approx(matrixU.T @ matrixU, np.eye(matrixU.shape[1]))
 
     if compute_v:
         matrixV = bdcsvd.matrixV()
-        if options & eigenpy.DecompositionOptions.ComputeFullV:
-            assert matrixV.shape == (dim, dim)
-        elif options & eigenpy.DecompositionOptions.ComputeThinV:
+        if (
+            options & eigenpy.DecompositionOptions.ComputeFullV
+            or options & eigenpy.DecompositionOptions.ComputeThinV
+        ):
             assert matrixV.shape == (dim, dim)
         assert eigenpy.is_approx(matrixV.T @ matrixV, np.eye(matrixV.shape[1]))
 

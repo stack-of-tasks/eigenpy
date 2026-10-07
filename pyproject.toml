@@ -22,5 +22,8 @@ extend-select = ["I", "NPY", "RUF", "UP", "W"]
 [tool.ruff.lint.isort]
 known-first-party = ["eigenpy"]
 
+[tool.ruff.lint.per-file-ignores]
+"unittest/**" = ["BLE001"]
+
 [tool.tomlsort]
 all = true

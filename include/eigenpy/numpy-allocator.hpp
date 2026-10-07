@@ -100,8 +100,9 @@ struct numpy_allocator_impl_matrix<MatType&> {
                                  npy_intp nd, npy_intp* shape) {
     typedef typename SimilarMatrixType::Scalar Scalar;
     enum {
-      NPY_ARRAY_MEMORY_CONTIGUOUS =
-          SimilarMatrixType::IsRowMajor ? NPY_ARRAY_CARRAY : NPY_ARRAY_FARRAY
+      NPY_ARRAY_MEMORY_CONTIGUOUS = SimilarMatrixType::IsRowMajor
+          ? NPY_ARRAY_CARRAY
+          : NPY_ARRAY_FARRAY
     };
 
     if (NumpyType::sharedMemory()) {
@@ -126,8 +127,8 @@ struct numpy_allocator_impl_matrix<Eigen::Ref<MatType, Options, Stride>> {
   static PyArrayObject* allocate(RefType& mat, npy_intp nd, npy_intp* shape) {
     typedef typename RefType::Scalar Scalar;
     enum {
-      NPY_ARRAY_MEMORY_CONTIGUOUS =
-          RefType::IsRowMajor ? NPY_ARRAY_CARRAY : NPY_ARRAY_FARRAY
+      NPY_ARRAY_MEMORY_CONTIGUOUS = RefType::IsRowMajor ? NPY_ARRAY_CARRAY
+                                                        : NPY_ARRAY_FARRAY
     };
 
     if (NumpyType::sharedMemory()) {
@@ -168,8 +169,8 @@ struct numpy_allocator_impl_matrix<const MatType&> {
     typedef typename SimilarMatrixType::Scalar Scalar;
     enum {
       NPY_ARRAY_MEMORY_CONTIGUOUS_RO = SimilarMatrixType::IsRowMajor
-                                           ? NPY_ARRAY_CARRAY_RO
-                                           : NPY_ARRAY_FARRAY_RO
+          ? NPY_ARRAY_CARRAY_RO
+          : NPY_ARRAY_FARRAY_RO
     };
 
     if (NumpyType::sharedMemory()) {
@@ -196,8 +197,8 @@ struct numpy_allocator_impl_matrix<
   static PyArrayObject* allocate(RefType& mat, npy_intp nd, npy_intp* shape) {
     typedef typename RefType::Scalar Scalar;
     enum {
-      NPY_ARRAY_MEMORY_CONTIGUOUS_RO =
-          RefType::IsRowMajor ? NPY_ARRAY_CARRAY_RO : NPY_ARRAY_FARRAY_RO
+      NPY_ARRAY_MEMORY_CONTIGUOUS_RO = RefType::IsRowMajor ? NPY_ARRAY_CARRAY_RO
+                                                           : NPY_ARRAY_FARRAY_RO
     };
 
     if (NumpyType::sharedMemory()) {
@@ -241,8 +242,8 @@ struct numpy_allocator_impl_tensor<Eigen::TensorRef<TensorType>> {
     typedef typename RefType::Scalar Scalar;
     static const bool IsRowMajor = TensorType::Options & Eigen::RowMajorBit;
     enum {
-      NPY_ARRAY_MEMORY_CONTIGUOUS =
-          IsRowMajor ? NPY_ARRAY_CARRAY : NPY_ARRAY_FARRAY
+      NPY_ARRAY_MEMORY_CONTIGUOUS = IsRowMajor ? NPY_ARRAY_CARRAY
+                                               : NPY_ARRAY_FARRAY
     };
 
     if (NumpyType::sharedMemory()) {
@@ -274,8 +275,8 @@ struct numpy_allocator_impl_tensor<const Eigen::TensorRef<const TensorType>> {
     typedef typename RefType::Scalar Scalar;
     static const bool IsRowMajor = TensorType::Options & Eigen::RowMajorBit;
     enum {
-      NPY_ARRAY_MEMORY_CONTIGUOUS_RO =
-          IsRowMajor ? NPY_ARRAY_CARRAY_RO : NPY_ARRAY_FARRAY_RO
+      NPY_ARRAY_MEMORY_CONTIGUOUS_RO = IsRowMajor ? NPY_ARRAY_CARRAY_RO
+                                                  : NPY_ARRAY_FARRAY_RO
     };
 
     if (NumpyType::sharedMemory()) {

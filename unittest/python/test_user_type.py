@@ -32,10 +32,10 @@ def test(dtype):
 
     mat_op = -mat  # noqa
 
-    assert (mat >= mat).all()
-    assert (mat <= mat).all()
-    assert not (mat > mat).all()
-    assert not (mat < mat).all()
+    assert (mat >= mat).all()  # noqa: PLR0124
+    assert (mat <= mat).all()  # noqa: PLR0124
+    assert not (mat > mat).all()  # noqa: PLR0124
+    assert not (mat < mat).all()  # noqa: PLR0124
 
     mat2 = mat.dot(mat.T)
     mat2_ref = mat.astype(np.double).dot(mat.T.astype(np.double))
