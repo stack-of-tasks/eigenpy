@@ -97,14 +97,29 @@ void gufunc_matrix_multiply(char** args,
     npy_intp is0 = steps[0], is1 = steps[1], os = steps[2], n = *dimensions; \
     char *i0 = args[0], *i1 = args[1], *o = args[2];                         \
     int k;                                                                   \
-    for (k = 0; k < n; k++) {                                                \
-      T1& x = *static_cast<T1*>(static_cast<void*>(i0));                     \
-      T2& y = *static_cast<T2*>(static_cast<void*>(i1));                     \
-      R& res = *static_cast<R*>(static_cast<void*>(o));                      \
-      res = x op y;                                                          \
-      i0 += is0;                                                             \
-      i1 += is1;                                                             \
-      o += os;                                                               \
+    if (user_type_traits<T1>::requires_initialization ||                     \
+        user_type_traits<T2>::requires_initialization) {                     \
+      const T1 zero1(0);                                                     \
+      const T2 zero2(0);                                                     \
+      for (k = 0; k < n; k++) {                                              \
+        T1& x = *static_cast<T1*>(static_cast<void*>(i0));                   \
+        T2& y = *static_cast<T2*>(static_cast<void*>(i1));                   \
+        R& res = *static_cast<R*>(static_cast<void*>(o));                    \
+        res = value_or_zero(x, zero1) op value_or_zero(y, zero2);            \
+        i0 += is0;                                                           \
+        i1 += is1;                                                           \
+        o += os;                                                             \
+      }                                                                      \
+    } else {                                                                 \
+      for (k = 0; k < n; k++) {                                              \
+        T1& x = *static_cast<T1*>(static_cast<void*>(i0));                   \
+        T2& y = *static_cast<T2*>(static_cast<void*>(i1));                   \
+        R& res = *static_cast<R*>(static_cast<void*>(o));                    \
+        res = x op y;                                                        \
+        i0 += is0;                                                           \
+        i1 += is1;                                                           \
+        o += os;                                                             \
+      }                                                                      \
     }                                                                        \
   }                                                                          \
                                                                              \
@@ -134,12 +149,24 @@ EIGENPY_REGISTER_BINARY_OPERATOR(greater_equal, >=)
     npy_intp is = steps[0], os = steps[1], n = *dimensions;          \
     char *i = args[0], *o = args[1];                                 \
     int k;                                                           \
-    for (k = 0; k < n; k++) {                                        \
-      T& x = *static_cast<T*>(static_cast<void*>(i));                \
-      R& res = *static_cast<R*>(static_cast<void*>(o));              \
-      res = op x;                                                    \
-      i += is;                                                       \
-      o += os;                                                       \
+    if (user_type_traits<T>::requires_initialization) {              \
+      const T zero(0);                                               \
+      for (k = 0; k < n; k++) {                                      \
+        T& x_raw = *static_cast<T*>(static_cast<void*>(i));          \
+        const T& x = value_or_zero(x_raw, zero);                     \
+        R& res = *static_cast<R*>(static_cast<void*>(o));            \
+        res = op x;                                                  \
+        i += is;                                                     \
+        o += os;                                                     \
+      }                                                              \
+    } else {                                                         \
+      for (k = 0; k < n; k++) {                                      \
+        T& x = *static_cast<T*>(static_cast<void*>(i));              \
+        R& res = *static_cast<R*>(static_cast<void*>(o));            \
+        res = op x;                                                  \
+        i += is;                                                     \
+        o += os;                                                     \
+      }                                                              \
     }                                                                \
   }                                                                  \
                                                                      \

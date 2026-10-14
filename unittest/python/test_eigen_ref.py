@@ -11,6 +11,10 @@ from eigen_ref import (
     has_ref_member,
     modify_block,
     printMatrix,
+    probeWritableRefByConstRef,
+    probeWritableRefByConstRefComplex,
+    probeWritableRefByValue,
+    probeWritableRefByValueComplex,
 )
 
 
@@ -120,6 +124,33 @@ def test_edit_block(rows, cols):
     assert np.array_equal(hasref.J, J_true)
 
 
+def test_writable_ref_does_not_corrupt_adjacent_args():
+    # The rvalue converter of a writable Eigen::Ref parameter must not
+    # overrun its storage: the adjacent scalar arguments would be corrupted
+    # (the by-const-reference form used to fall back to an undersized
+    # generic storage). Exercise both converter paths: a directly mappable
+    # array, and a non-contiguous slice that forces the converter to
+    # allocate a temporary and write back on destruction.
+    for probe, dtype, a, b in (
+        (probeWritableRefByValue, np.float64, 1.5, -2.25),
+        (probeWritableRefByValueComplex, np.complex128, 1 + 2j, 3 - 4j),
+        (probeWritableRefByConstRef, np.float64, 1.5, -2.25),
+        (probeWritableRefByConstRefComplex, np.complex128, 1 + 2j, 3 - 4j),
+    ):
+        # directly mappable (no temporary allocation)
+        out = np.zeros(4, dtype=dtype)
+        ra, rb = probe(out, a, b)
+        assert ra == a and rb == b, (probe.__name__, dtype, ra, rb)
+        assert out[0] == a and out[1] == b
+
+        # non-contiguous slice: forces the allocate-and-write-back path
+        backing = np.zeros(8, dtype=dtype)
+        out = backing[::2]
+        ra, rb = probe(out, a, b)
+        assert ra == a and rb == b, (probe.__name__, dtype, ra, rb)
+        assert out[0] == a and out[1] == b
+
+
 def do_test(mat):
     test_fill_print(mat)
     test_create_ref_to_static(mat)
@@ -127,6 +158,7 @@ def do_test(mat):
     test_create_ref(mat)
     test_edit_block(rows, cols)
     test_read_block()
+    test_writable_ref_does_not_corrupt_adjacent_args()
     print("=" * 10)
 
 

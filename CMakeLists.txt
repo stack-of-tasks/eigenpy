@@ -106,7 +106,7 @@ string(REPLACE "-pedantic" "" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 
 # If needed, fix CMake policy for APPLE systems
 apply_default_apple_configuration()
-check_minimal_cxx_standard(11 ENFORCE)
+check_minimal_cxx_standard(17 ENFORCE)
 
 if(WIN32)
   set(LINK copy_if_different)
@@ -292,6 +292,7 @@ set(${PROJECT_NAME}_HEADERS
     include/eigenpy/angle-axis.hpp
     include/eigenpy/quaternion.hpp
     include/eigenpy/user-type.hpp
+    include/eigenpy/user-type-traits.hpp
     include/eigenpy/ufunc.hpp
     include/eigenpy/register.hpp
     include/eigenpy/std-array.hpp

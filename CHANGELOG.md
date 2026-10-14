@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Generate metadata from pyproject.toml. Requires jrl-cmakemodules > 1.1.2 ([#648])(https://github.com/stack-of-tasks/eigenpy/pull/648))
 
+### Added
+- `eigenpy::user_type_traits<T>` customization point for user numpy types whose zero-filled (never constructed) slots are not valid values, e.g. Boost.Multiprecision mpfr/mpc scalars ([#370](https://github.com/stack-of-tasks/eigenpy/pull/370), following the discussion in [#365](https://github.com/stack-of-tasks/eigenpy/issues/365)). The defaulted trait compiles to the previous code: no behavior change for existing user types.
+- Standalone example binding a Boost.Multiprecision custom numeric type (mpfr float and mpc complex) in `examples/custom_numeric_type` ([#370](https://github.com/stack-of-tasks/eigenpy/pull/370))
+
+### Fixed
+- Crashes when numpy operations (`np.dot`/`np.inner`, arithmetic and casts on `np.zeros`/`np.empty` arrays, `np.full`, truthiness, ...) reached never-constructed slots of user dtypes that opt into `user_type_traits` ([#370](https://github.com/stack-of-tasks/eigenpy/pull/370))
+- The from-Python converter of a writable `Eigen::Ref` passed by const reference overran its undersized rvalue-converter storage, corrupting the adjacent argument's converter slot, and never ran the storage destructor (no write-back, leaked array reference) ([#370](https://github.com/stack-of-tasks/eigenpy/pull/370))
+
 ## [3.13.0] - 2026-05-19
 
 ### Changed

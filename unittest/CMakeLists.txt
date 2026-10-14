@@ -53,6 +53,7 @@ endif()
 
 if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
   add_lib_unit_test(user_type)
+  add_lib_unit_test(user_type_uninitialized)
 endif()
 add_lib_unit_test(std_vector)
 add_lib_unit_test(std_array)
@@ -127,6 +128,8 @@ add_python_lib_unit_test("py-eigen-ref" "unittest/python/test_eigen_ref.py")
 
 if(NOT NUMPY_WITH_BROKEN_UFUNC_SUPPORT)
   add_python_lib_unit_test("py-user-type" "unittest/python/test_user_type.py")
+  add_python_lib_unit_test("py-user-type-uninitialized"
+                           "unittest/python/test_user_type_uninitialized.py")
 endif()
 
 add_python_eigenpy_lib_unit_test("py-dimensions"
