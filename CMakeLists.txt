@@ -35,6 +35,7 @@ jrl_option(BUILD_TESTING_SCIPY "Build unit tests with scipy" OFF)
 jrl_option(BUILD_DOCUMENTATION "Build the documentation" OFF)
 jrl_option(INSTALL_DOCUMENTATION "Install the documentation" ON CONDITION BUILD_DOCUMENTATION FALLBACK OFF)
 jrl_option(SUFFIX_SO_VERSION "Suffix library name with its version" OFF)
+jrl_option(EIGENPY_DOXYGEN_USE_MATHJAX "Avoid latex at build time" OFF)
 
 if(BUILD_WITH_ACCELERATE_SUPPORT)
   if(NOT APPLE)
