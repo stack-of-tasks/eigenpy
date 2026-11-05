@@ -9,9 +9,6 @@ concurrency:
   cancel-in-progress: true
 jobs:
   nix:
-    # ⚠️ temporarly disable the Nix job ⚠️
-    if: false
-
     runs-on: "${{ matrix.os }}-latest"
     strategy:
       matrix:
@@ -27,10 +24,7 @@ jobs:
       - run: nix flake check -L
       - run: nix build -L ".#${{ matrix.extends }}"
   check:
-    # ⚠️ temporarly disable the Nix job ⚠️
-    if: false
-    # if: always()
-
+    if: always()
     name: check-macos-linux-nix
     runs-on: ubuntu-latest
     needs:
