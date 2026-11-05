@@ -53,6 +53,9 @@ set(DOXYGEN_GENERATE_TAGFILE ${CMAKE_CURRENT_BINARY_DIR}/html/${PROJECT_NAME}.do
 # Configuration options related to the dot tool
 set(DOXYGEN_DOT_IMAGE_FORMAT SVG)
 
+# Output dir
+set(DOXYGEN_HTML_OUTPUT html)
+
 # Configure Doxygen
 doxygen_add_docs(
   eigenpy-doc
@@ -65,7 +68,7 @@ doxygen_add_docs(
 
 if(INSTALL_DOCUMENTATION)
   install(
-    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html
+    DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_HTML_OUTPUT}
     DESTINATION share/doc/${PROJECT_NAME}
     COMPONENT doc
   )
