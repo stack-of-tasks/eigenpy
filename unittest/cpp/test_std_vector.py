@@ -2,14 +2,18 @@ import pprint
 
 import numpy as np
 import std_vector
-from std_vector import copyStdVector, printVectorOf3x3, printVectorOfMatrix
-
-import eigenpy
+from std_vector import (
+    StdVec_MatrixXd,
+    StdVec_VectorXd,
+    copyStdVector,
+    printVectorOf3x3,
+    printVectorOfMatrix,
+)
 
 rng = np.random.default_rng(0)
 
 l1 = [rng.standard_normal(3), rng.standard_normal(2)]
-l2 = eigenpy.StdVec_VectorXd(l1)
+l2 = StdVec_VectorXd(l1)
 l3 = [rng.standard_normal((2, 2)), rng.standard_normal((3, 1))]
 l3.append(np.asfortranarray(np.eye(2)))
 l3.append(np.eye(2))
@@ -40,7 +44,7 @@ printVectorOfMatrix(l3)
 
 
 l4_copy = copyStdVector(l4)
-assert isinstance(l4_copy, eigenpy.StdVec_MatrixXd)
+assert isinstance(l4_copy, StdVec_MatrixXd)
 
 assert "StdVec_Mat3d" in printVectorOf3x3.__doc__
 printVectorOf3x3(l4)
@@ -100,7 +104,7 @@ l5[0][:] = 0.0
 assert np.allclose(l5[0], 0.0)
 
 # Test slicing
-l6 = eigenpy.StdVec_VectorXd()
+l6 = StdVec_VectorXd()
 for _ in range(4):
     l6.append(rng.random(3))
 checkAllValues(l6[:1], l6.tolist()[:1])
