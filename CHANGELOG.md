@@ -6,13 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-- Generate metadata from pyproject.toml. Requires jrl-cmakemodules > 1.1.2 ([#648])(https://github.com/stack-of-tasks/eigenpy/pull/648))
+- Generate metadata from pyproject.toml. Requires jrl-cmakemodules > 1.1.2 ([#648](https://github.com/stack-of-tasks/eigenpy/pull/648))
 - Fixup boost::python 1.92 failure with exposing std::array ([#673](https://github.com/stack-of-tasks/eigenpy/pull/673))
 
 ## [3.13.0] - 2026-05-19
 
 ### Changed
-- Remove `accelerate.hpp` header that clash with Accelerate.hpp in non case sensitive OS ([#593](https://github.com/stack-of-tasks/eigenpy/pull/593)
+- Remove `accelerate.hpp` header that clash with Accelerate.hpp in non case sensitive OS ([#593](https://github.com/stack-of-tasks/eigenpy/pull/593))
   We don't consider it an API break since this header was rarely used.
 - Python version update ([#603](https://github.com/stack-of-tasks/eigenpy/pull/603)):
   - Project is now tested with Python 3.10 and 3.14
