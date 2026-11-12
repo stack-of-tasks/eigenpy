@@ -103,6 +103,17 @@ except AttributeError:
 else:
     assert False, "extend is not implemented"
 
+# Test clear: Boost.Python >= 1.92 exposes clear on the container indexing
+# suite, which must throw for the fixed-size std::array. Older versions of
+# Boost.Python do not expose clear at all, so there is nothing to test there.
+if hasattr(ints, "clear"):
+    try:
+        ints.clear()
+    except NotImplementedError:
+        pass
+    else:
+        assert False, "clear is not implemented"
+
 # Test set_slice nominal case
 ints[1:3] = [10, 20]
 assert ints[1] == 10
