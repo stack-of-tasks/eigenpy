@@ -31,7 +31,9 @@ void setZero(std::vector<MatType, Eigen::aligned_allocator<MatType>>& Ms) {
 }
 
 struct CustomTestStruct {
-  bool operator==(const CustomTestStruct&) const { return true; }
+  CustomTestStruct(int v) : value(v) {}
+  bool operator==(const CustomTestStruct& o) const { return value == o.value; }
+  int value = 0;
 };
 
 // Structure with no operator equal to test Boost.Python 1.92
@@ -72,8 +74,14 @@ BOOST_PYTHON_MODULE(std_vector) {
   // Test API regression:
   // Exposing a `std::vector` with documentation doesn't clash with
   // exposing a `std::vector` with a visitor
+  bp::class_<CustomTestStruct>("CustomTestStruct", bp::init<int>())
+      .def(
+          "__eq__", +[](const CustomTestStruct& v1,
+                        const CustomTestStruct& v2) { return v1 == v2; });
+  bp::class_<CustomTestStructNoEqual>("CustomTestStructNoEqual");
   StdVectorPythonVisitor<std::vector<CustomTestStruct>>::expose(
       "StdVec_CustomTestStruct", "some documentation");
+  // Test Boost.Python 1.92 issue with mandatory `operator==` definition
   StdVectorPythonVisitor<std::vector<CustomTestStructNoEqual>>::expose(
       "StdVec_CustomTestStructNoEqual", "some documentation");
 }

@@ -115,3 +115,49 @@ T = (0, 2)
 L6_copy = l6[T]
 for k, i in enumerate(L):
     checkAllValues(L6_copy[k], l6[i])
+
+
+# Boost.Python (>= 1.92) need `operator==` definition for `value_type`.
+# To overcome this issue we must redefine `append` and `extends`
+
+s1 = std_vector.CustomTestStruct(1)
+s2 = std_vector.CustomTestStruct(2)
+s3 = std_vector.CustomTestStruct(3)
+
+# Test extend redefinition
+v_extend = std_vector.StdVec_CustomTestStruct()
+v_extend.extend([s1, s2])
+assert len(v_extend) == 2
+assert v_extend[0] == s1
+assert v_extend[1] == s2
+
+# Test extend redefinition
+v_append = std_vector.StdVec_CustomTestStruct()
+v_append.append(s1)
+v_append.append(s2)
+assert len(v_append) == 2
+assert v_append[0] == s1
+assert v_append[1] == s2
+
+# Test contains when `operator==` is defined
+v_eq_contains = std_vector.StdVec_CustomTestStruct()
+assert s1 not in v_eq_contains
+v_eq_contains.append(s1)
+assert s1 in v_eq_contains
+v_eq_contains.append(s2)
+assert s2 in v_eq_contains
+assert s3 not in v_eq_contains
+
+# Test contains when no `operator==` is defined
+s_no_equal = std_vector.CustomTestStructNoEqual()
+
+v_eq_contains_no_equal = std_vector.StdVec_CustomTestStructNoEqual()
+assert s_no_equal not in v_eq_contains_no_equal
+v_eq_contains_no_equal.append(s_no_equal)
+s1_no_equal = v_eq_contains_no_equal[0]
+assert s1_no_equal in v_eq_contains_no_equal
+v_eq_contains_no_equal.append(s_no_equal)
+s2_no_equal = v_eq_contains_no_equal[1]
+assert s2_no_equal in v_eq_contains_no_equal
+del v_eq_contains_no_equal[0]
+assert s1_no_equal not in v_eq_contains_no_equal
