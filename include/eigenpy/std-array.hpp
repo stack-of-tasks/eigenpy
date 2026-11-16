@@ -56,6 +56,13 @@ class array_indexing_suite
     bp::throw_error_already_set();
   }
 
+  // throws exception
+  static void clear(Container&) {
+    PyErr_SetString(PyExc_NotImplementedError,
+                    "Cannot clear an std::array type.");
+    bp::throw_error_already_set();
+  }
+
   static void set_slice(Container& container, index_type from, index_type to,
                         data_type const& v) {
     if (from >= to) {

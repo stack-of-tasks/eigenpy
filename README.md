@@ -126,6 +126,7 @@ In addition to the core dev team, the following people have also been involved i
 - [Sean Yen](https://www.linkedin.com/in/seanyentw) (Microsoft): Windows integration
 - [Loïc Estève](https://github.com/lesteve) (Inria): Conda integration
 - [Wilson Jallet](https://manifoldfr.github.io/) (Inria): core developer
+- [Michael Görner](https://github.com/v4hn) (Constructor University Bremen): boost 1.92 support
 
 ## Acknowledgments
 
