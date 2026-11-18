@@ -6,8 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
 - Generate metadata from pyproject.toml. Requires jrl-cmakemodules > 1.1.2 ([#648](https://github.com/stack-of-tasks/eigenpy/pull/648))
+
+### Fixed
 - Fixup boost::python 1.92 failure with exposing std::array ([#673](https://github.com/stack-of-tasks/eigenpy/pull/673))
+- Fix boost::python 1.92 build issue when `data_type::operator==` is not defined ([#675](https://github.com/stack-of-tasks/eigenpy/pull/675))
 
 ## [3.13.0] - 2026-05-19
 
