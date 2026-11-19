@@ -11,6 +11,7 @@
 #include <boost/mpl/if.hpp>
 #include <boost/python.hpp>
 #include <boost/python/stl_iterator.hpp>
+#include <boost/python/suite/indexing/container_utils.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <iterator>
 #include <string>
@@ -381,40 +382,97 @@ struct StdContainerFromPythonList {
 
 namespace internal {
 
+/// \brief Equality based algorithms for a container, used in \struct
+/// operator_equal_vector_derived_policies.
+///
+/// The elements of the container are compared with `operator==` when the value
+/// type defines it. Otherwise, the comparison is based on the identity of the
+/// pointers.
 template <typename T,
           bool has_operator_equal_value =
               std::is_base_of<std::true_type, has_operator_equal<T>>::value>
-struct contains_algo;
+struct operator_equal_algo;
 
 template <typename T>
-struct contains_algo<T, true> {
+struct operator_equal_algo<T, true> {
   template <class Container, typename key_type>
-  static bool run(const Container& container, key_type const& key) {
+  static bool contains(const Container& container, key_type const& key) {
     return std::find(container.begin(), container.end(), key) !=
            container.end();
   }
 };
 
 template <typename T>
-struct contains_algo<T, false> {
+struct operator_equal_algo<T, false> {
   template <class Container, typename key_type>
-  static bool run(const Container& container, key_type const& key) {
-    for (size_t k = 0; k < container.size(); ++k) {
+  static std::size_t contains(const Container& container, key_type const& key) {
+    for (std::size_t k = 0; k < container.size(); ++k) {
       if (&container[k] == &key) return true;
     }
     return false;
   }
 };
 
+///
+/// \brief Derived policies for \struct bp::vector_indexing_suite, using the
+/// algorithms of \struct operator_equal_algo.
+///
+/// Boost.Python (>= 1.92) defines `count` in
+/// `vector_indexing_suite::extension_def` which require `operator==` to be
+/// defined on the value type.
+/// As `extension_def` is called through the derived policies, it must be
+/// redefined here, otherwise the Boost.Python implementation is instantiated
+/// and fails for the value types that don't define `operator==`.
+/// See https://github.com/boostorg/python/pull/513 and
+/// https://github.com/boostorg/python/issues/367
+///
 template <class Container, bool NoProxy>
-struct contains_vector_derived_policies
+struct operator_equal_vector_derived_policies
     : public bp::vector_indexing_suite<
           Container, NoProxy,
-          contains_vector_derived_policies<Container, NoProxy>> {
+          operator_equal_vector_derived_policies<Container, NoProxy>> {
+  typedef bp::vector_indexing_suite<
+      Container, NoProxy,
+      operator_equal_vector_derived_policies<Container, NoProxy>>
+      base_type;
   typedef typename Container::value_type key_type;
 
   static bool contains(Container& container, key_type const& key) {
-    return contains_algo<key_type>::run(container, key);
+    return operator_equal_algo<key_type>::contains(container, key);
+  }
+
+  // Redefine vector methods managed by Boost.Python < 1.92
+  template <class Class>
+  static void extension_def(Class& cl) {
+    cl.def("append", &base_append).def("extend", &base_extend);
+  }
+
+ protected:
+  // Default implementation of base_append and base_extend
+  // are redefined here since we can't call `vector_indexing_suite` private
+  // methods
+  static void base_append(Container& container, bp::object v) {
+    bp::extract<key_type&> elem(v);
+    // try if elem is an exact Data
+    if (elem.check()) {
+      base_type::append(container, elem());
+    } else {
+      //  try to convert elem to data_type
+      bp::extract<key_type> elem(v);
+      if (elem.check()) {
+        base_type::append(container, elem());
+      } else {
+        PyErr_SetString(PyExc_TypeError,
+                        "Attempting to append an invalid type");
+        bp::throw_error_already_set();
+      }
+    }
+  }
+
+  static void base_extend(Container& container, bp::object v) {
+    std::vector<key_type> temp;
+    bp::container_utils::extend_container(temp, v);
+    base_type::extend(container, temp.begin(), temp.end());
   }
 };
 
@@ -515,7 +573,8 @@ struct StdVectorPythonVisitor {
       // Standard vector indexing definition
       bp::vector_indexing_suite<
           vector_type, NoProxy,
-          internal::contains_vector_derived_policies<vector_type, NoProxy>>
+          internal::operator_equal_vector_derived_policies<vector_type,
+                                                           NoProxy>>
           vector_indexing;
 
       cl.def(bp::init<size_t, const value_type&>(
