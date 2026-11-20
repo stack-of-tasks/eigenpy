@@ -12,6 +12,7 @@
           src = lib.fileset.toSource {
             root = ./.;
             fileset = lib.fileset.unions [
+              ./cmake
               ./CMakeLists.txt
               ./doc
               ./include
