@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [3.14.0] - 2026-11-23
+
 ### Added
 - Generate metadata from pyproject.toml. Requires jrl-cmakemodules > 1.1.2 ([#648](https://github.com/stack-of-tasks/eigenpy/pull/648))
 
@@ -777,7 +779,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.13.0...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.14.0...HEAD
+[3.14.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.13.0...v3.14.0
 [3.13.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.12.0...v3.13.0
 [3.12.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.11.0...v3.12.0
 [3.11.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.10.3...v3.11.0
