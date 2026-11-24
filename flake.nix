@@ -8,10 +8,12 @@
     inputs.gepetto.lib.mkFlakoboros inputs (
       { lib, ... }:
       {
-        pyOverrideAttrs.eigenpy = {
+        pyOverrideAttrs.eigenpy = { drv-prev, ... }: {
+          cmakeFlags = drv-prev.cmakeFlags ++ [ "-DBUILD_DOCUMENTATION=ON" ];
           src = lib.fileset.toSource {
             root = ./.;
             fileset = lib.fileset.unions [
+              ./cmake
               ./CMakeLists.txt
               ./doc
               ./include

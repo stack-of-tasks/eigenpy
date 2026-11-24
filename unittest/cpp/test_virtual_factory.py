@@ -1,4 +1,4 @@
-import bind_virtual_factory as bvf
+import virtual_factory as bvf
 
 
 class ImplClass(bvf.MyVirtualClass):

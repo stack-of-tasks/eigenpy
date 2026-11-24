@@ -30,35 +30,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  CI:
+  ros:
+    name: ROS ${{ matrix.ROS_DISTRO }} - ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        env:
-          - {ROS_DISTRO: humble}
-          - {ROS_DISTRO: jazzy}
-          - {ROS_DISTRO: kilted}
-          - {ROS_DISTRO: rolling}
+        include:
+          # ROS2 Humble Hawksbill (May 2022 - May 2027)
+          - ROS_DISTRO: humble
+            os: Ubuntu 22.04 (Jammy)
+
+          # ROS2 Jazzy Jalisco (May 2024 - May 2029)
+          - ROS_DISTRO: jazzy
+            os: Ubuntu 24.04 (Noble)
+
+          # ROS2 Kilted Kayu (May 2025 - December 2026)
+          - ROS_DISTRO: kilted
+            os: Ubuntu 24.04 (Noble)
+
+          # ROS2 Rolling Ridley
+          - ROS_DISTRO: rolling
+            os: Ubuntu 26.04 (Resolute)
+
+          # ROS2 Lyrical Luth (May 2026 - May 2031)
+          - ROS_DISTRO: lyrical
+            os: Ubuntu 26.04 (Resolute)
     env:
-      # PRERELEASE: true  # Fails due to issues in the underlying Docker image
-      BUILDER: colcon
+      VERBOSE_OUTPUT: true
+      VERBOSE_TESTS: true
+      ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/cache@v6
         with:
-          submodules: recursive
-      # Run industrial_ci
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-ros-${{ matrix.ROS_DISTRO }}-${{github.run_id}}
+          restore-keys: ccache-ros-${{ matrix.ROS_DISTRO }}-
       - uses: 'ros-industrial/industrial_ci@125164b9f1883cdf1858897a7146d1bebf2be5c6'
-        env: ${{ matrix.env }}
 
   check:
     if: always()
-    name: check-ros-ci
+    name: ROS CI check
 
     needs:
-    - CI
+    - ros
 
-    runs-on: Ubuntu-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Decide whether the needed jobs succeeded or failed

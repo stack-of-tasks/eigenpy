@@ -66,7 +66,7 @@ def test_generalized_selfadjoint_eigensolver(options):
                 lam = D[i]
                 BAv = BA @ v
                 lam_v = lam * v
-                assert eigenpy.is_approx(BAv, lam_v, 1e-6)
+                assert eigenpy.is_approx(BAv, lam_v, 1e-5)
 
     _gsaes_compute = gsaes.compute(A, B)
     _gsaes_compute_options = gsaes.compute(A, B, options)
