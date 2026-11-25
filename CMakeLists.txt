@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.22)
 
 project(
   eigenpy
-  VERSION 3.12.0
+  VERSION 4.0.0
   DESCRIPTION "Bindings between Numpy and Eigen using Boost.Python"
   HOMEPAGE_URL "https://github.com/stack-of-tasks/eigenpy"
 )

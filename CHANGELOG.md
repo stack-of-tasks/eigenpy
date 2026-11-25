@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-11-25
+
 ### Changed
 - Switch to [JRL CMake modules v2](https://github.com/jrl-umi3218/jrl-cmakemodules) ([#612](https://github.com/stack-of-tasks/eigenpy/pull/612))
   - BUILD_DOCUMENTATION is now OFF by default, and now *requires* doxygen+graphviz if set to ON.
@@ -784,7 +786,8 @@ One can now easily expose C++ struct containing Eigen objects in Python avoiding
 
 ## [1.0.0] - 2014-07-18
 
-[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v3.14.0...HEAD
+[Unreleased]: https://github.com/stack-of-tasks/eigenpy/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.14.0...v4.0.0
 [3.14.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.13.0...v3.14.0
 [3.13.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.12.0...v3.13.0
 [3.12.0]: https://github.com/stack-of-tasks/eigenpy/compare/v3.11.0...v3.12.0
