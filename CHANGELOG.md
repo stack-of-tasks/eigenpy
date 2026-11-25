@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+- Switch to [JRL CMake modules v2](https://github.com/jrl-umi3218/jrl-cmakemodules) ([#612](https://github.com/stack-of-tasks/eigenpy/pull/612))
+  - BUILD_DOCUMENTATION is now OFF by default, and now *requires* doxygen+graphviz if set to ON.
+  - Porting guide in `doc/_porting/porting-3-to-4.md`
+
 ## [3.14.0] - 2026-11-23
 
 ### Added
@@ -15,11 +20,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixup boost::python 1.92 failure with exposing std::array ([#673](https://github.com/stack-of-tasks/eigenpy/pull/673))
 - Fix boost::python 1.92 build issue when `data_type::operator==` is not defined ([#675](https://github.com/stack-of-tasks/eigenpy/pull/675))
 - Fix pixi build support by removing pixi-build-cmake version constraint ([#676](https://github.com/stack-of-tasks/eigenpy/pull/676))
-
-### Changed
-- Switch to [JRL CMake modules v2](https://github.com/jrl-umi3218/jrl-cmakemodules) ([#612](https://github.com/stack-of-tasks/eigenpy/pull/612))
-  - BUILD_DOCUMENTATION is now OFF by default, and now *requires* doxygen+graphviz if set to ON.
-  - Porting guide in `doc/_porting/porting-3-to-4.md`
 
 ## [3.13.0] - 2026-05-19
 
